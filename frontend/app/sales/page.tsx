@@ -42,12 +42,12 @@ export default function SalesPage() {
       const params = new URLSearchParams();
       if (suburb) params.append('suburb', suburb);
       params.append('page', page.toString());
-      params.append('per_page', perPage.toString());
+      params.append('page_size', perPage.toString());
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
       const response = await fetch(`${apiUrl}/api/sales?${params}`);
       const data = await response.json();
-      setSales(data.data);
+      setSales(data.sales);
       setTotal(data.total);
     } catch (error) {
       console.error('Error fetching sales:', error);

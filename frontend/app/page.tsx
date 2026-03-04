@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 async function getHomeData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/home`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/home`, {
     next: { revalidate: 60 } // 每分钟重新验证
   });
   if (!res.ok) throw new Error('Failed to fetch data');
@@ -50,13 +50,13 @@ export default async function Home() {
 
         {/* Suburb 统计卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {data.suburbs.map((suburb: any) => (
+          {data.suburb_stats.map((suburb: any) => (
             <Link
-              key={suburb.name}
-              href={`/suburb/${encodeURIComponent(suburb.name)}`}
+              key={suburb.suburb}
+              href={`/suburb/${encodeURIComponent(suburb.suburb)}`}
               className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow p-6"
             >
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">{suburb.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">{suburb.suburb}</h3>
               <div className="space-y-2">
                 <div>
                   <p className="text-sm text-gray-500">中位价</p>
