@@ -17,26 +17,30 @@ DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 # 跟踪当前使用的数据库类型
 USING_REAL_DB = False
+execute_query = None
 
 if DATABASE_URL:
     try:
-        from database import execute_query
-        # 先尝试一个简单的查询来验证连接
-        print("🔍 尝试连接真实数据库（Supabase）...")
-        test_query = "SELECT 1"
-        execute_query(test_query)
+        # 先尝试真实数据库
+        print("🔍 尝试使用真实数据库（Supabase）...")
+        from database import execute_query as real_execute_query
+        # 测试连接
+        real_execute_query("SELECT 1")
         print("✅ 成功连接到真实数据库（Supabase）")
         print(f"   数据库连接: {DATABASE_URL[:30]}...")
         USING_REAL_DB = True
+        execute_query = real_execute_query
     except Exception as e:
         print(f"⚠️  真实数据库连接失败: {e}")
         print("✅ 回退到模拟数据库")
-        from database_mock import execute_query
+        from database_mock import execute_query as mock_execute_query
         USING_REAL_DB = False
+        execute_query = mock_execute_query
 else:
-    from database_mock import execute_query
     print("✅ 使用模拟数据库（完整 155 条真实数据）")
+    from database_mock import execute_query as mock_execute_query
     USING_REAL_DB = False
+    execute_query = mock_execute_query
 
 # 创建 FastAPI 应用
 app = FastAPI(
