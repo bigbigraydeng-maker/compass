@@ -21,7 +21,11 @@ USING_REAL_DB = False
 if DATABASE_URL:
     try:
         from database import execute_query
-        print("✅ 使用真实数据库（Supabase）")
+        # 先尝试一个简单的查询来验证连接
+        print("🔍 尝试连接真实数据库（Supabase）...")
+        test_query = "SELECT 1"
+        execute_query(test_query)
+        print("✅ 成功连接到真实数据库（Supabase）")
         print(f"   数据库连接: {DATABASE_URL[:30]}...")
         USING_REAL_DB = True
     except Exception as e:
