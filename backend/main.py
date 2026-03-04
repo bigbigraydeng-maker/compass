@@ -5,15 +5,28 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from datetime import date, timedelta
+import os
 
 from models import (
     HomeData, SuburbStats, Sale, 
     SalesResponse, SuburbDetail, Property
 )
 
-# 强制使用模拟数据库（因为 Render 无法连接 Supabase）
-from database_mock import execute_query
-print("✅ 使用模拟数据库（Render 部署版本）")
+# 检查是否有真实数据库连接
+DATABASE_URL = os.getenv("DATABASE_URL", "")
+
+if DATABASE_URL:
+    try:
+        from database import execute_query
+        print("✅ 使用真实数据库（Supabase）")
+        print(f"   数据库连接: {DATABASE_URL[:30]}...")
+    except Exception as e:
+        print(f"⚠️  真实数据库连接失败: {e}")
+        print("✅ 回退到模拟数据库")
+        from database_mock import execute_query
+else:
+    from database_mock import execute_query
+    print("✅ 使用模拟数据库（未配置 DATABASE_URL）")
 
 # 创建 FastAPI 应用
 app = FastAPI(
@@ -38,7 +51,8 @@ def read_root():
     return {
         "message": "Compass MVP API",
         "version": "1.0.0",
-        "status": "running"
+        "status": "running",
+        "database": "real" if DATABASE_URL else "mock"
     }
 
 
@@ -81,11 +95,11 @@ def get_home_data():
             if result and len(result) > 0:
                 row = result[0]
                 if isinstance(row, dict):
-                    median_price = int(row.get('median_price', 0))
-                    total_sales = int(row.get('total_sales', 0))
+                    median_price = int(row.get('median_price', 0) or 0)
+                    total_sales = int(row.get('total_sales', 0) or 0)
                 else:
-                    median_price = int(row[0])
-                    total_sales = int(row[1])
+                    median_price = int(row[0] or 0)
+                    total_sales = int(row[1] or 0)
                 
                 suburb_stats.append(SuburbStats(
                     suburb=suburb,
@@ -187,11 +201,11 @@ def get_suburb_detail(suburb_name: str):
         if stats_result and len(stats_result) > 0:
             row = stats_result[0]
             if isinstance(row, dict):
-                median_price = int(row.get('median_price', 0))
-                total_sales = int(row.get('total_sales', 0))
+                median_price = int(row.get('median_price', 0) or 0)
+                total_sales = int(row.get('total_sales', 0) or 0)
             else:
-                median_price = int(row[0])
-                total_sales = int(row[1])
+                median_price = int(row[0] or 0)
+                total_sales = int(row[1] or 0)
         else:
             median_price = 0
             total_sales = 0
