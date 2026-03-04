@@ -4,19 +4,20 @@ Compass MVP 数据库连接模块
 import pg8000
 from contextlib import contextmanager
 from config import settings
-import re
+from urllib.parse import urlparse, unquote
 
 
 @contextmanager
 def get_db_connection():
     """获取数据库连接的上下文管理器"""
     # 解析 DATABASE_URL
-    # 格式: postgresql://user:password@host:port/database
-    match = re.match(r'postgresql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', settings.DATABASE_URL)
-    if not match:
-        raise ValueError(f"Invalid DATABASE_URL format: {settings.DATABASE_URL}")
+    url = urlparse(settings.DATABASE_URL)
     
-    user, password, host, port, database = match.groups()
+    user = url.username
+    password = unquote(url.password) if url.password else None
+    host = url.hostname
+    port = url.port or 5432
+    database = url.path.lstrip('/')
     
     conn = pg8000.connect(
         user=user,
