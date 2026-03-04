@@ -67,12 +67,16 @@ def get_db_cursor(conn):
             
             # 处理 COUNT 查询
             if "select count(*) from" in query_lower:
-                filtered = all_results
+                filtered_sales = MOCK_SALES
                 if target_suburb:
-                    filtered = [r for r in filtered if r["suburb"] == target_suburb]
+                    filtered_sales = []
+                    for sale in MOCK_SALES:
+                        prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
+                        if prop and prop["suburb"] == target_suburb:
+                            filtered_sales.append(sale)
                 
                 self.description = [("total",)]
-                self._result = [{"total": len(filtered)}]
+                self._result = [{"total": len(filtered_sales)}]
                 self.rowcount = 1
             
             # 处理 JOIN 查询（返回销售记录和房产信息）
