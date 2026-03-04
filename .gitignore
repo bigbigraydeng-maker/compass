@@ -81,3 +81,10 @@ coverage.xml
 # Backup Files
 *.bak
 *.backup
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.next/
+frontend/out/
+frontend/.env.local

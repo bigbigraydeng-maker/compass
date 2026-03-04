@@ -1,6 +1,14 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+export async function generateStaticParams() {
+  return [
+    { suburb: 'Sunnybank' },
+    { suburb: 'Eight Mile Plains' },
+    { suburb: 'Calamvale' },
+  ]
+}
+
 async function getSuburbData(suburbName: string) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
   const res = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}`, {
