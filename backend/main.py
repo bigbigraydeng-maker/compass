@@ -10,7 +10,15 @@ from models import (
     HomeData, SuburbStats, Sale, 
     SalesResponse, SuburbDetail, Property
 )
-from database import execute_query
+
+# 尝试导入真实数据库，失败则使用模拟数据库
+try:
+    from database import execute_query
+    print("✅ 使用真实数据库")
+except Exception as e:
+    from database_mock import execute_query
+    print(f"⚠️  真实数据库连接失败: {e}")
+    print("✅ 使用模拟数据库")
 
 # 创建 FastAPI 应用
 app = FastAPI(
