@@ -3,15 +3,20 @@ Compass MVP 数据库连接模块
 """
 import pg8000
 from contextlib import contextmanager
-from config import settings
+import os
 from urllib.parse import urlparse, unquote
 
 
 @contextmanager
 def get_db_connection():
     """获取数据库连接的上下文管理器"""
+    # 直接从环境变量读取 DATABASE_URL
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise ValueError("DATABASE_URL environment variable is required")
+    
     # 解析 DATABASE_URL
-    url = urlparse(settings.DATABASE_URL)
+    url = urlparse(database_url)
     
     user = url.username
     password = unquote(url.password) if url.password else None
