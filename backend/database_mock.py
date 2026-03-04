@@ -2,8 +2,6 @@
 Compass MVP 数据库连接模块（模拟数据版本）
 """
 from contextlib import contextmanager
-from config import settings
-import re
 from mock_data import MOCK_PROPERTIES, MOCK_SALES
 
 
@@ -34,115 +32,104 @@ def get_db_cursor(conn):
         def __init__(self):
             self.description = None
             self.rowcount = 0
+            self._result = []
         
         def execute(self, query, params=None):
             self.rowcount = 0
             self.description = None
+            self._result = []
             
-            # 解析查询并返回模拟数据
             query_lower = query.lower()
             
-            if "select count(*) from" in query_lower and "from (" in query_lower:
-                # 子查询计数
+            # 获取所有 sales 和 properties 的组合数据
+            all_results = []
+            for sale in MOCK_SALES:
+                prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
+                if prop:
+                    all_results.append({
+                        "id": sale["id"],
+                        "property_id": sale["property_id"],
+                        "sold_price": sale["sold_price"],
+                        "sold_date": sale["sold_date"],
+                        "address": prop["address"],
+                        "suburb": prop["suburb"],
+                        "property_type": prop["property_type"],
+                        "land_size": prop["land_size"],
+                        "bedrooms": prop["bedrooms"],
+                        "bathrooms": prop["bathrooms"]
+                    })
+            
+            # 确定 suburb 过滤条件
+            target_suburb = None
+            if params and len(params) > 0:
+                if isinstance(params[0], str):
+                    target_suburb = params[0]
+            
+            # 处理 COUNT 查询
+            if "select count(*) from" in query_lower:
+                filtered = all_results
+                if target_suburb:
+                    filtered = [r for r in filtered if r["suburb"] == target_suburb]
+                
                 self.description = [("total",)]
-                total = len(MOCK_SALES)
-                
-                # 应用过滤条件
-                if "where" in query_lower and "suburb" in query_lower:
-                    suburb = params[0] if params else None
-                    if suburb:
-                        filtered = 0
-                        for sale in MOCK_SALES:
-                            prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
-                            if prop and prop["suburb"] == suburb:
-                                filtered += 1
-                        total = filtered
-                
-                self._result = [{"total": total}]
+                self._result = [{"total": len(filtered)}]
                 self.rowcount = 1
             
+            # 处理 JOIN 查询（返回销售记录和房产信息）
             elif "from sales s" in query_lower and "join properties p" in query_lower:
-                # 复杂查询：返回销售记录和房产信息
+                filtered = all_results
+                if target_suburb:
+                    filtered = [r for r in filtered if r["suburb"] == target_suburb]
+                
+                # 排序
+                if "order by s.sold_date desc" in query_lower:
+                    filtered.sort(key=lambda x: x["sold_date"], reverse=True)
+                
+                # 限制数量
+                if "limit" in query_lower:
+                    limit = 10
+                    if params:
+                        for param in params:
+                            if isinstance(param, int) and param > 0:
+                                limit = param
+                    filtered = filtered[:limit]
+                
                 self.description = [
                     ("id",), ("property_id",), ("sold_price",), ("sold_date",),
                     ("address",), ("suburb",), ("property_type",), ("land_size",),
                     ("bedrooms",), ("bathrooms",)
                 ]
-                
-                results = []
-                for sale in MOCK_SALES:
-                    prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
-                    if prop:
-                        results.append({
-                            "id": sale["id"],
-                            "property_id": sale["property_id"],
-                            "sold_price": sale["sold_price"],
-                            "sold_date": sale["sold_date"],
-                            "address": prop["address"],
-                            "suburb": prop["suburb"],
-                            "property_type": prop["property_type"],
-                            "land_size": prop["land_size"],
-                            "bedrooms": prop["bedrooms"],
-                            "bathrooms": prop["bathrooms"]
-                        })
-                
-                # 应用过滤
-                if "where" in query_lower and "suburb" in query_lower:
-                    suburb = params[0] if params else None
-                    if suburb:
-                        results = [r for r in results if r["suburb"] == suburb]
-                
-                # 应用排序和限制
-                if "order by s.sold_date desc" in query_lower:
-                    results.sort(key=lambda x: x["sold_date"], reverse=True)
-                
-                if "limit" in query_lower:
-                    limit = 10
-                    if params:
-                        for param in params[-2:]:
-                            if isinstance(param, int):
-                                limit = param
-                    results = results[:limit]
-                
-                self._result = results
-                self.rowcount = len(results)
+                self._result = filtered
+                self.rowcount = len(filtered)
             
+            # 处理中位价查询
             elif "percentile_cont" in query_lower:
-                # 中位价查询
-                self.description = [("median_price",), ("total_sales",)]
-                
-                suburb = params[0] if params else None
-                if suburb:
-                    sales = []
+                filtered_sales = MOCK_SALES
+                if target_suburb:
+                    filtered_sales = []
                     for sale in MOCK_SALES:
                         prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
-                        if prop and prop["suburb"] == suburb:
-                            sales.append(sale)
-                else:
-                    sales = MOCK_SALES
+                        if prop and prop["suburb"] == target_suburb:
+                            filtered_sales.append(sale)
                 
-                if sales:
-                    prices = [s["sold_price"] for s in sales]
+                if filtered_sales:
+                    prices = [s["sold_price"] for s in filtered_sales]
                     prices_sorted = sorted(prices)
-                    median = prices_sorted[len(prices_sorted)//2]
-                    self._result = [(median, len(sales))]
+                    median = prices_sorted[len(prices_sorted) // 2]
+                    self._result = [(median, len(filtered_sales))]
                 else:
                     self._result = [(0, 0)]
                 
+                self.description = [("median_price",), ("total_sales",)]
                 self.rowcount = 1
-            else:
-                # 默认返回空结果
-                self._result = []
         
         def fetchone(self):
-            if hasattr(self, '_result') and self._result:
+            if self._result:
                 return self._result[0]
             return None
         
         def fetchall(self):
-            if hasattr(self, '_result'):
-                return self._result
-            return []
+            return self._result
         
         def close(self):
             pass
