@@ -109,7 +109,7 @@ def get_db_cursor(conn):
             # 解析查询并返回模拟数据
             query_lower = query.lower()
             
-            elif "select count(*) from" in query_lower and "from (" in query_lower:
+            if "select count(*) from" in query_lower and "from (" in query_lower:
                 # 子查询计数
                 self.description = [("total",)]
                 self._result = [{"total": 4}]  # 返回总数
@@ -180,6 +180,9 @@ def get_db_cursor(conn):
                     self._result = [(0, 0)]
                 
                 self.rowcount = 1
+            else:
+                # 默认返回空结果
+                self._result = []
         
         def fetchone(self):
             if hasattr(self, '_result') and self._result:
