@@ -41,12 +41,12 @@ def get_db_cursor(conn):
             
             query_lower = query.lower()
             
-            # 获取所有 sales 和 properties 的组合数据
-            all_results = []
+            # 预合并所有数据
+            all_joined = []
             for sale in MOCK_SALES:
                 prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
                 if prop:
-                    all_results.append({
+                    all_joined.append({
                         "id": sale["id"],
                         "property_id": sale["property_id"],
                         "sold_price": sale["sold_price"],
@@ -59,14 +59,16 @@ def get_db_cursor(conn):
                         "bathrooms": prop["bathrooms"]
                     })
             
-            # 确定 suburb 过滤条件
+            # 从 params 中提取 suburb
             target_suburb = None
-            if params and len(params) > 0:
-                if isinstance(params[0], str):
-                    target_suburb = params[0]
+            if params:
+                for param in params:
+                    if isinstance(param, str) and param in ['Sunnybank', 'Eight Mile Plains', 'Calamvale']:
+                        target_suburb = param
+                        break
             
-            # 处理 COUNT 查询
-            if "select count(*) from" in query_lower:
+            # 优先处理中位数查询
+            if "percentile_cont" in query_lower:
                 filtered_sales = MOCK_SALES
                 if target_suburb:
                     filtered_sales = []
@@ -75,13 +77,30 @@ def get_db_cursor(conn):
                         if prop and prop["suburb"] == target_suburb:
                             filtered_sales.append(sale)
                 
-                self.description = [("total",)]
-                self._result = [{"total": len(filtered_sales)}]
+                if filtered_sales:
+                    prices = [s["sold_price"] for s in filtered_sales]
+                    prices_sorted = sorted(prices)
+                    median = prices_sorted[len(prices_sorted) // 2]
+                    self._result = [(median, len(filtered_sales))]
+                else:
+                    self._result = [(0, 0)]
+                
+                self.description = [("median_price",), ("total_sales",)]
                 self.rowcount = 1
             
-            # 处理 JOIN 查询（返回销售记录和房产信息）
+            # 然后处理 COUNT 查询
+            elif "count(*)" in query_lower and "from (" in query_lower:
+                filtered = all_joined
+                if target_suburb:
+                    filtered = [r for r in filtered if r["suburb"] == target_suburb]
+                
+                self.description = [("total",)]
+                self._result = [(len(filtered),)]
+                self.rowcount = 1
+            
+            # 最后处理 JOIN 查询（返回销售记录）
             elif "from sales s" in query_lower and "join properties p" in query_lower:
-                filtered = all_results
+                filtered = all_joined
                 if target_suburb:
                     filtered = [r for r in filtered if r["suburb"] == target_suburb]
                 
@@ -105,27 +124,6 @@ def get_db_cursor(conn):
                 ]
                 self._result = filtered
                 self.rowcount = len(filtered)
-            
-            # 处理中位价查询
-            elif "percentile_cont" in query_lower:
-                filtered_sales = MOCK_SALES
-                if target_suburb:
-                    filtered_sales = []
-                    for sale in MOCK_SALES:
-                        prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
-                        if prop and prop["suburb"] == target_suburb:
-                            filtered_sales.append(sale)
-                
-                if filtered_sales:
-                    prices = [s["sold_price"] for s in filtered_sales]
-                    prices_sorted = sorted(prices)
-                    median = prices_sorted[len(prices_sorted) // 2]
-                    self._result = [(median, len(filtered_sales))]
-                else:
-                    self._result = [(0, 0)]
-                
-                self.description = [("median_price",), ("total_sales",)]
-                self.rowcount = 1
         
         def fetchone(self):
             if self._result:
