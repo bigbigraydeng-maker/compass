@@ -5,7 +5,6 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 import os
-from urllib.parse import urlparse, unquote
 
 
 @contextmanager
@@ -15,21 +14,8 @@ def get_db_connection():
     if not database_url:
         raise ValueError("DATABASE_URL environment variable is required")
     
-    url = urlparse(database_url)
-    
-    user = url.username
-    password = unquote(url.password) if url.password else None
-    host = url.hostname
-    port = url.port or 5432
-    database = url.path.lstrip('/')
-    
-    conn = psycopg2.connect(
-        user=user,
-        password=password,
-        host=host,
-        port=port,
-        database=database
-    )
+    # 直接使用完整的 DATABASE_URL 字符串连接
+    conn = psycopg2.connect(database_url)
     try:
         yield conn
     finally:
