@@ -1,11 +1,14 @@
 """
 Compass MVP FastAPI 主应用
+v1.0.1 - 使用 psycopg2-binary 连接 Supabase
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from datetime import date, timedelta
 import os
+
+print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
 
 from models import (
     HomeData, SuburbStats, Sale, 
