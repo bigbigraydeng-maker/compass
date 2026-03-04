@@ -25,7 +25,7 @@ app = FastAPI(
 # 配置 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # 生产环境请修改为具体域名
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -102,11 +102,7 @@ def get_home_data():
 
 
 @app.get("/api/sales", response_model=SalesResponse)
-def get_sales(
-    suburb: Optional[str] = None,
-    page: int = 1,
-    page_size: int = 20
-):
+def get_sales(suburb: Optional[str] = None, page: int = 1, page_size: int = 20):
     """
     获取成交列表
     
@@ -118,7 +114,7 @@ def get_sales(
     try:
         offset = (page - 1) * page_size
         
-        # 构建基础查询
+        # 基础查询
         base_query = """
             SELECT s.id, s.property_id, s.sold_price, s.sold_date,
                    p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
@@ -140,7 +136,16 @@ def get_sales(
         # 获取总数
         count_query = f"SELECT COUNT(*) as total FROM ({base_query}) as subq"
         total_result = execute_query(count_query, tuple(params))
-        total = total_result[0]['total'] if total_result else 0
+        
+        # 处理结果格式
+        if total_result and len(total_result) > 0:
+            row = total_result[0]
+            if isinstance(row, dict):
+                total = row.get('total', 0)
+            else:
+                total = row[0]
+        else:
+            total = 0
         
         # 添加排序和分页
         query = f"{base_query} ORDER BY s.sold_date DESC LIMIT %s OFFSET %s"
@@ -178,8 +183,18 @@ def get_suburb_detail(suburb_name: str):
         """
         stats_result = execute_query(stats_query, (suburb_name,))
         
-        if not stats_result:
-            raise HTTPException(status_code=404, detail=f"未找到郊区: {suburb_name}")
+        # 处理结果格式
+        if stats_result and len(stats_result) > 0:
+            row = stats_result[0]
+            if isinstance(row, dict):
+                median_price = int(row.get('median_price', 0))
+                total_sales = int(row.get('total_sales', 0))
+            else:
+                median_price = int(row[0])
+                total_sales = int(row[1])
+        else:
+            median_price = 0
+            total_sales = 0
         
         # 获取最近10条成交记录
         recent_sales_query = """
@@ -195,12 +210,10 @@ def get_suburb_detail(suburb_name: str):
         
         return SuburbDetail(
             suburb=suburb_name,
-            median_price=int(stats_result[0]['median_price'] or 0),
-            total_sales=stats_result[0]['total_sales'],
+            median_price=median_price,
+            total_sales=total_sales,
             recent_sales=[Sale(**sale) for sale in recent_sales]
         )
-    except HTTPException:
-        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取郊区详情失败: {str(e)}")
 
