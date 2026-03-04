@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pg8000
+python-dotenv
+pydantic
+pydantic-settings

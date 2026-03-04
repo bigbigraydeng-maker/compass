@@ -1,0 +1,156 @@
+address,suburb,property_type,bedrooms,bathrooms,land_size,sold_price,sold_date
+"93 Dunedin Street, SUNNYBANK",Sunnybank,house,0,0,638,1358000,2025-11-05
+"31 Shelley Street, SUNNYBANK",Sunnybank,house,0,0,540,1780000,2025-10-25
+"5 Batford Street, SUNNYBANK",Sunnybank,house,0,0,556,1400000,2025-10-31
+"13 Dema Street, SUNNYBANK",Sunnybank,house,0,0,456,1337000,2025-12-06
+"43 Shelley Street, SUNNYBANK",Sunnybank,house,0,0,1012,1761000,2025-10-25
+"20 Valhalla Street, SUNNYBANK",Sunnybank,house,0,0,607,1668000,2025-10-31
+"115 Turton Street, SUNNYBANK",Sunnybank,house,0,0,492,1597000,2025-11-01
+"11/16 Troughton Road, SUNNYBANK",Sunnybank,unit,0,0,0,638888,2025-11-07
+"5/16 Troughton Road, SUNNYBANK",Sunnybank,unit,0,0,0,740000,2025-11-26
+"10 Sunnybrae Street, SUNNYBANK",Sunnybank,house,0,0,556,1505000,2025-11-29
+"19/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,0,0,202,780000,2025-11-22
+"27 Headland Street, SUNNYBANK",Sunnybank,house,0,0,567,1150000,2026-01-19
+"39 Mulgowie Street, SUNNYBANK",Sunnybank,house,0,0,633,1816000,2026-03-02
+"28/18 Altandi Street, SUNNYBANK",Sunnybank,house,0,0,240,920000,2026-02-17
+"38 Samara Street, SUNNYBANK",Sunnybank,house,0,0,703,1455000,2026-03-04
+"52 Jacinda Street, SUNNYBANK",Sunnybank,house,0,0,685,1518000,2025-09-02
+"5 Gleneagles Court, SUNNYBANK",Sunnybank,house,0,0,1266,2250000,2025-08-22
+"27 Fairbank Street, SUNNYBANK",Sunnybank,house,0,0,450,1645000,2025-09-05
+"387 Mccullough Street, SUNNYBANK",Sunnybank,house,0,0,608,1588000,2025-09-18
+"152 Beenleigh Road, SUNNYBANK",Sunnybank,house,0,0,625,800000,2025-08-27
+"140 Dixon Street, SUNNYBANK",Sunnybank,house,0,0,1115,1560000,2025-08-07
+"4 Pember Street, SUNNYBANK",Sunnybank,house,0,0,642,1352500,2025-08-21
+"114 Dixon Street, SUNNYBANK",Sunnybank,house,0,0,1237,1710000,2025-08-16
+"558 Beenleigh Road, SUNNYBANK",Sunnybank,house,0,0,569,1040000,2025-08-23
+"8/371 Beenleigh Road, SUNNYBANK",Sunnybank,house,0,0,0,825000,2025-08-25
+"2/152 Lister Street, SUNNYBANK",Sunnybank,house,0,0,234,750000,2025-08-21
+"20 Lavinia Street, SUNNYBANK",Sunnybank,house,0,0,642,1580000,2025-10-10
+"7 Fairbank Street, SUNNYBANK",Sunnybank,house,0,0,811,2180000,2025-09-20
+"28 Delafield Street, SUNNYBANK",Sunnybank,house,0,0,568,1598000,2025-09-13
+"6 Meta Street, SUNNYBANK",Sunnybank,house,0,0,744,1952000,2025-10-16
+"13 Wana Street, SUNNYBANK",Sunnybank,house,0,0,658,1280000,2025-10-11
+"24 Devenish Street, SUNNYBANK",Sunnybank,house,0,0,697,1852000,2025-10-11
+"76 Woff Street, SUNNYBANK",Sunnybank,house,0,0,1012,1450000,2025-10-11
+"72 Valhalla Street, SUNNYBANK",Sunnybank,house,0,0,607,1458000,2025-06-02
+"199 Mains Road, SUNNYBANK",Sunnybank,house,0,0,635,1400000,2025-07-16
+"10 Tarrawonga Street, SUNNYBANK",Sunnybank,house,0,0,607,1308000,2025-06-02
+"89 Woff Street, SUNNYBANK",Sunnybank,house,0,0,1146,2178888,2025-07-07
+"2 Dunedin Street, SUNNYBANK",Sunnybank,house,0,0,727,1330000,2025-05-31
+"118 Lister Street, SUNNYBANK",Sunnybank,house,0,0,607,1280000,2025-06-10
+"70 Keats Street, SUNNYBANK",Sunnybank,house,0,0,1257,1300000,2025-07-28
+"27 Samara Street, SUNNYBANK",Sunnybank,house,0,0,607,1200000,2025-07-02
+"10 Mulgowie Street, SUNNYBANK",Sunnybank,house,0,0,645,1782000,2025-05-31
+"33 Dixon Street, SUNNYBANK",Sunnybank,house,0,0,1516,2270000,2025-06-30
+"206 Lister Street, SUNNYBANK",Sunnybank,house,0,0,622,968000,2025-06-07
+"20/141 Station Road, SUNNYBANK",Sunnybank,house,0,0,800,2600000,2025-06-07
+"50 Mitchell Street, SUNNYBANK",Sunnybank,house,0,0,1011,2452000,2025-06-07
+"7/66 Station Road, SUNNYBANK",Sunnybank,house,0,0,0,915000,2025-07-14
+"27 Lara Street, SUNNYBANK",Sunnybank,house,0,0,622,1730000,2025-07-05
+"58 Halse Street, SUNNYBANK",Sunnybank,house,0,0,584,1102000,2025-08-03
+"7 Pengana Street, SUNNYBANK",Sunnybank,house,0,0,569,1070000,2025-07-15
+"21/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,0,910000,2026-01-05
+"24/248 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,195,955000,2025-12-10
+"45/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,186,820000,2025-11-24
+"14/16 Arcadia Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,128,855000,2025-11-26
+"57/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,177,776000,2025-11-26
+"32 McGarry Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,611,1550000,2025-11-26
+"2 Fels Close, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,501,1830888,2025-11-29
+"17 Apple Blossom Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,960,1800000,2025-11-22
+"12 Totten Close, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,1237,2550000,2026-02-16
+"7 Petrina Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,809,2018000,2025-12-06
+"19/28 Holmead Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,330,920200,2025-11-24
+"10/16 Doris Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,0,915088,2026-02-23
+"2 Panache Close, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,868,1727000,2025-12-18
+"10/68 Timaru Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,173,862500,2026-01-20
+"26 Azzure Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,670,2350000,2026-02-07
+"17 Arpege Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,650,1575000,2025-10-27
+"20 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,458,1069000,2025-10-13
+"116 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,677,1802000,2025-10-18
+"13 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,405,2120500,2025-10-24
+"3 Yvonne Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,600,1582000,2025-10-24
+"17/37 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,135,800500,2025-10-26
+"1110/8 Win Street, EIGHT MILE PLAINS",Eight Mile Plains,unit,0,0,0,840000,2025-10-20
+"14/262 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,151,845000,2025-10-29
+"342 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,809,1535000,2025-10-25
+"5 Fendi Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,730,1625000,2025-11-08
+"25 Cranberry Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,717,1917500,2025-11-08
+"2/41 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,129,802500,2025-11-04
+"5 Kurru Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,852,2005000,2025-11-08
+"15 Poinciana Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,650,1230000,2025-11-13
+"8 Fendi Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,718,2300000,2025-11-15
+"50 Langford Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,379,1551000,2025-11-22
+"34 Boorala Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,713,1635000,2025-11-21
+"489 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,674,1565000,2025-11-14
+"22 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,458,1100000,2025-11-14
+"18 Coneybeer Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,450,1528000,2025-09-04
+"11 Dewberry Close, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,628,1725000,2025-09-08
+"11 Fanfare Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,624,2100000,2025-09-18
+"29 Amarna Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,693,1795000,2025-09-14
+"3 Angel Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,400,1351000,2025-08-30
+"1 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,919,1821000,2025-08-30
+"5 Savanna Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,450,1250000,2025-09-01
+"32/90 Oakleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,127,786888,2025-09-08
+"22 Chester Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,425,1840000,2025-09-13
+"60 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,889,2880800,2025-09-20
+"11/142 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,171,851108,2025-09-18
+"15 Hermitage Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,671,1889000,2025-09-27
+"7/41 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,126,741500,2025-09-23
+"44 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,458,850000,2025-09-17
+"42 Colvillea Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,650,1320000,2025-09-10
+"10 Savanna Place, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,453,1305000,2025-10-08
+"46 Manmarra Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,850,2041888,2025-10-13
+"5/101 Bolton Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,0,752000,2025-10-02
+"88 London Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,405,975000,2025-10-13
+"30 Tuberose Place, CALAMVALE",Calamvale,house,0,0,639,1270000,2026-02-25
+"15 Huntington Court, CALAMVALE",Calamvale,house,0,0,935,1718000,2026-02-06
+"6 Bottletree Place, CALAMVALE",Calamvale,house,0,0,860,1654000,2026-01-07
+"65/9 Eduard Place, CALAMVALE",Calamvale,house,0,0,0,865000,2026-02-18
+"52 Semper Place, CALAMVALE",Calamvale,house,0,0,600,1425000,2025-12-22
+"10 Gulubia Place, CALAMVALE",Calamvale,house,0,0,714,1686000,2026-01-07
+"2 Waterlily Place, CALAMVALE",Calamvale,house,0,0,726,1525000,2026-01-14
+"40 Gemview St, CALAMVALE",Calamvale,house,0,0,876,1480000,2026-01-29
+"60 Menser Street, CALAMVALE",Calamvale,house,0,0,422,1250000,2025-12-25
+"31/8 Earnshaw Street, CALAMVALE",Calamvale,house,0,0,211,795000,2026-01-26
+"10/28 Diane Court, CALAMVALE",Calamvale,house,0,0,152,921888,2026-01-28
+"26/8 Honeysuckle Way, CALAMVALE",Calamvale,house,0,0,0,895000,2026-01-28
+"369 Benhiam Street, CALAMVALE",Calamvale,house,0,0,492,1580000,2026-02-28
+"25 Currajong Street, CALAMVALE",Calamvale,house,0,0,0,1412000,2026-01-30
+"65 Parklands Street, CALAMVALE",Calamvale,house,0,0,744,1413000,2025-11-24
+"26 Casuarina Crescent, CALAMVALE",Calamvale,house,0,0,825,1670000,2025-12-06
+"19 Currajong Street, CALAMVALE",Calamvale,house,0,0,735,1850000,2025-12-07
+"23 Orangetip Crescent, CALAMVALE",Calamvale,house,0,0,700,1345000,2025-11-22
+", CALAMVALE",Calamvale,house,0,0,237,770000,2025-11-20
+"3 Marigold Close, CALAMVALE",Calamvale,house,0,0,870,1690000,2025-11-22
+"56 Palatine Street, CALAMVALE",Calamvale,house,0,0,660,1275000,2025-11-22
+"26 Aster Place, CALAMVALE",Calamvale,house,0,0,656,1939000,2025-11-29
+"22/10 Highgrove Street, CALAMVALE",Calamvale,house,0,0,144,825000,2025-11-18
+"69/36 Benhiam Street, CALAMVALE",Calamvale,house,0,0,143,750000,2025-11-24
+"3/18 Mornington Court, CALAMVALE",Calamvale,house,0,0,205,749000,2025-11-30
+"5 Lewis Place, CALAMVALE",Calamvale,house,0,0,451,1268000,2025-11-26
+"10 Tanglebrush Place, CALAMVALE",Calamvale,house,0,0,800,1586000,2025-11-24
+"27 Gippsland Place, CALAMVALE",Calamvale,house,0,0,451,1360888,2025-12-06
+"220/85 Nottingham Road, CALAMVALE",Calamvale,unit,0,0,150,870000,2025-12-06
+"15/77 Menser Street, CALAMVALE",Calamvale,house,0,0,156,840000,2025-12-06
+"20/360 Benhiam Street, CALAMVALE",Calamvale,house,0,0,166,850000,2025-12-18
+"9/35 Clarence Street, CALAMVALE",Calamvale,house,0,0,184,933000,2025-12-10
+"16/28 Menser Street, CALAMVALE",Calamvale,house,0,0,162,730000,2025-12-19
+"181/85 Nottingham Road, CALAMVALE",Calamvale,house,0,0,153,801000,2025-11-10
+"69 Honeysuckle Way, CALAMVALE",Calamvale,house,0,0,810,1520000,2025-11-01
+"20/2 Diamantina Street, CALAMVALE",Calamvale,house,0,0,152,832000,2025-11-01
+"38/108 Menser Street, CALAMVALE",Calamvale,house,0,0,158,780000,2025-11-02
+"54/9 Eduard Place, CALAMVALE",Calamvale,house,0,0,134,810000,2025-11-03
+"26/20 Nicoro Place, CALAMVALE",Calamvale,house,0,0,139,800000,2025-11-04
+"39 Injune Circuit, CALAMVALE",Calamvale,house,0,0,500,1600000,2025-11-17
+"3 Rutherglen Crescent, CALAMVALE",Calamvale,house,0,0,600,1870000,2025-11-15
+"94 Benhiam Street, CALAMVALE",Calamvale,house,0,0,460,1150000,2025-11-06
+"19 Housman Place, CALAMVALE",Calamvale,house,0,0,578,1200000,2025-11-15
+"3 Yewleaf Place, CALAMVALE",Calamvale,house,0,0,800,1950000,2025-11-15
+"53/9 Eduard Place, CALAMVALE",Calamvale,house,0,0,134,835500,2025-11-05
+"8 Sorbus Court, CALAMVALE",Calamvale,house,0,0,575,1395000,2025-11-15
+"30/11 Pyranees Street, CALAMVALE",Calamvale,house,0,0,182,750000,2025-11-11
+"18/78 Ormskirk Street, CALAMVALE",Calamvale,house,0,0,0,800000,2025-11-09
+"58/2 Diamantina Street, CALAMVALE",Calamvale,house,0,0,0,860000,2025-11-10
+"21/64 Ormskirk Street, CALAMVALE",Calamvale,house,0,0,152,870000,2025-11-18
+"1 Mead Place, CALAMVALE",Calamvale,house,0,0,520,930000,2025-11-14
+"19 Earnshaw Street, CALAMVALE",Calamvale,house,0,0,303,958000,2025-11-03
