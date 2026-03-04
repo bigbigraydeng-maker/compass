@@ -26,7 +26,12 @@ class Sale(BaseModel):
     property_id: int
     sold_price: int
     sold_date: date
-    property: Optional[Property] = None
+    address: str
+    suburb: str
+    property_type: Optional[str] = None
+    land_size: Optional[int] = None
+    bedrooms: int = 0
+    bathrooms: int = 0
     
     class Config:
         from_attributes = True
