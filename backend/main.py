@@ -15,22 +15,24 @@ from models import (
 # 检查是否有真实数据库连接
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-# 暂时强制使用模拟数据库（因为 Render 无法连接 Supabase）
-# 后续可以删除下面这一行，恢复真实数据库检测
-DATABASE_URL = ""
+# 跟踪当前使用的数据库类型
+USING_REAL_DB = False
 
 if DATABASE_URL:
     try:
         from database import execute_query
         print("✅ 使用真实数据库（Supabase）")
         print(f"   数据库连接: {DATABASE_URL[:30]}...")
+        USING_REAL_DB = True
     except Exception as e:
         print(f"⚠️  真实数据库连接失败: {e}")
         print("✅ 回退到模拟数据库")
         from database_mock import execute_query
+        USING_REAL_DB = False
 else:
     from database_mock import execute_query
     print("✅ 使用模拟数据库（完整 155 条真实数据）")
+    USING_REAL_DB = False
 
 # 创建 FastAPI 应用
 app = FastAPI(
@@ -56,7 +58,7 @@ def read_root():
         "message": "Compass MVP API",
         "version": "1.0.0",
         "status": "running",
-        "database": "real" if DATABASE_URL else "mock"
+        "database": "connected" if USING_REAL_DB else "mock"
     }
 
 
