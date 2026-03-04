@@ -15,6 +15,10 @@ from models import (
 # 检查是否有真实数据库连接
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
+# 暂时强制使用模拟数据库（因为 Render 无法连接 Supabase）
+# 后续可以删除下面这一行，恢复真实数据库检测
+DATABASE_URL = ""
+
 if DATABASE_URL:
     try:
         from database import execute_query
@@ -26,7 +30,7 @@ if DATABASE_URL:
         from database_mock import execute_query
 else:
     from database_mock import execute_query
-    print("✅ 使用模拟数据库（未配置 DATABASE_URL）")
+    print("✅ 使用模拟数据库（完整 155 条真实数据）")
 
 # 创建 FastAPI 应用
 app = FastAPI(

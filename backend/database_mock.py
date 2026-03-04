@@ -4,74 +4,7 @@ Compass MVP 数据库连接模块（模拟数据版本）
 from contextlib import contextmanager
 from config import settings
 import re
-
-
-# 模拟数据
-MOCK_PROPERTIES = [
-    {
-        "id": 1,
-        "address": "93 Dunedin Street, SUNNYBANK",
-        "suburb": "Sunnybank",
-        "property_type": "house",
-        "land_size": 638,
-        "bedrooms": 0,
-        "bathrooms": 0
-    },
-    {
-        "id": 2,
-        "address": "31 Shelley Street, SUNNYBANK",
-        "suburb": "Sunnybank",
-        "property_type": "house",
-        "land_size": 540,
-        "bedrooms": 0,
-        "bathrooms": 0
-    },
-    {
-        "id": 3,
-        "address": "21/25 Buckingham Place, EIGHT MILE PLAINS",
-        "suburb": "Eight Mile Plains",
-        "property_type": "house",
-        "land_size": 0,
-        "bedrooms": 0,
-        "bathrooms": 0
-    },
-    {
-        "id": 4,
-        "address": "30 Tuberose Place, CALAMVALE",
-        "suburb": "Calamvale",
-        "property_type": "house",
-        "land_size": 639,
-        "bedrooms": 0,
-        "bathrooms": 0
-    }
-]
-
-MOCK_SALES = [
-    {
-        "id": 1,
-        "property_id": 1,
-        "sold_price": 1358000,
-        "sold_date": "2025-11-05"
-    },
-    {
-        "id": 2,
-        "property_id": 2,
-        "sold_price": 1780000,
-        "sold_date": "2025-10-25"
-    },
-    {
-        "id": 3,
-        "property_id": 3,
-        "sold_price": 910000,
-        "sold_date": "2026-01-05"
-    },
-    {
-        "id": 4,
-        "property_id": 4,
-        "sold_price": 1270000,
-        "sold_date": "2026-02-25"
-    }
-]
+from mock_data import MOCK_PROPERTIES, MOCK_SALES
 
 
 @contextmanager
@@ -112,7 +45,20 @@ def get_db_cursor(conn):
             if "select count(*) from" in query_lower and "from (" in query_lower:
                 # 子查询计数
                 self.description = [("total",)]
-                self._result = [{"total": 4}]  # 返回总数
+                total = len(MOCK_SALES)
+                
+                # 应用过滤条件
+                if "where" in query_lower and "suburb" in query_lower:
+                    suburb = params[0] if params else None
+                    if suburb:
+                        filtered = 0
+                        for sale in MOCK_SALES:
+                            prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
+                            if prop and prop["suburb"] == suburb:
+                                filtered += 1
+                        total = filtered
+                
+                self._result = [{"total": total}]
                 self.rowcount = 1
             
             elif "from sales s" in query_lower and "join properties p" in query_lower:
@@ -167,7 +113,11 @@ def get_db_cursor(conn):
                 
                 suburb = params[0] if params else None
                 if suburb:
-                    sales = [s for s in MOCK_SALES if MOCK_PROPERTIES[s["property_id"]-1]["suburb"] == suburb]
+                    sales = []
+                    for sale in MOCK_SALES:
+                        prop = next((p for p in MOCK_PROPERTIES if p["id"] == sale["property_id"]), None)
+                        if prop and prop["suburb"] == suburb:
+                            sales.append(sale)
                 else:
                     sales = MOCK_SALES
                 
