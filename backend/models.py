@@ -77,3 +77,6 @@ class SuburbTrends(BaseModel):
     """郊区价格走势模型"""
     suburb: str
     monthly_trends: List[MonthlyTrend]
+
+
+
