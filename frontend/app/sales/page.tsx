@@ -46,11 +46,18 @@ export default function SalesPage() {
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
       const response = await fetch(`${apiUrl}/api/sales?${params}`);
+      if (!response.ok) {
+        setSales([]);
+        setTotal(0);
+        return;
+      }
       const data = await response.json();
-      setSales(data.sales);
-      setTotal(data.total);
+      setSales(data.sales || []);
+      setTotal(data.total || 0);
     } catch (error) {
       console.error('Error fetching sales:', error);
+      setSales([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
