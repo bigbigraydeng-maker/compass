@@ -5,6 +5,10 @@ export async function generateStaticParams() {
     { suburb: 'Sunnybank' },
     { suburb: 'Eight Mile Plains' },
     { suburb: 'Calamvale' },
+    { suburb: 'Rochedale' },
+    { suburb: 'Mansfield' },
+    { suburb: 'Ascot' },
+    { suburb: 'Hamilton' },
   ];
 }
 

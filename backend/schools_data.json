@@ -33,5 +33,21 @@
     {"name": "Runcorn Heights State School", "type": "primary", "naplan_score": 471, "rating": "全昆士兰前20%", "sector": "public"},
     {"name": "Runcorn State School", "type": "primary", "naplan_score": 458, "rating": "全昆士兰前35%", "sector": "public"},
     {"name": "Runcorn State High School", "type": "secondary", "naplan_score": 449, "rating": "全昆士兰前35%", "sector": "public"}
+  ],
+  "Rochedale": [
+    {"name": "Rochedale State School", "type": "primary", "naplan_score": 482, "rating": "全昆士兰前15%", "sector": "public"},
+    {"name": "Rochedale State High School", "type": "secondary", "naplan_score": 461, "rating": "全昆士兰前30%", "sector": "public"}
+  ],
+  "Mansfield": [
+    {"name": "Mansfield State School", "type": "primary", "naplan_score": 495, "rating": "全昆士兰前10%", "sector": "public"},
+    {"name": "Mansfield State High School", "type": "secondary", "naplan_score": 475, "rating": "全昆士兰前20%", "sector": "public"}
+  ],
+  "Ascot": [
+    {"name": "Ascot State School", "type": "primary", "naplan_score": 510, "rating": "全昆士兰前5%", "sector": "public"},
+    {"name": "St Margaret's Anglican Girls School", "type": "secondary", "naplan_score": 525, "rating": "昆士兰顶级私立中学", "sector": "private"}
+  ],
+  "Hamilton": [
+    {"name": "Hamilton State School", "type": "primary", "naplan_score": 498, "rating": "全昆士兰前10%", "sector": "public"},
+    {"name": "St Joseph's Nudgee College", "type": "secondary", "naplan_score": 515, "rating": "昆士兰顶级私立中学", "sector": "private"}
   ]
 }

@@ -67,10 +67,16 @@ export default function SalesPage() {
             <Link href="/" className="text-2xl font-bold text-blue-600">
               Compass
             </Link>
-            <div className="flex space-x-8">
+            <div className="flex space-x-6">
               <Link href="/" className="text-gray-600 hover:text-blue-600 transition">首页</Link>
               <Link href="/sales" className="text-blue-600 font-medium">成交列表</Link>
               <Link href="/suburb/Sunnybank" className="text-gray-600 hover:text-blue-600 transition">Sunnybank</Link>
+              <Link href="/suburb/Eight Mile Plains" className="text-gray-600 hover:text-blue-600 transition">Eight Mile Plains</Link>
+              <Link href="/suburb/Calamvale" className="text-gray-600 hover:text-blue-600 transition">Calamvale</Link>
+              <Link href="/suburb/Rochedale" className="text-gray-600 hover:text-blue-600 transition">Rochedale</Link>
+              <Link href="/suburb/Mansfield" className="text-gray-600 hover:text-blue-600 transition">Mansfield</Link>
+              <Link href="/suburb/Ascot" className="text-gray-600 hover:text-blue-600 transition">Ascot</Link>
+              <Link href="/suburb/Hamilton" className="text-gray-600 hover:text-blue-600 transition">Hamilton</Link>
             </div>
           </div>
         </div>
@@ -96,6 +102,10 @@ export default function SalesPage() {
                 <option value="Sunnybank">Sunnybank</option>
                 <option value="Eight Mile Plains">Eight Mile Plains</option>
                 <option value="Calamvale">Calamvale</option>
+                <option value="Rochedale">Rochedale</option>
+                <option value="Mansfield">Mansfield</option>
+                <option value="Ascot">Ascot</option>
+                <option value="Hamilton">Hamilton</option>
               </select>
             </div>
             <span className="text-gray-600">共 {total} 条记录</span>

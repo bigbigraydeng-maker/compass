@@ -32,10 +32,16 @@ export default async function Home() {
             <Link href="/" className="text-2xl font-bold text-blue-600">
               Compass
             </Link>
-            <div className="flex space-x-8">
+            <div className="flex space-x-6">
               <Link href="/" className="text-blue-600 font-medium">首页</Link>
               <Link href="/sales" className="text-gray-600 hover:text-blue-600 transition">成交列表</Link>
               <Link href="/suburb/Sunnybank" className="text-gray-600 hover:text-blue-600 transition">Sunnybank</Link>
+              <Link href="/suburb/Eight Mile Plains" className="text-gray-600 hover:text-blue-600 transition">Eight Mile Plains</Link>
+              <Link href="/suburb/Calamvale" className="text-gray-600 hover:text-blue-600 transition">Calamvale</Link>
+              <Link href="/suburb/Rochedale" className="text-gray-600 hover:text-blue-600 transition">Rochedale</Link>
+              <Link href="/suburb/Mansfield" className="text-gray-600 hover:text-blue-600 transition">Mansfield</Link>
+              <Link href="/suburb/Ascot" className="text-gray-600 hover:text-blue-600 transition">Ascot</Link>
+              <Link href="/suburb/Hamilton" className="text-gray-600 hover:text-blue-600 transition">Hamilton</Link>
             </div>
           </div>
         </div>
@@ -48,7 +54,7 @@ export default async function Home() {
             布里斯班华人房地产数据平台
           </h1>
           <p className="text-blue-100 text-lg">
-            专注于 Sunnybank、Eight Mile Plains、Calamvale 三个区域
+            专注于 Sunnybank、Eight Mile Plains、Calamvale、Rochedale、Mansfield、Ascot、Hamilton 七个区域
           </p>
         </div>
 

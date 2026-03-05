@@ -97,7 +97,7 @@ def get_home_data():
         latest_sales = execute_query(latest_sales_query)
         
         # 获取3个郊区的统计信息
-        suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale']
+        suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
         suburb_stats = []
         
         for suburb in suburbs:
