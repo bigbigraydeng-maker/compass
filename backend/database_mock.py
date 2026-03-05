@@ -98,6 +98,8 @@ def get_db_cursor(conn):
                 self._result = [(len(filtered),)]
                 self.rowcount = 1
             
+
+            
             # 最后处理 JOIN 查询（返回销售记录）
             elif "from sales s" in query_lower and "join properties p" in query_lower:
                 filtered = all_joined
