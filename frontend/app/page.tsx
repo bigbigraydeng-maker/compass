@@ -1,10 +1,6 @@
 import Link from 'next/link';
 
-<YAxis
-  domain={[dataMin => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']}
-  tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
-/>
- async function getHomeData() {
+async function getHomeData() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/home`, {
     next: { revalidate: 60 } // 每分钟重新验证
   });
@@ -22,6 +18,10 @@ function formatPrice(price: number) {
 
 export default async function Home() {
   const data = await getHomeData();
+  
+  // 确保数据结构完整
+  const suburbs = data?.suburbs || [];
+  const latestSales = data?.latest_sales || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -54,7 +54,7 @@ export default async function Home() {
 
         {/* Suburb 统计卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {data.suburbs.map((suburb: any) => (
+          {suburbs.map((suburb: any) => (
             <Link
               key={suburb.name}
               href={`/suburb/${encodeURIComponent(suburb.name)}`}
@@ -98,7 +98,7 @@ export default async function Home() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {data.latest_sales.map((sale: any) => (
+                {latestSales.map((sale: any) => (
                   <tr key={sale.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.address}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.suburb}</td>
@@ -109,9 +109,10 @@ export default async function Home() {
                 ))}
               </tbody>
             </table>
-          <p>© 2026 Compass - 布里斯班华人房地产数据平台</p>
+          </div>
+          <p className="px-6 py-4 text-center text-sm text-gray-500">© 2026 Compass - 布里斯班华人房地产数据平台</p>
         </div>
-      </footer>
+      </main>
     </div>
   );
 }
