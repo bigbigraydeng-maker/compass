@@ -30,8 +30,8 @@ class Sale(BaseModel):
     suburb: str
     property_type: Optional[str] = None
     land_size: Optional[int] = None
-    bedrooms: int = 0
-    bathrooms: int = 0
+    bedrooms: Optional[int] = 0
+    bathrooms: Optional[int] = 0
     
     class Config:
         from_attributes = True
