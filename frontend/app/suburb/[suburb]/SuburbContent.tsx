@@ -86,6 +86,14 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
         } else {
           const detailData = await detailRes.json();
+          // 获取最近成交记录
+          const salesRes = await fetch(`${apiUrl}/api/sales?suburb=${encodeURIComponent(suburbName)}&page_size=10`);
+          if (salesRes.ok) {
+            const salesData = await salesRes.json();
+            detailData.recent_sales = salesData.sales || [];
+          } else {
+            detailData.recent_sales = [];
+          }
           setData(detailData);
         }
 
@@ -295,7 +303,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
 
         <div className="mt-8">
           <Link
-            href="/sales"
+            href={`/sales?suburb=${suburbName}`}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium inline-block"
           >
             查看更多成交 →
