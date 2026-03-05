@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Compass - 华人房地产AI助手</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#fafafa;
+color:#333;
+}
+
+header{
+background:linear-gradient(120deg,#ff9800,#ffb74d);
+color:white;
+padding:80px 20px;
+text-align:center;
+}
+
+header h1{
+font-size:48px;
+margin-bottom:10px;
+}
+
+header p{
+font-size:20px;
+}
+
+button{
+background:#ff9800;
+border:none;
+padding:15px 25px;
+color:white;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+section{
+max-width:900px;
+margin:auto;
+padding:60px 20px;
+}
+
+.features{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:20px;
+}
+
+.feature{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.feature h3{
+color:#ff9800;
+}
+
+.survey{
+background:white;
+padding:40px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.question{
+margin-top:20px;
+}
+
+label{
+display:block;
+margin:6px 0;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin-top:6px;
+}
+
+textarea{
+height:100px;
+}
+
+footer{
+text-align:center;
+padding:40px;
+color:#999;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🧭 Compass</h1>
+
+<p>AI驱动的华人房地产投资助手</p>
+
+<p>房价估值 · 投资分析 · 成交数据</p>
+
+<br>
+
+<button onclick="document.getElementById('survey').scrollIntoView()">参与调研</button>
+
+</header>
+
+<section>
+
+<h2>为什么做 Compass</h2>
+
+<p>
+
+很多华人在澳洲买房时遇到这些问题：
+
+</p>
+
+<ul>
+
+<li>不知道房子真实成交价</li>
+<li>难判断房价是否合理</li>
+<li>不清楚哪个区更有潜力</li>
+<li>投资回报难计算</li>
+
+</ul>
+
+<p>
+
+Compass 通过 AI 和数据分析，帮助你做更好的房地产决策。
+
+</p>
+
+</section>
+
+<section>
+
+<h2>核心功能</h2>
+
+<div class="features">
+
+<div class="feature">
+<h3>AI房价估值</h3>
+<p>输入地址即可获得智能估价</p>
+</div>
+
+<div class="feature">
+<h3>成交数据</h3>
+<p>查看历史成交价格和市场趋势</p>
+</div>
+
+<div class="feature">
+<h3>投资分析</h3>
+<p>自动计算租金回报率和增长潜力</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="survey">
+
+<div class="survey">
+
+<h2>参与 Compass 产品调研</h2>
+
+<p>问卷约 5-8 分钟。</p>
+
+<form id="surveyForm">
+
+<div class="question">
+<h3>1. 您目前所在地区</h3>
+
+<label><input type="radio" name="location"> Brisbane</label>
+<label><input type="radio" name="location"> Sydney</label>
+<label><input type="radio" name="location"> Melbourne</label>
+<label><input type="radio" name="location"> 中国</label>
+
+</div>
+
+<div class="question">
+<h3>2. 您是否拥有澳洲房产</h3>
+
+<label><input type="radio" name="house"> 没有</label>
+<label><input type="radio" name="house"> 1套</label>
+<label><input type="radio" name="house"> 2套以上</label>
+
+</div>
+
+<div class="question">
+<h3>3. 如果可以AI估价房价，您会使用吗</h3>
+
+<label><input type="radio" name="ai"> 一定会</label>
+<label><input type="radio" name="ai"> 可能会</label>
+<label><input type="radio" name="ai"> 不确定</label>
+
+</div>
+
+<div class="question">
+<h3>4. 您最需要哪些功能</h3>
+
+<label><input type="checkbox"> AI房价估值</label>
+<label><input type="checkbox"> 成交价格</label>
+<label><input type="checkbox"> 投资回报计算</label>
+<label><input type="checkbox"> AI推荐潜力区域</label>
+
+</div>
+
+<div class="question">
+<h3>5. 如果Compass提供完整数据分析，您可以接受的价格</h3>
+
+<label><input type="radio" name="price"> 免费</label>
+<label><input type="radio" name="price"> $5/月</label>
+<label><input type="radio" name="price"> $10/月</label>
+<label><input type="radio" name="price"> $20/月</label>
+
+</div>
+
+<div class="question">
+<h3>6. 您最希望AI房地产助手帮您做什么</h3>
+
+<textarea></textarea>
+
+</div>
+
+<div class="question">
+<h3>7. 是否愿意加入 Compass 内测</h3>
+
+<label><input type="radio" name="beta"> 愿意</label>
+<label><input type="radio" name="beta"> 可以了解</label>
+<label><input type="radio" name="beta"> 不需要</label>
+
+</div>
+
+<div class="question">
+
+<h3>联系方式（可选）</h3>
+
+<input type="text" placeholder="微信或Email">
+
+</div>
+
+<br>
+
+<button type="submit">提交问卷</button>
+
+</form>
+
+</div>
+
+</section>
+
+<footer>
+
+Compass AI Real Estate Research
+
+</footer>
+
+<script>
+
+document.getElementById("surveyForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+alert("感谢参与 Compass 调研！");
+
+});
+
+</script>
+
+</body>
+</html>
