@@ -222,14 +222,9 @@ def get_sold_listings(suburb: str, url: str) -> List[Dict]:
                                             bedrooms = 0
                                             if 'listingModel' in listing:
                                                 listing_model = listing['listingModel']
-                                                if 'bedrooms' in listing_model:
+                                                if 'features' in listing_model and 'beds' in listing_model['features']:
                                                     try:
-                                                        bedrooms = int(listing_model['bedrooms'])
-                                                    except:
-                                                        pass
-                                                elif 'features' in listing_model and 'bedrooms' in listing_model['features']:
-                                                    try:
-                                                        bedrooms = int(listing_model['features']['bedrooms'])
+                                                        bedrooms = int(listing_model['features']['beds'])
                                                     except:
                                                         pass
                                             
@@ -237,14 +232,19 @@ def get_sold_listings(suburb: str, url: str) -> List[Dict]:
                                             bathrooms = 0
                                             if 'listingModel' in listing:
                                                 listing_model = listing['listingModel']
-                                                if 'bathrooms' in listing_model:
+                                                if 'features' in listing_model and 'baths' in listing_model['features']:
                                                     try:
-                                                        bathrooms = int(listing_model['bathrooms'])
+                                                        bathrooms = int(listing_model['features']['baths'])
                                                     except:
                                                         pass
-                                                elif 'features' in listing_model and 'bathrooms' in listing_model['features']:
+                                            
+                                            # 提取车位数
+                                            car_spaces = 0
+                                            if 'listingModel' in listing:
+                                                listing_model = listing['listingModel']
+                                                if 'features' in listing_model and 'parking' in listing_model['features']:
                                                     try:
-                                                        bathrooms = int(listing_model['features']['bathrooms'])
+                                                        car_spaces = int(listing_model['features']['parking'])
                                                     except:
                                                         pass
                                             
@@ -252,12 +252,7 @@ def get_sold_listings(suburb: str, url: str) -> List[Dict]:
                                             land_size = 0
                                             if 'listingModel' in listing:
                                                 listing_model = listing['listingModel']
-                                                if 'landSize' in listing_model:
-                                                    try:
-                                                        land_size = int(listing_model['landSize'])
-                                                    except:
-                                                        pass
-                                                elif 'features' in listing_model and 'landSize' in listing_model['features']:
+                                                if 'features' in listing_model and 'landSize' in listing_model['features']:
                                                     try:
                                                         land_size = int(listing_model['features']['landSize'])
                                                     except:
@@ -270,6 +265,7 @@ def get_sold_listings(suburb: str, url: str) -> List[Dict]:
                                                 "property_type": property_type,
                                                 "bedrooms": bedrooms,
                                                 "bathrooms": bathrooms,
+                                                "car_spaces": car_spaces,
                                                 "land_size": land_size,
                                                 "sold_price": sold_price,
                                                 "sold_date": sold_date

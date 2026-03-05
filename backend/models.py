@@ -64,3 +64,16 @@ class SuburbDetail(BaseModel):
     median_price: int
     total_sales: int
     recent_sales: List[Sale]
+
+
+class MonthlyTrend(BaseModel):
+    """月度趋势数据模型"""
+    month: str
+    median_price: int
+    total_sales: int
+
+
+class SuburbTrends(BaseModel):
+    """郊区价格走势模型"""
+    suburb: str
+    monthly_trends: List[MonthlyTrend]

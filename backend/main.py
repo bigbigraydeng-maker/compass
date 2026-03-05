@@ -12,7 +12,8 @@ print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
 
 from models import (
     HomeData, SuburbStats, Sale, 
-    SalesResponse, SuburbDetail, Property
+    SalesResponse, SuburbDetail, Property,
+    SuburbTrends, MonthlyTrend
 )
 
 # 检查是否有真实数据库连接
@@ -247,6 +248,60 @@ def get_suburb_detail(suburb_name: str):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取郊区详情失败: {str(e)}")
+
+
+@app.get("/api/suburb/{suburb_name}/trends", response_model=SuburbTrends)
+def get_suburb_trends(suburb_name: str):
+    """
+    获取郊区价格走势
+    
+    参数：
+    - suburb_name: 郊区名称
+    
+    返回：
+    - 过去12个月的月度中位价和成交量
+    - 只包含有3条以上成交记录的月份
+    """
+    try:
+        # 获取过去12个月的月度趋势数据
+        trends_query = """
+            SELECT 
+                TO_CHAR(DATE_TRUNC('month', s.sold_date), 'YYYY-MM') as month,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price,
+                COUNT(*) as total_sales
+            FROM sales s
+            JOIN properties p ON s.property_id = p.id
+            WHERE p.suburb = %s
+              AND s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '12 months')
+            GROUP BY DATE_TRUNC('month', s.sold_date)
+            HAVING COUNT(*) >= 3
+            ORDER BY month ASC
+        """
+        trends_result = execute_query(trends_query, (suburb_name,))
+        
+        # 处理结果
+        monthly_trends = []
+        if trends_result:
+            for row in trends_result:
+                if isinstance(row, dict):
+                    monthly_trends.append(MonthlyTrend(
+                        month=row.get('month', ''),
+                        median_price=int(row.get('median_price', 0) or 0),
+                        total_sales=int(row.get('total_sales', 0) or 0)
+                    ))
+                else:
+                    monthly_trends.append(MonthlyTrend(
+                        month=row[0] if row[0] else '',
+                        median_price=int(row[1] or 0),
+                        total_sales=int(row[2] or 0)
+                    ))
+        
+        return SuburbTrends(
+            suburb=suburb_name,
+            monthly_trends=monthly_trends
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取价格走势失败: {str(e)}")
 
 
 if __name__ == "__main__":

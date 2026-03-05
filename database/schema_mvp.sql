@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS properties (
     building_size INTEGER DEFAULT 0,
     bedrooms INTEGER DEFAULT 0,
     bathrooms INTEGER DEFAULT 0,
+    car_spaces INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
