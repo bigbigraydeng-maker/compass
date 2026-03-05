@@ -29,18 +29,30 @@ export default function SalesPage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [suburb, setSuburb] = useState('');
+  const [propertyType, setPropertyType] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
   const [loading, setLoading] = useState(true);
   const perPage = 20;
 
   useEffect(() => {
     fetchSales();
-  }, [page, suburb]);
+  }, [page, suburb, propertyType, bedrooms, minPrice, maxPrice, minDate, maxDate]);
 
   const fetchSales = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (suburb) params.append('suburb', suburb);
+      if (propertyType) params.append('property_type', propertyType);
+      if (bedrooms) params.append('bedrooms', bedrooms);
+      if (minPrice) params.append('min_price', minPrice);
+      if (maxPrice) params.append('max_price', maxPrice);
+      if (minDate) params.append('min_date', minDate);
+      if (maxDate) params.append('max_date', maxDate);
       params.append('page', page.toString());
       params.append('page_size', perPage.toString());
       
@@ -64,6 +76,17 @@ export default function SalesPage() {
   };
 
   const totalPages = Math.ceil(total / perPage);
+
+  const resetFilters = () => {
+    setSuburb('');
+    setPropertyType('');
+    setBedrooms('');
+    setMinPrice('');
+    setMaxPrice('');
+    setMinDate('');
+    setMaxDate('');
+    setPage(1);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -94,9 +117,9 @@ export default function SalesPage() {
 
         {/* 筛选器 */}
         <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4 mb-4">
             <div className="flex items-center space-x-2">
-              <label className="text-gray-700 font-medium">筛选郊区：</label>
+              <label className="text-gray-700 font-medium">郊区：</label>
               <select
                 value={suburb}
                 onChange={(e) => {
@@ -115,6 +138,100 @@ export default function SalesPage() {
                 <option value="Hamilton">Hamilton</option>
               </select>
             </div>
+            
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-700 font-medium">类型：</label>
+              <select
+                value={propertyType}
+                onChange={(e) => {
+                  setPropertyType(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">全部</option>
+                <option value="House">House</option>
+                <option value="Unit">Unit</option>
+                <option value="Townhouse">Townhouse</option>
+              </select>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-700 font-medium">卧室：</label>
+              <select
+                value={bedrooms}
+                onChange={(e) => {
+                  setBedrooms(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">全部</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5+</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-700 font-medium">价格范围：</label>
+              <input
+                type="number"
+                placeholder="最低"
+                value={minPrice}
+                onChange={(e) => {
+                  setMinPrice(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+              />
+              <span> - </span>
+              <input
+                type="number"
+                placeholder="最高"
+                value={maxPrice}
+                onChange={(e) => {
+                  setMaxPrice(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
+              />
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <label className="text-gray-700 font-medium">成交日期：</label>
+              <input
+                type="date"
+                value={minDate}
+                onChange={(e) => {
+                  setMinDate(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <span> - </span>
+              <input
+                type="date"
+                value={maxDate}
+                onChange={(e) => {
+                  setMaxDate(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            
+            <button
+              onClick={resetFilters}
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition"
+            >
+              重置筛选
+            </button>
+            
             <span className="text-gray-600">共 {total} 条记录</span>
           </div>
         </div>
