@@ -308,7 +308,10 @@ def get_suburb_trends(suburb_name: str):
 
 @app.get("/api/suburb/{suburb_name}/schools")
 def get_suburb_schools(suburb_name: str):
-    with open("schools_data.json", "r", encoding="utf-8") as f:
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(script_dir, "schools_data.json")
+    with open(json_path, "r", encoding="utf-8") as f:
         all_schools = json.load(f)
     schools = all_schools.get(suburb_name, [])
     return {"suburb": suburb_name, "schools": schools}
