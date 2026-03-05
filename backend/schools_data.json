@@ -1,0 +1,37 @@
+{
+  "Sunnybank": [
+    {"name": "Sunnybank Hills State School", "type": "primary", "naplan_score": 533, "rating": "昆士兰第一公立小学", "sector": "public"},
+    {"name": "Sunnybank State School", "type": "primary", "naplan_score": 487, "rating": "全昆士兰前15%", "sector": "public"},
+    {"name": "Sunnybank State High School", "type": "secondary", "naplan_score": 468, "rating": "全昆士兰前25%", "sector": "public"},
+    {"name": "St Thomas More College", "type": "secondary", "naplan_score": null, "rating": "天主教中学", "sector": "catholic"},
+    {"name": "Our Lady of Lourdes Primary School", "type": "primary", "naplan_score": null, "rating": "天主教小学", "sector": "catholic"}
+  ],
+  "Sunnybank Hills": [
+    {"name": "Sunnybank Hills State School", "type": "primary", "naplan_score": 533, "rating": "昆士兰第一公立小学", "sector": "public"},
+    {"name": "Sunnybank State High School", "type": "secondary", "naplan_score": 468, "rating": "全昆士兰前25%", "sector": "public"}
+  ],
+  "Eight Mile Plains": [
+    {"name": "Warrigal Road State School", "type": "primary", "naplan_score": 478, "rating": "全昆士兰前20%", "sector": "public"},
+    {"name": "Macgregor State School", "type": "primary", "naplan_score": 498, "rating": "全昆士兰前10%", "sector": "public"},
+    {"name": "Macgregor State High School", "type": "secondary", "naplan_score": 455, "rating": "全昆士兰前30%", "sector": "public"}
+  ],
+  "Macgregor": [
+    {"name": "Macgregor State School", "type": "primary", "naplan_score": 498, "rating": "全昆士兰前10%", "sector": "public"},
+    {"name": "Macgregor State High School", "type": "secondary", "naplan_score": 455, "rating": "全昆士兰前30%", "sector": "public"}
+  ],
+  "Calamvale": [
+    {"name": "Calamvale Community College", "type": "combined", "naplan_score": 462, "rating": "全昆士兰前30%", "sector": "public"}
+  ],
+  "Robertson": [
+    {"name": "Robertson State School", "type": "primary", "naplan_score": 475, "rating": "全昆士兰前20%", "sector": "public"},
+    {"name": "Sunnybank State High School", "type": "secondary", "naplan_score": 468, "rating": "全昆士兰前25%", "sector": "public"}
+  ],
+  "Algester": [
+    {"name": "Calamvale Community College", "type": "combined", "naplan_score": 462, "rating": "全昆士兰前30%", "sector": "public"}
+  ],
+  "Runcorn": [
+    {"name": "Runcorn Heights State School", "type": "primary", "naplan_score": 471, "rating": "全昆士兰前20%", "sector": "public"},
+    {"name": "Runcorn State School", "type": "primary", "naplan_score": 458, "rating": "全昆士兰前35%", "sector": "public"},
+    {"name": "Runcorn State High School", "type": "secondary", "naplan_score": 449, "rating": "全昆士兰前35%", "sector": "public"}
+  ]
+}

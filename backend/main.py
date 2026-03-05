@@ -7,13 +7,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from datetime import date, timedelta
 import os
+import json
 
 print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
 
 from models import (
     HomeData, SuburbStats, Sale, 
     SalesResponse, SuburbDetail, Property,
-    SuburbTrends, MonthlyTrend
+    SuburbTrends, MonthlyTrend,
+    School, SuburbSchools
 )
 
 # 检查是否有真实数据库连接
@@ -302,6 +304,14 @@ def get_suburb_trends(suburb_name: str):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取价格走势失败: {str(e)}")
+
+
+@app.get("/api/suburb/{suburb_name}/schools")
+def get_suburb_schools(suburb_name: str):
+    with open("schools_data.json", "r", encoding="utf-8") as f:
+        all_schools = json.load(f)
+    schools = all_schools.get(suburb_name, [])
+    return {"suburb": suburb_name, "schools": schools}
 
 
 if __name__ == "__main__":
