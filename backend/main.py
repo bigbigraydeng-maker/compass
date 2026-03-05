@@ -14,8 +14,7 @@ print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
 from models import (
     HomeData, SuburbStats, Sale, 
     SalesResponse, SuburbDetail, Property,
-    SuburbTrends, MonthlyTrend,
-    School, SuburbSchools
+    SuburbTrends, MonthlyTrend
 )
 
 # 检查是否有真实数据库连接
