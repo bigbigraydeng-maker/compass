@@ -72,6 +72,7 @@ function CustomTooltip({ active, payload, label }: any) {
 export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [data, setData] = useState<SuburbData | null>(null);
   const [trends, setTrends] = useState<MonthlyTrend[]>([]);
+  const [schools, setSchools] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -88,6 +89,11 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
         const trendsRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/trends`);
         const trendsData = await trendsRes.json();
         setTrends(trendsData.monthly_trends || []);
+
+        // 获取学校数据
+        const schoolsRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/schools`);
+        const schoolsData = await schoolsRes.json();
+        setSchools(schoolsData.schools || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -229,6 +235,42 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             </table>
           </div>
         </div>
+
+        {/* 学校信息 */}
+        {schools.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">🏫 对口学校</h2>
+            <div className="space-y-3">
+              {['primary', 'combined', 'secondary'].map(type => {
+                const typeSchools = schools.filter(s => s.type === type);
+                if (typeSchools.length === 0) return null;
+                const typeLabel = type === 'primary' ? '小学' : type === 'secondary' ? '中学' : '一贯制';
+                return (
+                  <div key={type}>
+                    <p className="text-sm text-gray-500 mb-2">{typeLabel}</p>
+                    {typeSchools.map(school => (
+                      <div key={school.name} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                        <div>
+                          <span className="font-medium text-gray-800">{school.name}</span>
+                          <span className="ml-2 text-xs text-gray-500">{school.sector === 'public' ? '公立' : '天主教'}</span>
+                        </div>
+                        {school.naplan_score && (
+                          <div className="text-right">
+                            <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_score}</span>
+                            <p className="text-xs text-gray-500">{school.rating}</p>
+                          </div>
+                        )}
+                        {!school.naplan_score && (
+                          <span className="text-xs text-gray-500">{school.rating}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="mt-8">
           <Link
