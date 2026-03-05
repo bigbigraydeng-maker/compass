@@ -176,7 +176,8 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                     fontSize={12}
                   />
                   <YAxis
-                    tickFormatter={formatPriceShort}
+                    domain={[dataMin => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']}
+                    tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
                     stroke="#6b7280"
                     fontSize={12}
                   />
