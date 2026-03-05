@@ -135,12 +135,28 @@ def get_home_data():
 
 
 @app.get("/api/sales", response_model=SalesResponse)
-def get_sales(suburb: Optional[str] = None, page: int = 1, page_size: int = 20):
+def get_sales(
+    suburb: Optional[str] = None,
+    property_type: Optional[str] = None,
+    bedrooms: Optional[int] = None,
+    min_price: Optional[int] = None,
+    max_price: Optional[int] = None,
+    min_date: Optional[str] = None,
+    max_date: Optional[str] = None,
+    page: int = 1,
+    page_size: int = 20
+):
     """
     获取成交列表
     
     参数：
     - suburb: 郊区名称（可选）
+    - property_type: 房产类型（可选）
+    - bedrooms: 卧室数（可选）
+    - min_price: 最低价格（可选）
+    - max_price: 最高价格（可选）
+    - min_date: 开始日期（可选，格式：YYYY-MM-DD）
+    - max_date: 结束日期（可选，格式：YYYY-MM-DD）
     - page: 页码（默认1）
     - page_size: 每页数量（默认20）
     """
@@ -162,6 +178,33 @@ def get_sales(suburb: Optional[str] = None, page: int = 1, page_size: int = 20):
         if suburb:
             where_conditions.append("p.suburb = %s")
             params.append(suburb)
+        
+        if property_type:
+            where_conditions.append("p.property_type = %s")
+            params.append(property_type)
+        
+        if bedrooms:
+            if bedrooms >= 5:
+                where_conditions.append("p.bedrooms >= 5")
+            else:
+                where_conditions.append("p.bedrooms = %s")
+                params.append(bedrooms)
+        
+        if min_price:
+            where_conditions.append("s.sold_price >= %s")
+            params.append(min_price)
+        
+        if max_price:
+            where_conditions.append("s.sold_price <= %s")
+            params.append(max_price)
+        
+        if min_date:
+            where_conditions.append("s.sold_date >= %s")
+            params.append(min_date)
+        
+        if max_date:
+            where_conditions.append("s.sold_date <= %s")
+            params.append(max_date)
         
         if where_conditions:
             base_query += " WHERE " + " AND ".join(where_conditions)
@@ -318,4 +361,4 @@ def get_suburb_schools(suburb_name: str):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8888)
