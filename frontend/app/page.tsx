@@ -1,7 +1,11 @@
 import Link from 'next/link';
 
-async function getHomeData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/home`, {
+<YAxis
+  domain={[dataMin => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']}
+  tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
+/>
+ async function getHomeData() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/home`, {
     next: { revalidate: 60 } // 每分钟重新验证
   });
   if (!res.ok) throw new Error('Failed to fetch data');
@@ -50,13 +54,13 @@ export default async function Home() {
 
         {/* Suburb 统计卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {data.suburb_stats.map((suburb: any) => (
+          {data.suburbs.map((suburb: any) => (
             <Link
-              key={suburb.suburb}
-              href={`/suburb/${encodeURIComponent(suburb.suburb)}`}
+              key={suburb.name}
+              href={`/suburb/${encodeURIComponent(suburb.name)}`}
               className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow p-6"
             >
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">{suburb.suburb}</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">{suburb.name}</h3>
               <div className="space-y-2">
                 <div>
                   <p className="text-sm text-gray-500">中位价</p>
@@ -89,8 +93,6 @@ export default async function Home() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">地址</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">郊区</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卧室数</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卫浴数</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成交价</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成交日期</th>
                 </tr>
@@ -101,21 +103,12 @@ export default async function Home() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.address}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.suburb}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.property_type}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bedrooms}🛏</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bathrooms}🚿</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{formatPrice(sale.sold_price)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.sold_date}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-      </main>
-
-      {/* 页脚 */}
-      <footer className="bg-white border-t mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500 text-sm">
           <p>© 2026 Compass - 布里斯班华人房地产数据平台</p>
         </div>
       </footer>
