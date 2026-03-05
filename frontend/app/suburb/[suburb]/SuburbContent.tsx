@@ -82,20 +82,35 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
       try {
         // 获取郊区详情
         const detailRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}`);
-        const detailData = await detailRes.json();
-        setData(detailData);
+        if (!detailRes.ok) {
+          setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
+        } else {
+          const detailData = await detailRes.json();
+          setData(detailData);
+        }
 
         // 获取价格走势
         const trendsRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/trends`);
-        const trendsData = await trendsRes.json();
-        setTrends(trendsData.monthly_trends || []);
+        if (!trendsRes.ok) {
+          setTrends([]);
+        } else {
+          const trendsData = await trendsRes.json();
+          setTrends(trendsData.monthly_trends || []);
+        }
 
         // 获取学校数据
         const schoolsRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/schools`);
-        const schoolsData = await schoolsRes.json();
-        setSchools(schoolsData.schools || []);
+        if (!schoolsRes.ok) {
+          setSchools([]);
+        } else {
+          const schoolsData = await schoolsRes.json();
+          setSchools(schoolsData.schools || []);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
+        setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
+        setTrends([]);
+        setSchools([]);
       } finally {
         setLoading(false);
       }

@@ -1,11 +1,15 @@
 import Link from 'next/link';
 
 async function getHomeData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/home`, {
-    next: { revalidate: 60 } // 每分钟重新验证
-  });
-  if (!res.ok) throw new Error('Failed to fetch data');
-  return res.json();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/home`, {
+      next: { revalidate: 60 }
+    });
+    if (!res.ok) return { latest_sales: [], suburb_stats: [] };
+    return res.json();
+  } catch (e) {
+    return { latest_sales: [], suburb_stats: [] };
+  }
 }
 
 function formatPrice(price: number) {
