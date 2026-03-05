@@ -107,7 +107,7 @@ def get_home_data():
                        COUNT(*) as total_sales
                 FROM sales s
                 JOIN properties p ON s.property_id = p.id
-                WHERE p.suburb = %s
+                WHERE LOWER(p.suburb) = LOWER(%s)
             """
             result = execute_query(median_query, (suburb,))
             
@@ -180,7 +180,7 @@ def get_sales(
             params.append(suburb)
         
         if property_type:
-            where_conditions.append("p.property_type = %s")
+            where_conditions.append("LOWER(p.property_type) = LOWER(%s)")
             params.append(property_type)
         
         if bedrooms:
@@ -255,7 +255,7 @@ def get_suburb_detail(suburb_name: str):
                    COUNT(*) as total_sales
             FROM sales s
             JOIN properties p ON s.property_id = p.id
-            WHERE p.suburb = %s
+            WHERE LOWER(p.suburb) = LOWER(%s)
         """
         stats_result = execute_query(stats_query, (suburb_name,))
         
@@ -278,7 +278,7 @@ def get_suburb_detail(suburb_name: str):
                    p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
             FROM sales s
             JOIN properties p ON s.property_id = p.id
-            WHERE p.suburb = %s
+            WHERE LOWER(p.suburb) = LOWER(%s)
             ORDER BY s.sold_date DESC
             LIMIT 10
         """
