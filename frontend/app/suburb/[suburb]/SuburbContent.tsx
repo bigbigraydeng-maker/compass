@@ -327,17 +327,17 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             <h2 className="text-lg font-bold text-gray-800 mb-4">🏘️ 土地分区</h2>
             <div className="space-y-2">
               {zoning.zones.map((zone, index) => {
-                const getZoneNameCN = (name: string): string => {
-                  const translations: Record<string, string> = {
-                    'Low Density Residential': '低密度住宅区',
-                    'Medium Density Residential': '中密度住宅区',
-                    'Other': '其他'
-                  };
-                  return translations[name] || name;
+                const zoneNameMap: Record<string, string> = {
+                  'Low Density Residential': '低密度住宅区',
+                  'Medium Density Residential': '中密度住宅区',
+                  'High Density Residential': '高密度住宅区',
+                  'Mixed Use': '混合用途区',
+                  'Other': '其他'
                 };
+                const zoneNameCN = zoneNameMap[zone.zone_name] || zone.zone_name;
                 return (
                   <div key={index} className="flex justify-between items-center">
-                    <span className="text-gray-700">{zone.percentage}% {getZoneNameCN(zone.zone_name)} ({zone.zone_code})</span>
+                    <span className="text-gray-700">{zone.percentage}% {zoneNameCN} ({zone.zone_code})</span>
                   </div>
                 );
               })}
