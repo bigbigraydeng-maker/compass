@@ -11,11 +11,7 @@ import json
 
 print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
 
-from models import (
-    HomeData, SuburbStats, Sale, 
-    SalesResponse, SuburbDetail, Property,
-    SuburbTrends, MonthlyTrend, Listing, ListingsResponse
-)
+from models import HomeData, SuburbStats, SalesResponse, Sale, SuburbDetail, SuburbTrends, MonthlyTrend, Listing, ListingsResponse, Zone, ZoningResponse
 
 # 检查是否有真实数据库连接
 DATABASE_URL = os.getenv("DATABASE_URL", "")
