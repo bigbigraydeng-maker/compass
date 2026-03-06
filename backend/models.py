@@ -97,9 +97,9 @@ class Listing(BaseModel):
     agent_name: Optional[str] = None
     agent_company: Optional[str] = None
     link: Optional[str] = None
-    scraped_date: Optional[date] = None
-    auction_date: Optional[date] = None
-    created_at: Optional[date] = None
+    scraped_date: Optional[str] = None
+    auction_date: Optional[str] = None
+    created_at: Optional[str] = None
     
     class Config:
         from_attributes = True
