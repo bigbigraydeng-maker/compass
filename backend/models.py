@@ -92,8 +92,6 @@ class Listing(BaseModel):
     price_text: Optional[str] = None
     price: Optional[float] = 0
     sale_method: Optional[str] = None
-    latitude: Optional[float] = 0
-    longitude: Optional[float] = 0
     agent_name: Optional[str] = None
     agent_company: Optional[str] = None
     link: Optional[str] = None

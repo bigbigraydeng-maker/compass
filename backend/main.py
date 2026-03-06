@@ -388,7 +388,7 @@ def get_listings(
         base_query = """
             SELECT id, address, suburb, property_type, bedrooms, bathrooms, 
                    car_spaces, land_size, price_text, price, sale_method,
-                   latitude, longitude, agent_name, agent_company, link, scraped_date,
+                   agent_name, agent_company, link, scraped_date,
                    created_at
             FROM listings
         """
