@@ -389,7 +389,7 @@ def get_listings(
             SELECT id, address, suburb, property_type, bedrooms, bathrooms, 
                    car_spaces, land_size, price_text, price, sale_method,
                    latitude, longitude, agent_name, agent_company, link, scraped_date,
-                   auction_date, created_at
+                   created_at
             FROM listings
         """
         

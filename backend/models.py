@@ -98,7 +98,6 @@ class Listing(BaseModel):
     agent_company: Optional[str] = None
     link: Optional[str] = None
     scraped_date: Optional[str] = None
-    auction_date: Optional[str] = None
     created_at: Optional[str] = None
     
     class Config:
