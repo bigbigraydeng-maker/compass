@@ -294,7 +294,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             <h2 className="text-lg font-bold text-gray-800 mb-4">🏫 对口学校</h2>
             <div className="space-y-3">
               {['primary', 'combined', 'secondary'].map(type => {
-                const typeSchools = schools.filter(s => s.type === type);
+                const typeSchools = schools.filter(s => s.school_type === type);
                 if (typeSchools.length === 0) return null;
                 const typeLabel = type === 'primary' ? '小学' : type === 'secondary' ? '中学' : '一贯制';
                 return (
@@ -304,16 +304,13 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                       <div key={school.name} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
                         <div>
                           <span className="font-medium text-gray-800">{school.name}</span>
-                          <span className="ml-2 text-xs text-gray-500">{school.sector === 'public' ? '公立' : '天主教'}</span>
+                          <span className="ml-2 text-xs text-gray-500">公立</span>
                         </div>
-                        {school.naplan_score && (
+                        {school.naplan_percentile && (
                           <div className="text-right">
-                            <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_score}</span>
-                            <p className="text-xs text-gray-500">{school.rating}</p>
+                            <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_percentile}</span>
+                            <p className="text-xs text-gray-500">评级: {Math.round(school.naplan_percentile / 10) * 10}%</p>
                           </div>
-                        )}
-                        {!school.naplan_score && (
-                          <span className="text-xs text-gray-500">{school.rating}</span>
                         )}
                       </div>
                     ))}
@@ -329,11 +326,21 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           <div className="bg-white rounded-lg shadow p-6 mb-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">🏘️ 土地分区</h2>
             <div className="space-y-2">
-              {zoning.zones.map((zone, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className="text-gray-700">{zone.percentage}% {zone.zone_name} ({zone.zone_code})</span>
-                </div>
-              ))}
+              {zoning.zones.map((zone, index) => {
+                const getZoneNameCN = (name: string): string => {
+                  const translations: Record<string, string> = {
+                    'Low Density Residential': '低密度住宅区',
+                    'Medium Density Residential': '中密度住宅区',
+                    'Other': '其他'
+                  };
+                  return translations[name] || name;
+                };
+                return (
+                  <div key={index} className="flex justify-between items-center">
+                    <span className="text-gray-700">{zone.percentage}% {getZoneNameCN(zone.zone_name)} ({zone.zone_code})</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
