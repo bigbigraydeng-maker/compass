@@ -29,6 +29,17 @@ interface MonthlyTrend {
   total_sales: number;
 }
 
+interface Zone {
+  zone_code: string;
+  zone_name: string;
+  percentage: number;
+}
+
+interface ZoningData {
+  suburb: string;
+  zones: Zone[];
+}
+
 interface SuburbData {
   suburb: string;
   median_price: number;
@@ -73,7 +84,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [data, setData] = useState<SuburbData | null>(null);
   const [trends, setTrends] = useState<MonthlyTrend[]>([]);
   const [schools, setSchools] = useState<any[]>([]);
-  const [zoning, setZoning] = useState<any>(null);
+  const [zoning, setZoning] = useState<ZoningData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
