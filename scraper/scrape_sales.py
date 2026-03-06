@@ -20,11 +20,24 @@ from playwright.sync_api import sync_playwright
 import pandas as pd
 import os
 
-# 目标 URL
+# 目标 Suburbs 配置
+SUBURBS = [
+    {"name": "Sunnybank", "slug": "sunnybank-qld-4109"},
+    {"name": "Eight Mile Plains", "slug": "eight-mile-plains-qld-4113"},
+    {"name": "Calamvale", "slug": "calamvale-qld-4116"},
+    {"name": "Rochedale", "slug": "rochedale-qld-4123"},
+    {"name": "Mansfield", "slug": "mansfield-qld-4122"},
+    {"name": "Ascot", "slug": "ascot-qld-4007"},
+    {"name": "Hamilton", "slug": "hamilton-qld-4007"},
+]
+
+# 最大抓取页数
+MAX_PAGES = 20
+
+# 构建目标 URL 字典
 TARGET_URLS = {
-    "Sunnybank": "https://www.domain.com.au/sold-listings/sunnybank-qld-4109/",
-    "Eight Mile Plains": "https://www.domain.com.au/sold-listings/eight-mile-plains-qld-4113/",
-    "Calamvale": "https://www.domain.com.au/sold-listings/calamvale-qld-4116/"
+    s["name"]: f"https://www.domain.com.au/sold-listings/{s['slug']}/"
+    for s in SUBURBS
 }
 
 
@@ -36,7 +49,7 @@ def get_sold_listings(suburb: str, url: str) -> List[Dict]:
     
     all_listings = []
     page_num = 1
-    max_pages = 3  # 减少页数，降低被封风险
+    max_pages = MAX_PAGES  # 使用全局配置的最大页数
     
     with sync_playwright() as p:
         # 启动浏览器，添加更多反反爬设置
@@ -382,7 +395,7 @@ def save_to_csv(data: List[Dict], filename: str = "data/raw_sales.csv"):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     
     fieldnames = ["address", "suburb", "property_type", "bedrooms", "bathrooms", 
-                  "land_size", "sold_price", "sold_date"]
+                  "car_spaces", "land_size", "building_size", "sold_price", "sold_date"]
     
     with open(filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)

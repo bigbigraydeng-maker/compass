@@ -1,4 +1,369 @@
 address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_size,sold_price,sold_date
+"104 Kitchener Road, ASCOT",ASCOT,house,4,2,2,1268,0,2950000,2025-11-26
+"201/9 Lapraik Street, ASCOT",ASCOT,unit,2,2,1,0,0,905000,2025-11-30
+"5/36 Alexandra Road, ASCOT",ASCOT,unit,2,1,1,0,0,877500,2025-12-01
+"10 Carfin Street, ASCOT",ASCOT,house,4,1,2,582,0,2675000,2025-12-06
+"2/26 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,1200000,2025-11-26
+"24 Baldwin Street, ASCOT",ASCOT,house,4,3,2,769,0,3783000,2026-02-18
+"20512/61 St Leger Way, ASCOT",ASCOT,unit,1,1,1,77,0,776000,2025-12-16
+"66 Upper Lancaster Road, ASCOT",ASCOT,house,4,3,2,400,0,2180000,2025-11-27
+"47 Alexandra Road, ASCOT",ASCOT,house,4,2,2,362,0,2775000,2025-11-30
+"9/68 Lamington Avenue, ASCOT",ASCOT,unit,2,2,1,95,0,880000,2026-01-12
+"1/82 Charlton Street, ASCOT",ASCOT,unit,2,1,1,809,0,865000,2026-01-24
+"4/83 Stevenson Street, ASCOT",ASCOT,unit,2,1,1,0,0,845000,2026-02-03
+"17 Buxton Street, ASCOT",ASCOT,house,2,2,3,438,0,1525000,2026-02-13
+"24 Kitchener Road, ASCOT",ASCOT,house,4,2,3,660,0,3250000,2026-02-28
+"4/15 Onslow Street, ASCOT",ASCOT,unit,2,1,1,97,0,810000,2026-01-30
+"2/55 Kitchener Road, ASCOT",ASCOT,unit,2,1,2,0,0,780000,2026-02-04
+"6 Comus Avenue, ASCOT",ASCOT,house,5,3,3,658,0,6000000,2024-10-03
+"5/5 Silva Street, ASCOT",ASCOT,unit,2,1,1,0,0,635000,2024-10-21
+"6/40 Upper Lancaster Road, ASCOT",ASCOT,unit,2,2,1,0,0,796000,2024-09-26
+"29C Napier Street, ASCOT",ASCOT,house,3,2,2,274,0,1576000,2024-09-25
+"3/30 Onslow Street, ASCOT",ASCOT,unit,2,1,1,100,0,626500,2024-10-16
+"6/23 Silva Street, ASCOT",ASCOT,unit,3,1,1,0,0,742000,2024-10-10
+"46 Dobson Street, ASCOT",ASCOT,house,2,1,1,539,0,1470000,2024-10-12
+"306/9 Lapraik Street, ASCOT",ASCOT,unit,3,2,2,0,0,902000,2024-10-21
+"5/40 Butler Street, ASCOT",ASCOT,unit,3,2,1,0,0,865000,2024-10-17
+"6/12 Magdala Street, ASCOT",ASCOT,unit,2,2,1,0,0,835000,2024-10-02
+"8/36 Brassey Street, ASCOT",ASCOT,house,3,2,2,0,0,1170000,2024-10-30
+"71 Dobson Street, ASCOT",ASCOT,house,2,1,2,406,0,1575000,2024-10-26
+"38 Dobson Street, ASCOT",ASCOT,house,5,3,2,412,0,2275000,2024-10-16
+"5/27 Napier Street, ASCOT",ASCOT,unit,3,2,1,155,0,1121000,2024-10-21
+"28A Stevenson Street, ASCOT",ASCOT,house,3,3,2,309,0,1910000,2024-10-29
+"A3/151 Beatrice Terrace, ASCOT",ASCOT,unit,1,1,1,0,0,489000,2024-11-04
+"4/129 Beatrice Terrace, ASCOT",ASCOT,house,3,3,1,142,0,1025000,2024-11-10
+"6/11 Beatrice Terrace, ASCOT",ASCOT,unit,1,1,0,52,0,550000,2024-11-04
+"5/92 Dobson Street, ASCOT",ASCOT,unit,3,1,1,0,0,630000,2024-11-07
+"32 Sutherland Avenue, ASCOT",ASCOT,house,6,7,2,3035,0,23000000,2024-10-12
+"15 Ascot Street, ASCOT",ASCOT,house,4,3,2,405,0,2565000,2024-07-25
+"32/46 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,685000,2024-08-04
+"79 Charlton Street, ASCOT",ASCOT,house,5,4,2,539,0,4820000,2024-08-29
+"110/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,766000,2024-08-13
+"83 Charlton Street, ASCOT",ASCOT,house,4,3,2,239,0,2100000,2024-08-27
+"5/17 Napier Street, ASCOT",ASCOT,unit,2,1,1,0,0,645000,2024-08-10
+"210/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,745000,2024-08-26
+"4/29 Hopetoun Street, ASCOT",ASCOT,unit,2,1,1,110,0,720000,2024-08-21
+"4/34 Duke Street, ASCOT",ASCOT,unit,2,1,1,0,0,695000,2024-09-23
+"6/135 Oriel Road, ASCOT",ASCOT,unit,2,1,1,0,0,705000,2024-08-10
+"3/106 Racecourse Road, ASCOT",ASCOT,unit,2,2,1,126,0,755000,2024-08-03
+"15/46 Buxton Street, ASCOT",ASCOT,unit,3,2,2,0,0,1105500,2024-09-11
+"11 Moynihan Street, ASCOT",ASCOT,house,6,3,2,622,0,2850000,2024-08-24
+"47 Waratah Steet, ASCOT",ASCOT,house,5,5,2,405,0,2400000,2024-09-02
+"3/29 Buxton Street, ASCOT",ASCOT,house,3,2,1,159,0,965000,2024-09-21
+"5/68 Lamington Avenue, ASCOT",ASCOT,unit,2,2,1,0,0,680000,2024-09-17
+"4/43 Dobson Street, ASCOT",ASCOT,unit,2,2,1,0,0,855000,2024-09-23
+"28 Kitchener Road, ASCOT",ASCOT,house,6,2,2,751,0,3500000,2024-09-20
+"6/17 Napier Street, ASCOT",ASCOT,unit,2,1,1,0,0,630000,2024-08-12
+"26 Sykes Street, ASCOT",ASCOT,house,5,4,2,531,0,3800000,2024-06-14
+"11/59 Lapraik Street, ASCOT",ASCOT,unit,3,2,2,0,0,1525000,2024-06-17
+"11-15 Kidston Street, ASCOT",ASCOT,house,5,5,6,0,0,9125000,2024-07-17
+"155 Yabba Street, ASCOT",ASCOT,house,5,3,2,810,0,3250000,2024-07-18
+"11/118 Racecourse Road, ASCOT",ASCOT,unit,3,2,2,0,0,2400000,2024-06-20
+"3/98 Dobson Street, ASCOT",ASCOT,house,2,1,1,0,0,640000,2024-06-17
+"40 Dobson Street, ASCOT",ASCOT,house,5,2,4,620,0,2380000,2024-07-19
+"52 Massey Street, ASCOT",ASCOT,house,5,3,2,505,0,3350000,2024-06-29
+"1/32-34 Mordant Street, ASCOT",ASCOT,house,3,2,2,0,0,1545000,2024-06-26
+"2/11 Stevenson Street, ASCOT",ASCOT,unit,3,2,1,0,0,885000,2024-06-29
+"26 Abbott Street, ASCOT",ASCOT,house,5,3,2,405,0,3000000,2024-06-12
+"10402/61 St Leger Way, ASCOT",ASCOT,unit,1,1,1,0,0,705000,2024-07-03
+"7/21 Vine Street, ASCOT",ASCOT,unit,2,1,1,0,0,677500,2024-07-01
+"136 Yabba Street, ASCOT",ASCOT,house,4,3,2,792,0,3475000,2024-07-12
+"6/84 Charlton Street, ASCOT",ASCOT,unit,2,1,1,0,0,585997,2024-06-24
+"302/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,104,0,730000,2024-07-09
+"5/12 Magdala Street, ASCOT",ASCOT,unit,2,2,1,0,0,815000,2024-07-23
+"4/88 Dobson Street, ASCOT",ASCOT,house,2,1,1,0,0,705000,2024-07-22
+"1/35 Silva Street, ASCOT",ASCOT,unit,2,2,1,0,0,699500,2024-07-24
+"5/59 Lapraik Street, ASCOT",ASCOT,unit,3,2,2,0,0,1585000,2024-06-10
+"58 Upper Lancaster Road, ASCOT",ASCOT,house,6,5,2,810,0,5400000,2024-05-25
+"301/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,675000,2024-04-26
+"7 Wattle Street, ASCOT",ASCOT,house,4,3,2,405,0,2700000,2024-06-03
+"1-5/309 Lancaster Road, ASCOT",ASCOT,unit,11,6,8,801,0,3050000,2024-05-02
+"107/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,101,0,757500,2024-04-24
+"19 Florence Street, ASCOT",ASCOT,house,3,2,2,546,0,2130000,2024-05-08
+"3/84 Charlton Street, ASCOT",ASCOT,unit,2,1,1,0,0,660000,2024-04-22
+"10906/61 St Leger Way, ASCOT",ASCOT,unit,2,2,2,0,0,1550000,2024-05-17
+"16 Bennison Street, ASCOT",ASCOT,house,5,4,2,787,0,6571000,2024-05-18
+"140 Kitchener Road, ASCOT",ASCOT,house,3,1,2,810,0,1700000,2024-05-12
+"4/5 Silva Street, ASCOT",ASCOT,unit,1,1,1,0,0,450000,2024-05-11
+"33 Blair Lane, ASCOT",ASCOT,house,4,4,4,873,0,5800000,2024-06-06
+"3/90 Lamington Avenue, ASCOT",ASCOT,unit,2,1,1,0,0,599300,2024-05-13
+"2/9 Vine Street, ASCOT",ASCOT,unit,2,2,1,0,0,850000,2024-05-14
+"4/95 Dobson Street, ASCOT",ASCOT,unit,2,2,2,0,0,895000,2024-05-07
+"5/30 Dobson Street, ASCOT",ASCOT,unit,2,2,1,0,0,607500,2024-05-14
+"6/118 Racecourse Road, ASCOT",ASCOT,house,3,2,2,0,0,1500000,2024-05-21
+"166 Oriel Road, ASCOT",ASCOT,house,3,2,3,450,0,2150000,2024-05-14
+"62 Upper Lancaster Road, ASCOT",ASCOT,house,5,5,2,405,0,2200000,2024-03-15
+"29 Lapraik Street, ASCOT",ASCOT,house,4,2,1,1017,0,2350000,2024-02-29
+"7/26 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,650000,2024-02-07
+"27 Ormond Street, ASCOT",ASCOT,house,4,4,2,531,0,3050000,2024-03-08
+"7/12 Dobson Street, ASCOT",ASCOT,unit,2,2,1,0,0,650000,2024-02-07
+"28 Silva Street, ASCOT",ASCOT,house,4,1,2,876,0,2015000,2024-02-17
+"26/46 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,643000,2024-02-13
+"10/12 Lapraik Street, ASCOT",ASCOT,unit,2,1,1,122,0,830000,2024-03-05
+"67 Charlton Street, ASCOT",ASCOT,house,3,1,2,405,0,1425000,2024-03-13
+"64 Charlton Street, ASCOT",ASCOT,house,5,4,3,547,0,4000000,2024-04-20
+"2/37 Buxton Street, ASCOT",ASCOT,unit,2,2,2,122,0,706000,2024-03-05
+"301 Lancaster Road, ASCOT",ASCOT,house,3,2,2,405,0,1350000,2024-03-20
+"4/313 Lancaster Road, ASCOT",ASCOT,unit,2,1,1,0,0,515000,2024-03-18
+"48 Hopetoun Street, ASCOT",ASCOT,house,4,2,2,335,0,1525000,2024-03-10
+"25B Lonsdale Street, ASCOT",ASCOT,house,3,2,2,0,0,1240000,2024-04-04
+"68 Seymour Road, ASCOT",ASCOT,house,3,2,1,181,0,1125000,2024-04-18
+"4/17 Lapraik Street, ASCOT",ASCOT,unit,2,1,1,83,0,620000,2024-03-05
+"20104/61 St Leger Way, ASCOT",ASCOT,unit,3,2,2,0,0,1750000,2024-04-19
+"3/94 Lamington Avenue, ASCOT",ASCOT,unit,3,1,1,0,0,350000,2024-03-14
+"74 Towers Street, ASCOT",ASCOT,house,5,3,2,0,0,2200000,2024-04-08
+"5 Norman Street, ASCOT",ASCOT,house,5,2,2,405,0,1820000,2023-12-31
+"85 Anthony Street, ASCOT",ASCOT,house,4,3,2,407,0,2135000,2023-12-11
+"108 Kitchener Road, ASCOT",ASCOT,house,4,2,4,822,0,2175000,2024-01-30
+"23 Sykes Street, ASCOT",ASCOT,house,4,1,2,696,0,3000000,2023-12-09
+"24 Lonsdale Street, ASCOT",ASCOT,house,3,1,1,577,0,2100000,2023-12-11
+"9 Bennison Street, ASCOT",ASCOT,house,3,1,1,622,0,2250000,2024-01-22
+"13 Bennison Street, ASCOT",ASCOT,house,6,3,4,1096,0,7250000,2024-01-22
+"20411/61 St. Leger Way, ASCOT",ASCOT,unit,1,1,1,87,0,600000,2023-12-15
+"2/58 Beatrice Tce, ASCOT",ASCOT,unit,1,1,1,0,0,285000,2023-12-29
+"10808/61 St Leger Way, ASCOT",ASCOT,unit,2,2,2,0,0,1258000,2024-01-09
+"2/63 Beatrice Terrace, ASCOT",ASCOT,unit,2,2,1,0,0,825000,2023-12-27
+"114 Crosby Road, ASCOT",ASCOT,house,3,3,2,809,0,3250000,2024-02-03
+"19/26 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,647000,2024-01-29
+"8/26 Vine Street, ASCOT",ASCOT,house,3,2,1,136,0,785000,2024-02-05
+"124 Lancaster Road, ASCOT",ASCOT,house,4,3,2,405,0,2500000,2024-02-07
+"50 Upper Lancaster Road, ASCOT",ASCOT,house,4,3,2,276,0,2330000,2024-01-29
+"10603/61 St Leger Way, ASCOT",ASCOT,unit,2,1,0,95,0,740000,2023-12-21
+"40 BALDWIN STREET, ASCOT",ASCOT,house,4,3,2,0,0,3600000,2024-02-01
+"9/12 Lapraik Street, ASCOT",ASCOT,unit,2,1,1,101,0,780000,2024-01-31
+"6 Abbott Street, ASCOT",ASCOT,house,5,2,2,607,0,2850000,2023-11-24
+"85 Charlton Street, ASCOT",ASCOT,house,3,3,2,370,0,1995000,2023-10-21
+"20808/61 St Leger Way, ASCOT",ASCOT,unit,3,2,2,0,0,1750000,2023-10-30
+"209/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,680000,2023-10-11
+"95 Lapraik Street, ASCOT",ASCOT,house,3,2,2,402,0,3165000,2023-12-05
+"6 Bale Street, ASCOT",ASCOT,house,4,2,2,0,0,2850000,2023-10-11
+"24 Butler Street, ASCOT",ASCOT,house,5,4,2,693,0,3360000,2023-11-09
+"18 Brassey Street, ASCOT",ASCOT,house,3,1,1,405,0,1215000,2023-10-25
+"47 Ascot Street, ASCOT",ASCOT,house,4,2,2,810,0,3350000,2023-10-12
+"12/22 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,650000,2023-11-28
+"3/52 Stevenson Street, ASCOT",ASCOT,house,3,2,1,0,0,749900,2023-10-30
+"2/40 Butler Street, ASCOT",ASCOT,unit,3,2,1,1001,0,748510,2023-11-15
+"8/5 Buxton Street, ASCOT",ASCOT,unit,2,2,2,0,0,610000,2023-12-08
+"18 Upper Lancaster Road, ASCOT",ASCOT,house,5,5,2,810,0,5325000,2023-11-15
+"125 Oriel Road, ASCOT",ASCOT,house,5,2,2,800,0,2400000,2023-12-02
+"27/46 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,595000,2023-11-27
+"5/85 Stevenson Street, ASCOT",ASCOT,unit,2,2,1,0,0,580000,2023-11-13
+"11/26 Vine Street, ASCOT",ASCOT,unit,2,2,1,136,0,625000,2023-11-22
+"3/80 Beatrice Terrace, ASCOT",ASCOT,unit,2,1,1,0,0,514999,2023-11-24
+"20704/61 ST LEGER WAY, ASCOT",ASCOT,unit,3,2,2,0,0,1785000,2023-09-28
+"2/267 Lancaster Road, ASCOT",ASCOT,house,3,2,2,0,0,875000,2023-08-23
+"105 Beatrice Terrace, ASCOT",ASCOT,unit,10,6,6,857,0,2453000,2023-09-28
+"98 BEATRICE TERRACE, ASCOT",ASCOT,house,5,3,3,405,0,2200000,2023-09-09
+"4/26 Norman Street, ASCOT",ASCOT,unit,2,2,1,0,0,549000,2023-08-21
+"10102/61 St Leger Way, ASCOT",ASCOT,unit,2,2,1,0,0,1000000,2023-08-22
+"10 Kidston Street, ASCOT",ASCOT,house,3,2,2,620,0,2500000,2023-09-02
+"12 Ascot Street, ASCOT",ASCOT,house,5,4,2,810,0,5500000,2023-08-30
+"30 Massey Street, ASCOT",ASCOT,house,6,4,2,868,0,6550000,2023-08-24
+"5/75 Dobson Street, ASCOT",ASCOT,unit,2,1,1,0,0,585000,2023-10-04
+"7 Lonsdale Street, ASCOT",ASCOT,house,5,3,1,810,0,4200000,2023-09-17
+"53 Beatrice Terrace, ASCOT",ASCOT,house,2,2,2,438,0,1525000,2023-09-16
+"17/26 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,630000,2023-09-20
+"22 Massey Street, ASCOT",ASCOT,house,5,3,2,966,0,5350000,2023-09-01
+"2/21 Vine Street, ASCOT",ASCOT,unit,2,1,2,0,0,550000,2023-09-20
+"11 Abbott Street, ASCOT",ASCOT,house,4,2,2,0,0,2400000,2023-09-13
+"4/33 Charlton Street, ASCOT",ASCOT,unit,2,1,2,0,0,630000,2023-09-01
+"47 Abbott Street, ASCOT",ASCOT,house,3,2,2,744,0,3075000,2023-10-04
+"1/21 Vine Street, ASCOT",ASCOT,unit,2,1,2,0,0,570000,2023-10-06
+"199 Lancaster Road, ASCOT",ASCOT,house,5,3,2,522,0,2400000,2023-09-09
+"2/21 Lapraik Street, ASCOT",ASCOT,unit,1,1,1,0,0,350000,2023-06-13
+"12/9 Silva Street, ASCOT",ASCOT,house,4,2,2,0,0,960000,2023-06-22
+"10412/61 St Leger Way, ASCOT",ASCOT,unit,2,1,1,0,0,680000,2023-06-12
+"38 Norman Street, ASCOT",ASCOT,house,4,2,2,423,0,1750000,2023-06-06
+"20703/61 St Leger Way, ASCOT",ASCOT,unit,2,2,2,0,0,1120000,2023-06-15
+"10307/61 St Leger Way, ASCOT",ASCOT,unit,3,2,2,0,0,1400000,2023-07-12
+"4/94 Lamington Avenue, ASCOT",ASCOT,unit,2,1,1,0,0,418828,2023-06-05
+"5/37 Buxton Street, ASCOT",ASCOT,unit,2,1,1,0,0,554000,2023-06-07
+"203/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,680000,2023-06-16
+"1/39 Onslow Street, ASCOT",ASCOT,house,3,2,2,0,0,977500,2023-07-13
+"2/98 Racecourse Road, ASCOT",ASCOT,unit,2,2,2,0,0,720000,2023-07-25
+"29 Beatrice Terrace, ASCOT",ASCOT,house,5,4,7,840,0,4059000,2023-08-14
+"1/30 Onslow Street, ASCOT",ASCOT,unit,2,1,1,0,0,470000,2023-07-07
+"47 Kitchener Road, ASCOT",ASCOT,house,4,2,2,405,0,2085000,2023-08-12
+"41 Mayfield Street, ASCOT",ASCOT,house,5,3,2,607,0,4030000,2023-08-12
+"6/313 Lancaster Road, ASCOT",ASCOT,unit,2,1,1,0,0,420000,2023-06-06
+"122 Lancaster Road, ASCOT",ASCOT,house,3,2,2,405,0,1790000,2023-08-19
+"5/10 Upper Lancaster Road, ASCOT",ASCOT,unit,3,1,1,0,0,861500,2023-08-17
+"2/17 Stevenson Street, ASCOT",ASCOT,unit,2,1,1,0,0,530000,2023-08-16
+"20801/61 St Leger Way, ASCOT",ASCOT,unit,2,2,2,0,0,1125000,2023-08-17
+"92 Beatrice Terrace, ASCOT",ASCOT,house,4,3,2,405,0,1265000,2023-05-12
+"17 Butler Street, ASCOT",ASCOT,house,3,1,2,405,0,1085000,2023-05-12
+"3/85 Stevenson Street, ASCOT",ASCOT,unit,2,2,1,0,0,510000,2023-05-31
+"10 Ormond Street, ASCOT",ASCOT,house,5,3,4,810,0,3150000,2023-05-11
+"21 Mayfield Street, ASCOT",ASCOT,house,5,4,3,0,0,5900000,2023-05-16
+"2/62 Stevenson Street, ASCOT",ASCOT,unit,2,1,1,0,0,425000,2023-05-16
+"96 Towers Street, ASCOT",ASCOT,house,5,3,2,405,0,4300000,2023-05-06
+"105/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,680000,2023-05-19
+"42 Towers Street, ASCOT",ASCOT,house,5,3,2,531,0,3800000,2023-06-03
+"4/20 Dobson Street, ASCOT",ASCOT,unit,2,2,1,125,0,570000,2023-05-05
+"136 Oriel Road, ASCOT",ASCOT,house,3,2,2,810,0,2480000,2023-05-11
+"7/5 Buxton Street, ASCOT",ASCOT,unit,2,2,1,103,0,552000,2023-05-09
+"78 Towers Street, ASCOT",ASCOT,house,3,2,2,810,0,3400000,2023-05-19
+"4/135 Beatrice Terrace, ASCOT",ASCOT,house,3,2,2,193,0,1035000,2023-05-15
+"96 Crosby Road, ASCOT",ASCOT,house,4,2,2,531,0,2128000,2023-05-27
+"2/80 Beatrice Terrace, ASCOT",ASCOT,unit,2,1,1,0,0,515000,2023-05-31
+"6/94 Racecourse Road, ASCOT",ASCOT,unit,2,1,1,0,0,532000,2023-05-19
+"5/94 Racecourse Road, ASCOT",ASCOT,house,2,1,1,130,0,550000,2023-05-18
+"2/27 Brassey Street, ASCOT",ASCOT,unit,2,1,1,0,0,445000,2023-05-19
+"UNIT 3/15 Onslow Street, ASCOT",ASCOT,unit,2,1,1,0,0,733000,2025-10-27
+"26 Lamington Avenue, ASCOT",ASCOT,house,3,1,1,544,0,1750000,2025-10-28
+"52 Bennison Street, ASCOT",ASCOT,house,6,5,2,832,0,3875000,2025-10-29
+"3 Morgan Street, ASCOT",ASCOT,house,4,3,4,1006,0,6505000,2025-10-29
+"1/12-14 Dobson Street, ASCOT",ASCOT,unit,2,2,2,356,0,1330000,2025-10-29
+"29 Dobson Street, ASCOT",ASCOT,house,4,3,2,0,0,1950000,2025-10-24
+"2/43 Hopetoun Street, ASCOT",ASCOT,house,3,2,2,251,0,1800000,2025-10-30
+"5/83 Stevenson Street, ASCOT",ASCOT,unit,2,1,1,0,0,875000,2025-11-07
+"30502/41 Saint Leger Way, ASCOT",ASCOT,unit,2,1,1,85,0,1080000,2025-11-18
+"2/44 Stevenson Street, ASCOT",ASCOT,house,3,1,1,137,0,1400000,2025-11-23
+"8 Rupert Terrace, ASCOT",ASCOT,house,3,2,2,405,0,3000000,2025-11-11
+"5/106 Racecourse Road, ASCOT",ASCOT,unit,3,2,1,137,0,1160000,2025-11-19
+"101/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,975000,2025-11-21
+"1/23 Silva Street, ASCOT",ASCOT,unit,2,1,1,0,0,842000,2025-11-24
+"2/83 Dobson Street, ASCOT",ASCOT,unit,2,1,1,0,0,820000,2025-11-24
+"2/313 Lancaster Road, ASCOT",ASCOT,unit,2,1,1,0,0,838000,2025-11-25
+"74 Upper Lancaster Road, ASCOT",ASCOT,house,3,2,4,405,0,2500000,2025-11-02
+"1/27 Dobson Street, ASCOT",ASCOT,unit,2,1,1,347,0,850000,2025-11-24
+"4 Henry Street, ASCOT",ASCOT,house,5,5,6,822,0,10850000,2025-10-25
+"55 Stevenson Street, ASCOT",ASCOT,house,4,3,2,405,0,2380000,2023-04-26
+"15 Hampden Street, ASCOT",ASCOT,house,3,3,2,168,0,960000,2023-04-13
+"4/8 Mordant Street, ASCOT",ASCOT,unit,2,2,1,0,0,485000,2023-03-20
+"17c Comus Avenue, ASCOT",ASCOT,house,4,2,4,526,0,2725000,2023-03-20
+"4/17 Magdala Street, ASCOT",ASCOT,unit,2,1,1,0,0,500000,2023-03-10
+"10505/61 St Leger Way, ASCOT",ASCOT,unit,3,2,2,0,0,1755000,2023-03-23
+"9/5 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,555000,2023-04-20
+"123 Racecourse Road, ASCOT",ASCOT,house,2,1,1,549,0,2250000,2023-03-30
+"107/9 Lapraik Street, ASCOT",ASCOT,unit,2,2,1,0,0,690000,2023-03-30
+"5/39 Onslow Street, ASCOT",ASCOT,house,3,2,2,0,0,870000,2023-03-17
+"4/18 Kidston Street, ASCOT",ASCOT,unit,2,1,1,0,0,400000,2023-04-12
+"8 Upper Lancaster Road, ASCOT",ASCOT,house,3,2,1,0,0,1320000,2023-03-31
+"1/20 Mordant Street, ASCOT",ASCOT,unit,2,2,1,0,0,590000,2023-04-13
+"115 Beatrice Terrace, ASCOT",ASCOT,house,4,3,2,250,0,1375000,2023-05-04
+"2/90 Lamington Avenue, ASCOT",ASCOT,unit,2,1,1,136,0,532500,2023-04-20
+"2/21 Butler Street, ASCOT",ASCOT,unit,1,1,1,0,0,405000,2023-04-23
+"1/32 Hopetoun Street, ASCOT",ASCOT,unit,2,1,1,0,0,540000,2023-03-29
+"80 Yabba Street, ASCOT",ASCOT,house,4,2,2,1194,0,5600000,2023-03-29
+"29 Towers Street, ASCOT",ASCOT,house,5,5,6,0,0,7700000,2025-10-09
+"14 Bale Street, ASCOT",ASCOT,house,4,2,4,901,0,3860000,2025-10-11
+"6/26 Buxton Street, ASCOT",ASCOT,unit,2,2,1,117,0,825000,2025-09-16
+"51 Massey Street, ASCOT",ASCOT,house,4,3,2,374,0,2925000,2025-10-09
+"31 Kitchener Road, ASCOT",ASCOT,house,4,3,2,635,0,3900000,2025-09-13
+"312/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,845000,2025-09-13
+"4/37 Stevenson Street, ASCOT",ASCOT,unit,2,2,1,0,0,902000,2025-09-20
+"16 Duke Street, ASCOT",ASCOT,house,4,2,3,556,0,2125000,2025-09-24
+"4/20 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,792000,2025-09-24
+"3/43 Hopetoun Street, ASCOT",ASCOT,house,3,2,1,230,0,1500000,2025-09-12
+"84 Beatrice Terrace, ASCOT",ASCOT,house,3,2,1,405,0,1601000,2025-10-10
+"2/83 Stevenson Street, ASCOT",ASCOT,unit,2,1,1,0,0,770000,2025-10-09
+"73B Palm Avenue, ASCOT",ASCOT,house,3,2,2,405,0,2400000,2025-10-18
+"20310/61 St Leger Way, ASCOT",ASCOT,unit,2,1,1,0,0,1115000,2025-09-26
+"104 Alexandra Road, ASCOT",ASCOT,house,4,5,4,1275,0,9800000,2025-10-14
+"302/297 Lancaster Road, ASCOT",ASCOT,unit,2,2,1,0,0,890000,2025-10-15
+"1/5 Silva Street, ASCOT",ASCOT,unit,2,1,1,0,0,746000,2025-10-23
+"15 Rupert Terrace, ASCOT",ASCOT,house,3,2,2,690,0,3000000,2025-07-25
+"92 Massey Street, ASCOT",ASCOT,house,5,3,2,673,0,3600000,2025-07-24
+"95 Stevenson Street, ASCOT",ASCOT,house,4,3,2,0,0,1810000,2025-09-09
+"8 Alexandra Road, ASCOT",ASCOT,house,3,1,1,810,0,2400000,2025-08-08
+"2/151 Beatrice Terrace, ASCOT",ASCOT,unit,1,1,1,59,0,500000,2025-07-30
+"7/93 Dobson Street, ASCOT",ASCOT,unit,2,1,1,116,0,740000,2025-09-02
+"2/30 Onslow Street, ASCOT",ASCOT,unit,2,1,1,0,0,735000,2025-08-14
+"49 Bennison Street, ASCOT",ASCOT,house,5,3,2,886,0,4875000,2025-09-10
+"3/98 Racecourse Road, ASCOT",ASCOT,unit,2,2,2,143,0,955000,2025-07-25
+"1/90-92 Racecourse Road, ASCOT",ASCOT,unit,2,2,1,0,0,955000,2025-07-31
+"1/1 Napier Street, ASCOT",ASCOT,unit,2,2,1,0,0,808000,2025-07-22
+"301/9 Lapraik Street, ASCOT",ASCOT,unit,2,2,1,0,0,880000,2025-07-23
+"3/45 Buxton Street, ASCOT",ASCOT,unit,3,2,1,0,0,980000,2025-07-28
+"5/46 Upper Lancaster Road, ASCOT",ASCOT,unit,2,2,1,0,0,902000,2025-08-16
+"100 Towers Street, ASCOT",ASCOT,house,5,4,3,810,0,3570000,2025-08-23
+"118 Beatrice Terrace, ASCOT",ASCOT,house,5,3,2,405,0,2200000,2025-08-26
+"1/29 Duke Street, ASCOT",ASCOT,house,3,3,2,0,0,1460000,2025-09-10
+"21 Wattle Street, ASCOT",ASCOT,house,4,2,2,612,0,3250000,2025-06-24
+"175 Lancaster Road, ASCOT",ASCOT,house,5,4,4,817,0,4100000,2025-07-19
+"109 Upper Lancaster Road, ASCOT",ASCOT,house,3,2,3,405,0,2000000,2025-06-12
+"68 Kitchener Road, ASCOT",ASCOT,house,5,4,2,1695,0,9000000,2025-07-16
+"16 Magdala Street, ASCOT",ASCOT,house,4,3,2,405,0,2300000,2025-06-25
+"76 Palm Avenue, ASCOT",ASCOT,house,4,2,2,400,0,2960000,2025-06-26
+"3/27 Brassey Street, ASCOT",ASCOT,unit,2,1,1,0,0,675000,2025-07-04
+"307 Lancaster Road, ASCOT",ASCOT,house,2,1,1,405,0,1350000,2025-06-24
+"172 Oriel Road, ASCOT",ASCOT,house,2,1,2,809,0,1750000,2025-07-21
+"1/94 Stevenson Street, ASCOT",ASCOT,unit,3,2,2,0,0,1365000,2025-06-12
+"30 Upper Lancaster Road, ASCOT",ASCOT,house,3,2,1,405,0,2275000,2025-07-11
+"40 Mayfield Street, ASCOT",ASCOT,house,5,4,2,658,0,4050000,2025-07-19
+"1/16 Napier Street, ASCOT",ASCOT,unit,2,2,1,0,0,881300,2025-07-21
+"3/26 Vine Street, ASCOT",ASCOT,house,3,2,1,0,0,1040000,2025-07-14
+"7/5 Silva Street, ASCOT",ASCOT,unit,2,1,1,0,0,640000,2025-04-16
+"174 Crosby Road, ASCOT",ASCOT,house,3,2,1,713,0,1800000,2025-06-03
+"2/93 Racecourse Road, ASCOT",ASCOT,unit,2,1,1,0,0,650000,2025-04-23
+"50 Kitchener Road, ASCOT",ASCOT,house,2,2,2,0,0,2400000,2025-04-29
+"3/60 Dobson Street, ASCOT",ASCOT,unit,2,2,1,0,0,875000,2025-05-07
+"20309/61 St Leger Way, ASCOT",ASCOT,unit,1,1,1,0,0,755000,2025-05-15
+"39 Alexandra Road, ASCOT",ASCOT,house,5,3,2,800,0,4850000,2025-05-17
+"7/55 Lapraik Street, ASCOT",ASCOT,house,3,3,2,0,0,1362000,2025-05-24
+"1/16 Mordant Street, ASCOT",ASCOT,unit,2,2,1,145,0,820000,2025-04-20
+"29 Ascot Street, ASCOT",ASCOT,house,4,3,3,819,0,3850000,2025-06-12
+"36 Stevenson Street, ASCOT",ASCOT,house,4,2,2,405,0,1740000,2025-06-04
+"29/46 Buxton Street, ASCOT",ASCOT,unit,3,2,2,0,0,920000,2025-06-03
+"210/9 Lapraik Street, ASCOT",ASCOT,unit,2,2,1,0,0,800000,2025-06-11
+"109/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,800000,2025-06-05
+"7/35 Silva Street, ASCOT",ASCOT,unit,2,2,1,128,0,700000,2025-03-04
+"86 Lapraik Street, ASCOT",ASCOT,house,6,3,2,509,0,2700000,2025-03-06
+"19 Vine Street, ASCOT",ASCOT,house,4,2,1,526,0,1750000,2025-03-13
+"4/12 Silva Street, ASCOT",ASCOT,house,2,1,1,0,0,735000,2025-03-18
+"3 Hampden Street, ASCOT",ASCOT,house,3,2,2,549,0,1232000,2025-03-26
+"5/293 Lancaster Road, ASCOT",ASCOT,unit,2,1,1,0,0,711000,2025-03-13
+"77 Palm Avenue, ASCOT",ASCOT,house,5,5,2,804,0,4650000,2025-03-15
+"4 Dennison Street, ASCOT",ASCOT,house,5,4,4,857,0,6300000,2025-04-10
+"206/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,1299,0,807500,2025-03-28
+"1/84 CHARLTON STREET, ASCOT",ASCOT,unit,2,1,2,132,0,815000,2025-04-07
+"26 Ormond Street, ASCOT",ASCOT,house,5,3,2,405,0,4000000,2025-03-14
+"4/46 Upper Lancaster Road, ASCOT",ASCOT,unit,3,2,2,0,0,1260000,2025-04-09
+"17 Pringle Street, ASCOT",ASCOT,house,5,3,2,830,0,3375000,2025-03-18
+"4/38 Silva Street, ASCOT",ASCOT,unit,2,2,1,0,0,750000,2025-04-10
+"UNIT 1/12 Buxton Street, ASCOT",ASCOT,unit,2,2,1,135,0,750000,2025-04-05
+"2/22 Silva Street, ASCOT",ASCOT,house,3,3,1,194,0,1075050,2025-04-07
+"6 Ormond Street, ASCOT",ASCOT,house,5,4,2,562,0,4550000,2025-01-27
+"3/34 Duke Street, ASCOT",ASCOT,unit,2,1,1,0,0,750000,2024-12-24
+"11/26-30 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,730000,2025-01-08
+"1/29 Buxton Street, ASCOT",ASCOT,house,3,2,1,242,0,1225000,2025-02-13
+"301/89-95 Sevenson Street, ASCOT",ASCOT,other,3,2,2,0,0,2250000,2025-02-07
+"20807/61 St Leger Way, ASCOT",ASCOT,unit,2,2,2,0,0,1500000,2025-01-06
+"101/9 Lapraik Street, ASCOT",ASCOT,unit,2,2,1,0,0,875000,2025-02-11
+"17 Hopetoun Street, ASCOT",ASCOT,house,5,3,2,405,0,2200000,2025-02-20
+"3/36 Alexandra Road, ASCOT",ASCOT,unit,2,1,1,809,0,660000,2025-02-07
+"154 Yabba Street, ASCOT",ASCOT,house,5,4,3,695,0,5800000,2025-02-15
+"117 Yabba Street, ASCOT",ASCOT,house,4,2,2,454,0,2415000,2025-02-13
+"13/26 Buxton Street, ASCOT",ASCOT,unit,2,2,1,0,0,740000,2025-02-04
+"205/25 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,780000,2025-02-12
+"31 Mayfield Street, ASCOT",ASCOT,house,4,3,2,696,0,4011000,2025-03-01
+"4/16 Napier Street, ASCOT",ASCOT,unit,2,2,1,0,0,820000,2025-02-17
+"81 Yabba Street, ASCOT",ASCOT,house,6,3,2,582,0,3650000,2025-02-21
+"3/43 Silva Street, ASCOT",ASCOT,unit,2,2,1,0,0,705000,2025-02-18
+"22 Yabba Street, ASCOT",ASCOT,house,5,4,4,1619,0,10500000,2025-02-25
+"102/89-95 Sevenson Street, ASCOT",ASCOT,other,3,2,2,0,0,1830000,2025-02-14
+"B9/151 Beatrice Terrace, ASCOT",ASCOT,unit,1,1,1,0,0,465000,2025-02-11
+"88 Massey Street, ASCOT",ASCOT,house,5,3,2,688,0,3510000,2024-11-27
+"9/102 Massey Street, ASCOT",ASCOT,unit,1,1,1,0,0,484000,2024-11-29
+"126 Kitchener Road, ASCOT",ASCOT,house,3,1,2,422,0,1506000,2024-12-18
+"4 Hopetoun Street, ASCOT",ASCOT,house,3,2,2,0,0,1500000,2024-11-12
+"2/22 Onslow Street, ASCOT",ASCOT,unit,2,2,1,123,0,750000,2024-11-29
+"146 Kitchener Road, ASCOT",ASCOT,house,4,2,2,605,0,1925750,2024-11-21
+"1/22 Onslow Street, ASCOT",ASCOT,unit,2,2,1,0,0,765000,2024-11-12
+"9/25 Duke Street, ASCOT",ASCOT,unit,3,2,1,0,0,734000,2024-11-27
+"10302/61 St Leger Way, ASCOT",ASCOT,unit,1,1,1,0,0,760000,2024-11-13
+"119 Towers Street, ASCOT",ASCOT,house,5,2,1,407,0,2550000,2024-12-04
+"10203/61 St Leger Way, ASCOT",ASCOT,unit,2,1,1,0,0,795000,2024-11-18
+"56 Palm Avenue, ASCOT",ASCOT,house,5,4,2,964,0,4950000,2024-11-30
+"2/39 Dobson Street, ASCOT",ASCOT,unit,2,1,1,121,0,800000,2024-11-14
+"5/44 Upper Lancaster Road, ASCOT",ASCOT,unit,2,1,2,0,0,728000,2024-12-14
+"16 Gerald Street, ASCOT",ASCOT,house,4,3,2,524,0,4410000,2024-12-16
+"20206/61 St Leger Way, ASCOT",ASCOT,unit,3,2,2,0,0,1700000,2024-12-11
+"44A Charlton Street, ASCOT",ASCOT,house,6,3,2,1143,0,5600000,2024-12-06
+"B10/151 Beatrice Terrace, ASCOT",ASCOT,unit,1,1,1,0,0,452000,2024-11-20
+"7/56 Stevenson Street, ASCOT",ASCOT,house,3,2,1,0,0,990000,2024-11-20
+"59 Dobson Street, ASCOT",ASCOT,house,6,3,2,405,0,2500000,2024-12-19
 "30 Tuberose Place, CALAMVALE",Calamvale,house,4,2,2,639,0,1270000,2026-02-25
 "15 Huntington Court, CALAMVALE",Calamvale,house,5,3,2,935,0,1718000,2026-02-06
 "6 Bottletree Place, CALAMVALE",Calamvale,house,5,3,2,860,0,1654000,2026-01-07
@@ -6,13 +371,207 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "52 Semper Place, CALAMVALE",Calamvale,house,4,2,5,600,0,1425000,2025-12-22
 "10 Gulubia Place, CALAMVALE",Calamvale,house,4,3,2,714,0,1686000,2026-01-07
 "2 Waterlily Place, CALAMVALE",Calamvale,house,5,3,2,726,0,1525000,2026-01-14
-"40 Gemview St, CALAMVALE",Calamvale,house,4,2,3,876,0,1480000,2026-01-29
+"16/28 Menser Street, CALAMVALE",Calamvale,house,3,2,2,162,0,730000,2025-12-19
 "60 Menser Street, CALAMVALE",Calamvale,house,5,3,2,422,0,1250000,2025-12-25
 "31/8 Earnshaw Street, CALAMVALE",Calamvale,house,3,2,1,211,0,795000,2026-01-26
 "10/28 Diane Court, CALAMVALE",Calamvale,house,3,2,2,152,0,921888,2026-01-28
 "26/8 Honeysuckle Way, CALAMVALE",Calamvale,house,3,2,2,0,0,895000,2026-01-28
 "369 Benhiam Street, CALAMVALE",Calamvale,house,4,2,2,492,0,1580000,2026-02-28
 "25 Currajong Street, CALAMVALE",Calamvale,house,4,3,2,0,0,1412000,2026-01-30
+"11 Khoo Place, CALAMVALE",Calamvale,vacant_land,0,0,0,710,0,810000,2025-04-15
+"15/20 Nicoro Place, CALAMVALE",Calamvale,house,3,2,1,0,0,716000,2025-04-17
+"216 Algester Road, CALAMVALE",Calamvale,house,3,2,2,600,0,950000,2025-04-11
+"47 Doulton Street, CALAMVALE",Calamvale,house,4,2,2,249,0,1008800,2025-04-22
+"63 Dianthus Place, CALAMVALE",Calamvale,house,5,3,2,626,0,1080000,2025-03-29
+"15/200 Kameruka Street, CALAMVALE",Calamvale,house,3,2,2,229,0,702000,2025-04-30
+"56 Menser Street, CALAMVALE",Calamvale,house,5,2,3,600,0,1500000,2025-04-24
+"8/88 Candytuft Place, CALAMVALE",Calamvale,house,3,2,1,137,0,700000,2025-03-31
+"12/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,157,0,740000,2025-03-31
+"2 Freeman Place, CALAMVALE",Calamvale,house,3,2,2,497,0,990000,2025-04-12
+"UNIT 16/8 Gemview Street, CALAMVALE",Calamvale,other,3,2,2,223,0,640000,2025-04-05
+"21/2 Rory Court, CALAMVALE",Calamvale,house,3,2,2,0,0,645800,2025-04-22
+"34/725 Gowan Road, CALAMVALE",Calamvale,house,3,2,1,206,0,700000,2025-04-21
+"18 Brentwood Street, CALAMVALE",Calamvale,vacant_land,0,0,0,485,0,850000,2025-04-25
+"2 Cibo Court, CALAMVALE",Calamvale,house,3,2,4,615,0,1010000,2025-04-23
+"35/46 Hamish Street, CALAMVALE",Calamvale,house,3,2,2,132,0,755000,2025-04-15
+"67 Shelduck Place, CALAMVALE",Calamvale,house,3,2,2,514,0,895000,2025-04-24
+"1/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,157,0,742500,2025-05-01
+"14/16 Dellforest Drive, CALAMVALE",Calamvale,house,3,2,2,207,0,770000,2025-05-05
+"49 88 Shelduck Place, CALAMVALE",Calamvale,house,3,2,2,0,0,700000,2025-03-24
+"5 Rivergum Place, CALAMVALE",Calamvale,house,5,2,3,770,0,1180000,2025-03-24
+"2/25 Yarrawonga Street, CALAMVALE",Calamvale,house,3,2,2,154,0,700000,2025-03-06
+"19 Maywood Crescent, CALAMVALE",Calamvale,house,5,3,3,730,0,1400000,2025-03-10
+"38 Carnation Crescent, CALAMVALE",Calamvale,house,4,2,2,750,0,1335000,2025-03-25
+"19/8 Gemview Street, CALAMVALE",Calamvale,house,3,2,2,0,0,685000,2025-03-06
+"9/28 Benhiam Street, CALAMVALE",Calamvale,house,3,2,1,0,0,666666,2025-03-14
+"39/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,0,0,705000,2025-03-09
+"28/8 Honeysuckle Way, CALAMVALE",Calamvale,house,3,2,1,236,0,645000,2025-03-13
+"27 Perkins Street, CALAMVALE",Calamvale,house,5,2,2,523,0,1290000,2025-03-07
+"7 Parklands Street, CALAMVALE",Calamvale,house,4,3,2,800,0,1411111,2025-03-12
+"214 Algester Road, CALAMVALE",Calamvale,house,3,1,3,600,0,855000,2025-03-18
+"79 Grevillea Park Crescent, CALAMVALE",Calamvale,house,4,3,2,802,0,1517777,2025-03-22
+"Unit 13/64 Ormskirk St, CALAMVALE",Calamvale,house,3,2,1,0,0,699000,2025-03-21
+"25 Swan Lake Crescent, CALAMVALE",Calamvale,house,4,2,2,700,0,1265000,2025-03-22
+"6 Carnation Crescent, CALAMVALE",Calamvale,house,4,2,3,790,0,1701000,2025-03-29
+"45 Reardon Street, CALAMVALE",Calamvale,house,4,2,2,455,0,975000,2025-03-21
+"30 Harvey Place, CALAMVALE",Calamvale,house,5,3,2,466,0,1425000,2025-03-29
+"18 Moneghetti Place, CALAMVALE",Calamvale,house,3,2,2,563,0,997000,2025-03-25
+"62 Orania Crescent, CALAMVALE",Calamvale,house,5,3,2,914,0,1405000,2025-03-13
+"16/20 Neiwand Street, CALAMVALE",Calamvale,house,3,2,1,152,0,700000,2025-02-17
+"22 Klim Street, CALAMVALE",Calamvale,house,5,2,2,451,0,1180000,2025-02-22
+"12 Housman Place, CALAMVALE",Calamvale,house,4,2,2,645,0,1050000,2025-02-07
+"26/8 Gemview Street, CALAMVALE",Calamvale,house,3,2,1,0,0,610000,2025-02-12
+"21/88 Kameruka Street, CALAMVALE",Calamvale,house,3,1,1,194,0,625000,2025-02-10
+"16 Daffodil Crescent, CALAMVALE",Calamvale,house,4,2,2,750,0,1190000,2025-02-17
+"21 Harvey Place, CALAMVALE",Calamvale,house,4,2,2,530,0,1250000,2025-02-22
+"6/20 Rosella Close, CALAMVALE",Calamvale,house,3,2,2,198,0,790000,2025-03-02
+"215/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,0,0,717000,2025-02-20
+"62/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,153,0,700000,2025-02-28
+"29/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,172,0,660000,2025-02-27
+"32/8 Earnshaw Street, CALAMVALE",Calamvale,house,3,2,2,211,0,650000,2025-02-05
+"8 Samuel Street, CALAMVALE",Calamvale,house,5,2,2,700,0,1420000,2025-03-01
+"7 Matilda Way, CALAMVALE",Calamvale,house,3,2,2,568,0,1016000,2025-03-01
+"33/88 Kameruka Street, CALAMVALE",Calamvale,house,3,1,2,0,0,635000,2025-02-25
+"4 Fallon Court, CALAMVALE",Calamvale,house,5,2,2,730,0,1270000,2025-03-04
+"247/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,153,0,719999,2025-02-25
+"37/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,200,0,660000,2025-03-03
+"39 Benhiam Street, CALAMVALE",Calamvale,house,4,2,2,409,0,1050000,2025-02-05
+"62/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,153,0,700000,2025-02-28
+"30 Gemview Street, CALAMVALE",Calamvale,house,5,2,2,806,0,1378000,2024-12-23
+"10 Kinwarton Crescent, CALAMVALE",Calamvale,house,4,2,2,405,0,1380000,2025-01-22
+"21/53 Perkins Street, CALAMVALE",Calamvale,house,3,2,2,0,0,725000,2025-01-10
+"8A Currajong Street, CALAMVALE",Calamvale,house,3,2,1,477,0,946000,2025-01-13
+"602 Gowan Road, CALAMVALE",Calamvale,house,4,2,2,760,0,961000,2025-01-07
+"15 NOLAN PLACE, CALAMVALE",Calamvale,house,3,2,4,544,0,930000,2025-01-20
+"44/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,0,0,630000,2024-12-22
+"16/28 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,138,0,705000,2024-12-23
+"3 Golden Ave, CALAMVALE",Calamvale,house,4,2,2,705,0,1125000,2025-01-31
+"23 Sheldon Street, CALAMVALE",Calamvale,house,4,2,2,817,0,1120000,2025-01-21
+"6 Chestnut Place, CALAMVALE",Calamvale,house,4,2,2,879,0,1350000,2024-12-28
+"24/8 Honeysuckle Way, CALAMVALE",Calamvale,house,3,2,2,0,0,685000,2025-01-03
+"45A/35 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,1,0,0,717000,2025-01-29
+"34/380 Benhiam Street, CALAMVALE",Calamvale,house,4,2,2,172,0,770000,2025-01-25
+"54/50 Perkins Street, CALAMVALE",Calamvale,house,3,2,2,180,0,700000,2025-01-29
+"57 Shelduck Place, CALAMVALE",Calamvale,house,4,2,2,456,0,993000,2025-02-01
+"14 Murphy Street, CALAMVALE",Calamvale,house,3,2,2,568,0,890000,2025-02-01
+"8/52 Highgrove Street, CALAMVALE",Calamvale,unit,4,2,4,160,0,855000,2025-02-04
+"8/36 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,610078,2025-02-03
+"12 Narcissus Place, CALAMVALE",Calamvale,house,3,2,2,457,0,933000,2025-01-06
+"43 Alfred Circuit, CALAMVALE",Calamvale,house,5,3,2,715,0,1750000,2024-12-04
+"1 Windsor Court, CALAMVALE",Calamvale,house,3,2,2,454,0,880000,2024-12-05
+"25/27 Sunflower Crescent, CALAMVALE",Calamvale,house,4,2,2,165,0,780000,2024-12-07
+"12/422 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,191,0,760000,2024-11-29
+"10/25 Yarrawonga Street, CALAMVALE",Calamvale,house,3,2,2,154,0,730000,2024-12-11
+"12 Moneghetti Place, CALAMVALE",Calamvale,house,4,2,2,539,0,1075000,2024-11-23
+"64 Grevillea Park Crescent, CALAMVALE",Calamvale,house,4,2,2,699,0,1235000,2024-12-05
+"6/1 Jaffa Crescent, CALAMVALE",Calamvale,house,4,2,1,146,0,721000,2024-12-14
+"91 Sunflower Crescent, CALAMVALE",Calamvale,house,4,2,2,763,0,1231000,2024-11-30
+"11 Lewis Place, CALAMVALE",Calamvale,house,4,2,2,471,0,1050000,2024-12-09
+"1/28 Diane Court, CALAMVALE",Calamvale,house,3,2,2,152,0,735000,2024-12-07
+"38/7 Gemview Street (72 Menser St), CALAMVALE",Calamvale,house,3,2,1,207,0,613500,2024-11-22
+"37/725 Gowan Road, CALAMVALE",Calamvale,house,3,2,1,0,0,685000,2024-11-27
+"27 Hamish Street, CALAMVALE",Calamvale,house,5,2,2,470,0,1582500,2024-11-30
+"28/2 Rory Court, CALAMVALE",Calamvale,house,3,2,2,0,0,648000,2024-12-10
+"13/18 Diane Court, CALAMVALE",Calamvale,house,3,2,1,143,0,635000,2024-12-08
+"32/2 Rory Court, CALAMVALE",Calamvale,house,3,2,2,0,0,650000,2024-12-20
+"7/78 Ormskirk Street, CALAMVALE",Calamvale,house,3,2,2,133,0,675000,2024-11-27
+"2 Moneghetti Place, CALAMVALE",Calamvale,house,4,2,2,495,0,1002000,2024-12-14
+"27 Semper Place, CALAMVALE",Calamvale,house,4,2,2,600,0,1280000,2024-12-20
+"4/28 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,708888,2024-11-11
+"51/8 Earnshaw Street, CALAMVALE",Calamvale,unit,3,2,1,208,0,661100,2024-10-31
+"190 Benhiam Street, CALAMVALE",Calamvale,house,4,2,2,450,0,1020000,2024-10-30
+"17/200 Kameruka Street, CALAMVALE",Calamvale,house,3,2,1,176,0,652550,2024-11-04
+"23 Hailey Place, CALAMVALE",Calamvale,house,4,2,2,802,0,1270000,2024-10-29
+"21/88 Shelduck Place, CALAMVALE",Calamvale,house,3,2,1,127,0,652300,2024-11-20
+"43/38 Illaweena Street, CALAMVALE",Calamvale,house,3,2,2,187,0,769000,2024-11-02
+"16 Wisteria Place, CALAMVALE",Calamvale,house,5,3,2,650,0,1600000,2024-11-04
+"29/57 Nabeel Place, CALAMVALE",Calamvale,house,3,2,2,168,0,670000,2024-10-28
+"UNIT 15/10 HIGHGROVE STREET, CALAMVALE",Calamvale,house,3,2,2,0,0,696000,2024-11-11
+"14 Semper Place, CALAMVALE",Calamvale,house,4,2,2,600,0,1366000,2024-10-26
+"22/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,157,0,730000,2024-10-30
+"20 Watervale Place, CALAMVALE",Calamvale,house,4,3,2,700,0,1580000,2024-11-16
+"17/16 Dellforest Drive, CALAMVALE",Calamvale,house,3,2,1,150,0,714000,2024-11-16
+"162/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,153,0,710000,2024-11-10
+"12/28 Benhiam Street, CALAMVALE",Calamvale,house,3,2,1,138,0,700000,2024-11-06
+"29/8 Earnshaw Street, CALAMVALE",Calamvale,house,3,2,1,205,0,625000,2024-11-20
+"7/85 Menser Street, CALAMVALE",Calamvale,house,4,2,4,169,0,830000,2024-11-11
+"Unit 21/380 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,726000,2024-11-20
+"11/88 Kameruka Street, CALAMVALE",Calamvale,house,2,1,1,145,0,565000,2024-11-20
+"12 Bala Place, CALAMVALE",Calamvale,house,4,2,2,700,0,1390000,2024-10-05
+"393 Gowan Road, CALAMVALE",Calamvale,house,4,3,3,607,0,1080000,2024-09-26
+"70 Bougainvillea Street, CALAMVALE",Calamvale,house,5,2,2,801,0,1570000,2024-10-21
+"32/10 Diane Court, CALAMVALE",Calamvale,house,3,2,1,0,0,620000,2024-09-24
+"1/4 Watt Court, CALAMVALE",Calamvale,house,2,1,1,167,0,670000,2024-10-10
+"8 Earls Court, CALAMVALE",Calamvale,house,4,2,2,659,0,1000000,2024-09-28
+"93 Sunflower Crescent, CALAMVALE",Calamvale,house,4,2,2,862,0,1250100,2024-10-05
+"4/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,0,0,630000,2024-10-24
+"11/200 Kameruka Street, CALAMVALE",Calamvale,house,3,2,1,201,0,640000,2024-10-03
+"40/380 Benhiam Street, CALAMVALE",Calamvale,house,4,2,2,172,0,751000,2024-10-20
+"38 Corypha Crescent, CALAMVALE",Calamvale,house,4,2,4,722,0,1355000,2024-10-13
+"5/138 Golden Avenue, CALAMVALE",Calamvale,house,3,2,1,0,0,665000,2024-10-08
+"30/85 Menser Street, CALAMVALE",Calamvale,house,4,2,2,0,0,805000,2024-10-11
+"3 Carmel Place, CALAMVALE",Calamvale,house,5,2,2,700,0,1180000,2024-10-24
+"22/8 Gemview Street, CALAMVALE",Calamvale,other,3,2,1,223,0,605000,2024-10-15
+"9 Gemview Street, CALAMVALE",Calamvale,house,4,2,2,512,0,1041000,2024-10-26
+"21/28 Menser Street, CALAMVALE",Calamvale,house,3,2,2,162,0,720000,2024-10-16
+"2 Harvey Place, CALAMVALE",Calamvale,house,5,3,3,600,0,1556000,2024-10-26
+"36/20 Nicoro Place, CALAMVALE",Calamvale,house,3,2,2,236,0,745000,2024-10-23
+"32/1 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,1,146,0,720000,2024-10-21
+"11/88 Candytuft Place, CALAMVALE",Calamvale,house,3,2,1,139,0,610000,2024-09-17
+"21 Swan Lake Crescent, CALAMVALE",Calamvale,house,5,2,2,762,0,1370000,2024-09-16
+"16/9 Eduard Place, CALAMVALE",Calamvale,house,3,2,1,0,0,680000,2024-09-17
+"Unit 8/14 Sunflower Cres, CALAMVALE",Calamvale,house,3,2,2,0,0,710000,2024-09-02
+"8/88 Shelduck Place, CALAMVALE",Calamvale,house,3,2,2,154,0,750000,2024-09-03
+"25/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,140,0,650000,2024-09-14
+"11 Galliano Court, CALAMVALE",Calamvale,house,5,2,2,739,0,1428000,2024-08-27
+"44 Central Street, CALAMVALE",Calamvale,house,4,2,5,700,0,1350000,2024-08-29
+"18/18 Mornington Ct, CALAMVALE",Calamvale,house,3,2,2,192,0,650000,2024-09-16
+"27 Daffodil Crescent, CALAMVALE",Calamvale,house,5,2,2,892,0,1385000,2024-09-18
+"24/28 Benhiam Street, CALAMVALE",Calamvale,house,3,2,1,138,0,640000,2024-08-26
+"1 Lenton Place, CALAMVALE",Calamvale,house,4,2,2,492,0,1000000,2024-09-10
+"21/53 Injune Circuit, CALAMVALE",Calamvale,house,4,3,2,198,0,880000,2024-09-05
+"26/53 Injune Circuit, CALAMVALE",Calamvale,house,3,3,1,166,0,690000,2024-09-19
+"52 Swan Lake Crescent, CALAMVALE",Calamvale,house,4,2,2,717,0,1360000,2024-09-14
+"75 Palatine Street, CALAMVALE",Calamvale,house,5,3,2,800,0,1610000,2024-09-16
+"13/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,150,0,695888,2024-09-12
+"10/1 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,1,146,0,726000,2024-09-20
+"20/350 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,151,0,695000,2024-09-02
+"8 Tupelo Street, CALAMVALE",Calamvale,house,4,2,2,450,0,1020000,2024-07-29
+"15 Nabeel Place, CALAMVALE",Calamvale,house,4,2,2,496,0,1125000,2024-07-29
+"39/16 Yarrawonga St, CALAMVALE",Calamvale,house,3,2,1,0,0,720500,2024-08-17
+"24 Corypha Crescent, CALAMVALE",Calamvale,house,4,3,2,616,0,1425000,2024-08-22
+"9/43 Bundabah Drive, CALAMVALE",Calamvale,house,3,1,2,173,0,600000,2024-08-07
+"52 Candytuft Place, CALAMVALE",Calamvale,house,4,2,2,603,0,1490000,2024-08-10
+"35 Kinwarton Crescent, CALAMVALE",Calamvale,house,5,4,6,2016,0,2343000,2024-08-17
+"53 Bougainvillea Street, CALAMVALE",Calamvale,house,5,3,2,640,0,1802000,2024-08-10
+"27/85 Menser Street, CALAMVALE",Calamvale,house,4,2,2,173,0,760000,2024-08-10
+"10 Caravonica Court, CALAMVALE",Calamvale,house,5,2,2,892,0,1031000,2024-08-15
+"25 Monsour Street, CALAMVALE",Calamvale,house,4,2,2,704,0,1387888,2024-08-24
+"85 Shelduck Place, CALAMVALE",Calamvale,house,4,2,4,600,0,836000,2024-08-24
+"2/43 Doulton Street, CALAMVALE",Calamvale,house,3,2,1,0,0,660000,2024-08-22
+"30 Bellflower Place, CALAMVALE",Calamvale,house,4,2,2,729,0,1140000,2024-08-22
+"6/2 Rory Court, CALAMVALE",Calamvale,house,3,2,2,0,0,705000,2024-08-13
+"19/43 Bundabah Drive, CALAMVALE",Calamvale,house,3,1,1,0,0,638000,2024-08-08
+"30/53 Injune Circuit, CALAMVALE",Calamvale,house,4,3,2,193,0,780000,2024-08-02
+"10 Rya Close, CALAMVALE",Calamvale,house,5,3,2,1131,0,1900000,2024-07-24
+"86/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,0,0,688888,2024-07-02
+"78/11 Butler Crescent, CALAMVALE",Calamvale,unit,3,2,1,0,0,675000,2024-07-15
+"42/20 Stockton Street, CALAMVALE",Calamvale,house,3,2,2,0,0,690000,2024-07-19
+"20/1 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,1,145,0,670000,2024-07-08
+"11 Wisteria Place, CALAMVALE",Calamvale,house,5,2,2,605,0,1348888,2024-07-10
+"7 Caravonica Court, CALAMVALE",Calamvale,house,5,2,2,384,0,1368000,2024-07-06
+"28 Khoo Place, CALAMVALE",Calamvale,house,4,2,2,450,0,1100000,2024-07-12
+"7 Brandy Court, CALAMVALE",Calamvale,house,4,2,2,774,0,1200000,2024-07-03
+"53/9 Eduard Place, CALAMVALE",Calamvale,house,3,2,1,0,0,681500,2024-07-09
+"4 Mead Place, CALAMVALE",Calamvale,house,4,2,2,528,0,900000,2024-07-22
+"22/338 Algester Road, CALAMVALE",Calamvale,house,4,3,2,164,0,852000,2024-07-27
+"185/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,150,0,675000,2024-07-17
+"23 Klim Street, CALAMVALE",Calamvale,house,4,2,2,455,0,1145000,2024-07-20
+"48/36 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,601000,2024-07-08
+"7/18 Diane Court, CALAMVALE",Calamvale,house,3,2,1,143,0,630000,2024-07-16
+"29 Watervale Place, CALAMVALE",Calamvale,house,8,6,2,700,0,1900000,2024-07-24
+"86/36 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,600000,2024-07-26
+"218/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,148,0,691000,2024-07-24
 "65 Parklands Street, CALAMVALE",Calamvale,house,4,2,4,744,0,1413000,2025-11-24
 "26 Casuarina Crescent, CALAMVALE",Calamvale,house,4,2,2,825,0,1670000,2025-12-06
 "19 Currajong Street, CALAMVALE",Calamvale,house,5,3,2,735,0,1850000,2025-12-07
@@ -30,7 +589,26 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "15/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,156,0,840000,2025-12-06
 "20/360 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,166,0,850000,2025-12-18
 "9/35 Clarence Street, CALAMVALE",Calamvale,house,3,2,2,184,0,933000,2025-12-10
-"16/28 Menser Street, CALAMVALE",Calamvale,house,3,2,2,162,0,730000,2025-12-19
+"40 Gemview St, CALAMVALE",Calamvale,house,4,2,3,876,0,1480000,2025-12-13
+"27 Alfred Circuit, CALAMVALE",Calamvale,house,5,4,4,773,0,1800000,2024-06-16
+"Unit 75/36 Benhiam St, CALAMVALE",Calamvale,house,3,2,2,0,0,665000,2024-06-18
+"3 Marsala Street, CALAMVALE",Calamvale,house,4,2,2,620,0,1000000,2024-06-12
+"13/25 Yarrawonga St, CALAMVALE",Calamvale,house,3,2,2,0,0,691000,2024-06-12
+"9 Bellflower Place, CALAMVALE",Calamvale,house,4,2,2,721,0,1088000,2024-06-08
+"42/96 Formby Street, CALAMVALE",Calamvale,other,3,2,2,289,0,590000,2024-06-11
+"3/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,140,0,680000,2024-06-08
+"10 Orania Crescent, CALAMVALE",Calamvale,house,4,3,2,720,0,1225000,2024-06-15
+"20 Poinsettia Crescent, CALAMVALE",Calamvale,house,4,3,2,815,0,1470000,2024-06-03
+"34/1 Jaffa Crescent, CALAMVALE",Calamvale,house,4,2,1,0,0,750000,2024-07-01
+"50/88 Kameruka Street, CALAMVALE",Calamvale,house,3,1,1,202,0,545000,2024-06-20
+"24/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,181,0,628000,2024-06-22
+"44/88 KAMERUKA STREET, CALAMVALE",Calamvale,house,2,1,1,128,0,500000,2024-06-03
+"5 Poplar Close, CALAMVALE",Calamvale,house,4,2,2,935,0,1533000,2024-06-29
+"30/9 Eduard Place, CALAMVALE",Calamvale,house,3,2,2,156,0,710000,2024-06-29
+"230/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,194,0,690000,2024-06-25
+"21 Lyrebird Street, CALAMVALE",Calamvale,house,4,2,3,750,0,1420000,2024-06-21
+"16/360 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,156,0,660000,2024-07-02
+"20/10 Highgrove Street, CALAMVALE",Calamvale,house,3,2,2,136,0,650000,2024-07-01
 "181/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,153,0,801000,2025-11-10
 "69 Honeysuckle Way, CALAMVALE",Calamvale,house,5,2,2,810,0,1520000,2025-11-01
 "20/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,152,0,832000,2025-11-01
@@ -42,7 +620,6 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "94 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,460,0,1150000,2025-11-06
 "19 Housman Place, CALAMVALE",Calamvale,house,3,2,2,578,0,1200000,2025-11-15
 "3 Yewleaf Place, CALAMVALE",Calamvale,house,5,3,2,800,0,1950000,2025-11-15
-"53/9 Eduard Place, CALAMVALE",Calamvale,house,3,2,1,134,0,835500,2025-11-05
 "8 Sorbus Court, CALAMVALE",Calamvale,house,4,2,2,575,0,1395000,2025-11-15
 "30/11 Pyranees Street, CALAMVALE",Calamvale,house,3,2,1,182,0,750000,2025-11-11
 "18/78 Ormskirk Street, CALAMVALE",Calamvale,house,3,2,2,0,0,800000,2025-11-09
@@ -50,6 +627,109 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "21/64 Ormskirk Street, CALAMVALE",Calamvale,house,3,2,2,152,0,870000,2025-11-18
 "1 Mead Place, CALAMVALE",Calamvale,house,4,3,2,520,0,930000,2025-11-14
 "19 Earnshaw Street, CALAMVALE",Calamvale,house,3,2,2,303,0,958000,2025-11-03
+"32 Maywood Crescent, CALAMVALE",Calamvale,house,4,2,5,754,0,1570000,2025-10-14
+"15/64 Ormskirk Street, CALAMVALE",Calamvale,house,3,2,1,0,0,791000,2025-10-13
+"34 Stockton Street, CALAMVALE",Calamvale,house,4,2,2,500,0,1391000,2025-10-28
+"2 Parklands Street, CALAMVALE",Calamvale,house,4,2,4,830,0,1590000,2025-10-27
+"12 Gould Place, CALAMVALE",Calamvale,house,4,2,2,450,0,1342888,2025-10-25
+"36/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,198,0,726000,2025-10-08
+"15/88 Shelduck Place, CALAMVALE",Calamvale,house,3,2,2,154,0,910000,2025-10-30
+"24/1 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,2,240,0,970000,2025-10-08
+"13 Harmony Street, CALAMVALE",Calamvale,house,5,3,4,425,0,1505000,2025-10-11
+"82/9 Eduard Place, CALAMVALE",Calamvale,house,3,2,2,153,0,865000,2025-10-04
+"12 Galliano Court, CALAMVALE",Calamvale,house,5,2,4,651,0,1310000,2025-10-08
+"18/88 Candytuft Place, CALAMVALE",Calamvale,house,3,2,1,75,0,767000,2025-10-24
+"12 Semper Place, CALAMVALE",Calamvale,house,4,2,2,500,0,1551000,2025-10-25
+"17 Carnation Crescent, CALAMVALE",Calamvale,house,4,2,2,769,0,1420000,2025-10-25
+"11 Narcissus Place, CALAMVALE",Calamvale,house,4,2,2,495,0,1345000,2025-11-01
+"192/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,153,0,857000,2025-10-28
+"69 Hamish Street, CALAMVALE",Calamvale,house,3,2,2,485,0,1110000,2025-10-29
+"10/138 Golden Avenue, CALAMVALE",Calamvale,house,3,2,2,131,0,785000,2025-10-20
+"10/35 Clarence Street, CALAMVALE",Calamvale,house,3,2,2,0,0,800000,2025-09-20
+"3 Violet Place, CALAMVALE",Calamvale,house,4,2,2,750,0,1425000,2025-09-23
+"10 Webb Street, CALAMVALE",Calamvale,house,4,2,2,450,0,1274000,2025-09-13
+"13 Camplin Place, CALAMVALE",Calamvale,house,4,2,2,580,0,1705000,2025-09-06
+"50/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,150,0,760000,2025-09-10
+"16 Idris Court, CALAMVALE",Calamvale,house,4,2,2,600,0,1340000,2025-09-13
+"56 Solandra Crescent, CALAMVALE",Calamvale,house,3,2,2,487,0,1135000,2025-10-03
+"20 Gemview Street, CALAMVALE",Calamvale,house,5,2,2,804,0,1463000,2025-09-13
+"166/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,0,0,840000,2025-09-24
+"29/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,157,0,800000,2025-09-12
+"20 Bundabah Drive, CALAMVALE",Calamvale,house,4,2,2,677,0,1308500,2025-09-20
+"41/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,130,0,700000,2025-09-16
+"31/108 Menser Street, CALAMVALE",Calamvale,house,3,2,1,0,0,730000,2025-09-26
+"49/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,3,151,0,820000,2025-09-26
+"6/36 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,766000,2025-09-30
+"20/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,140,0,840000,2025-09-20
+"29/20 Stockton Street, CALAMVALE",Calamvale,house,3,2,2,187,0,788888,2025-09-16
+"36 Gemview Street, CALAMVALE",Calamvale,house,4,2,2,607,0,1200000,2025-09-27
+"37/50 Perkins Street, CALAMVALE",Calamvale,house,3,2,2,182,0,850000,2025-09-25
+"23 Nabeel Place, CALAMVALE",Calamvale,house,4,2,2,540,0,1169000,2025-08-19
+"59/50 Perkins St, CALAMVALE",Calamvale,house,3,2,2,173,0,771000,2025-08-11
+"41/16 Yarrawonga St, CALAMVALE",Calamvale,house,3,2,2,154,0,795000,2025-07-29
+"144/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,1,0,0,740000,2025-07-31
+"33 Menser Street, CALAMVALE",Calamvale,house,6,3,2,448,0,1690000,2025-07-29
+"18/35 Jaffa Crescent, CALAMVALE",Calamvale,house,4,2,1,0,0,800000,2025-08-28
+"5 Ayesha Place, CALAMVALE",Calamvale,house,4,2,2,649,0,1140000,2025-08-09
+"3 Dewick Court, CALAMVALE",Calamvale,house,3,2,3,501,0,1124000,2025-08-09
+"6 Harmony Street, CALAMVALE",Calamvale,vacant_land,0,0,0,460,0,800000,2025-08-11
+"59 Orania Crescent, CALAMVALE",Calamvale,house,4,2,2,721,0,1506666,2025-08-22
+"9 Harmony Street, CALAMVALE",Calamvale,house,4,2,2,425,0,1351888,2025-08-22
+"29/88 Shelduck Place, CALAMVALE",Calamvale,house,3,2,2,152,0,758000,2025-08-15
+"16/22 Highgrove Street, CALAMVALE",Calamvale,house,3,2,2,0,0,766000,2025-08-23
+"16 Tupelo Street, CALAMVALE",Calamvale,house,3,2,2,450,0,952000,2025-07-21
+"8/11 Pyranees Street, CALAMVALE",Calamvale,house,3,2,1,168,0,690000,2025-07-04
+"83/18 Mornington Court, CALAMVALE",Calamvale,house,3,2,1,178,0,675000,2025-06-25
+"20/422 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,175,0,750000,2025-06-23
+"9 Bottletree Place, CALAMVALE",Calamvale,house,4,2,2,1082,0,1401000,2025-07-21
+"58 Chateau Street, CALAMVALE",Calamvale,house,4,2,2,802,0,1511000,2025-06-28
+"5/11 Pyranees Street, CALAMVALE",Calamvale,house,3,2,1,0,0,700000,2025-06-26
+"99/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,202,0,741500,2025-07-01
+"41/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,177,0,770000,2025-06-24
+"24/10 Highgrove Street, CALAMVALE",Calamvale,house,3,2,1,136,0,740000,2025-07-07
+"6 Neiwand Street, CALAMVALE",Calamvale,house,3,2,2,450,0,918000,2025-06-25
+"9/20 Stockton Street, CALAMVALE",Calamvale,house,3,2,2,187,0,757000,2025-07-25
+"12 Khoo Place, CALAMVALE",Calamvale,house,4,2,2,559,0,1100000,2025-07-26
+"69/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,1,109,0,749000,2025-07-15
+"46 Marsala Street, CALAMVALE",Calamvale,house,3,2,2,588,0,1175000,2025-07-26
+"53 Honeysuckle Way, CALAMVALE",Calamvale,house,4,2,2,856,0,1328800,2025-07-15
+"26 Hudson Street, CALAMVALE",Calamvale,house,3,2,2,400,0,970000,2025-07-24
+"39/50 Perkins Street, CALAMVALE",Calamvale,house,3,2,2,182,0,688000,2025-06-19
+"34/8 Honeysuckle Way, CALAMVALE",Calamvale,house,3,2,1,227,0,744000,2025-05-30
+"33 Aster Place, CALAMVALE",Calamvale,house,4,2,2,676,0,1150000,2025-06-14
+"5 Sheldon Street, CALAMVALE",Calamvale,house,4,3,4,928,0,1660000,2025-06-18
+"10 Boronia Close, CALAMVALE",Calamvale,house,4,2,2,716,0,1290000,2025-06-02
+"13/35 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,1,142,0,725000,2025-05-29
+"29 Casuarina Crescent, CALAMVALE",Calamvale,house,5,4,2,780,0,1680000,2025-06-03
+"11 Chestnut Place, CALAMVALE",Calamvale,house,4,3,2,750,0,1565000,2025-05-31
+"23/422 Benhiam Street, CALAMVALE",Calamvale,house,3,2,2,0,0,730000,2025-06-06
+"Unit 53/11 Butler Cres, CALAMVALE",Calamvale,house,3,2,2,0,0,760000,2025-06-02
+"2 Dellforest Drive, CALAMVALE",Calamvale,house,4,2,2,672,0,1225000,2025-05-30
+"62/50 Perkins Street, CALAMVALE",Calamvale,house,3,2,2,163,0,767000,2025-06-03
+"238/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,0,0,770000,2025-06-12
+"1/1 Jaffa Crescent, CALAMVALE",Calamvale,house,3,2,1,146,0,725000,2025-06-09
+"9/10 Highgrove Street, CALAMVALE",Calamvale,house,3,2,1,134,0,718880,2025-06-23
+"35/9 Eduard Place, CALAMVALE",Calamvale,house,3,2,1,152,0,750000,2025-06-17
+"22 Moneghetti Place, CALAMVALE",Calamvale,house,3,2,2,648,0,1100000,2025-06-23
+"3/53 Injune Circuit, CALAMVALE",Calamvale,house,4,3,2,180,0,780000,2025-05-26
+"42/28 Benhiam Street, CALAMVALE",Calamvale,house,3,2,1,138,0,700000,2025-05-12
+"106/2 Diamantina Street, CALAMVALE",Calamvale,unit,3,2,2,198,0,715000,2025-05-07
+"67 Alfred Circuit, CALAMVALE",Calamvale,house,4,2,2,741,0,1450000,2025-05-13
+"63 Alfred Circuit, CALAMVALE",Calamvale,house,5,2,2,768,0,1410000,2025-05-06
+"26/2 Rory Court, CALAMVALE",Calamvale,house,3,2,2,0,0,645000,2025-05-23
+"10 Pennant Place, CALAMVALE",Calamvale,house,5,3,4,1050,0,1600000,2025-05-19
+"21/10 Highgrove Street, CALAMVALE",Calamvale,house,3,2,1,0,0,695000,2025-05-27
+"8/8 Gemview Street, CALAMVALE",Calamvale,house,3,2,1,0,0,633000,2025-05-21
+"13/28 Menser Street, CALAMVALE",Calamvale,house,3,2,2,163,0,691000,2025-05-16
+"28 Bellflower Place, CALAMVALE",Calamvale,house,4,2,2,729,0,1390088,2025-05-12
+"29 Grevillea Crescent, CALAMVALE",Calamvale,house,4,2,2,704,0,1300000,2025-05-08
+"25/77 Menser Street, CALAMVALE",Calamvale,house,3,2,2,156,0,718000,2025-05-23
+"39 Wisteria Place, CALAMVALE",Calamvale,house,5,3,2,621,0,1705000,2025-05-10
+"54/2 Diamantina Street, CALAMVALE",Calamvale,house,3,2,2,150,0,681000,2025-05-17
+"190/85 Nottingham Road, CALAMVALE",Calamvale,house,3,2,2,153,0,725000,2025-05-23
+"12 Pepper Tree Street, CALAMVALE",Calamvale,house,3,2,2,494,0,1026000,2025-05-17
+"3/35 Jaffa Crescent, CALAMVALE",Calamvale,house,4,2,1,146,0,750000,2025-05-25
+"40 Alfred Circuit, CALAMVALE",Calamvale,house,5,3,3,722,0,2070000,2025-05-26
 "21/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,1,0,0,910000,2026-01-05
 "24/248 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,195,0,955000,2025-12-10
 "45/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,186,0,820000,2025-11-24
@@ -57,7 +737,6 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "57/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,177,0,776000,2025-11-26
 "32 McGarry Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,4,611,0,1550000,2025-11-26
 "2 Fels Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,501,0,1830888,2025-11-29
-"17 Apple Blossom Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,960,0,1800000,2025-11-22
 "12 Totten Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,1237,0,2550000,2026-02-16
 "7 Petrina Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,4,2,809,0,2018000,2025-12-06
 "19/28 Holmead Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,330,0,920200,2025-11-24
@@ -65,10 +744,199 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "2 Panache Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,868,0,1727000,2025-12-18
 "10/68 Timaru Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,173,0,862500,2026-01-20
 "26 Azzure Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,670,0,2350000,2026-02-07
+"24/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,900000,2026-02-09
+"Lot 1/56 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,vacant_land,0,0,0,406,0,835000,2024-09-04
+"17 Lilywood Street, EIGHT MILE PLAINS",Eight Mile Plains,vacant_land,0,0,0,1.84,0,8500000,2024-09-09
+"1 Alberton Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,498,0,1511888,2024-09-09
+"22 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,676,0,1210000,2024-10-03
+"5 Collett Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,622,0,1960000,2024-09-06
+"63 Walker Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,541,0,1608888,2024-10-03
+"3 Hermitage Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,671,0,1570000,2024-09-04
+"9 Dewberry Close, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,719,0,1800000,2024-09-14
+"52 Langford Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,375,0,1390000,2024-09-14
+"30 Greenlaw Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,456,0,1130000,2024-09-13
+"5/42 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,1,1,1,0,0,490000,2024-09-09
+"49 London ST, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,458,0,913500,2024-10-12
+"503/66 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,1,1,1,0,0,435000,2024-09-25
+"4/248 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,188,0,835000,2024-10-05
+"7 BAUHINIA CLOSE, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,4,618,0,1205000,2024-10-08
+"16/75 Levington Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,760000,2024-10-16
+"17 Ellendale Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,556,0,1650000,2024-10-19
+"152 Bordeaux St, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,486,0,1100000,2024-10-10
+"15/88 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,682000,2024-10-15
+"21/577 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,3,0,0,1300000,2024-09-27
+"38/407 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,725000,2024-09-03
+"24 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,vacant_land,0,0,2,4047,0,3500000,2024-07-31
+"2/30 Lindeman Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,2,301,0,836000,2024-07-15
+"36 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,458,0,850000,2024-08-05
+"29/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,700000,2024-07-31
+"8 Chloe Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,878,0,1630000,2024-07-20
+"29A Apple Blossom Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,786,0,1600000,2024-08-13
+"22 Avonlea Place, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,746,0,1785000,2024-07-30
+"15/36 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,181,0,870000,2024-08-03
+"25 Oakleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,679,0,1342000,2024-07-27
+"3 Kirstin Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,429,0,1893000,2024-08-17
+"20/100 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,687400,2024-08-11
+"13/45 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,110,0,760000,2024-08-08
+"38/37 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,135,0,775000,2024-08-09
+"16 Petrina Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,766,0,1591000,2024-08-24
+"6 Manara Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,957,0,1266000,2024-08-31
+"186 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,0,3901,0,3090000,2024-08-15
+"Lot 23/577 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,2,0,0,1200000,2024-08-19
+"11 Rakumba Close, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,1163,0,1850000,2024-05-26
+"38 Blue Grass Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,4,780,0,1500000,2024-05-20
+"27 Amarna Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,691,0,1458888,2024-05-18
+"121/54 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,2,2,1,0,0,603000,2024-05-22
+"5/1 O'Meara Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,135,0,658000,2024-05-25
+"17 Hermitage Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,5,673,0,1565000,2024-05-28
+"14/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,152,0,650000,2024-06-12
+"41/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,670550,2024-06-06
+"3 Leelaben Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,647,0,1488888,2024-06-15
+"136 Chester Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,671,0,1440000,2024-06-15
+"55 Dandelion Street, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,600,0,2510000,2024-06-15
+"196/54 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,2,2,1,83,0,607000,2024-06-19
+"88 Blue Grass Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,680,0,1680000,2024-06-12
+"29 Blue Grass Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,758,0,1340000,2024-06-08
+"40 Alan Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,677,0,1220888,2024-05-28
+"23/7 Delonix Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,0,0,920000,2024-05-26
+"60 London Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,0,0,910000,2024-07-13
+"513 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,810,0,1553000,2024-05-30
+"14 Kalkadoon Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,618,0,1155000,2024-06-03
+"4 Bedarra Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,910,0,1605000,2024-04-05
+"348 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,805,0,1380000,2024-04-15
+"20 Leelaben Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,708,0,1806000,2024-03-23
+"14 Chanel Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,801,0,2110000,2024-03-23
+"12 Lindeman Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,962,0,1500000,2024-04-13
+"8 Dandelion Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,5,1411,0,3400000,2024-04-20
+"36/42 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,1,1,1,0,0,454000,2024-04-09
+"1/16 Doris Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,436,0,851000,2024-04-20
+"35 Collett Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,578,0,1495000,2024-03-24
+"1 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,615,0,2255000,2024-05-13
+"30 Timaru Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,401,0,810000,2024-04-30
+"5/8 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,560000,2024-04-21
+"2469 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,467,0,988000,2024-04-30
+"309/66 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,1,1,1,0,0,424000,2024-05-01
+"40 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,4047,0,3430000,2024-05-17
+"76 Malbon Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,645,0,1190000,2024-05-11
+"63 Dandelion Street, EIGHT MILE PLAINS",Eight Mile Plains,house,6,5,4,675,0,2260000,2024-04-27
+"9 Mapleleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,616,0,1625888,2024-04-10
+"Lot 26/577 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,3,0,0,1250000,2024-05-17
+"16/262 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,1,0,0,731000,2024-04-28
+"16 Saville Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,4,610,0,1345000,2024-03-05
+"577 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,1150000,2024-03-22
+"21 Cintra Place, EIGHT MILE PLAINS",Eight Mile Plains,vacant_land,0,0,0,609,0,1050000,2024-03-01
+"2 Trevi Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,600,0,1880888,2024-02-29
+"23 Greenlaw Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,1,450,0,960000,2024-03-20
+"7 Brooklands Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,691,0,1121000,2024-02-17
+"5 Teagarden Street, EIGHT MILE PLAINS",Eight Mile Plains,house,6,4,5,611,0,1880000,2024-02-24
+"89/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,635000,2024-02-28
+"126 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,876,0,1180000,2024-03-06
+"7 Rakumba Close, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,758,0,1410000,2024-03-09
+"65 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,458,0,945000,2024-03-23
+"5 Narmar Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,627,0,1255000,2024-03-12
+"11 Fanfare Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,624,0,1395000,2024-03-23
+"39 Ellendale Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,562,0,2169500,2024-03-23
+"16/28 Holmead Road, EIGHT MILE PLAINS",Eight Mile Plains,other,3,3,1,328,0,738000,2024-03-19
+"103/66 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,1,1,1,0,0,450000,2024-03-21
+"72/15 Violet Close, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,154,0,653800,2024-03-11
+"14/23-45 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,1,0,0,580000,2024-02-28
+"4/36 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,0,0,860000,2024-03-07
+"404/66 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,2,2,1,0,0,535000,2024-01-08
+"32 Greenlaw Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,1,491,0,821000,2023-12-22
+"88 Nardie Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,829,0,1371000,2023-12-15
+"48/9 SAN MATEO BOULEVARD, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,4,187,0,650000,2024-01-08
+"30 Brampton Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,0,0,1600000,2024-01-17
+"6 Tanis Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,1050,0,1626000,2023-12-10
+"8 Forbes Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,803,0,1420000,2023-11-25
+"36/88 Bleasby road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,555000,2023-11-27
+"31 Gagarra Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,4,800,0,1610500,2023-12-02
+"8/7 Delonix Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,0,0,860000,2023-12-19
+"51 Arkose Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,0,0,1070000,2023-12-12
+"65 Blue Grass Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,615,0,1410000,2023-12-13
+"16/40 Arcadia Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,649000,2024-01-03
+"4/101 Bolton Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,249,0,615000,2024-01-17
+"6 Verdelho Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,5,671,0,1500000,2024-02-03
+"81 Malbon Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,3,699,0,1361000,2024-02-15
+"14/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,621000,2024-02-16
+"3 Burns Close, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,3,803,0,1761000,2024-02-17
+"7/156 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,0,0,805000,2024-02-16
+"15 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,617,0,1160000,2023-12-18
+"9 McGarry Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,640,0,1700000,2023-10-03
+"6 Stanton Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,5,801,0,1848000,2023-10-07
+"43 Ingluna Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,863,0,1651000,2023-10-07
+"77/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,139,0,575000,2023-10-19
+"9 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,692,0,1841000,2023-10-07
+"14 Trevi Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,600,0,1750000,2023-10-21
+"12 Pumice Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,1,653,0,923000,2023-10-28
+"11/30 Lindeman Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,1,1,393,0,646000,2023-10-26
+"58 Manor Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,559,0,1626000,2023-11-04
+"27/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,230,0,627000,2023-10-25
+"82 Underwood Rd, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,4,616,0,1090000,2023-10-31
+"27/88 Bleasby road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,605000,2023-10-27
+"17 Vanderbilt Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,740,0,1538000,2023-10-27
+"169 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,5,3974,0,4360000,2023-11-11
+"14 Bolinda Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,780,0,1360000,2023-11-04
+"3/28 Holmead Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,673500,2023-10-27
+"39 Arkose Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,647,0,1064000,2023-11-18
+"31 SETTLER STREET, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,588,0,1690000,2023-11-07
+"9 Heathfield Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,701,0,1160000,2023-11-25
+"18 Pinnacle Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,600,0,1720000,2023-11-25
+"58/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,554000,2023-07-25
+"21 Trevi Close, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,552,0,1350000,2023-07-08
+"51 Blue Grass Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,681,0,1475000,2023-07-10
+"8/8 Manor Street, EIGHT MILE PLAINS",Eight Mile Plains,other,3,1,2,0,0,600000,2023-07-04
+"35/100 Bordeaux St, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,212,0,534999,2023-07-04
+"68 Manchester Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,349,0,615500,2023-09-19
+"9 Aviance Close, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,900,0,1531000,2023-07-29
+"2 Totten Close, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,4,949,0,1690000,2023-08-15
+"11 Catalpa Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,4,643,0,1203500,2023-08-12
+"69 London Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,2,458,0,810000,2023-08-21
+"4/41 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,0,0,585000,2023-08-29
+"44/9 San Mateo Boulevard, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,4,0,0,608888,2023-08-23
+"32/9 San Mateo Boulevard, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,4,0,0,620000,2023-08-22
+"25 Devonlea Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,625,0,956000,2023-09-19
+"10 Lakkari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,814,0,1440000,2023-09-23
+"5 Fitzalan Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,700,0,1190000,2023-09-04
+"41 Arkose Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,711,0,1202000,2023-10-03
+"20 Catalpa Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,816,0,1371000,2023-09-30
+"8/156 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,1,0,0,749999,2023-09-27
+"908/8 Win Street, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,2,0,0,640000,2023-05-08
+"56/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,498000,2023-04-14
+"15 Norell Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,0,0,1539998,2023-04-22
+"1 Cactus Court, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,673,0,900000,2023-04-29
+"27 Demigre Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,4,4,760,0,1520000,2023-05-27
+"17 Yvonne Road, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,4,450,0,1370000,2023-05-27
+"126 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,601,0,1411000,2023-06-07
+"1/42 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,1,0,0,550000,2023-05-30
+"108 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,651,0,1075000,2023-06-08
+"45 Manchester Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,3,425,0,860000,2023-06-25
+"4 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,3,600,0,1068000,2023-06-24
+"44 Ingluna Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,4,901,0,1860000,2023-07-01
+"48/16 Arcadia Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,0,0,525000,2023-06-21
+"48/538 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,630000,2023-06-22
+"61 Regent Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,851,0,1700000,2023-06-27
+"61/100 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,206,0,570000,2023-06-30
+"83/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,475000,2023-03-07
+"13 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,4,2,405,0,1620000,2023-03-09
+"10/100 Bordeaux St, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,225,0,505000,2023-04-05
+"6 Chanel Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,0,0,1138000,2023-03-11
+"48/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,535000,2023-03-01
+"4/16 Arcadia Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,0,0,527000,2023-03-22
+"31/538 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,127,0,538000,2023-03-12
+"23 Horizon Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,5,2,641,0,2030000,2023-03-06
+"19/75 LEVINGTON ROAD, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,1,0,0,550000,2023-03-14
+"31/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,238,0,517500,2023-03-19
+"39 Regent Street, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,805,0,1703000,2023-03-23
+"3 Horizon Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,4,3,687,0,2450000,2023-04-01
+"83 Manchester Street, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,2,353,0,595000,2023-03-31
+"32 Bolton Street, EIGHT MILE PLAINS",Eight Mile Plains,house,8,2,1,810,0,1150000,2023-04-04
+"128 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,1037,0,1120000,2023-03-30
+"36/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,485000,2023-03-23
+"29/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,510000,2023-04-04
+"21 Mapleleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,616,0,1000000,2023-04-05
+"3 Bramwell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,577,0,1000000,2023-04-03
 "17 Arpege Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,650,0,1575000,2025-10-27
-"20 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,1,458,0,1069000,2025-10-13
 "116 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,677,0,1802000,2025-10-18
-"13 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,4,2,405,0,2120500,2025-10-24
 "3 Yvonne Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,600,0,1582000,2025-10-24
 "17/37 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,135,0,800500,2025-10-26
 "1110/8 Win Street, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,2,0,0,840000,2025-10-20
@@ -82,14 +950,32 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "8 Fendi Place, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,718,0,2300000,2025-11-15
 "50 Langford Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,379,0,1551000,2025-11-22
 "34 Boorala Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,713,0,1635000,2025-11-21
+"17 Apple Blossom Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,960,0,1800000,2025-11-22
 "489 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,674,0,1565000,2025-11-14
 "22 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,2,458,0,1100000,2025-11-14
+"11 Kandanga St, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,5,698,0,810000,2022-12-19
+"52 Miles Platting Road, EIGHT MILE PLAINS",Eight Mile Plains,vacant_land,0,0,0,425,0,482500,2023-02-03
+"10/9 San Mateo Boulevard, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,4,0,0,617000,2022-12-19
+"29/16 Violet Close, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,135,0,503000,2023-01-16
+"64/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,485000,2022-12-29
+"6 Pumice Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,759,0,1040000,2023-01-11
+"35/88 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,480000,2022-12-20
+"21/100 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,495000,2023-01-26
+"19 Brooklands Street, EIGHT MILE PLAINS",Eight Mile Plains,vacant_land,0,0,0,502,0,630000,2023-02-21
+"36/538 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,505000,2023-02-09
+"46/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,558000,2023-01-16
+"128 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,6,2,2,642,0,1310000,2023-01-10
+"52/100 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,478000,2023-01-16
+"12 Brooklands Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,1,638,0,890000,2023-02-07
+"10/45 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,169,0,510000,2023-02-28
+"69/5 Arkose Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,535000,2022-12-21
+"69 Dandelion Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,600,0,1560000,2023-02-04
+"3 Angel Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,400,0,1010000,2023-01-24
+"51 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,969,0,1363500,2023-02-04
+"20/407 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,134,0,570000,2023-02-24
 "18 Coneybeer Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,450,0,1528000,2025-09-04
 "11 Dewberry Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,628,0,1725000,2025-09-08
-"11 Fanfare Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,4,2,624,0,2100000,2025-09-18
 "29 Amarna Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,5,693,0,1795000,2025-09-14
-"3 Angel Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,4,400,0,1351000,2025-08-30
-"1 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,4,919,0,1821000,2025-08-30
 "5 Savanna Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,450,0,1250000,2025-09-01
 "32/90 Oakleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,127,0,786888,2025-09-08
 "22 Chester Road, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,425,0,1840000,2025-09-13
@@ -101,8 +987,1072 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "42 Colvillea Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,1,4,650,0,1320000,2025-09-10
 "10 Savanna Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,453,0,1305000,2025-10-08
 "46 Manmarra Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,4,850,0,2041888,2025-10-13
+"20 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,1,458,0,1069000,2025-10-13
 "5/101 Bolton Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,0,0,752000,2025-10-02
 "88 London Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,405,0,975000,2025-10-13
+"7/228 Gaskell St, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,786000,2025-08-25
+"72 Underwood Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,616,0,1300000,2025-07-30
+"3 Gagarra Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,4,608,0,1381000,2025-07-28
+"5 Ingluna Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,807,0,1977000,2025-08-06
+"15 Vanderbilt Street, EIGHT MILE PLAINS",Eight Mile Plains,house,9,3,4,680,0,1520000,2025-08-02
+"76 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,5,1397,0,1450000,2025-08-11
+"3 Demigre Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,702,0,1788000,2025-07-29
+"21 Yvonne Road, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,450,0,1451000,2025-08-09
+"43 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,617,0,1445000,2025-08-19
+"22/75 Levington Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,152,0,831000,2025-08-26
+"28 Maroo Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,672,0,1368000,2025-08-27
+"35 Malbon Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,759,0,1555000,2025-08-16
+"25/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,160,0,794000,2025-08-15
+"56 Timaru Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,1,325,0,955000,2025-08-19
+"1 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,4,919,0,1821000,2025-08-30
+"13/88 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,133,0,822000,2025-08-27
+"6 Skyline Court, EIGHT MILE PLAINS",Eight Mile Plains,house,6,6,2,605,0,2268888,2025-07-02
+"11 Kurru Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,4,867,0,1601000,2025-06-25
+"12 Burns Close, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,758,0,2030000,2025-06-16
+"7 Bowers Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,491,0,1720000,2025-06-10
+"47/100 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,760000,2025-06-02
+"63/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,700000,2025-06-16
+"1 Maisie Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,750,0,1350000,2025-06-03
+"74/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,2,268,0,710000,2025-06-09
+"8/36 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,unit,4,2,2,0,0,890500,2025-06-10
+"18 Gwandalan Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,3,687,0,2041001,2025-06-14
+"54 Regent Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,6,853,0,1851000,2025-06-14
+"26 Boorala Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,737,0,1360000,2025-07-10
+"15 Boorala Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,622,0,1430000,2025-06-17
+"18 Maisie Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,644,0,1680000,2025-06-22
+"17/228 Gaskell St, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,768000,2025-07-11
+"33 Chanel Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,682,0,1872000,2025-06-28
+"25/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,246,0,752500,2025-06-23
+"1012/8 Win Street, EIGHT MILE PLAINS",Eight Mile Plains,unit,2,2,1,0,0,701000,2025-07-01
+"33/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,680000,2025-07-14
+"42 Ellendale Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,500,0,1700000,2025-05-12
+"22/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,701000,2025-04-21
+"29 London Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,1,458,0,946000,2025-04-24
+"76/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,3,0,0,700000,2025-05-10
+"15/146 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,0,0,895000,2025-05-28
+"6 Femme Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,5,634,0,1478000,2025-05-21
+"40 Cressbrook Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,793,0,1420000,2025-04-16
+"50/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,150,0,700000,2025-04-29
+"11/100 Bordeaux Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,686000,2025-04-29
+"62 Arkose Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,629,0,1500000,2025-05-01
+"25/37 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,741000,2025-05-02
+"18 Satch Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,3,1106,0,2060000,2025-05-10
+"17 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,458,0,1180000,2025-05-23
+"62 Timaru Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,1,0,0,1060000,2025-05-17
+"59 Oakleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,620,0,1576000,2025-05-17
+"1 Demigre Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,701,0,1300000,2025-05-15
+"77 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,0,0,0,1.21,0,11000000,2025-04-14
+"33 Apple Blossom Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,636,0,1586000,2025-05-31
+"7/248 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,177,0,800000,2025-02-03
+"26 Alan Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,480,0,1516000,2025-02-27
+"19 Ellendale Circuit, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,528,0,1751000,2025-02-15
+"18 Brooklands Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,638,0,1262000,2025-02-15
+"36 Dromos Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,1,624,0,1258000,2025-02-15
+"4/142 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,156,0,765000,2025-03-03
+"132/54 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,2,2,1,0,0,625000,2025-02-27
+"17/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,2,0,0,695000,2025-03-27
+"64/15 Violet Close, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,742000,2025-02-19
+"43/26 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,202,0,670000,2025-02-28
+"8/42 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,1,1,2,77,0,541500,2025-02-25
+"45/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,150,0,748000,2025-03-31
+"14/146 Padstow Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,175,0,880000,2025-03-31
+"15/42 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,unit,2,2,1,88,0,650000,2025-03-28
+"1 Satch Court, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,650,0,1375000,2025-03-22
+"42/37 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,135,0,730000,2025-03-17
+"5 Brooklands Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,800,0,2050000,2025-04-05
+"7 Heathfield Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,701,0,1100000,2025-04-05
+"29/88 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,736000,2025-04-02
+"Brand New/577 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,0,0,1500000,2025-01-31
+"4 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,2,0,0,1586000,2024-12-21
+"40/407 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,713000,2024-12-12
+"22 Coneybeer Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,450,0,1480000,2025-01-06
+"21/40 Arcadia Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,780000,2025-01-20
+"4 Dominion Street, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,3,675,0,2380000,2024-12-11
+"39/88 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,690000,2024-12-12
+"8 Savanna Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,479,0,1218000,2024-12-11
+"6 Petunia Court, EIGHT MILE PLAINS",Eight Mile Plains,house,6,3,3,971,0,2106500,2024-12-07
+"51/228 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,735500,2025-01-23
+"66 Liverpool Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,458,0,895000,2024-12-21
+"27 Arkose Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,619,0,1460000,2025-01-24
+"31/30 Lindeman Place, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,4,350,0,828000,2025-01-22
+"7/45 Gaskell Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,228,0,687000,2025-01-28
+"14 Boorala Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,758,0,1425000,2025-01-31
+"52 Apple Blossom Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,697,0,1300000,2025-01-22
+"3 Sunshine Place, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,450,0,1740000,2025-01-25
+"53/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,706888,2025-01-30
+"14 Chester Road, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,425,0,1300000,2025-01-27
+"114 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,651,0,1570000,2024-10-23
+"29/75 LEVINGTON ROAD, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,2,0,0,785000,2024-10-28
+"84 Holmead Road, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,430,0,1318000,2024-10-31
+"11 LINDEMAN PLACE, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,760,0,1388000,2024-11-05
+"20/7 Delonix Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,153,0,830000,2024-10-19
+"12 Goorari Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,600,0,1400000,2024-10-26
+"35/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,700000,2024-10-28
+"5 Bowers Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,522,0,1700000,2024-11-02
+"50/25 Buckingham Place, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,2,0,0,697000,2024-10-23
+"88 Alan Crescent, EIGHT MILE PLAINS",Eight Mile Plains,house,5,2,2,543,0,1550000,2024-11-23
+"3 Slobodian Avenue, EIGHT MILE PLAINS",Eight Mile Plains,house,5,3,2,696,0,1880888,2024-11-09
+"8 Chancery Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,577,0,1080000,2024-11-23
+"14 Regal Place, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,2,450,0,1460000,2024-11-23
+"46 Bolinda Street, EIGHT MILE PLAINS",Eight Mile Plains,house,3,1,2,635,0,1200000,2024-11-10
+"18 Mapleleaf Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,3,2,620,0,1569000,2024-11-30
+"12/28 Holmead Road, EIGHT MILE PLAINS",Eight Mile Plains,other,3,2,2,335,0,723000,2024-11-30
+"6 Heathfield Street, EIGHT MILE PLAINS",Eight Mile Plains,house,4,2,4,625,0,1139000,2024-12-07
+"11/88 Bleasby Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,0,0,725000,2024-11-26
+"29/2311 Logan Road, EIGHT MILE PLAINS",Eight Mile Plains,house,3,2,1,138,0,687000,2024-11-20
+"35/577 Warrigal Road, EIGHT MILE PLAINS",Eight Mile Plains,unit,3,2,3,0,0,1300000,2024-12-06
+"60 Riverview Terrace, HAMILTON",HAMILTON,house,4,3,2,1026,0,6500000,2026-03-02
+"28 Pine Street, HAMILTON",HAMILTON,vacant_land,0,0,0,587,0,2400000,2026-02-18
+"21109/8 Hercules Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,1315000,2026-02-12
+"11511/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1300000,2026-02-04
+"2 Mikado Street, HAMILTON",HAMILTON,house,5,3,2,678,0,2570000,2026-02-11
+"3/175 Allen Street, HAMILTON",HAMILTON,house,3,2,1,0,0,1410000,2026-02-04
+"8/55 Hillside Crescent, HAMILTON",HAMILTON,unit,2,1,1,0,0,1055000,2026-02-18
+"50310/37B Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,60,0,699800,2026-02-26
+"72/8 Hunt Street, HAMILTON",HAMILTON,unit,2,2,1,102,0,825000,2026-02-01
+"11407/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,2,98,0,1450000,2026-03-03
+"5/161 Allen Street, HAMILTON",HAMILTON,unit,2,1,1,128,0,860000,2026-02-20
+"16/256 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,2,1,1,0,0,600000,2026-02-20
+"1097/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,845000,2026-02-06
+"10/24-26 Rossiter Parade, HAMILTON",HAMILTON,unit,2,1,1,0,0,1045000,2026-02-28
+"11501/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1100000,2026-03-02
+"14/654-664 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,2,2,2,0,0,975000,2026-02-09
+"41 Dickson Terrace, HAMILTON",HAMILTON,house,4,4,2,401,0,5700000,2025-07-15
+"6/45 Parkside Circuit, HAMILTON",HAMILTON,house,4,2,2,0,0,1950000,2025-07-17
+"21204/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,47,0,480000,2025-07-21
+"30203/15 Wharf Street, HAMILTON",HAMILTON,unit,2,2,1,105,0,1450000,2025-07-15
+"20810/7 Wharf Street, HAMILTON",HAMILTON,unit,3,2,2,150,0,2150000,2025-07-31
+"50705/37B Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,849000,2025-07-08
+"10307/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,50,0,480000,2025-07-30
+"1603/35 Hercules Street, HAMILTON",HAMILTON,unit,2,2,2,75,0,850000,2025-07-08
+"10814/320 MacArthur Ave, HAMILTON",HAMILTON,unit,2,1,1,0,0,700000,2025-07-28
+"1083/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,610000,2025-07-14
+"1024/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,500000,2025-07-14
+"10409/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,74,0,620000,2025-07-15
+"315/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,501000,2025-07-22
+"18 Lynell Street, HAMILTON",HAMILTON,house,4,2,2,585,0,2060000,2025-07-21
+"31104/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,485000,2025-07-21
+"10/72 Markwell Street, HAMILTON",HAMILTON,unit,1,1,0,48,0,530000,2025-07-24
+"2106/118 Parkside Circuit, HAMILTON",HAMILTON,unit,2,2,1,137,0,940000,2025-07-31
+"10/54 Jackson Street, HAMILTON",HAMILTON,house,2,2,1,113,0,761200,2025-06-23
+"20706/320 MacArthur Avenue, HAMILTON",HAMILTON,unit,2,2,1,0,0,739000,2025-06-17
+"99 Jackson Street, HAMILTON",HAMILTON,house,5,3,3,261,0,1430000,2025-07-01
+"49 Toorak Road, HAMILTON",HAMILTON,vacant_land,0,0,0,607,0,3100000,2025-06-27
+"2 Kitchener Road, HAMILTON",HAMILTON,house,6,5,6,61,0,5800000,2025-06-21
+"16 Atkinson Street, HAMILTON",HAMILTON,house,3,1,1,810,0,3550000,2025-06-24
+"10705/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,485000,2025-06-23
+"1/65 Kent Street, HAMILTON",HAMILTON,unit,3,2,2,0,0,1265000,2025-06-19
+"8/110 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,2,1,2,0,0,575000,2025-06-25
+"6/59 College Street, HAMILTON",HAMILTON,unit,2,1,1,118,0,710000,2025-06-25
+"7/41 Rossiter Parade, HAMILTON",HAMILTON,unit,3,2,2,179,0,1502000,2025-07-05
+"20905/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,1,1,71,0,775000,2025-07-07
+"30902/2 HARBOUR Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,567500,2025-06-25
+"68a Winchester Street, HAMILTON",HAMILTON,house,3,2,2,269,0,1300000,2025-07-01
+"1052/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,580000,2025-06-23
+"3097/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,755000,2025-07-03
+"3506/126 Parkside Circuit, HAMILTON",HAMILTON,unit,3,2,2,0,0,1300000,2025-07-07
+"67 Anthony Street, HAMILTON",HAMILTON,house,4,2,1,610,0,1850000,2025-06-11
+"4096/37C Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1065000,2025-06-10
+"11 Goldsworthy Avenue, HAMILTON",HAMILTON,house,3,1,1,508,0,1660000,2025-05-31
+"Level 6/43 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,585000,2025-05-28
+"1/33 Kent Street, HAMILTON",HAMILTON,unit,2,1,1,809,0,700000,2025-06-09
+"31 Kent Street, HAMILTON",HAMILTON,house,7,3,2,405,0,2200000,2025-06-10
+"30509/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,630000,2025-05-29
+"3128/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,650000,2025-06-02
+"1085/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,610000,2025-06-02
+"833/43 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,610000,2025-06-04
+"4/666 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,1,1,1,0,0,481000,2025-06-10
+"308/51 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,672000,2025-06-17
+"3102/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,820000,2025-06-16
+"1094/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,600000,2025-06-12
+"3104/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,610000,2025-06-10
+"17 Dickson Terrace, HAMILTON",HAMILTON,house,5,5,2,582,0,4950000,2025-06-09
+"5201/331 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,2,1,0,0,980000,2025-06-04
+"50 Jackson Street, HAMILTON",HAMILTON,house,3,1,2,387,0,1100000,2025-05-14
+"4026/37C Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,915000,2025-05-20
+"4/53 Winchester Street, HAMILTON",HAMILTON,unit,2,1,1,0,0,630000,2025-05-20
+"20305/7 Wharf Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,1198000,2025-05-14
+"710/35 HERCULES STREET, HAMILTON",HAMILTON,unit,1,1,1,0,0,572500,2025-05-16
+"7/9 Windsor Street, HAMILTON",HAMILTON,house,3,2,1,147,0,957500,2025-05-19
+"4093/37C Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,68,0,565000,2025-05-25
+"9302/50 Parkside Circuit, HAMILTON",HAMILTON,unit,2,2,1,113,0,1100000,2025-05-26
+"1/21 Arran Avenue, HAMILTON",HAMILTON,unit,2,1,1,0,0,660000,2025-05-13
+"10313/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,65,0,550000,2025-05-22
+"1092/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,600000,2025-05-15
+"3103/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,745000,2025-05-16
+"1073/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,600000,2025-05-21
+"3124/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,640000,2025-05-21
+"30604/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,51,0,450000,2025-05-26
+"1061/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,560000,2025-05-23
+"3095/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,600000,2025-05-16
+"852/43 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,82,0,630000,2025-05-28
+"4143/37c Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,116,0,1095000,2025-04-30
+"4210/18 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,620000,2025-04-30
+"5/75 Allen Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,665000,2025-04-28
+"840/43 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,605000,2025-05-08
+"30903/15 Wharf Street, HAMILTON",HAMILTON,unit,3,2,2,0,0,2100000,2025-05-06
+"7/44 Riverview Terrace, HAMILTON",HAMILTON,unit,3,2,1,0,0,799000,2025-05-01
+"809/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,555000,2025-04-30
+"809/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,820000,2025-05-01
+"812/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,476000,2025-05-03
+"21008/320 MacArthur Avenue, HAMILTON",HAMILTON,unit,1,1,1,0,0,590000,2025-04-30
+"4208/18 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,650000,2025-05-04
+"30403/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,450000,2025-05-10
+"304/15 Wharf Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,1440000,2025-05-10
+"1071/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,590000,2025-04-30
+"1084/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,590000,2025-05-01
+"6/92 Nudgee Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,750000,2025-05-12
+"553/15 Finnegan Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,920000,2025-05-07
+"3083/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,735000,2025-05-12
+"1044/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,575000,2025-05-06
+"30709/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,65,0,630000,2025-05-06
+"5 Ludlow Street, HAMILTON",HAMILTON,house,5,6,2,913,0,5800000,2025-04-22
+"16 York Street, HAMILTON",HAMILTON,house,3,2,1,521,0,1780000,2025-04-19
+"13 Quarry Street, HAMILTON",HAMILTON,house,5,5,3,520,0,4500000,2025-04-24
+"30202/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,540000,2025-04-05
+"21511/8 Hercules Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,900000,2025-04-19
+"1316/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,535000,2025-04-08
+"42 Langside Road, HAMILTON",HAMILTON,house,3,2,2,744,0,1980000,2025-04-09
+"27 Sparkes Avenue, HAMILTON",HAMILTON,house,5,3,3,810,0,3750000,2025-04-19
+"97 Jackson Street, HAMILTON",HAMILTON,house,3,2,2,0,0,1200000,2025-04-21
+"1/167 Allen Street, HAMILTON",HAMILTON,house,3,2,1,144,0,1040000,2025-04-16
+"20811/37D Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,91,0,820000,2025-04-07
+"308/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,576500,2025-04-09
+"2/63 Jackson Street, HAMILTON",HAMILTON,unit,2,2,1,95,0,760000,2025-04-15
+"21709/8 Hercules Street, HAMILTON",HAMILTON,unit,3,2,2,0,0,2250000,2025-04-24
+"10703/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,460000,2025-04-15
+"3108/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,625000,2025-04-17
+"1076/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,840000,2025-04-24
+"56 Windermere Road, HAMILTON",HAMILTON,house,5,5,4,2039,0,13000000,2025-04-24
+"11 Dickson Terrace, HAMILTON",HAMILTON,vacant_land,0,0,0,759,0,6000000,2025-03-21
+"1408/118 Parkside Circuit, HAMILTON",HAMILTON,unit,2,2,1,0,0,945000,2025-03-25
+"50 Oxford Street, HAMILTON",HAMILTON,house,3,1,2,633,0,1625000,2025-03-21
+"48 Royal Terrace, HAMILTON",HAMILTON,house,4,3,2,405,0,2200000,2025-03-12
+"3306/126 Parkside Circuit, HAMILTON",HAMILTON,unit,3,2,1,0,0,1150000,2025-03-18
+"8/28 Riverview Terrace, HAMILTON",HAMILTON,unit,3,1,1,0,0,802000,2025-03-14
+"11705/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,2,0,0,1200000,2025-03-06
+"30408/15 Wharf Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,770000,2025-03-10
+"56 Hillside Crescent, HAMILTON",HAMILTON,house,5,2,2,754,0,3625000,2025-03-21
+"934/47 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,64,0,540000,2025-04-01
+"20606/37D Harbour Road, HAMILTON",HAMILTON,unit,3,2,2,150,0,1900000,2025-03-12
+"1074/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,570000,2025-03-11
+"1096/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,865000,2025-03-12
+"5/10 Hilda Street, HAMILTON",HAMILTON,house,4,2,2,0,0,1050000,2025-03-12
+"15/66 Allen Street, HAMILTON",HAMILTON,unit,3,2,1,0,0,1025000,2025-03-28
+"3106/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,745000,2025-04-04
+"1067/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,725000,2025-03-05
+"301/37B Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,530000,2025-03-24
+"11 Killara Avenue, HAMILTON",HAMILTON,house,4,2,2,549,0,3600000,2025-02-27
+"4062/37C Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,900000,2025-03-03
+"4/110 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,2,1,2,0,0,570000,2025-02-22
+"131 Crosby Rd, HAMILTON",HAMILTON,house,5,3,2,0,0,2250000,2025-02-17
+"8/654 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,2,2,1,125,0,730000,2025-02-26
+"Level 17/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,57,0,555000,2025-03-04
+"4/125 Allen Street, HAMILTON",HAMILTON,house,3,2,1,0,0,900000,2025-02-21
+"50609/37B Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,540000,2025-02-14
+"3062/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,745000,2025-02-17
+"10509/320 MacArthur Ave, HAMILTON",HAMILTON,unit,1,1,1,61,0,606000,2025-02-25
+"1072/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,570000,2025-02-21
+"1075/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,575000,2025-02-21
+"3084/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,570000,2025-02-19
+"3092/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,800000,2025-03-03
+"30809/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,560000,2025-02-26
+"4171/37C Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,765000,2025-02-25
+"6/33 Kent Street, HAMILTON",HAMILTON,unit,2,1,2,119,0,700000,2025-02-26
+"20701/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,450000,2025-02-25
+"47 Hipwood Road, HAMILTON",HAMILTON,house,4,3,5,809,0,3890000,2025-03-02
+"10305/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,450000,2025-02-06
+"25 Hillside Crescent, HAMILTON",HAMILTON,house,5,4,2,418,0,4300000,2025-01-20
+"896/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,740000,2025-01-24
+"6/12 Riverview Terrace, HAMILTON",HAMILTON,house,3,2,2,0,0,1827000,2025-01-23
+"12104/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,2,0,0,815000,2025-02-03
+"3/60 Allen Street (Seymour road entry), HAMILTON",HAMILTON,house,3,2,2,0,0,1500000,2025-01-31
+"2/75 Allen Street, HAMILTON",HAMILTON,unit,2,2,1,127,0,625000,2025-01-28
+"7/12 Riverview Terrace, HAMILTON",HAMILTON,unit,3,3,2,0,0,1640000,2025-01-24
+"30103/15 Wharf Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,1350000,2025-02-13
+"302/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,532500,2025-01-31
+"3048/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,540000,2025-01-22
+"30608/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,557000,2025-02-13
+"1051/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,550000,2025-02-05
+"3045/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,540000,2025-02-05
+"1031/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,540000,2025-02-06
+"1065/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,560000,2025-02-10
+"31304/15 Wharf Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,1425000,2025-02-12
+"10410/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,64,0,540000,2025-02-12
+"31404/15 Wharf Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,1440000,2025-02-11
+"11308/7 Wharf Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,550000,2025-01-17
+"4087/37c Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,64,0,440000,2025-01-15
+"10105/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,417000,2024-12-20
+"825/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,730000,2025-01-12
+"11907/8 Harbour Road, HAMILTON",HAMILTON,unit,3,2,2,0,0,2000000,2024-12-17
+"869/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,775000,2025-01-09
+"4510/18 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,660000,2024-12-17
+"3/33 Parkside Circuit, HAMILTON",HAMILTON,house,3,2,2,0,0,1875000,2025-01-15
+"21602/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,490000,2024-12-20
+"10504/7 Wharf Street, HAMILTON",HAMILTON,unit,3,2,2,160,0,2025000,2024-12-22
+"2/102 Parkside Circuit, HAMILTON",HAMILTON,house,4,3,3,0,0,3050000,2024-12-17
+"4107/18 Parkside Circuit, HAMILTON",HAMILTON,unit,2,2,1,0,0,1030000,2024-12-18
+"10403/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,2,2,0,0,980000,2025-01-10
+"30104/15 Wharf Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,1300000,2025-01-15
+"3/28 Kent Street, HAMILTON",HAMILTON,unit,2,1,1,126,0,752000,2025-01-16
+"1021/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,510000,2025-01-07
+"1053/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,540000,2025-01-07
+"3037/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,640000,2025-01-09
+"3056/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,665000,2025-01-16
+"Type AMR/33 Remora Rd Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,785000,2026-01-12
+"123 Crescent Road, HAMILTON",HAMILTON,house,4,3,4,607,0,2840000,2026-01-23
+"20511/37D Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1065000,2026-01-28
+"123/37 Harbour Road, HAMILTON",HAMILTON,unit,3,2,3,0,0,3890000,2025-12-19
+"2/7 Toorak Road, HAMILTON",HAMILTON,house,3,2,2,0,0,2150000,2025-12-18
+"4204/18 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,66,0,725000,2025-12-19
+"545/15 Finnegan Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,910000,2025-12-24
+"2/44 Jackson Street, HAMILTON",HAMILTON,unit,2,2,1,114,0,950000,2025-12-21
+"10916/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,1,1,0,0,770000,2025-12-22
+"4091/37C Harbour Road, HAMILTON",HAMILTON,house,2,2,1,74,0,923000,2025-12-19
+"1/38 Riverview Terrace, HAMILTON",HAMILTON,unit,3,2,2,1647,0,1246500,2026-01-24
+"42 Jackson Street, HAMILTON",HAMILTON,house,4,3,2,387,0,1980000,2026-01-28
+"31404/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,0,49,0,560000,2026-01-29
+"1101/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1050000,2026-01-27
+"1111/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1050000,2026-01-30
+"21001/37D Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,925000,2024-12-17
+"78A Allen Street, HAMILTON",HAMILTON,house,3,2,2,142,0,1330000,2024-12-03
+"L13/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,53,0,515000,2024-12-05
+"1/8 Hunt Street, HAMILTON",HAMILTON,unit,1,1,1,82,0,450000,2024-11-27
+"604/8 Hunt Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,580000,2024-12-10
+"4313/18 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,665000,2024-11-22
+"815/43 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,605000,2024-12-17
+"5206/331 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,1,1,0,0,765000,2024-12-12
+"20801/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,425000,2024-11-23
+"4312/18 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,645000,2024-12-16
+"4130/37C Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,545000,2024-12-13
+"4084/37C Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,500000,2024-11-25
+"11409/7 Wharf Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,510000,2024-11-23
+"1091/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,580000,2024-12-13
+"3053/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,665000,2024-12-13
+"3078/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,570000,2024-12-12
+"3076/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,695000,2024-12-12
+"37 Cooksley Street, HAMILTON",HAMILTON,house,3,2,2,0,0,1585000,2024-12-03
+"27/8 Hunt Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,652000,2025-12-10
+"LGC/11 Hillside Crescent, HAMILTON",HAMILTON,unit,2,1,1,179,0,1700000,2025-12-12
+"3045/37 Finnegan Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,680000,2025-12-02
+"8 Dickson Terrace, HAMILTON",HAMILTON,vacant_land,0,0,0,810,0,6250000,2025-12-12
+"14 Sparkes Avenue, HAMILTON",HAMILTON,house,4,2,2,405,0,2650000,2025-11-30
+"21507/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,56,0,661000,2025-12-17
+"11/191 Allen Street, HAMILTON",HAMILTON,unit,2,1,1,0,0,820000,2025-12-12
+"5/17 Whyenbah Street, HAMILTON",HAMILTON,unit,4,3,3,0,0,2377000,2025-12-05
+"10607/8 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,670000,2025-12-11
+"6 Hants Street, HAMILTON",HAMILTON,other,3,2,1,157,0,1400000,2025-12-09
+"10305/7 Wharf Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,765000,2025-12-01
+"3113/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,780000,2025-12-02
+"803/35 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,75,0,840000,2025-12-03
+"3121/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,700000,2025-12-12
+"3125/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,680000,2025-12-16
+"3116/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,775000,2025-12-09
+"3126/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,785000,2025-12-09
+"10301/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,2,0,0,865000,2025-12-11
+"11408/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,84,0,1080000,2025-12-03
+"20807/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,56,0,550000,2025-11-10
+"10/31 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1290000,2025-11-20
+"20802/37D Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,89,0,1100000,2025-11-12
+"11A Dickson Terrace, HAMILTON",HAMILTON,house,0,0,0,759,0,6000000,2025-11-14
+"Harbour Road, HAMILTON",HAMILTON,unit,2,2,2,0,0,1520000,2025-11-13
+"8/66 Allen Street, HAMILTON",HAMILTON,unit,3,2,2,0,0,1455000,2025-11-15
+"612/12-18 Parkside Circuit, HAMILTON",HAMILTON,house,4,2,2,0,0,2150000,2025-11-13
+"18 Kent Street, HAMILTON",HAMILTON,house,3,2,1,607,0,2350000,2025-11-21
+"4136/37C Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,650000,2025-11-24
+"11003/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,2,2,0,0,1250000,2025-11-14
+"12/54 Jackson Street, HAMILTON",HAMILTON,house,2,2,1,115,0,850000,2025-11-21
+"1121/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1050000,2025-11-11
+"29A Ludlow Street, HAMILTON",HAMILTON,house,4,2,2,635,0,3700000,2025-11-18
+"12 Windsor Street, HAMILTON",HAMILTON,house,5,4,4,607,0,3375000,2025-11-21
+"832/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,855000,2025-11-19
+"3107/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,780000,2025-11-20
+"21207/37D Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,91,0,1289000,2025-11-23
+"1124/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,990000,2025-11-24
+"561/15 Finnegan Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,975000,2025-11-03
+"1 Goldsworthy Avenue, HAMILTON",HAMILTON,house,4,3,2,496,0,1950000,2025-11-06
+"2408/118 Parkside Circuit, HAMILTON",HAMILTON,unit,2,2,2,90,0,992500,2025-11-04
+"42 Balowrie Street, HAMILTON",HAMILTON,house,4,3,2,456,0,2975000,2025-10-31
+"1212/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,570000,2025-10-29
+"11/54 Jackson Street, HAMILTON",HAMILTON,house,2,2,1,0,0,825000,2025-11-06
+"5/14 Hilda Street, HAMILTON",HAMILTON,unit,2,1,1,0,0,817000,2025-10-29
+"92 Jackson Street, HAMILTON",HAMILTON,house,3,1,2,332,0,1200000,2025-10-29
+"1002/37B Harbour Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,750000,2025-10-29
+"602/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,651000,2025-10-31
+"5/92 Nudgee Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,869198,2025-10-31
+"21106/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,685000,2025-11-08
+"21203/7 Wharf Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,695000,2025-11-05
+"2/27 Harbour Road, HAMILTON",HAMILTON,other,4,3,2,0,0,4500000,2025-11-09
+"TYPE H/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,680000,2025-11-04
+"3087/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,760000,2025-11-04
+"1011/35 Hercules Street, HAMILTON",HAMILTON,house,2,2,1,0,0,795000,2025-10-30
+"20403/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,2,1,75,0,810000,2025-10-29
+"817/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,120,0,895000,2025-10-20
+"100 Nudgee Road, HAMILTON",HAMILTON,house,3,1,0,433,0,1050000,2025-10-28
+"28 Hilda Street, HAMILTON",HAMILTON,unit,8,6,12,683,0,1951000,2025-10-09
+"101 Crescent Road, HAMILTON",HAMILTON,house,4,3,2,607,0,3912500,2025-10-18
+"49 Oxford Street, HAMILTON",HAMILTON,house,3,3,2,206,0,1560000,2025-10-10
+"2301/118 Parkside Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,624000,2025-10-15
+"10707/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1075000,2025-10-10
+"11208/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1000000,2025-10-15
+"30402/15 Wharf Street, HAMILTON",HAMILTON,unit,3,2,2,194,0,2250000,2025-10-10
+"1302/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,650000,2025-10-17
+"806/43 Hercules Street, HAMILTON",HAMILTON,unit,1,1,2,116,0,712000,2025-10-27
+"1/110 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,2,1,1,0,0,565000,2025-10-13
+"2/110 Kingsford Smith Drive, HAMILTON",HAMILTON,unit,1,1,1,78,0,576000,2025-10-20
+"38a Hants Street, HAMILTON",HAMILTON,house,4,2,2,131,0,1600000,2025-10-13
+"41 Kent Street, HAMILTON",HAMILTON,house,5,4,2,405,0,3400000,2025-10-16
+"9/28 Riverview Terrace, HAMILTON",HAMILTON,unit,3,2,1,0,0,900000,2025-10-20
+"1206/35 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,850000,2025-10-24
+"1022/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,520000,2025-10-21
+"5508/331 MacArthur Ave, HAMILTON",HAMILTON,unit,2,2,1,0,0,7500000,2025-09-24
+"31702/15 Wharf Street, HAMILTON",HAMILTON,unit,5,5,4,0,0,7800000,2025-09-22
+"28 Royal Terrace, HAMILTON",HAMILTON,house,3,1,2,405,0,1770000,2025-09-18
+"10206/8 Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,90,0,818000,2025-09-19
+"521/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,845000,2025-09-17
+"11/341 Macarthur Avenue, HAMILTON",HAMILTON,house,5,3,2,354,0,1965000,2025-09-25
+"20303/37D Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,1342500,2025-10-01
+"309/51 Hercules Street, HAMILTON",HAMILTON,unit,3,2,6,199,0,2325000,2025-09-24
+"21308/37D Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,58,0,735000,2025-09-19
+"412/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,532000,2025-10-08
+"11 Whyenbah Street, HAMILTON",HAMILTON,house,4,5,4,280,0,3200000,2025-09-19
+"5113/331 Macarthur Avenue, HAMILTON",HAMILTON,unit,1,1,1,0,0,696000,2025-09-30
+"4 Langside Road, HAMILTON",HAMILTON,house,4,5,6,575,0,8000000,2025-10-09
+"44 Royal Terrace, HAMILTON",HAMILTON,house,4,2,2,405,0,2650000,2025-10-03
+"3096/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,745000,2025-09-17
+"1023/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,520000,2025-09-19
+"147/37 Harbour Road, HAMILTON",HAMILTON,unit,2,3,2,0,0,2550000,2025-09-22
+"20 Pine Street, HAMILTON",HAMILTON,house,5,3,3,587,0,3200000,2025-09-01
+"20608/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,1,1,1,0,0,640000,2025-09-01
+"10509/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,1,1,1,61,0,685000,2025-08-29
+"3108/126 PARKSIDE Circuit, HAMILTON",HAMILTON,unit,1,1,1,0,0,700000,2025-09-09
+"135 Allen Street, HAMILTON",HAMILTON,house,3,1,2,405,0,1530000,2025-09-11
+"5/28 Riverview Terrace, HAMILTON",HAMILTON,unit,3,2,1,0,0,930000,2025-09-01
+"98 Windermere Road, HAMILTON",HAMILTON,house,5,3,2,913,0,6010000,2025-09-13
+"5/35 Jackson Street, HAMILTON",HAMILTON,house,3,2,1,0,0,1441000,2025-09-11
+"31508/2 Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,69,0,701000,2025-09-08
+"21801/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,616000,2025-09-01
+"3067/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,730000,2025-08-29
+"21210/37D Harbour Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,650000,2025-09-08
+"305/37B Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,119,0,906000,2025-09-01
+"1025/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,0,0,0,520000,2025-09-09
+"3117/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,780000,2025-09-15
+"3114/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,640000,2025-09-05
+"1093/33 Remora Road, HAMILTON",HAMILTON,unit,1,1,1,0,0,620000,2025-09-05
+"4142/37C Harbour Road, HAMILTON",HAMILTON,unit,2,2,1,123,0,1160000,2025-09-05
+"47 Riverview Terrace, HAMILTON",HAMILTON,house,5,4,2,873,0,3550000,2025-08-12
+"38A Grays Road, HAMILTON",HAMILTON,house,4,3,2,315,0,4200000,2025-08-25
+"129/37 Harbour Road, HAMILTON",HAMILTON,unit,3,2,3,259,0,4300000,2025-08-11
+"10602/7 Wharf Street, HAMILTON",HAMILTON,unit,2,2,2,101,0,1370000,2025-08-01
+"3/75 Allen Street, HAMILTON",HAMILTON,unit,2,2,1,106,0,716000,2025-08-14
+"102 Nudgee Road, HAMILTON",HAMILTON,house,4,2,2,433,0,1280000,2025-08-09
+"20310/7 Wharf Street, HAMILTON",HAMILTON,unit,2,2,2,0,0,1700000,2025-08-07
+"609/35 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,611500,2025-08-11
+"10816/320 Macarthur Avenue, HAMILTON",HAMILTON,unit,2,1,1,68,0,725000,2025-08-21
+"21201/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,1,0,0,570000,2025-08-06
+"1102/33 Remora Road, HAMILTON",HAMILTON,unit,2,2,1,0,0,920000,2025-08-13
+"3/58 College Street, HAMILTON",HAMILTON,house,2,1,1,109,0,746000,2025-08-11
+"411/35 Hercules Street, HAMILTON",HAMILTON,unit,2,2,1,0,0,672500,2025-08-18
+"1087/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,805000,2025-08-22
+"1/53 Nudgee Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,635000,2025-08-12
+"20702/8 Hercules Street, HAMILTON",HAMILTON,unit,1,1,0,0,0,495000,2025-08-14
+"844/43 Hercules Street, HAMILTON",HAMILTON,unit,2,2,2,109,0,888000,2025-08-07
+"1077/33 Remora Road, HAMILTON",HAMILTON,unit,2,1,1,0,0,780000,2025-08-21
+"33 Dirkala Street, MANSFIELD",MANSFIELD,house,3,3,2,546,0,1700000,2025-11-25
+"80 Mingera Street, MANSFIELD",MANSFIELD,house,3,2,2,650,0,1505000,2025-11-22
+"12 Vaucluse Place, MANSFIELD",MANSFIELD,house,5,2,2,478,0,1828000,2025-11-22
+"5 Honeysuckle Street, MANSFIELD",MANSFIELD,house,4,1,2,584,0,1350000,2025-11-23
+"52 Pareena Crescent, MANSFIELD",MANSFIELD,house,3,1,2,607,0,1400000,2025-12-15
+"23 Lewana Street, MANSFIELD",MANSFIELD,house,4,1,2,572,0,1362000,2025-12-08
+"1/3 Honeysuckle Street, MANSFIELD",MANSFIELD,unit,2,1,1,0,0,745000,2025-12-02
+"94 Mingera Street, MANSFIELD",MANSFIELD,house,3,2,2,551,0,1485000,2025-12-15
+"77 Valentia Street, MANSFIELD",MANSFIELD,house,3,1,2,607,0,1350000,2025-12-15
+"9 Trochus Street, MANSFIELD",MANSFIELD,house,3,2,2,647,0,1530000,2026-01-31
+"49 Koumala Street, MANSFIELD",MANSFIELD,house,3,2,2,554,0,1575000,2026-02-02
+"37 Morialta Street, MANSFIELD",MANSFIELD,house,3,2,2,556,0,1680000,2026-02-02
+"20 Mirang Street, MANSFIELD",MANSFIELD,house,3,1,2,541,0,1400000,2026-02-04
+"45 Morialta Street, MANSFIELD",MANSFIELD,house,3,1,2,650,0,1360000,2026-02-11
+"20 Lilyvale Street, MANSFIELD",MANSFIELD,house,3,2,2,567,0,1636000,2026-02-16
+"42 Eastwood Drive, MANSFIELD",MANSFIELD,house,4,1,1,662,0,1467500,2026-02-28
+"35 Lewana Street, MANSFIELD",MANSFIELD,house,3,3,2,574,0,1521000,2026-03-02
+"7 Cornflower Street, MANSFIELD",MANSFIELD,house,3,3,2,650,0,1260000,2024-02-14
+"27 Kiparra Street, MANSFIELD",MANSFIELD,house,5,2,4,584,0,1485000,2024-02-03
+"14 Trident Street, MANSFIELD",MANSFIELD,house,4,2,2,567,0,1430000,2024-02-21
+"35 Honeysuckle Street, MANSFIELD",MANSFIELD,house,5,2,3,567,0,1105000,2024-03-13
+"6A Culzean Street, MANSFIELD",MANSFIELD,house,6,5,3,1001,0,2170000,2024-02-09
+"8 Lachine Place, MANSFIELD",MANSFIELD,house,5,2,2,462,0,1660000,2024-03-06
+"1 Chiniala Street, MANSFIELD",MANSFIELD,house,4,2,2,539,0,1360001,2024-02-05
+"30/189 Wecker Road, MANSFIELD",MANSFIELD,house,3,2,1,0,0,750000,2024-03-01
+"9 Salandra Street, MANSFIELD",MANSFIELD,house,3,2,2,524,0,1228000,2024-02-24
+"26 Pareena Crescent, MANSFIELD",MANSFIELD,house,3,2,2,556,0,1160000,2024-03-02
+"4 Dorval Close, MANSFIELD",MANSFIELD,house,5,2,2,454,0,1518000,2024-03-05
+"11 Picardie Close, MANSFIELD",MANSFIELD,house,5,3,4,720,0,2100000,2024-03-24
+"23 Bluebell Street, MANSFIELD",MANSFIELD,house,5,2,1,594,0,942200,2024-02-27
+"28 Buttercup Street, MANSFIELD",MANSFIELD,house,4,2,2,571,0,1430000,2024-03-16
+"385 Pine Mountain Road, MANSFIELD",MANSFIELD,house,3,3,2,631,0,1150000,2024-04-12
+"57 Morialta Street, MANSFIELD",MANSFIELD,house,4,2,2,564,0,1100000,2024-04-13
+"45 Blackberry Street, MANSFIELD",MANSFIELD,house,3,2,2,619,0,1155000,2024-04-20
+"4 Redleaf Street, MANSFIELD",MANSFIELD,house,4,1,1,557,0,1105000,2024-04-23
+"106 Ham Road, MANSFIELD",MANSFIELD,house,4,2,2,600,0,1450000,2024-04-29
+"34 Eastwood Drive, MANSFIELD",MANSFIELD,house,5,2,4,916,0,1685001,2024-04-27
+"52 Aminya Street, MANSFIELD",MANSFIELD,house,4,3,2,521,0,1100000,2023-11-14
+"28 Lilyvale Street, MANSFIELD",MANSFIELD,house,4,2,2,584,0,1130000,2023-11-03
+"31 Morialta Street, MANSFIELD",MANSFIELD,house,3,2,4,556,0,1206000,2023-11-04
+"9 Leru Street, MANSFIELD",MANSFIELD,house,3,2,3,595,0,1175000,2023-11-09
+"15 Silex Street, MANSFIELD",MANSFIELD,house,4,2,2,564,0,1255000,2023-11-12
+"24 Lewana Street, MANSFIELD",MANSFIELD,house,3,1,1,584,0,850000,2023-11-15
+"5 Lachine Place, MANSFIELD",MANSFIELD,house,4,2,2,456,0,1370000,2023-11-23
+"505 Creek Road, MANSFIELD",MANSFIELD,house,4,1,2,556,0,840000,2023-12-06
+"99 Greenmeadow Road, MANSFIELD",MANSFIELD,house,4,1,2,635,0,935000,2023-12-01
+"27 Lewana Street, MANSFIELD",MANSFIELD,house,3,1,1,572,0,1020000,2023-11-26
+"1/51 Mingera Street, MANSFIELD",MANSFIELD,house,3,2,1,187,0,690000,2023-11-20
+"35 Colington Street, MANSFIELD",MANSFIELD,house,6,3,2,0,0,1345000,2023-12-16
+"221 Wecker Road, MANSFIELD",MANSFIELD,house,3,1,2,579,0,850000,2023-12-04
+"1 Firthshire Street, MANSFIELD",MANSFIELD,house,4,2,2,726,0,1180000,2024-01-09
+"20 Kiparra Street, MANSFIELD",MANSFIELD,house,4,2,3,544,0,1020000,2023-12-21
+"27 Bridle Street, MANSFIELD",MANSFIELD,house,5,2,2,641,0,1410000,2024-01-23
+"211 Wecker Road, MANSFIELD",MANSFIELD,house,4,2,2,606,0,1184500,2024-01-29
+"34 Novello Street, MANSFIELD",MANSFIELD,house,3,2,2,574,0,1353000,2024-01-17
+"4 Marianna Street, MANSFIELD",MANSFIELD,house,4,3,2,603,0,1700000,2023-12-13
+"65 Wecker Road, MANSFIELD",MANSFIELD,house,3,2,4,531,0,869500,2023-08-22
+"161 Ham Road, MANSFIELD",MANSFIELD,house,4,2,6,857,0,1200000,2023-08-07
+"399 Pine Mountain Road, MANSFIELD",MANSFIELD,house,4,2,2,582,0,815000,2023-08-05
+"28 Danina Street, MANSFIELD",MANSFIELD,house,3,2,2,546,0,1250000,2023-08-07
+"2/188 Broadwater Road, MANSFIELD",MANSFIELD,house,2,2,1,0,0,508000,2023-08-17
+"18 Olivella Street, MANSFIELD",MANSFIELD,house,3,1,1,653,0,1177000,2023-09-12
+"38 Lorinya Street, MANSFIELD",MANSFIELD,house,3,2,2,536,0,1161500,2023-08-25
+"53/189 Wecker Rd, MANSFIELD",MANSFIELD,house,3,2,1,0,0,710000,2023-09-08
+"10 Buttercup Street, MANSFIELD",MANSFIELD,house,4,2,1,626,0,1145000,2023-09-04
+"63 Valentia Street, MANSFIELD",MANSFIELD,house,3,1,1,602,0,1050000,2023-09-11
+"8 Picardie Close, MANSFIELD",MANSFIELD,house,4,2,2,620,0,1502000,2023-09-30
+"65 Greenmeadow Road, MANSFIELD",MANSFIELD,house,3,1,2,620,0,1060000,2023-09-25
+"8 Danina Street, MANSFIELD",MANSFIELD,house,3,2,2,665,0,1320000,2023-10-14
+"373 Pine Mountain Road, MANSFIELD",MANSFIELD,house,5,3,2,592,0,1024000,2023-10-04
+"5 Brownleaf Street, MANSFIELD",MANSFIELD,house,4,2,3,703,0,1380000,2023-10-04
+"32 Bridle Street, MANSFIELD",MANSFIELD,house,4,2,2,558,0,1300000,2023-09-29
+"7 Brigadoon Street, MANSFIELD",MANSFIELD,house,5,3,2,607,0,1420000,2023-10-18
+"41 Blackberry Street, MANSFIELD",MANSFIELD,house,3,2,2,613,0,1270000,2023-10-15
+"10 Novello Street, MANSFIELD",MANSFIELD,house,3,2,2,574,0,1140000,2023-10-25
+"37 Brochet Street, MANSFIELD",MANSFIELD,house,3,2,1,645,0,1150000,2023-10-23
+"3 Brechin Street, MANSFIELD",MANSFIELD,house,4,2,2,640,0,1690000,2025-10-09
+"21 Koumala Street, MANSFIELD",MANSFIELD,house,6,3,2,650,0,1888000,2025-09-26
+"1 Picardie Close, MANSFIELD",MANSFIELD,house,4,2,3,610,0,1700000,2025-11-17
+"139 Morialta Street, MANSFIELD",MANSFIELD,house,4,2,2,415,0,1715000,2025-10-07
+"2/2 Honeysuckle Street, MANSFIELD",MANSFIELD,unit,2,1,1,0,0,680000,2025-10-08
+"6 Buttercup Street, MANSFIELD",MANSFIELD,house,3,1,3,686,0,1413000,2025-10-18
+"3 Morialta Street, MANSFIELD",MANSFIELD,house,3,2,2,607,0,1608000,2025-11-17
+"8 Liatoki Street, MANSFIELD",MANSFIELD,house,3,2,2,617,0,1720000,2025-10-09
+"84 Pareena Crescent, MANSFIELD",MANSFIELD,house,4,1,2,546,0,1426000,2025-10-27
+"145 Wecker Road, MANSFIELD",MANSFIELD,house,3,1,1,630,0,1250000,2025-10-19
+"7 Mourilyan Street, MANSFIELD",MANSFIELD,house,3,2,4,574,0,1826500,2025-10-27
+"95 Pareena Crescent, MANSFIELD",MANSFIELD,house,3,1,2,607,0,1350000,2025-11-05
+"14 Amoria Street, MANSFIELD",MANSFIELD,house,3,1,2,630,0,1381000,2025-11-10
+"6 Parari Street, MANSFIELD",MANSFIELD,house,4,4,2,678,0,1840000,2025-11-02
+"30 Bentley Court, MANSFIELD",MANSFIELD,house,4,3,2,470,0,1820000,2025-11-08
+"117 Greenmeadow Road, MANSFIELD",MANSFIELD,house,4,2,2,584,0,1450000,2025-11-06
+"84 Mingera Street, MANSFIELD",MANSFIELD,house,3,2,2,637,0,1599888,2025-11-15
+"81 Ham Road, MANSFIELD",MANSFIELD,house,4,2,2,840,0,1865500,2025-11-10
+"59 Mingera Street, MANSFIELD",MANSFIELD,house,3,1,2,622,0,1313000,2025-11-17
+"225 Broadwater Road, MANSFIELD",MANSFIELD,house,3,1,2,678,0,1200000,2025-09-01
+"14 Bluebell Street, MANSFIELD",MANSFIELD,house,4,1,3,645,0,1460000,2025-09-10
+"22 Cresthaven Drive, MANSFIELD",MANSFIELD,house,3,1,2,650,0,1195000,2025-08-18
+"23 Firthshire Street, MANSFIELD",MANSFIELD,house,5,2,2,577,0,1685000,2025-08-04
+"47 Koumala Street, MANSFIELD",MANSFIELD,house,3,1,2,688,0,1300500,2025-08-16
+"12 Liamena Street, MANSFIELD",MANSFIELD,house,3,2,2,486,0,1217000,2025-08-14
+"18 Amoria Street, MANSFIELD",MANSFIELD,house,3,1,1,630,0,1260000,2025-08-20
+"38 Tandanya Street, MANSFIELD",MANSFIELD,house,4,2,2,607,0,1452000,2025-08-13
+"49 Eastwood Drive, MANSFIELD",MANSFIELD,house,4,2,2,469,0,1600000,2025-08-23
+"65 Blackberry Street, MANSFIELD",MANSFIELD,house,3,1,2,610,0,1420000,2025-09-04
+"6 Redleaf Street, MANSFIELD",MANSFIELD,house,7,2,3,557,0,1550000,2025-09-06
+"13/189 Wecker Road, MANSFIELD",MANSFIELD,house,3,2,1,0,0,926000,2025-08-27
+"22 Greenmeadow Road, MANSFIELD",MANSFIELD,house,3,1,3,698,0,1130000,2025-07-31
+"3 Gretna Street, MANSFIELD",MANSFIELD,house,3,1,2,655,0,1300000,2025-09-22
+"53 Koumala Street, MANSFIELD",MANSFIELD,house,3,1,2,546,0,1330000,2025-09-02
+"17 Marissa Close, MANSFIELD",MANSFIELD,house,4,2,2,658,0,1685000,2025-09-20
+"35 Tandanya Street, MANSFIELD",MANSFIELD,house,4,1,2,612,0,1550000,2025-09-20
+"45 Aminya Street, MANSFIELD",MANSFIELD,house,4,2,4,673,0,1475000,2025-08-18
+"3/2 Aminya Street, MANSFIELD",MANSFIELD,house,3,1,1,133,0,862000,2025-06-19
+"27 Togar Street, MANSFIELD",MANSFIELD,house,3,1,3,549,0,1150000,2025-05-27
+"11 Mirang Street, MANSFIELD",MANSFIELD,house,3,1,2,541,0,1315000,2025-06-17
+"25 Bluebell Street, MANSFIELD",MANSFIELD,house,5,2,3,711,0,1481000,2025-05-28
+"3 Brigadoon Street, MANSFIELD",MANSFIELD,house,3,2,1,304,0,1280000,2025-05-14
+"27 Danina Street, MANSFIELD",MANSFIELD,house,3,1,2,554,0,1235000,2025-05-03
+"14 Jilloong Street, MANSFIELD",MANSFIELD,house,3,2,2,546,0,1490000,2025-06-07
+"42 Tandanya Street, MANSFIELD",MANSFIELD,house,3,2,6,607,0,1500000,2025-06-14
+"3 Glen Nevis Street, MANSFIELD",MANSFIELD,house,3,2,2,582,0,1275000,2025-06-04
+"129 Wecker Road, MANSFIELD",MANSFIELD,house,3,2,2,637,0,1300000,2025-06-27
+"15 Pareena Crescent, MANSFIELD",MANSFIELD,house,3,2,2,683,0,1480000,2025-06-23
+"22 Menkira Street, MANSFIELD",MANSFIELD,house,3,2,2,546,0,1300000,2025-07-25
+"4 Novello Street, MANSFIELD",MANSFIELD,house,3,2,2,546,0,1248000,2025-07-17
+"4 Pavuvu Street, MANSFIELD",MANSFIELD,house,3,1,4,546,0,1414000,2025-07-21
+"20 Valentia Street, MANSFIELD",MANSFIELD,house,4,2,2,546,0,1500000,2025-07-19
+"18 Picardie Close, MANSFIELD",MANSFIELD,house,4,2,2,600,0,1800000,2025-07-19
+"8 Arura Street, MANSFIELD",MANSFIELD,house,5,2,4,615,0,1400000,2025-07-15
+"10 Bluebell Street, MANSFIELD",MANSFIELD,house,3,2,2,584,0,1245000,2025-07-28
+"12/189 Wecker Road, MANSFIELD",MANSFIELD,house,3,2,1,231,0,920000,2025-07-29
+"40 Cresthaven Drive, MANSFIELD",MANSFIELD,house,4,2,2,645,0,1580000,2025-03-21
+"22 Trident Street, MANSFIELD",MANSFIELD,house,4,3,2,567,0,1450000,2025-03-10
+"7/6 Aminya Street, MANSFIELD",MANSFIELD,house,3,2,1,158,0,902500,2025-03-29
+"103 Pareena Crescent, MANSFIELD",MANSFIELD,house,3,1,2,607,0,1248000,2025-03-20
+"16 Tegula Street, MANSFIELD",MANSFIELD,house,3,1,1,632,0,1170000,2025-04-16
+"9 Nubara Street, MANSFIELD",MANSFIELD,house,4,1,3,546,0,1120000,2025-03-12
+"2 Handon Street, MANSFIELD",MANSFIELD,house,3,1,4,572,0,1250000,2025-03-25
+"7/188 Broadwater Road, MANSFIELD",MANSFIELD,house,2,2,1,0,0,626000,2025-03-24
+"26 Bridle Street, MANSFIELD",MANSFIELD,house,4,3,2,558,0,1685000,2025-04-12
+"13 Novello Street, MANSFIELD",MANSFIELD,house,4,4,2,572,0,1800000,2025-04-09
+"25 Kiparra Street, MANSFIELD",MANSFIELD,house,4,2,2,584,0,1350000,2025-04-24
+"127 Ham Road, MANSFIELD",MANSFIELD,house,3,2,2,546,0,1420010,2025-04-12
+"20 Picardie Close, MANSFIELD",MANSFIELD,house,4,2,3,600,0,1595000,2025-04-27
+"29 Bluebell Street, MANSFIELD",MANSFIELD,house,4,2,4,637,0,1556000,2025-04-16
+"10 Bradford Court, MANSFIELD",MANSFIELD,house,3,1,1,618,0,1100000,2025-04-16
+"11 Olivella Street, MANSFIELD",MANSFIELD,house,3,2,2,584,0,1290000,2025-04-12
+"46 Morialta Street, MANSFIELD",MANSFIELD,house,3,1,2,536,0,1240000,2025-05-01
+"54 Valentia Street, MANSFIELD",MANSFIELD,house,3,1,1,562,0,990000,2025-02-05
+"94 Greenmeadow Road, MANSFIELD",MANSFIELD,house,3,2,2,733,0,1360000,2025-01-29
+"51 Arura Street, MANSFIELD",MANSFIELD,house,5,3,2,0,0,1640000,2024-12-10
+"77 Blackberry Street, MANSFIELD",MANSFIELD,house,4,1,2,655,0,1125000,2025-02-21
+"163 Wecker Road, MANSFIELD",MANSFIELD,house,3,1,1,584,0,872000,2024-12-07
+"14 Lewana Street, MANSFIELD",MANSFIELD,house,3,2,2,546,0,1355000,2024-12-07
+"9/8 Greenmeadow Road, MANSFIELD",MANSFIELD,unit,2,1,0,62,0,407500,2024-12-07
+"10 Eastwood Drive, MANSFIELD",MANSFIELD,house,5,2,2,410,0,1635000,2024-12-10
+"10 Togar Street, MANSFIELD",MANSFIELD,house,3,1,2,544,0,1196000,2024-12-24
+"7 Linfield Street, MANSFIELD",MANSFIELD,house,3,1,2,541,0,1238000,2024-12-04
+"33 Morialta Street, MANSFIELD",MANSFIELD,house,3,1,4,556,0,1260000,2024-12-17
+"3 Silo Place, MANSFIELD",MANSFIELD,house,4,1,4,785,0,1195000,2025-01-01
+"15 Danina Street, MANSFIELD",MANSFIELD,house,3,2,2,572,0,1434000,2025-02-03
+"49/189 Wecker Road, MANSFIELD",MANSFIELD,house,3,2,1,214,0,743000,2025-01-29
+"22 Madau Street, MANSFIELD",MANSFIELD,house,3,1,1,538,0,1135000,2025-01-26
+"20 Kane Crescent, MANSFIELD",MANSFIELD,house,4,2,2,600,0,1662500,2025-02-03
+"19 Raintree Street, MANSFIELD",MANSFIELD,house,3,2,4,556,0,1320000,2025-02-06
+"1 Tivela Street, MANSFIELD",MANSFIELD,house,3,1,3,582,0,1220000,2025-01-29
+"7 Mirang Street, MANSFIELD",MANSFIELD,house,3,1,4,541,0,1230000,2025-02-27
+"53 Weedon Street West, MANSFIELD",MANSFIELD,other,4,2,4,6393,0,2300000,2024-10-12
+"26 Gretna Street, MANSFIELD",MANSFIELD,house,5,2,2,600,0,1520000,2024-10-31
+"20 Bridle Street, MANSFIELD",MANSFIELD,house,4,2,2,556,0,1590000,2024-10-20
+"4/8 Greenmeadow Road, MANSFIELD",MANSFIELD,unit,2,1,1,0,0,450000,2024-10-12
+"15 Lilyvale Street, MANSFIELD",MANSFIELD,house,3,1,2,617,0,1280500,2024-10-14
+"7 Marianna Street, MANSFIELD",MANSFIELD,house,4,2,3,634,0,1480000,2024-10-11
+"45 Koumala Street, MANSFIELD",MANSFIELD,house,3,1,4,696,0,975000,2024-10-14
+"2 Sandringham Street, MANSFIELD",MANSFIELD,house,6,2,2,1030,0,1600000,2024-10-12
+"11 Nucella Street, MANSFIELD",MANSFIELD,vacant_land,0,0,0,333,0,730000,2024-10-12
+"10 Brochet Street, MANSFIELD",MANSFIELD,house,6,3,2,704,0,1505000,2024-10-19
+"11 Carbora Street, MANSFIELD",MANSFIELD,house,3,1,2,600,0,1165000,2024-10-26
+"105 Ham Road, MANSFIELD",MANSFIELD,house,3,2,4,589,0,1482000,2024-11-06
+"10 Banika Street, MANSFIELD",MANSFIELD,house,3,2,2,551,0,1230000,2024-11-08
+"20 Moeller Place, MANSFIELD",MANSFIELD,house,4,2,2,452,0,1200000,2024-11-29
+"1/8 Greenmeadow Road, MANSFIELD",MANSFIELD,unit,2,1,1,0,0,465000,2024-11-18
+"28 Chiniala Street, MANSFIELD",MANSFIELD,house,4,2,2,792,0,1520000,2024-11-18
+"5 Salandra Street, MANSFIELD",MANSFIELD,house,3,2,2,607,0,1155000,2024-11-22
+"21 Cresthaven Drive, MANSFIELD",MANSFIELD,house,4,2,2,582,0,1400000,2024-11-21
+"5/8 Greenmeadow Road, MANSFIELD",MANSFIELD,unit,2,1,1,0,0,487000,2024-11-18
+"6/8 Greenmeadow Road, MANSFIELD",MANSFIELD,unit,2,1,1,0,0,452000,2024-11-12
+"78 Mingera Street, MANSFIELD",MANSFIELD,house,3,1,2,582,0,1190000,2024-07-20
+"11 Koumala Street, MANSFIELD",MANSFIELD,house,4,2,2,582,0,1205000,2024-08-07
+"11 Casmaria Street, MANSFIELD",MANSFIELD,house,3,1,1,577,0,1101000,2024-08-05
+"72 Valentia Street, MANSFIELD",MANSFIELD,house,4,1,2,564,0,1108000,2024-07-30
+"46 Dirkala Street, MANSFIELD",MANSFIELD,house,3,2,2,516,0,1306500,2024-08-06
+"24 Condong Street, MANSFIELD",MANSFIELD,house,4,2,5,541,0,1340000,2024-08-06
+"30 Tandanya Street, MANSFIELD",MANSFIELD,house,4,2,3,612,0,1500000,2024-08-19
+"16 Vaucluse Place, MANSFIELD",MANSFIELD,house,4,2,4,687,0,1910000,2024-08-19
+"17 Biplex Street, MANSFIELD",MANSFIELD,house,3,2,2,632,0,1350000,2024-08-21
+"19 Nubara Street, MANSFIELD",MANSFIELD,house,3,1,1,546,0,1111500,2024-08-24
+"42 Arura Street, MANSFIELD",MANSFIELD,house,3,1,1,665,0,1218000,2024-08-29
+"27 Condong Street, MANSFIELD",MANSFIELD,house,3,1,4,544,0,1265000,2024-09-01
+"5 Redleaf Street, MANSFIELD",MANSFIELD,house,4,2,4,591,0,1445000,2024-08-28
+"21 Arura Street, MANSFIELD",MANSFIELD,house,3,1,2,577,0,1080000,2024-09-11
+"36/12 Mailey Street, MANSFIELD",MANSFIELD,house,3,2,2,0,0,835000,2024-08-25
+"4 Togar Street, MANSFIELD",MANSFIELD,house,4,1,2,544,0,1211000,2024-09-09
+"11 Ardennes Close, MANSFIELD",MANSFIELD,house,4,3,4,687,0,2185000,2024-09-24
+"3 Pareena Crescent, MANSFIELD",MANSFIELD,house,4,2,1,582,0,1250000,2024-09-24
+"533 Creek Road, MANSFIELD",MANSFIELD,house,5,3,4,556,0,1200000,2024-09-18
+"28 Glen Nevis Street, MANSFIELD",MANSFIELD,house,4,3,2,557,0,1450000,2024-05-15
+"12 Glen Nevis Street, MANSFIELD",MANSFIELD,house,5,3,4,607,0,1438000,2024-05-11
+"28 Kenora Street, MANSFIELD",MANSFIELD,house,3,3,4,605,0,1455000,2024-05-11
+"33 Glen Nevis Street, MANSFIELD",MANSFIELD,house,5,3,2,614,0,1675000,2024-05-02
+"2 Condong Street, MANSFIELD",MANSFIELD,house,3,2,2,690,0,1139000,2024-05-24
+"3 Handon Street, MANSFIELD",MANSFIELD,house,4,1,2,536,0,1135000,2024-05-08
+"10 Salandra Street, MANSFIELD",MANSFIELD,house,5,2,3,536,0,1442000,2024-04-30
+"7 Ardennes Close, MANSFIELD",MANSFIELD,house,4,2,2,604,0,1410000,2024-05-25
+"65 Valentia Street, MANSFIELD",MANSFIELD,house,4,2,2,607,0,1190000,2024-06-08
+"33 Canter Street, MANSFIELD",MANSFIELD,house,5,3,2,656,0,1810000,2024-06-15
+"17 Firthshire Street, MANSFIELD",MANSFIELD,house,3,1,2,685,0,1180000,2024-06-07
+"16 Cresthaven Drive, MANSFIELD",MANSFIELD,house,5,2,2,582,0,1200000,2024-05-24
+"105 Morialta Street, MANSFIELD",MANSFIELD,house,4,2,4,546,0,1460000,2024-06-19
+"10 Trident Street, MANSFIELD",MANSFIELD,house,4,3,4,721,0,1850000,2024-06-08
+"1 Banika Street, MANSFIELD",MANSFIELD,house,5,3,2,606,0,1430000,2024-06-03
+"30 Condong Street, MANSFIELD",MANSFIELD,house,4,2,2,541,0,1320000,2024-07-06
+"17/12 Mailey Street, MANSFIELD",MANSFIELD,house,3,2,2,156,0,895000,2024-07-06
+"123 Morialta Street, MANSFIELD",MANSFIELD,house,4,1,2,589,0,1330000,2024-07-06
+"28 Valentia Street, MANSFIELD",MANSFIELD,house,4,1,3,534,0,1200000,2024-07-07
+"272 Broadwater Road, MANSFIELD",MANSFIELD,house,3,2,1,551,0,1280000,2024-07-10
+"38/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1055000,2026-01-09
+"15 Levoh Street, ROCHEDALE",ROCHEDALE,house,5,5,2,505,0,2650000,2025-12-03
+"11/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1070000,2026-01-09
+"37 Major Drive, ROCHEDALE",ROCHEDALE,house,5,5,2,540,0,2350000,2026-01-22
+"28 Raptor Street, ROCHEDALE",ROCHEDALE,house,6,4,2,486,0,2150000,2026-02-02
+"93 Splendour Street, ROCHEDALE",ROCHEDALE,house,4,2,2,301,0,1550000,2026-02-20
+"67/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,3,2,1,141,0,990000,2025-12-09
+"138 Splendour Street, ROCHEDALE",ROCHEDALE,house,4,2,2,590,0,1550000,2025-12-16
+"33/21 Harrier Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1290319,2025-12-16
+"Lot 16/15 Blackwood Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,500,0,1150200,2025-12-08
+"19 Ross Street, ROCHEDALE",ROCHEDALE,house,5,3,2,374,0,1810000,2026-01-15
+"Lot 15/15 Blackwood Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,500,0,990000,2025-12-26
+"68 Finch Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,256,0,1241000,2026-01-27
+"55/89 West Street, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1255000,2026-02-19
+"21/21 Harrier Street, ROCHEDALE",ROCHEDALE,house,3,2,2,184,0,1025000,2026-03-05
+"68/89 West Street, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1175000,2026-02-27
+"44/89 West Street, ROCHEDALE",ROCHEDALE,house,3,3,2,0,0,1300000,2026-02-24
+"Lot 11/15 Blackwood Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,500,0,1171000,2026-03-02
+"21 Ann Crescent, ROCHEDALE",ROCHEDALE,house,5,4,2,409,0,2348000,2024-08-15
+"29 Parolin Parade, ROCHEDALE",ROCHEDALE,house,5,5,2,461,0,2550000,2024-08-26
+"32 Dell Street, ROCHEDALE",ROCHEDALE,house,5,4,2,447,0,2810000,2024-08-26
+"17 Ross Street, ROCHEDALE",ROCHEDALE,house,6,6,3,600,0,3080888,2024-09-20
+"42 Viewpoint Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1385000,2024-08-30
+"115 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,320,0,1388000,2024-10-08
+"18/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,180,0,986000,2024-09-15
+"10/59 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1100000,2024-10-07
+"2 Obrist Place, ROCHEDALE",ROCHEDALE,house,5,3,2,0,0,1695000,2024-08-21
+"182 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,192,0,940000,2024-08-16
+"61 Frangipani Street, ROCHEDALE",ROCHEDALE,house,5,5,2,477,0,1910000,2024-09-23
+"11 Panorama Street, ROCHEDALE",ROCHEDALE,house,4,3,2,339,0,1500000,2024-09-24
+"16 Panorama Street, ROCHEDALE",ROCHEDALE,house,5,3,2,409,0,1750000,2024-09-16
+"8 Levoh Street, ROCHEDALE",ROCHEDALE,house,5,3,2,390,0,1600000,2024-09-09
+"97 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,5,2,2,513,0,1650000,2024-09-03
+"100 Mcdermott Parade, ROCHEDALE",ROCHEDALE,house,3,2,2,192,0,906000,2024-09-24
+"86 McDermott Parade, ROCHEDALE",ROCHEDALE,house,3,2,2,273,0,930000,2024-09-25
+"32 Paragon Street, ROCHEDALE",ROCHEDALE,house,5,3,2,0,0,1600000,2024-10-08
+"92 Parklands Circuit, ROCHEDALE",ROCHEDALE,house,5,2,2,516,0,2100000,2024-10-14
+"98/68 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,970000,2024-09-24
+"445 Priestdale Road, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,1.01,0,8000000,2024-07-01
+"2 Botanica Street, ROCHEDALE",ROCHEDALE,house,5,4,2,471,0,2380000,2024-06-17
+"1 Paragon Street, ROCHEDALE",ROCHEDALE,house,5,5,2,600,0,2390000,2024-06-29
+"20 Ultimo Court, ROCHEDALE",ROCHEDALE,house,6,5,2,396,0,1980888,2024-07-23
+"16 Elevate Street, ROCHEDALE",ROCHEDALE,house,5,5,2,451,0,2420000,2024-07-22
+"374 Grieve Road, ROCHEDALE",ROCHEDALE,house,6,4,3,3.05,0,2850000,2024-06-12
+"40 Levoh Street, ROCHEDALE",ROCHEDALE,house,5,5,4,0,0,2118888,2024-07-14
+"28/21 Lorisch Way, ROCHEDALE",ROCHEDALE,house,4,2,2,149,0,1019000,2024-06-14
+"25/21 Lorisch Way, ROCHEDALE",ROCHEDALE,house,4,2,2,120,0,979000,2024-06-24
+"27/21 Lorisch Way, ROCHEDALE",ROCHEDALE,house,4,2,2,120,0,989000,2024-07-27
+"17 Soar Street, ROCHEDALE",ROCHEDALE,house,5,5,2,443,0,1938888,2024-06-25
+"98 Fisher Street, ROCHEDALE",ROCHEDALE,house,5,5,2,425,0,2300000,2024-06-19
+"68 Frangipani Street, ROCHEDALE",ROCHEDALE,house,5,3,2,534,0,1970000,2024-08-08
+"7 English Place, ROCHEDALE",ROCHEDALE,house,5,3,2,512,0,1710000,2024-07-05
+"71 Kate Circuit, ROCHEDALE",ROCHEDALE,house,3,2,2,239,0,921000,2024-07-06
+"18 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,3,2,687,0,1930000,2024-07-30
+"7 Grange Close, ROCHEDALE",ROCHEDALE,house,4,2,2,477,0,1430000,2024-07-27
+"73 Kate Circuit, ROCHEDALE",ROCHEDALE,house,3,2,2,0,0,930000,2024-07-20
+"45/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1033000,2024-07-03
+"53/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,179,0,975000,2024-08-08
+"6 Leahcim Street, ROCHEDALE",ROCHEDALE,house,5,3,2,410,0,2200888,2024-04-20
+"12 Perring Crescent, ROCHEDALE",ROCHEDALE,house,5,3,2,375,0,1770000,2024-03-22
+"50 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,425,0,1375000,2024-05-15
+"13 Prestige Street, ROCHEDALE",ROCHEDALE,house,5,5,2,400,0,2362000,2024-06-06
+"85/68 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,201,0,1015000,2024-04-12
+"68 Phoenix Street, ROCHEDALE",ROCHEDALE,house,5,3,2,371,0,1633888,2024-03-26
+"2 Peak Court, ROCHEDALE",ROCHEDALE,house,4,2,2,600,0,1500000,2024-04-06
+"92 Ascent Street, ROCHEDALE",ROCHEDALE,house,4,2,2,313,0,1438000,2024-05-30
+"48 Viewpoint Street, ROCHEDALE",ROCHEDALE,house,4,2,2,391,0,1525500,2024-04-30
+"43 Panorama Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,425,0,1100000,2024-04-10
+"112 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,458,0,1700000,2024-05-22
+"6 Premier Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,448,0,1040888,2024-05-07
+"15 Wombat Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1405000,2024-04-27
+"26/21 Lorisch Way, ROCHEDALE",ROCHEDALE,house,4,2,2,120,0,984000,2024-06-03
+"50 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1310000,2024-05-10
+"54 Peregrine Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,416,0,1010000,2024-06-08
+"14 Platypus Circuit, ROCHEDALE",ROCHEDALE,house,5,2,2,576,0,1666000,2024-06-08
+"6 Platypus Circuit, ROCHEDALE",ROCHEDALE,house,6,3,2,539,0,1860000,2024-05-22
+"15 Phoenix Street, ROCHEDALE",ROCHEDALE,house,5,5,2,504,0,1988888,2024-04-23
+"12 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,2,0,0,0,1800000,2024-06-11
+"55 Evergreen Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,410,0,988000,2024-03-08
+"112 Fisher Street, ROCHEDALE",ROCHEDALE,house,5,3,2,425,0,2200000,2024-01-08
+"70 Ford Road, ROCHEDALE",ROCHEDALE,house,5,4,5,2000,0,2934000,2023-12-23
+"35 Willow Way, ROCHEDALE",ROCHEDALE,house,5,3,2,543,0,1870000,2024-01-16
+"123 Splendour Street, ROCHEDALE",ROCHEDALE,house,4,3,2,471,0,1890000,2024-02-22
+"6 Elevate Street, ROCHEDALE",ROCHEDALE,house,5,3,2,402,0,1870000,2023-12-26
+"46 Parolin Parade, ROCHEDALE",ROCHEDALE,house,6,5,2,416,0,2020000,2024-01-08
+"38 Dell Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1700000,2024-01-22
+"21 Peregrine Street, ROCHEDALE",ROCHEDALE,house,5,3,2,408,0,1560000,2024-02-18
+"28 Lux Place, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1400000,2024-02-14
+"11 Plum Place, ROCHEDALE",ROCHEDALE,house,4,3,2,400,0,1810000,2024-02-19
+"78 Cockatoo Place, ROCHEDALE",ROCHEDALE,house,5,2,2,778,0,2200100,2024-02-25
+"21/21 Lorisch Way, ROCHEDALE",ROCHEDALE,house,4,2,2,118,0,1088000,2024-03-11
+"13 Grand Street, ROCHEDALE",ROCHEDALE,house,5,5,2,528,0,2210000,2024-03-15
+"38 Royal Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,350,0,1260000,2024-03-02
+"116 Parklands Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,400,0,1210000,2024-03-07
+"14 Wallaby Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,323,0,1256000,2024-03-02
+"33 Altitude Street, ROCHEDALE",ROCHEDALE,house,4,2,2,372,0,1518000,2024-03-16
+"49 Grand Street, ROCHEDALE",ROCHEDALE,house,5,3,2,450,0,2420000,2024-03-07
+"258 Rochedale Road, ROCHEDALE",ROCHEDALE,other,5,1,2,2.02,0,4000000,2024-02-02
+"409 Priestdale Road, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,10000,0,5200000,2023-12-04
+"36 Harrier Street, ROCHEDALE",ROCHEDALE,house,5,3,2,410,0,2232000,2023-11-30
+"1 Willow Way, ROCHEDALE",ROCHEDALE,house,5,3,2,488,0,1520000,2023-12-05
+"5 Perring Crescent, ROCHEDALE",ROCHEDALE,house,5,6,2,400,0,2300000,2023-10-19
+"3 Jasmine Place, ROCHEDALE",ROCHEDALE,house,5,3,2,400,0,1830000,2023-11-27
+"29 Viewpoint Street, ROCHEDALE",ROCHEDALE,house,4,2,2,473,0,1515000,2023-11-03
+"125/68 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,970000,2023-12-04
+"43 Resurge St, ROCHEDALE",ROCHEDALE,house,5,3,2,0,0,1940000,2023-10-30
+"62 Parklands Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1720000,2023-11-13
+"4 Blossom Place, ROCHEDALE",ROCHEDALE,house,4,2,2,400,0,1300000,2023-12-07
+"6 Grand Street, ROCHEDALE",ROCHEDALE,house,5,5,2,564,0,2438000,2023-10-29
+"22 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,5,3,2,388,0,1660000,2023-10-31
+"22 Honeyeater Place, ROCHEDALE",ROCHEDALE,house,4,2,2,477,0,1540000,2023-12-04
+"66 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,4,3,2,378,0,1625000,2023-11-11
+"30 Dell Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1365000,2023-11-25
+"587 Grieve Road, ROCHEDALE",ROCHEDALE,house,4,3,3,5447,0,1930000,2023-12-15
+"18 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,5,3,2,465,0,1800000,2023-11-26
+"61 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,5,2,2,477,0,1701000,2023-11-28
+"46 Wombat Crescent, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1888000,2023-11-20
+"2 Elevate Street, ROCHEDALE",ROCHEDALE,house,5,5,0,455,0,2800000,2023-12-22
+"18 Bock Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,450,0,1000000,2023-08-30
+"5 Penfold Crescent, ROCHEDALE",ROCHEDALE,house,5,5,2,429,0,1850000,2023-09-11
+"1 Botanica Street, ROCHEDALE",ROCHEDALE,house,5,5,2,450,0,2451000,2023-08-12
+"161 Splendour Street, ROCHEDALE",ROCHEDALE,house,5,4,2,419,0,2410888,2023-07-16
+"40 Wombat Crescent, ROCHEDALE",ROCHEDALE,house,6,5,2,540,0,2200000,2023-08-18
+"17 Raquel Avenue, ROCHEDALE",ROCHEDALE,house,4,3,2,463,0,1955000,2023-08-24
+"55 Major Drive, ROCHEDALE",ROCHEDALE,house,5,3,2,423,0,1935000,2023-09-29
+"74 McDermott Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,192,0,795000,2023-07-26
+"59 Altitude Street, ROCHEDALE",ROCHEDALE,house,5,3,2,374,0,1721000,2023-08-19
+"11 Paragon Street, ROCHEDALE",ROCHEDALE,house,4,2,2,390,0,1480000,2023-08-30
+"7/58 West Street, ROCHEDALE",ROCHEDALE,house,6,3,2,342,0,1655000,2023-09-02
+"435 Priestdale Road, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,1.01,0,7376333,2023-10-17
+"18 Honeyeater Place, ROCHEDALE",ROCHEDALE,house,5,4,6,929,0,2750000,2023-09-09
+"55 Royal Crescent, ROCHEDALE",ROCHEDALE,house,5,2,2,350,0,1390000,2023-08-26
+"108 Fisher Street, ROCHEDALE",ROCHEDALE,house,5,3,4,0,0,1340000,2023-10-03
+"3 Plateau Place, ROCHEDALE",ROCHEDALE,house,6,5,3,495,0,2710000,2023-09-16
+"94/68 West Street, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,930000,2023-09-25
+"69 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,532,0,1831000,2023-10-07
+"26 OBRIST PLACE, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,2010000,2023-10-08
+"87 Kate Circuit, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,717,0,1358888,2023-06-26
+"22 Zenith Street, ROCHEDALE",ROCHEDALE,house,6,6,3,793,0,2650000,2023-06-01
+"87 Royal Crescent, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,537,0,1148000,2023-06-12
+"48 Aspire Street, ROCHEDALE",ROCHEDALE,house,3,2,2,465,0,1250000,2023-05-22
+"40 Glenmore Crescent, ROCHEDALE",ROCHEDALE,other,8,3,3,1.05,0,3550000,2023-06-14
+"56 Grand Street, ROCHEDALE",ROCHEDALE,house,5,5,2,0,0,2575000,2023-05-24
+"103 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,6,4,2,659,0,2650888,2023-07-01
+"307 Grieve Road, ROCHEDALE",ROCHEDALE,house,3,2,3,1.01,0,3150000,2023-06-05
+"23 Kate Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,640,0,1965000,2023-05-20
+"123 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,5,3,2,536,0,1910000,2023-06-05
+"33/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,815000,2023-05-20
+"18 Amethyst Street, ROCHEDALE",ROCHEDALE,house,5,4,2,625,0,2358000,2023-06-11
+"74 Cockatoo Place, ROCHEDALE",ROCHEDALE,house,4,4,2,714,0,1550000,2023-06-15
+"6 Alex Place, ROCHEDALE",ROCHEDALE,house,5,5,2,405,0,1608000,2023-06-17
+"40 Perring Crescent, ROCHEDALE",ROCHEDALE,house,5,3,2,0,0,1500000,2023-06-10
+"8/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,3,2,1,150,0,740000,2023-06-22
+"70 McDermott Parade, ROCHEDALE",ROCHEDALE,other,3,2,2,280,0,860000,2023-06-13
+"9/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,169,0,833000,2023-06-28
+"38 Willow Way, ROCHEDALE",ROCHEDALE,house,4,2,2,454,0,1367000,2023-07-15
+"96 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,450,0,1300000,2023-06-30
+"6 Paragon Street, ROCHEDALE",ROCHEDALE,house,4,2,2,330,0,1250000,2023-03-23
+"62 Platypus Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,254,0,959000,2023-03-09
+"128 Parklands Circuit, ROCHEDALE",ROCHEDALE,house,5,2,2,489,0,1180000,2023-03-25
+"66 Phoenix Street, ROCHEDALE",ROCHEDALE,house,3,2,2,356,0,1025000,2023-03-07
+"67 Finch Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,576,0,1710000,2023-03-06
+"21 Wallaby Parade, ROCHEDALE",ROCHEDALE,house,5,5,3,824,0,2000000,2023-03-07
+"51 Grand Street, ROCHEDALE",ROCHEDALE,house,5,3,2,452,0,2058000,2023-05-03
+"6 Vanstone Street, ROCHEDALE",ROCHEDALE,house,5,5,3,492,0,2475000,2023-03-25
+"37 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,477,0,1570000,2023-04-01
+"75 Splendour Street, ROCHEDALE",ROCHEDALE,house,5,4,2,506,0,1900000,2023-04-20
+"6 Mcdermott Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,2300000,2023-04-13
+"82 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,557,0,1700000,2023-04-04
+"8 Wallaby Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,400,0,1380000,2023-03-25
+"68 Resurge Street, ROCHEDALE",ROCHEDALE,house,6,4,2,443,0,1740000,2023-04-29
+"12 Soar Street, ROCHEDALE",ROCHEDALE,house,4,2,2,426,0,1210000,2023-05-15
+"18/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,3,2,2,178,0,715000,2023-04-11
+"1 & 2/21 Hillcrest Street, ROCHEDALE",ROCHEDALE,other,6,4,4,617,0,1500000,2023-05-17
+"27 Grand Street, ROCHEDALE",ROCHEDALE,house,5,4,2,561,0,2050000,2023-05-16
+"111 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,5,4,0,576,0,1720000,2023-03-29
+"8 Ross Street, ROCHEDALE",ROCHEDALE,house,4,2,4,336,0,1170000,2023-03-03
+"1, 18 Woodcarver Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,426,0,888000,2023-02-16
+"73/55 Francis Ave, ROCHEDALE",ROCHEDALE,house,4,2,2,171,0,705000,2022-12-21
+"27 Soar Street, ROCHEDALE",ROCHEDALE,house,5,4,2,433,0,1800000,2022-12-20
+"7 Lillium Street, ROCHEDALE",ROCHEDALE,house,6,3,2,0,0,1580000,2023-02-17
+"7 Fisher Street, ROCHEDALE",ROCHEDALE,house,5,5,2,400,0,1950000,2023-01-02
+"19 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,5,3,2,341,0,1250000,2022-12-20
+"2 Premier Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,471,0,965000,2023-01-30
+"23 Platypus Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,400,0,1325000,2023-01-27
+"26 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,577,0,1585000,2023-02-09
+"5 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,4,2,2,308,0,1208000,2023-02-01
+"82 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1850000,2023-02-18
+"51 /55 Francis Ave, ROCHEDALE",ROCHEDALE,house,3,2,2,179,0,720000,2023-02-08
+"18 Daniel Drive, ROCHEDALE",ROCHEDALE,house,5,2,2,420,0,1750000,2023-02-18
+"48 Splendour Street, ROCHEDALE",ROCHEDALE,house,5,3,2,485,0,1950000,2023-02-23
+"59 Ascent Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1200000,2023-02-15
+"54 Obrist Place, ROCHEDALE",ROCHEDALE,house,4,2,2,478,0,1475000,2023-02-07
+"60 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,other,4,2,2,209,0,815000,2023-02-23
+"74 Finch Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,206,0,790200,2023-02-25
+"737 Grieve Road, ROCHEDALE",ROCHEDALE,house,6,4,4,2000,0,3200000,2022-11-02
+"3 Perring Crescent, ROCHEDALE",ROCHEDALE,house,6,6,2,522,0,2650000,2022-11-30
+"56 /55 Francis Ave, ROCHEDALE",ROCHEDALE,house,4,2,2,176,0,775000,2022-11-10
+"39 Finch Parade, ROCHEDALE",ROCHEDALE,house,5,4,2,400,0,1618000,2022-11-05
+"3 Dell Street, ROCHEDALE",ROCHEDALE,house,5,5,2,400,0,2028888,2022-11-18
+"89 Royal Crescent, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,400,0,791000,2022-12-08
+"40 Phoenix Street, ROCHEDALE",ROCHEDALE,house,4,2,2,352,0,1250000,2022-12-10
+"49 Finch Parade, ROCHEDALE",ROCHEDALE,house,3,2,2,218,0,740000,2022-10-28
+"77a Kate Circuit, ROCHEDALE",ROCHEDALE,house,3,2,2,193,0,675000,2022-10-26
+"39 Cockatoo Place, ROCHEDALE",ROCHEDALE,house,4,2,2,300,0,1041888,2022-11-25
+"62 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,213,0,780000,2022-11-11
+"30 Gardner Road, ROCHEDALE",ROCHEDALE,house,4,2,5,1.01,0,2100000,2022-11-25
+"15 Kestrel Street, ROCHEDALE",ROCHEDALE,house,5,3,2,522,0,1560000,2022-12-06
+"21 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,700,0,1720000,2022-11-19
+"79 Kate Circuit, ROCHEDALE",ROCHEDALE,house,3,2,2,193,0,700000,2022-12-01
+"6 Willow Way, ROCHEDALE",ROCHEDALE,house,7,5,2,0,0,1850888,2022-12-16
+"25 Kestrel Street, ROCHEDALE",ROCHEDALE,house,5,3,2,0,0,1846000,2022-12-15
+"41/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,970000,2025-11-06
+"46/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,176,0,1128000,2025-11-17
+"68 Royal Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,350,0,1400000,2025-11-05
+"21 Lillium Street, ROCHEDALE",ROCHEDALE,house,4,2,2,342,0,1418888,2025-10-31
+"63 Phoenix Street, ROCHEDALE",ROCHEDALE,house,4,2,2,359,0,1458000,2025-11-24
+"60 Splendour Street, ROCHEDALE",ROCHEDALE,house,4,2,2,444,0,1910000,2025-11-06
+"95 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,530,0,1740000,2025-11-06
+"27 Abloom Street, ROCHEDALE",ROCHEDALE,house,5,5,2,0,0,2608888,2025-11-18
+"98 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,5,3,2,391,0,1700000,2025-11-18
+"90 Splendour Street, ROCHEDALE",ROCHEDALE,house,4,2,2,446,0,1880000,2025-10-29
+"60/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,159,0,990000,2025-11-08
+"6 Peridot Place, ROCHEDALE",ROCHEDALE,house,5,3,2,483,0,1643000,2025-11-02
+"16 Penfold Crescent, ROCHEDALE",ROCHEDALE,house,5,6,2,514,0,2470000,2025-10-29
+"36 Rosemary Circuit, ROCHEDALE",ROCHEDALE,house,5,4,2,441,0,2828888,2025-10-30
+"55 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,491,0,1605000,2025-11-09
+"106 Fisher Street, ROCHEDALE",ROCHEDALE,house,4,2,2,364,0,1650000,2025-11-25
+"80/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,3,171,0,1050000,2025-11-26
+"37 Daniel Drive, ROCHEDALE",ROCHEDALE,house,5,3,2,321,0,1880000,2025-11-17
+"41 Brilliant Place, ROCHEDALE",ROCHEDALE,house,5,3,2,519,0,1875000,2025-11-17
+"36/21 Harrier Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1240000,2025-11-20
+"139 Splendour Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,528,0,1050000,2022-09-11
+"41/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,3,2,2,0,0,730000,2022-08-29
+"28 Zenith Street, ROCHEDALE",ROCHEDALE,house,4,2,2,362,0,1170000,2022-08-24
+"55 McDermott Parade, ROCHEDALE",ROCHEDALE,house,5,3,4,710,0,1916000,2022-08-11
+"17 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,700,0,1601000,2022-08-08
+"1 Splendour Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,820,0,1400000,2022-08-26
+"11 Dell Street, ROCHEDALE",ROCHEDALE,house,4,2,2,450,0,1138000,2022-09-20
+"12 Altitude Street, ROCHEDALE",ROCHEDALE,house,6,5,4,788,0,1950000,2022-10-04
+"17 Wallaby Parade, ROCHEDALE",ROCHEDALE,house,4,3,2,339,0,1250000,2022-09-12
+"130 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,3,2,2,290,0,805000,2022-09-05
+"28 Parolin Parade, ROCHEDALE",ROCHEDALE,house,5,3,2,420,0,1880000,2022-09-12
+"480 Grieve Road, ROCHEDALE",ROCHEDALE,other,5,4,2,1.97,0,3260000,2022-09-23
+"4/5 Palara Street, ROCHEDALE",ROCHEDALE,house,3,1,1,0,0,343000,2022-09-20
+"36 Ford Road, ROCHEDALE",ROCHEDALE,house,4,1,4,1000,0,1300000,2022-08-22
+"128 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,340,0,1235000,2022-10-15
+"94 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,house,5,3,4,552,0,1850000,2022-10-02
+"42 Aspire Street, ROCHEDALE",ROCHEDALE,house,4,2,2,524,0,1435000,2022-10-18
+"34 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,3,2,2,310,0,1126000,2022-10-19
+"37 Altitude Street, ROCHEDALE",ROCHEDALE,house,5,4,0,372,0,1855000,2022-08-15
+"20/81 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,750000,2022-10-01
+"39 Goshawk Cres, ROCHEDALE",ROCHEDALE,house,4,2,2,414,0,1500000,2025-10-11
+"47 Ascent Street, ROCHEDALE",ROCHEDALE,house,5,3,2,313,0,1560000,2025-10-10
+"11 Oscar Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,420,0,1852000,2025-10-08
+"15 Leahcim Street, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1591000,2025-09-29
+"17 Lillium Street, ROCHEDALE",ROCHEDALE,house,4,3,2,479,0,1978000,2025-10-17
+"106 Phoenix Street, ROCHEDALE",ROCHEDALE,house,4,2,2,420,0,1536000,2025-10-17
+"2 Paragon Street, ROCHEDALE",ROCHEDALE,other,8,4,4,604,0,2000000,2025-10-01
+"38 Splendour Street, ROCHEDALE",ROCHEDALE,house,5,5,2,409,0,2000000,2025-10-15
+"20 Aspire Street, ROCHEDALE",ROCHEDALE,house,4,2,2,384,0,1617000,2025-09-25
+"79/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,3,2,2,154,0,996000,2025-09-23
+"9 Leahcim Street, ROCHEDALE",ROCHEDALE,house,4,2,4,2401,0,4200000,2025-10-03
+"61 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,197,0,1030000,2025-10-24
+"92 Mcdermott Parade, ROCHEDALE",ROCHEDALE,house,3,2,2,306,0,1180000,2025-09-23
+"74/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1060000,2025-10-05
+"14 Goshawk Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,379,0,1435000,2025-10-15
+"37/21 Harrier Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1200000,2025-10-23
+"62 Ascent St, ROCHEDALE",ROCHEDALE,house,4,2,2,316,0,1490000,2025-10-25
+"7 Evergreen Street, ROCHEDALE",ROCHEDALE,house,6,6,2,454,0,2350000,2025-09-16
+"58 Obrist Place, ROCHEDALE",ROCHEDALE,house,4,2,2,478,0,1725000,2025-09-11
+"626 Underwood Road, ROCHEDALE",ROCHEDALE,other,5,3,3,1.07,0,3740000,2025-09-10
+"43/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,3,0,0,975000,2025-09-15
+"11/10 Zircon Close, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1125000,2025-09-01
+"23 Evergreen Street, ROCHEDALE",ROCHEDALE,house,5,4,2,293,0,1800000,2025-09-08
+"17 Wombat Crescent, ROCHEDALE",ROCHEDALE,house,7,4,2,496,0,1810000,2025-09-17
+"5/59 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,186,0,1090000,2025-09-11
+"46 Panorama Street, ROCHEDALE",ROCHEDALE,house,6,4,2,318,0,1775000,2025-09-19
+"30 Rosemary Circuit, ROCHEDALE",ROCHEDALE,house,5,4,2,441,0,2800000,2025-09-07
+"65 Kate Circuit, ROCHEDALE",ROCHEDALE,house,3,2,2,193,0,990000,2025-08-29
+"6 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,592,0,2850000,2025-09-22
+"43 Platypus Circuit, ROCHEDALE",ROCHEDALE,house,6,4,2,587,0,2120000,2025-09-13
+"5 Goodtown Street, ROCHEDALE",ROCHEDALE,house,5,2,3,1974,0,3500000,2025-09-18
+"9 Daniel Drive, ROCHEDALE",ROCHEDALE,house,4,4,2,411,0,2098000,2025-09-12
+"11 Wallaby Parade, ROCHEDALE",ROCHEDALE,house,6,3,2,400,0,1671888,2025-08-30
+"47 Royal Crescent, ROCHEDALE",ROCHEDALE,house,5,3,2,425,0,1506000,2025-08-06
+"6 Frangipani Street, ROCHEDALE",ROCHEDALE,house,5,4,2,570,0,2050000,2025-08-28
+"38 Raquel Avenue, ROCHEDALE",ROCHEDALE,house,6,5,2,376,0,1921000,2025-08-09
+"33 Rosemary Circuit, ROCHEDALE",ROCHEDALE,house,5,5,2,0,0,2340000,2025-08-08
+"41 Altitude Street, ROCHEDALE",ROCHEDALE,house,5,4,2,441,0,1901000,2025-08-05
+"32 Aspire Street, ROCHEDALE",ROCHEDALE,house,5,3,2,668,0,2100000,2025-07-22
+"60 Altitude Street, ROCHEDALE",ROCHEDALE,house,5,3,2,600,0,2150000,2025-08-12
+"19 Soar Street, ROCHEDALE",ROCHEDALE,house,4,2,2,443,0,1600000,2025-08-28
+"42 Royal Crescent, ROCHEDALE",ROCHEDALE,house,5,3,2,529,0,1825000,2025-08-26
+"28 Willow Way, ROCHEDALE",ROCHEDALE,house,6,6,2,481,0,1880888,2025-08-18
+"12 Goshawk Crescent, ROCHEDALE",ROCHEDALE,house,5,3,4,375,0,1690000,2025-08-19
+"91 Parklands Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1800000,2025-08-20
+"15 Bock Street, ROCHEDALE",ROCHEDALE,house,4,2,2,416,0,1625000,2025-08-21
+"3/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,3,174,0,970000,2025-07-23
+"98 PHOENIX STREET, ROCHEDALE",ROCHEDALE,house,5,3,2,447,0,1822000,2025-07-09
+"41 Obrist Place, ROCHEDALE",ROCHEDALE,house,5,3,2,0,0,1930000,2025-06-24
+"28 Eagle Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,477,0,1561000,2025-06-13
+"6/10 Zircon Close, ROCHEDALE",ROCHEDALE,house,4,3,2,0,0,1120000,2025-06-02
+"26 Prestige Street, ROCHEDALE",ROCHEDALE,house,5,4,2,0,0,2250000,2025-07-04
+"39 Grand Street, ROCHEDALE",ROCHEDALE,house,4,2,2,515,0,2170000,2025-07-01
+"132 Splendour Street, ROCHEDALE",ROCHEDALE,house,4,2,2,303,0,1600000,2025-07-17
+"74 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,4,4,2,567,0,2070000,2025-06-04
+"30/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,172,0,975000,2025-06-03
+"16 Willow Way, ROCHEDALE",ROCHEDALE,house,4,2,2,400,0,1628000,2025-07-16
+"102 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,5,3,2,408,0,1610000,2025-06-30
+"11 Phoenix Street, ROCHEDALE",ROCHEDALE,house,4,2,2,503,0,1870000,2025-06-24
+"65/55 Francis Ave, ROCHEDALE",ROCHEDALE,house,4,2,2,176,0,965000,2025-07-10
+"40/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,170,0,950000,2025-07-21
+"54 Cockatoo Place, ROCHEDALE",ROCHEDALE,house,4,2,4,471,0,1510000,2025-07-08
+"96 Rosemary Circuit, ROCHEDALE",ROCHEDALE,house,5,4,2,315,0,1752000,2025-06-20
+"12 Lux Place, ROCHEDALE",ROCHEDALE,house,4,2,2,313,0,1375000,2025-07-18
+"10 Goodtown Street, ROCHEDALE",ROCHEDALE,house,5,3,6,2553,0,3880000,2025-05-24
+"62 Obrist Place, ROCHEDALE",ROCHEDALE,house,4,2,2,696,0,1870000,2025-05-09
+"42 Dell Street, ROCHEDALE",ROCHEDALE,house,5,4,2,623,0,2500000,2025-05-08
+"49 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,5,3,2,391,0,1630000,2025-05-06
+"306 GRIEVE RD, ROCHEDALE",ROCHEDALE,other,4,1,1,5.2,0,3500000,2025-04-26
+"25 Platypus Circuit, ROCHEDALE",ROCHEDALE,house,4,3,2,400,0,1648000,2025-05-28
+"7/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,2,179,0,965000,2025-04-22
+"53 Ascent Street, ROCHEDALE",ROCHEDALE,house,4,2,2,391,0,1555000,2025-05-27
+"23 Major Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,324,0,1290000,2025-04-30
+"87/68 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,201,0,990000,2025-04-24
+"35 Eagle Parade, ROCHEDALE",ROCHEDALE,house,6,3,2,517,0,1923000,2025-05-10
+"26 Aspire Street, ROCHEDALE",ROCHEDALE,house,5,3,2,461,0,1830000,2025-05-20
+"18 Grand Street, ROCHEDALE",ROCHEDALE,house,5,3,2,500,0,1910000,2025-05-17
+"38 Elevate Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,448,0,1100000,2025-05-12
+"30 Abloom Street, ROCHEDALE",ROCHEDALE,house,5,3,2,374,0,1600000,2025-05-31
+"77 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,4,2,2,477,0,1835000,2025-05-17
+"16 Woodcarver Street, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,433,0,1056000,2025-03-21
+"6 Abloom Street, ROCHEDALE",ROCHEDALE,house,5,3,2,354,0,1850000,2025-02-21
+"13 Beechmont Street, ROCHEDALE",ROCHEDALE,house,5,3,2,438,0,1810000,2025-02-20
+"11 Prestige Street, ROCHEDALE",ROCHEDALE,house,5,4,2,400,0,2155000,2025-04-21
+"74/26 Elizabeth Street, ROCHEDALE",ROCHEDALE,house,4,2,3,0,0,950000,2025-02-09
+"57 Evergreen Street, ROCHEDALE",ROCHEDALE,house,5,4,2,8159,0,1600000,2025-03-30
+"102/68 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,996000,2025-03-20
+"22 Levoh Street, ROCHEDALE",ROCHEDALE,house,4,2,2,311,0,1380000,2025-02-06
+"70 Parklands Circuit, ROCHEDALE",ROCHEDALE,house,5,4,2,477,0,1968000,2025-02-23
+"104 Kookaburra Circuit, ROCHEDALE",ROCHEDALE,house,4,2,2,464,0,1810000,2025-04-01
+"41 Finch Parade, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,621,0,1335150,2025-02-12
+"64 Eagle Parade, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,548,0,1205600,2025-02-25
+"3 Hillcrest Street, ROCHEDALE",ROCHEDALE,house,3,2,2,308,0,1339999,2025-03-18
+"1 Kite Street, ROCHEDALE",ROCHEDALE,house,4,2,2,414,0,1400000,2025-04-07
+"119/68 West Street, ROCHEDALE",ROCHEDALE,house,4,2,2,184,0,1015000,2025-03-28
+"8 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,477,0,1810008,2025-03-25
+"27 Phoenix Street, ROCHEDALE",ROCHEDALE,house,4,2,2,450,0,1575000,2025-04-01
+"658 Underwood Road, ROCHEDALE",ROCHEDALE,house,4,2,2,1.07,0,4380000,2025-03-31
+"3 Myrtle Street, ROCHEDALE",ROCHEDALE,house,4,2,2,400,0,1738000,2025-04-09
+"38 Abloom Street, ROCHEDALE",ROCHEDALE,house,5,4,2,0,0,2050000,2024-12-19
+"122 Cooper Crescent, ROCHEDALE",ROCHEDALE,house,3,2,2,192,0,905000,2024-11-19
+"59/55 Francis Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,176,0,928888,2024-10-25
+"6 English Place, ROCHEDALE",ROCHEDALE,house,5,3,2,534,0,1838888,2024-11-11
+"55 Ascent Street, ROCHEDALE",ROCHEDALE,house,4,2,4,0,0,1272000,2024-10-19
+"36 Parolin Pde, ROCHEDALE",ROCHEDALE,house,4,4,2,420,0,2110000,2024-11-22
+"88 Eagle Parade, ROCHEDALE",ROCHEDALE,house,4,2,2,538,0,1725000,2024-10-28
+"33/55 Francis Ave, ROCHEDALE",ROCHEDALE,house,3,3,2,174,0,920000,2024-11-20
+"29 Daniel Drive, ROCHEDALE",ROCHEDALE,house,4,2,2,420,0,1525000,2024-11-12
+"86 Ascent Street, ROCHEDALE",ROCHEDALE,house,4,2,2,392,0,1388000,2024-11-19
+"36 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1300000,2024-12-06
+"36 Cockatoo Place, ROCHEDALE",ROCHEDALE,house,4,2,2,0,0,1065000,2024-12-23
+"18 Ultimo Court, ROCHEDALE",ROCHEDALE,vacant_land,0,0,0,309,0,820000,2024-11-19
+"25 Bock Street, ROCHEDALE",ROCHEDALE,house,3,2,5,1607,0,2500000,2025-02-03
+"79 Skyview Avenue, ROCHEDALE",ROCHEDALE,house,4,2,2,505,0,1400000,2025-01-24
+"16 Abloom Street, ROCHEDALE",ROCHEDALE,house,5,4,2,436,0,2400000,2025-01-31
+"8 Frangipani Street, ROCHEDALE",ROCHEDALE,house,5,4,2,570,0,2218888,2025-01-19
 "93 Dunedin Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,638,0,1358000,2025-11-05
 "31 Shelley Street, SUNNYBANK",Sunnybank,house,4,2,2,540,0,1780000,2025-10-25
 "5 Batford Street, SUNNYBANK",Sunnybank,house,4,2,4,556,0,1400000,2025-10-31
@@ -118,12 +2068,203 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "39 Mulgowie Street, SUNNYBANK",Sunnybank,house,5,3,2,633,0,1816000,2026-03-02
 "28/18 Altandi Street, SUNNYBANK",Sunnybank,house,3,2,2,240,0,920000,2026-02-17
 "38 Samara Street, SUNNYBANK",Sunnybank,house,3,2,0,703,0,1455000,2026-03-04
+"17 Wana Street, SUNNYBANK",Sunnybank,house,4,1,2,678,0,1105000,2024-01-06
+"21 Station Road, SUNNYBANK",Sunnybank,house,3,2,2,810,0,1150000,2024-01-03
+"51 Delafield Street, SUNNYBANK",Sunnybank,house,5,2,2,607,0,1150000,2023-12-18
+"11-13 Sunnybrae Street, SUNNYBANK",Sunnybank,house,5,3,2,949,0,2800000,2024-02-03
+"19/371 Beenleigh Road, SUNNYBANK",Sunnybank,house,4,3,2,239,0,950000,2024-02-17
+"22 Lyell Street, SUNNYBANK",Sunnybank,house,4,3,4,2140,0,1855000,2024-02-24
+"237 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,0,531,0,865000,2024-02-24
+"3 Krambruk Street, SUNNYBANK",Sunnybank,house,4,2,2,721,0,1361000,2024-02-24
+"17 Headland Street, SUNNYBANK",Sunnybank,house,4,1,3,566,0,1045000,2024-03-07
+"3 Matt Street, SUNNYBANK",Sunnybank,house,3,2,2,703,0,1710000,2024-03-02
+"30 Devenish Street, SUNNYBANK",Sunnybank,house,4,2,3,741,0,1310000,2024-03-02
+"30 Delafield Street, SUNNYBANK",Sunnybank,house,5,4,2,608,0,1448888,2024-03-12
+"13/152 Lister Street, SUNNYBANK",Sunnybank,house,3,2,2,288,0,625000,2024-03-06
+"140 Dixon Street, SUNNYBANK",Sunnybank,house,3,1,2,1115,0,1100000,2024-02-14
+"40 Samara Street, SUNNYBANK",Sunnybank,house,4,2,3,642,0,1260000,2024-02-05
+"32 Mulgowie Street, SUNNYBANK",Sunnybank,house,3,1,2,584,0,1080000,2024-02-21
+"17 Turton Street, SUNNYBANK",Sunnybank,house,4,3,2,665,0,1502000,2024-03-09
+"38 Lavinia Street, SUNNYBANK",Sunnybank,house,3,2,2,607,0,1380000,2024-02-09
+"4/81 McCullough Street, SUNNYBANK",Sunnybank,house,3,2,2,345,0,650000,2023-11-03
+"207 Mains Road, SUNNYBANK",Sunnybank,house,4,3,2,625,0,1450000,2023-10-16
+"279 Beenleigh Road, SUNNYBANK",Sunnybank,house,7,3,2,0,0,850000,2023-10-03
+"37 Edith Street, SUNNYBANK",Sunnybank,house,3,2,2,1014,0,1500000,2023-10-09
+"5/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,0,0,515515,2023-10-30
+"37 Mulgowie Street, SUNNYBANK",Sunnybank,house,4,2,2,742,0,1350000,2023-10-31
+"4 Pictum Place, SUNNYBANK",Sunnybank,house,4,2,2,771,0,1438000,2023-09-29
+"215A Turton Street, SUNNYBANK",Sunnybank,house,5,4,4,305,0,1600000,2023-10-26
+"35 Altandi Street, SUNNYBANK",Sunnybank,house,5,4,2,400,0,1675000,2023-11-08
+"17 Selvage Street, SUNNYBANK",Sunnybank,house,5,3,2,483,0,1828888,2023-10-28
+"45 Vanessa Street, SUNNYBANK",Sunnybank,house,3,1,2,685,0,1100500,2023-10-14
+"1 Ningari Street, SUNNYBANK",Sunnybank,house,3,1,6,604,0,1330000,2023-10-20
+"38 Dema Street, SUNNYBANK",Sunnybank,house,4,2,4,642,0,1200000,2023-11-04
+"30 Gaddes Place, SUNNYBANK",Sunnybank,house,5,2,2,1308,0,910000,2023-11-11
+"22/8 Deason Street, SUNNYBANK",Sunnybank,house,3,2,2,210,0,620000,2023-11-27
+"6 Aldershot Street, SUNNYBANK",Sunnybank,house,4,2,2,650,0,910000,2023-12-12
+"14/66 Station Road, SUNNYBANK",Sunnybank,house,3,2,1,0,0,901000,2023-12-08
+"4A Loben Street, SUNNYBANK",Sunnybank,house,5,5,2,506,0,1880000,2023-12-16
+"190 Dunedin Street, SUNNYBANK",Sunnybank,house,4,2,2,607,0,1430000,2023-11-18
+"31 Vanessa Street, SUNNYBANK",Sunnybank,house,3,1,2,607,0,1085000,2023-11-20
+"17 Tarrawonga Street, SUNNYBANK",Sunnybank,house,5,4,2,610,0,2150000,2023-07-28
+"199 Mains Road, SUNNYBANK",Sunnybank,house,4,1,5,635,0,1120000,2023-07-11
+"26 Fairbank Street, SUNNYBANK",Sunnybank,house,4,2,2,506,0,1410000,2023-07-15
+"9 Milbong Street, SUNNYBANK",Sunnybank,house,3,2,3,597,0,1000000,2023-07-15
+"23/25 Odin Street, SUNNYBANK",Sunnybank,other,2,1,1,166,0,510000,2023-07-21
+"3/148 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,2,146,0,495000,2023-08-02
+"7/15 Dixon St, SUNNYBANK",Sunnybank,other,2,1,2,202,0,530000,2023-08-14
+"1/16 Troughton Road, SUNNYBANK",Sunnybank,unit,2,2,1,0,0,480000,2023-09-27
+"11 Dunedin Street, SUNNYBANK",Sunnybank,house,7,3,2,602,0,1735000,2023-09-22
+"3 Dixon Street, SUNNYBANK",Sunnybank,house,3,1,2,658,0,776000,2023-09-13
+"7/57 Fairbank Street, SUNNYBANK",Sunnybank,unit,1,1,1,0,0,276000,2023-08-05
+"12 Pengana Street, SUNNYBANK",Sunnybank,house,3,2,0,582,0,1040000,2023-09-12
+"50 Arcoona Street, SUNNYBANK",Sunnybank,house,3,1,2,630,0,1100000,2023-09-02
+"28 Troughton Road, SUNNYBANK",Sunnybank,house,3,1,0,809,0,1200000,2023-08-07
+"10 Werona Street, SUNNYBANK",Sunnybank,house,3,2,2,708,0,1395000,2023-09-09
+"138 Turton Street, SUNNYBANK",Sunnybank,house,4,2,2,452,0,1250000,2023-09-09
+"1A Gundooee Street, SUNNYBANK",Sunnybank,house,5,4,2,0,0,1660000,2023-09-16
+"47 Glendower Street, SUNNYBANK",Sunnybank,house,6,5,2,496,0,1610000,2023-09-16
+"78 Troughton Road, SUNNYBANK",Sunnybank,house,4,2,1,708,0,1280000,2023-09-11
+"260 Beenleigh Road, SUNNYBANK",Sunnybank,unit,5,5,6,483,0,1300000,2023-06-12
+"16 Samara Street, SUNNYBANK",Sunnybank,house,5,3,3,800,0,1965000,2023-06-07
+"3 Dema Street, SUNNYBANK",Sunnybank,house,6,2,2,607,0,1550000,2023-05-20
+"30 Janice Street, SUNNYBANK",Sunnybank,house,6,3,1,657,0,1490000,2023-07-05
+"110 Lister Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,301,0,591000,2023-06-20
+"31 Boonaree Street, SUNNYBANK",Sunnybank,house,3,1,3,860,0,1250000,2023-05-18
+"16 Coolinda Street, SUNNYBANK",Sunnybank,house,3,1,3,630,0,777777,2023-05-20
+"21 Newber Street, SUNNYBANK",Sunnybank,house,5,4,2,429,0,1820888,2023-06-23
+"7 Salix Place, SUNNYBANK",Sunnybank,house,4,2,2,706,0,1150000,2023-06-22
+"29 Dema Street, SUNNYBANK",Sunnybank,house,4,3,2,859,0,1250000,2023-05-21
+"32 Kimmax Street, SUNNYBANK",Sunnybank,house,4,2,2,642,0,1280000,2023-06-10
+"42 Vanessa Street, SUNNYBANK",Sunnybank,house,3,2,3,610,0,1039500,2023-05-27
+"8/15 Dixon Street, SUNNYBANK",Sunnybank,other,2,1,2,249,0,520000,2023-05-28
+"19 Marelda Street, SUNNYBANK",Sunnybank,house,4,2,4,794,0,1600000,2023-06-16
+"6 Comley Street, SUNNYBANK",Sunnybank,house,5,2,4,617,0,1100000,2023-06-30
+"7/81 Mccullough Street, SUNNYBANK",Sunnybank,house,3,2,2,234,0,600000,2023-06-28
+"58 Halse Street, SUNNYBANK",Sunnybank,house,4,2,2,584,0,905000,2023-07-08
+"38 Troughton Road, SUNNYBANK",Sunnybank,house,3,1,1,809,0,1200000,2023-06-29
+"8 Jasbi Street, SUNNYBANK",Sunnybank,house,3,2,1,604,0,1050000,2023-07-06
+"20 Comley Street, SUNNYBANK",Sunnybank,house,3,2,1,611,0,1080000,2023-06-24
+"4 Altandi Street, SUNNYBANK",Sunnybank,house,5,5,2,1361,0,2350000,2023-05-12
+"8 Jundal Street, SUNNYBANK",Sunnybank,house,3,1,1,572,0,965000,2023-02-25
+"245 Lister Street, SUNNYBANK",Sunnybank,house,6,6,2,412,0,1180000,2023-03-06
+"22 Devenish Street, SUNNYBANK",Sunnybank,house,3,2,1,753,0,1311000,2023-03-04
+"53 Shelley Street, SUNNYBANK",Sunnybank,house,3,3,2,607,0,1086000,2023-03-04
+"44 Lampson Street, SUNNYBANK",Sunnybank,house,4,1,1,1012,0,1280000,2023-03-25
+"19/141 Station Road, SUNNYBANK",Sunnybank,house,5,3,2,811,0,1550000,2023-03-11
+"23/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,257,0,485000,2023-05-15
+"8 Tarrawonga Street, SUNNYBANK",Sunnybank,house,3,1,2,607,0,885000,2023-03-09
+"32 Comley Street, SUNNYBANK",Sunnybank,house,4,2,2,600,0,1301000,2023-04-01
+"41 Lampson Street, SUNNYBANK",Sunnybank,house,4,4,2,435,0,1588000,2023-04-08
+"15/8 Deason Street, SUNNYBANK",Sunnybank,unit,3,2,2,0,0,580000,2023-04-22
+"92 Mains Road, SUNNYBANK",Sunnybank,house,4,1,4,642,0,1199500,2023-05-15
+"30 Minden Street, SUNNYBANK",Sunnybank,house,3,2,2,594,0,980000,2023-04-15
+"80 Maud Street, SUNNYBANK",Sunnybank,house,3,2,3,1019,0,1146000,2023-05-03
+"40 Hedina Street, SUNNYBANK",Sunnybank,house,4,2,6,607,0,1252000,2023-05-10
+"83 Woff Street, SUNNYBANK",Sunnybank,house,5,4,2,607,0,2100000,2023-04-15
+"32/141 Station Road, SUNNYBANK",Sunnybank,house,4,2,3,800,0,1745000,2023-04-03
+"55 Odin Street, SUNNYBANK",Sunnybank,house,4,2,2,610,0,1038000,2023-03-25
+"16 Chalmers Place, SUNNYBANK",Sunnybank,house,5,3,2,955,0,1425000,2022-11-11
+"141 Station Road, SUNNYBANK",Sunnybank,house,6,3,2,824,0,1801000,2022-10-15
+"6 Narooma Street, SUNNYBANK",Sunnybank,house,3,2,1,698,0,888888,2023-01-14
+"12 Devenish Street, SUNNYBANK",Sunnybank,house,4,2,2,697,0,1015000,2022-10-22
+"52 Shelley Street, SUNNYBANK",Sunnybank,house,4,2,2,607,0,895000,2022-11-03
+"9 Station Road, SUNNYBANK",Sunnybank,house,3,1,2,473,0,720000,2022-10-15
+"23 Altandi Street, SUNNYBANK",Sunnybank,house,3,1,2,678,0,950000,2022-11-12
+"25/18 Altandi Street, SUNNYBANK",Sunnybank,house,3,2,2,199,0,550000,2022-10-26
+"29 Hedina Street, SUNNYBANK",Sunnybank,house,3,2,2,546,0,1080000,2022-10-29
+"1 Trudgian Street, SUNNYBANK",Sunnybank,house,5,3,2,0,0,6200000,2022-12-20
+"251 Lister Street, SUNNYBANK",Sunnybank,house,8,5,4,412,0,1060000,2022-11-28
+"772 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,1,1,2295,0,333000,2023-01-12
+"86 Station Road, SUNNYBANK",Sunnybank,house,6,7,2,405,0,1410000,2023-01-24
+"12 Kardinia Street, SUNNYBANK",Sunnybank,house,4,2,2,615,0,1200000,2022-12-17
+"40 Turton Street, SUNNYBANK",Sunnybank,house,5,4,2,1045,0,2000000,2023-01-10
+"6/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,224,0,516000,2023-01-19
+"365 McCullough Street, SUNNYBANK",Sunnybank,house,3,1,2,607,0,1085000,2023-01-21
+"262 Beenleigh Road, SUNNYBANK",Sunnybank,unit,5,5,6,483,0,1320000,2023-01-30
+"Lot 1 88 DUNEDIN ST, SUNNYBANK",Sunnybank,vacant_land,0,0,0,441,0,795000,2022-09-20
+"69 Mitchell Street, SUNNYBANK",Sunnybank,house,4,2,6,602,0,1398000,2022-09-25
+"2/148 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,2,136,0,475000,2022-09-27
+"32 Arcoona Street, SUNNYBANK",Sunnybank,house,4,3,3,723,0,823000,2022-07-09
+"85 Fairbank Street, SUNNYBANK",Sunnybank,house,6,3,3,703,0,1992000,2022-07-09
+"8 Dianella Street, SUNNYBANK",Sunnybank,house,4,2,2,631,0,1325000,2022-10-11
+"75 Albyn Road, SUNNYBANK",Sunnybank,house,4,2,1,477,0,850000,2022-07-07
+"60 Maud St, SUNNYBANK",Sunnybank,house,4,1,2,984,0,1250000,2022-07-18
+"12/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,0,0,420000,2022-09-07
+"12 Feltwell Street, SUNNYBANK",Sunnybank,house,5,5,2,329,0,1458000,2022-07-23
+"27 Trudgian Street, SUNNYBANK",Sunnybank,house,3,2,1,627,0,800000,2022-07-21
+"3 Valencia Street, SUNNYBANK",Sunnybank,house,2,2,4,810,0,1000000,2022-09-01
+"172 Dunedin Street, SUNNYBANK",Sunnybank,house,5,3,2,468,0,1290000,2022-08-29
+"24/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,204,0,460000,2022-09-11
+"5 Lavinia Street, SUNNYBANK",Sunnybank,house,3,2,4,642,0,1200000,2022-09-05
+"17 Lavinia Street, SUNNYBANK",Sunnybank,house,5,3,2,642,0,1215000,2022-10-06
+"24 Delafield Street, SUNNYBANK",Sunnybank,house,6,4,2,568,0,1680000,2022-09-23
+"55 Mitchell Street, SUNNYBANK",Sunnybank,house,5,7,2,607,0,1058888,2022-09-12
+"97 Dunedin Street, SUNNYBANK",Sunnybank,house,5,4,2,978,0,1828000,2022-09-24
+"27 Hedina Street, SUNNYBANK",Sunnybank,house,3,1,2,546,0,850000,2022-09-29
+"Lot 1, 204 Turton Street, SUNNYBANK",Sunnybank,other,0,0,0,300,0,595000,2022-04-27
+"139 Breton Street, SUNNYBANK",Sunnybank,house,3,2,2,539,0,815000,2022-04-23
+"10 Chalmers Place, SUNNYBANK",Sunnybank,house,6,4,4,720,0,1800000,2022-04-15
+"27 Narooma Street, SUNNYBANK",Sunnybank,house,6,2,2,627,0,905000,2022-05-10
+"4/57 Fairbank Street, SUNNYBANK",Sunnybank,unit,2,1,1,56,0,300000,2022-06-06
+"1A Agnes Street, SUNNYBANK",Sunnybank,house,4,2,2,466,0,788000,2022-05-07
+"45 Devenish Street, SUNNYBANK",Sunnybank,house,4,3,3,803,0,1605000,2022-05-07
+"25 Halse Street, SUNNYBANK",Sunnybank,house,3,1,2,549,0,725000,2022-05-24
+"3 Sunnybrae Street, SUNNYBANK",Sunnybank,house,4,2,2,400,0,1190000,2022-05-25
+"16A HEADLAND ST, SUNNYBANK",Sunnybank,house,5,5,2,406,0,1928888,2022-05-02
+"83 Station Road, SUNNYBANK",Sunnybank,house,5,4,2,537,0,1608000,2022-05-30
+"76 Ardargie Street, SUNNYBANK",Sunnybank,house,3,1,1,911,0,1120000,2022-05-13
+"26 Delafield Street, SUNNYBANK",Sunnybank,house,3,1,2,568,0,888000,2022-05-18
+"11/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,0,0,405000,2022-07-01
+"56 Boonaree Street, SUNNYBANK",Sunnybank,house,7,2,1,541,0,1118088,2022-05-14
+"3 Gleneagles Court, SUNNYBANK",Sunnybank,house,5,2,2,1341,0,1680000,2022-06-10
+"144 Young Street, SUNNYBANK",Sunnybank,house,6,3,3,1012,0,1588000,2022-06-01
+"15 Comley Street, SUNNYBANK",Sunnybank,house,4,2,2,607,0,1390000,2022-06-04
+"169 Beenleigh Road, SUNNYBANK",Sunnybank,house,4,3,1,414,0,649000,2022-06-25
+"9 Pankina Street, SUNNYBANK",Sunnybank,house,3,2,5,615,0,935000,2022-07-04
+"153 Dunedin Street, SUNNYBANK",Sunnybank,house,4,3,2,1222,0,1800000,2022-02-10
+"8/38 Dyson Avenue, SUNNYBANK",Sunnybank,house,3,2,2,207,0,395000,2022-03-14
+"28 Mulgowie Street, SUNNYBANK",Sunnybank,house,3,1,2,0,0,855000,2022-02-19
+"2 Edith Street, SUNNYBANK",Sunnybank,house,5,3,2,451,0,1361000,2022-02-19
+"1 Sundew Street, SUNNYBANK",Sunnybank,house,3,3,2,0,0,955000,2022-02-07
+"42 Pinecone Street, SUNNYBANK",Sunnybank,house,4,2,5,961,0,1365000,2022-02-26
+"42 Jacinda Street, SUNNYBANK",Sunnybank,house,3,2,2,670,0,1060000,2022-03-15
+"7/16 Lara Street, SUNNYBANK",Sunnybank,house,3,3,2,0,0,630000,2022-02-28
+"85 BRETON ST, SUNNYBANK",Sunnybank,house,4,2,2,471,0,830000,2022-03-26
+"476 Beenleigh Rd, SUNNYBANK",Sunnybank,house,3,3,0,607,0,780000,2022-03-12
+"2 Mulgowie Street, SUNNYBANK",Sunnybank,house,3,1,1,597,0,795000,2022-03-19
+"17/141 Station Road, SUNNYBANK",Sunnybank,house,5,3,2,800,0,1680000,2022-03-19
+"96 Lister Street, SUNNYBANK",Sunnybank,house,3,1,1,2476,0,2500000,2022-03-26
+"7/148 Beenleigh Road, SUNNYBANK",Sunnybank,other,3,2,3,0,0,475000,2022-03-29
+"6 Kimmax Street, SUNNYBANK",Sunnybank,house,4,2,2,622,0,1002000,2022-04-09
+"15 Headland Street, SUNNYBANK",Sunnybank,house,5,3,3,632,0,1725000,2022-04-09
+"19 Delafield Street, SUNNYBANK",Sunnybank,house,3,2,2,1101,0,896000,2022-03-30
+"1/16 Lara Street, SUNNYBANK",Sunnybank,house,3,3,2,0,0,680000,2022-04-05
+"27A Narooma Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,627,0,905000,2022-04-04
+"5/16 Lara Street, SUNNYBANK",Sunnybank,house,3,3,2,0,0,625000,2022-04-12
+"253 Turton Street, SUNNYBANK",Sunnybank,house,4,2,1,647,0,880000,2021-10-31
+"14 Coolinda Street, SUNNYBANK",Sunnybank,house,3,1,1,594,0,752000,2021-10-30
+"293 Lister Street, SUNNYBANK",Sunnybank,house,3,1,1,764,0,850000,2021-11-15
+"69 Everest Street, SUNNYBANK",Sunnybank,house,6,2,2,827,0,980000,2021-10-30
+"11 Samara Street, SUNNYBANK",Sunnybank,house,4,2,2,0,0,1100000,2021-10-31
+"2 Kardinia Street, SUNNYBANK",Sunnybank,house,4,2,5,688,0,1280000,2021-11-13
+"63 Boonaree Street, SUNNYBANK",Sunnybank,house,5,3,1,589,0,990000,2021-11-06
+"5 Devenish Street, SUNNYBANK",Sunnybank,house,5,3,2,725,0,1250000,2021-12-16
+"3 CORISHUN STREET, SUNNYBANK",Sunnybank,house,4,4,3,418,0,1700000,2022-01-24
+"26 Samara Street, SUNNYBANK",Sunnybank,house,3,2,2,642,0,965000,2021-11-25
+"3 Arlene Street, SUNNYBANK",Sunnybank,house,6,3,3,633,0,1266000,2021-12-09
+"54A Keats Street, SUNNYBANK",Sunnybank,house,3,2,1,414,0,820000,2022-01-16
+"9 Ardargie Street, SUNNYBANK",Sunnybank,house,6,3,5,1242,0,1550000,2021-12-17
+"6 Ningari Street, SUNNYBANK",Sunnybank,house,4,2,2,928,0,1350000,2021-10-31
+"16/141 Station Road, SUNNYBANK",Sunnybank,house,5,3,2,810,0,1500000,2022-02-05
+"12 Jundal Street, SUNNYBANK",Sunnybank,house,5,5,2,665,0,1960000,2022-01-25
+"8 Sherbert Street, SUNNYBANK",Sunnybank,house,5,2,2,813,0,1200888,2022-02-05
+"11 Feltwell Street, SUNNYBANK",Sunnybank,house,3,1,2,873,0,1120000,2022-01-18
 "52 Jacinda Street, SUNNYBANK",Sunnybank,house,4,3,2,685,0,1518000,2025-09-02
 "5 Gleneagles Court, SUNNYBANK",Sunnybank,house,3,2,2,1266,0,2250000,2025-08-22
 "27 Fairbank Street, SUNNYBANK",Sunnybank,house,4,2,2,450,0,1645000,2025-09-05
 "387 Mccullough Street, SUNNYBANK",Sunnybank,house,8,4,8,608,0,1588000,2025-09-18
 "152 Beenleigh Road, SUNNYBANK",Sunnybank,vacant_land,0,0,0,625,0,800000,2025-08-27
-"140 Dixon Street, SUNNYBANK",Sunnybank,house,3,1,2,1115,0,1560000,2025-08-07
 "4 Pember Street, SUNNYBANK",Sunnybank,house,4,1,4,642,0,1352500,2025-08-21
 "114 Dixon Street, SUNNYBANK",Sunnybank,house,3,2,6,1237,0,1710000,2025-08-16
 "558 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,1,4,569,0,1040000,2025-08-23
@@ -136,8 +2277,24 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "13 Wana Street, SUNNYBANK",Sunnybank,house,3,1,3,658,0,1280000,2025-10-11
 "24 Devenish Street, SUNNYBANK",Sunnybank,house,4,3,2,697,0,1852000,2025-10-11
 "76 Woff Street, SUNNYBANK",Sunnybank,house,5,2,4,1012,0,1450000,2025-10-11
+"3 Glendower Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,600,0,755000,2021-09-15
+"40 - 46 Halse Street, SUNNYBANK",Sunnybank,house,9,3,6,2403,0,2370000,2021-09-27
+"42 Halse Street, SUNNYBANK",Sunnybank,house,3,1,3,1214,0,1090000,2021-09-27
+"4 Vanessa Street, SUNNYBANK",Sunnybank,house,6,2,3,562,0,840000,2021-09-17
+"21 Kardinia Street, SUNNYBANK",Sunnybank,house,3,2,2,615,0,881000,2021-09-08
+"6 Acorus Place, SUNNYBANK",Sunnybank,house,4,2,4,658,0,1225000,2021-09-04
+"8 Chalmers Place, SUNNYBANK",Sunnybank,house,4,4,4,1280,0,2400000,2021-09-11
+"228 Station Road, SUNNYBANK",Sunnybank,house,7,4,5,1613,0,2028000,2021-09-11
+"3/38 DYSON AVENUE, SUNNYBANK",Sunnybank,house,3,2,2,208,0,400000,2021-09-24
+"23 Everest Street, SUNNYBANK",Sunnybank,house,3,1,1,761,0,867000,2021-10-15
+"137 Dixon Street, SUNNYBANK",Sunnybank,house,3,2,2,610,0,840000,2021-10-02
+"159 Beenleigh Road, SUNNYBANK",Sunnybank,house,5,3,4,617,0,730000,2021-10-19
+"5/8 Deason Street, SUNNYBANK",Sunnybank,house,3,2,1,0,0,435000,2021-10-15
+"24 Everest Street, SUNNYBANK",Sunnybank,house,5,3,2,423,0,1291000,2021-10-09
+"23 Pinecone Street, SUNNYBANK",Sunnybank,house,5,4,4,623,0,1100000,2021-10-14
+"83 Dixon, SUNNYBANK",Sunnybank,house,6,4,2,799,0,1040000,2021-10-27
+"41 Turton Street, SUNNYBANK",Sunnybank,house,3,1,1,607,0,980000,2021-10-10
 "72 Valhalla Street, SUNNYBANK",Sunnybank,house,3,2,2,607,0,1458000,2025-06-02
-"199 Mains Road, SUNNYBANK",Sunnybank,house,5,2,5,635,0,1400000,2025-07-16
 "10 Tarrawonga Street, SUNNYBANK",Sunnybank,house,3,2,4,607,0,1308000,2025-06-02
 "89 Woff Street, SUNNYBANK",Sunnybank,house,6,3,3,1146,0,2178888,2025-07-07
 "2 Dunedin Street, SUNNYBANK",Sunnybank,house,5,4,2,727,0,1330000,2025-05-31
@@ -151,5 +2308,111 @@ address,suburb,property_type,bedrooms,bathrooms,car_spaces,land_size,building_si
 "50 Mitchell Street, SUNNYBANK",Sunnybank,house,4,3,2,1011,0,2452000,2025-06-07
 "7/66 Station Road, SUNNYBANK",Sunnybank,house,3,3,1,0,0,915000,2025-07-14
 "27 Lara Street, SUNNYBANK",Sunnybank,house,5,3,1,622,0,1730000,2025-07-05
-"58 Halse Street, SUNNYBANK",Sunnybank,house,4,2,2,584,0,1102000,2025-08-03
 "7 Pengana Street, SUNNYBANK",Sunnybank,house,3,2,4,569,0,1070000,2025-07-15
+"39 Breton Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,683,0,890000,2025-04-07
+"16 Batford Street, SUNNYBANK",Sunnybank,house,3,1,2,556,0,1311000,2025-03-16
+"18 Vanessa Street, SUNNYBANK",Sunnybank,house,4,2,2,574,0,1120000,2025-05-02
+"9 Comley Street, SUNNYBANK",Sunnybank,house,5,3,2,607,0,2280000,2025-04-09
+"14 Becker Street, SUNNYBANK",Sunnybank,house,6,5,2,665,0,3026800,2025-04-05
+"12 Wheatley Street, SUNNYBANK",Sunnybank,house,3,3,1,615,0,1518000,2025-04-07
+"53 Boorman Street, SUNNYBANK",Sunnybank,house,4,2,4,649,0,1400500,2025-04-05
+"5/18 Altandi Street, SUNNYBANK",Sunnybank,house,3,2,2,423,0,901000,2025-04-22
+"32 Valhalla Street, SUNNYBANK",Sunnybank,house,4,2,4,607,0,1545000,2025-05-20
+"5/148 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,2,0,0,630000,2025-04-07
+"65 Turton Street, SUNNYBANK",Sunnybank,house,3,2,4,592,0,1300000,2025-04-04
+"1 Norinda Street, SUNNYBANK",Sunnybank,house,3,1,4,536,0,1320000,2025-04-17
+"9 Maud Street, SUNNYBANK",Sunnybank,house,4,1,2,1014,0,1535000,2025-05-09
+"10 Troughton Road, SUNNYBANK",Sunnybank,house,5,3,4,660,0,1395000,2025-05-26
+"52 Halse Street, SUNNYBANK",Sunnybank,house,3,2,1,582,0,1007000,2025-05-30
+"259 Beenleigh Road, SUNNYBANK",Sunnybank,vacant_land,0,0,0,600,0,710000,2025-01-23
+"7 Dixon Street, SUNNYBANK",Sunnybank,house,3,1,2,1009,0,1520000,2025-02-18
+"28 Fairbank Street, SUNNYBANK",Sunnybank,house,3,1,2,1012,0,1881000,2025-01-14
+"12/25 Dixon Street, SUNNYBANK",Sunnybank,house,3,2,1,0,0,685000,2025-01-07
+"42 Troughton Road, SUNNYBANK",Sunnybank,house,3,1,4,809,0,1590000,2025-02-08
+"287 Lister Street, SUNNYBANK",Sunnybank,house,3,1,1,764,0,950000,2025-02-12
+"2 Legal Street, SUNNYBANK",Sunnybank,house,2,1,1,567,0,928000,2025-01-15
+"18 Devenish Street, SUNNYBANK",Sunnybank,house,4,2,2,715,0,1683500,2025-02-07
+"237 Turton Street, SUNNYBANK",Sunnybank,house,7,6,2,637,0,2750000,2025-01-25
+"12/18 Altandi Street, SUNNYBANK",Sunnybank,house,3,2,2,0,0,726000,2025-01-10
+"28 Kimmax Street, SUNNYBANK",Sunnybank,house,4,2,2,632,0,1620000,2025-02-08
+"290 Mains Road, SUNNYBANK",Sunnybank,house,3,2,2,708,0,1310000,2025-03-03
+"9 Naldi Street, SUNNYBANK",Sunnybank,house,5,3,2,1000,0,1850000,2025-02-19
+"65 Breton Street, SUNNYBANK",Sunnybank,house,6,4,2,600,0,1690000,2025-03-01
+"5 Pristina Street, SUNNYBANK",Sunnybank,house,6,2,4,632,0,1712000,2025-03-13
+"27 Devenish Street, SUNNYBANK",Sunnybank,house,3,2,4,708,0,1734300,2025-03-02
+"46 Agnes Street, SUNNYBANK",Sunnybank,house,3,1,2,1014,0,1520000,2025-02-24
+"71 Ardargie Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,659,0,1040000,2025-01-24
+"69 Ardargie Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,659,0,1000000,2025-01-25
+"39 Samara Street, SUNNYBANK",Sunnybank,house,6,3,3,607,0,1811000,2025-01-07
+"20 Pinecone Street, SUNNYBANK",Sunnybank,house,4,2,4,887,0,1352000,2024-11-13
+"23 Woff Street, SUNNYBANK",Sunnybank,house,3,2,3,774,0,1250000,2024-12-12
+"260 Lister Street, SUNNYBANK",Sunnybank,house,3,1,2,632,0,905000,2024-12-20
+"16 Wen Place, SUNNYBANK",Sunnybank,house,6,5,3,807,0,3288888,2024-11-09
+"52 Lampson Street, SUNNYBANK",Sunnybank,house,5,4,4,1012,0,1780000,2024-11-17
+"397 Beenleigh Road, SUNNYBANK",Sunnybank,house,5,3,2,2840,0,2255000,2024-11-17
+"3/18 Altandi Street, SUNNYBANK",Sunnybank,house,3,2,2,423,0,885000,2024-11-16
+"29 Dixon Street, SUNNYBANK",Sunnybank,vacant_land,0,0,0,600,0,800000,2024-11-04
+"301 Lister Street, SUNNYBANK",Sunnybank,house,6,2,2,764,0,902000,2024-11-28
+"54 Altandi Street, SUNNYBANK",Sunnybank,house,3,2,2,548,0,900000,2024-12-13
+"9 Narooma Street, SUNNYBANK",Sunnybank,house,3,2,2,650,0,1275000,2024-12-07
+"2 Bintani Street, SUNNYBANK",Sunnybank,house,6,2,4,0,0,972000,2024-12-07
+"25 Lavinia Street, SUNNYBANK",Sunnybank,house,5,2,3,645,0,1440000,2024-12-07
+"5 Kythira Street, SUNNYBANK",Sunnybank,house,4,1,2,676,0,1105000,2024-11-29
+"1 Kimmax Street, SUNNYBANK",Sunnybank,house,4,2,2,802,0,1583000,2024-12-23
+"14 Alconah Street, SUNNYBANK",Sunnybank,house,4,2,2,431,0,1110000,2025-01-07
+"186 Dunedin Street, SUNNYBANK",Sunnybank,house,6,4,2,607,0,2350000,2024-11-18
+"117 Dyson Avenue, SUNNYBANK",Sunnybank,house,5,3,8,8478,0,4000000,2024-10-30
+"95 Dixon Street, SUNNYBANK",Sunnybank,house,6,6,2,0,0,1350000,2024-10-02
+"2/261 Beenleigh Road, SUNNYBANK",Sunnybank,house,4,3,1,0,0,915000,2024-10-24
+"25 Albyn Road, SUNNYBANK",Sunnybank,house,4,2,3,905,0,1400000,2024-10-02
+"8 Halse Street, SUNNYBANK",Sunnybank,house,5,2,4,607,0,1150000,2024-10-04
+"20 Halse Street, SUNNYBANK",Sunnybank,house,3,1,2,546,0,780000,2024-10-21
+"152 Lister Street, SUNNYBANK",Sunnybank,house,4,2,5,731,0,1100000,2024-09-17
+"16/66 Station Road, SUNNYBANK",Sunnybank,house,4,2,2,193,0,1102500,2024-10-02
+"6/148 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,2,0,0,600000,2024-08-30
+"3/16 Lara Street, SUNNYBANK",Sunnybank,house,3,2,2,0,0,810000,2024-09-16
+"6 Arlene Street, SUNNYBANK",Sunnybank,house,4,2,1,615,0,1351500,2024-10-05
+"2 Pankina Street, SUNNYBANK",Sunnybank,house,4,3,3,693,0,1580000,2024-10-22
+"28 Valhalla Street, SUNNYBANK",Sunnybank,house,5,1,3,607,0,1458000,2024-10-05
+"106 Station Road, SUNNYBANK",Sunnybank,house,6,1,7,698,0,1550000,2024-10-06
+"6 Cresswell Street, SUNNYBANK",Sunnybank,house,3,1,2,658,0,1150000,2024-09-23
+"11 Altandi Street, SUNNYBANK",Sunnybank,house,3,1,1,607,0,1107000,2024-10-12
+"44/69 Stones Road, SUNNYBANK",Sunnybank,house,2,1,1,121,0,610000,2024-09-01
+"110 Troughton Road, SUNNYBANK",Sunnybank,house,3,1,2,401,0,860000,2024-10-13
+"26 Lyell Street, SUNNYBANK",Sunnybank,house,8,4,10,2016,0,2300000,2024-11-03
+"17 Arcoona street, SUNNYBANK",Sunnybank,house,4,3,2,637,0,1335000,2024-10-28
+"1/261 Beenleigh Road, SUNNYBANK",Sunnybank,house,4,3,2,0,0,1050000,2024-07-23
+"30 Mains Road, SUNNYBANK",Sunnybank,house,3,1,2,736,0,1111111,2024-06-24
+"19 Newber Street, SUNNYBANK",Sunnybank,house,5,4,4,430,0,2218888,2024-07-16
+"128 Dixon Street, SUNNYBANK",Sunnybank,house,3,1,1,610,0,768500,2024-06-22
+"25 Agnes Street, SUNNYBANK",Sunnybank,house,5,2,2,577,0,1180000,2024-06-27
+"1 Bintani Street, SUNNYBANK",Sunnybank,house,4,2,2,536,0,1060000,2024-07-04
+"192 Dunedin Street, SUNNYBANK",Sunnybank,house,5,2,2,660,0,1320000,2024-07-23
+"77 Dixon Street, SUNNYBANK",Sunnybank,house,5,3,5,1236,0,1467000,2024-06-22
+"4 Valhalla Street, SUNNYBANK",Sunnybank,house,4,2,2,698,0,1680000,2024-07-06
+"111 Dixon Street, SUNNYBANK",Sunnybank,house,6,2,7,1826,0,2150000,2024-07-22
+"5 Pengana Street, SUNNYBANK",Sunnybank,house,3,1,5,569,0,965000,2024-07-13
+"50 Keats Street, SUNNYBANK",Sunnybank,house,3,2,2,496,0,900000,2024-07-17
+"27 Kardinia Street, SUNNYBANK",Sunnybank,house,4,1,2,617,0,1260000,2024-07-27
+"9 Littler Street, SUNNYBANK",Sunnybank,house,5,3,2,509,0,1560000,2024-08-10
+"4 Everest Street, SUNNYBANK",Sunnybank,house,5,2,2,425,0,1246000,2024-08-24
+"194 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,1,554,0,900000,2024-07-01
+"6/16 Troughton Road, SUNNYBANK",Sunnybank,unit,2,2,1,93,0,605000,2024-03-20
+"5 Romulus Street, SUNNYBANK",Sunnybank,house,8,5,2,600,0,1750000,2024-05-24
+"8 Pictum Place, SUNNYBANK",Sunnybank,house,3,2,2,610,0,1500000,2024-05-28
+"36 Odin Street (Cnr Thor st), SUNNYBANK",Sunnybank,house,3,1,1,592,0,1350000,2024-03-23
+"57 Newber Street, SUNNYBANK",Sunnybank,house,4,2,2,641,0,1368000,2024-03-23
+"29 Legal Street, SUNNYBANK",Sunnybank,house,6,3,7,710,0,2050000,2024-03-20
+"5 Minden Street, SUNNYBANK",Sunnybank,house,3,1,1,663,0,985000,2024-03-13
+"33 Devenish Street, SUNNYBANK",Sunnybank,house,6,4,4,765,0,2725000,2024-04-20
+"21 Kylie Street, SUNNYBANK",Sunnybank,house,4,2,4,708,0,1300000,2024-05-29
+"4 Erna Court, SUNNYBANK",Sunnybank,house,4,2,2,782,0,1140000,2024-05-03
+"11 Glendower Street, SUNNYBANK",Sunnybank,house,5,3,6,833,0,1640000,2024-05-11
+"44 Boonaree Street, SUNNYBANK",Sunnybank,house,3,2,3,577,0,1300000,2024-05-11
+"204 Lister Street, SUNNYBANK",Sunnybank,house,4,2,2,810,0,1075000,2024-05-07
+"59 Maud Street, SUNNYBANK",Sunnybank,house,3,3,6,1012,0,1500000,2024-05-25
+"57 Agnes Street, SUNNYBANK",Sunnybank,house,5,2,2,546,0,1113000,2024-05-25
+"427 Beenleigh Road, SUNNYBANK",Sunnybank,house,4,2,3,1442,0,1300000,2024-04-18
+"44 Pinecone Street, SUNNYBANK",Sunnybank,house,4,2,2,961,0,1250000,2024-06-08
+"13/371 Beenleigh Road, SUNNYBANK",Sunnybank,house,3,2,1,0,0,810000,2024-06-06
+"27 Edith Street, SUNNYBANK",Sunnybank,house,4,2,2,1014,0,1472000,2024-06-11

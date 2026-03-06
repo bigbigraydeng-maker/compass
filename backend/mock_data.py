@@ -156,6 +156,29 @@ MOCK_PROPERTIES = [
     {'id': 155, 'address': '19 Earnshaw Street, CALAMVALE', 'suburb': 'Calamvale', 'property_type': 'house', 'land_size': 303, 'bedrooms': 0, 'bathrooms': 0},
 ]
 
+MOCK_SCHOOLS = [
+    {'id': 1, 'name': 'Sunnybank State High School', 'school_type': 'secondary', 'suburb': 'Sunnybank', 'naplan_percentile': 66, 'catchment_suburbs': ['Sunnybank', 'Eight Mile Plains', 'Stretton']},
+    {'id': 2, 'name': 'Sunnybank State High School', 'school_type': 'secondary', 'suburb': 'Sunnybank', 'naplan_percentile': 50, 'catchment_suburbs': ['Sunnybank']},
+    {'id': 3, 'name': 'Sunnybank Hills State School', 'school_type': 'primary', 'suburb': 'Sunnybank Hills', 'naplan_percentile': 62, 'catchment_suburbs': ['Sunnybank Hills', 'Carindale']},
+    {'id': 4, 'name': 'Sunnybank Hills State High School', 'school_type': 'secondary', 'suburb': 'Sunnybank Hills', 'naplan_percentile': 78, 'catchment_suburbs': ['Sunnybank Hills', 'Runcorn', 'Algester']},
+    {'id': 5, 'name': 'Macgregor State School', 'school_type': 'primary', 'suburb': 'Macgregor', 'naplan_percentile': 89, 'catchment_suburbs': ['Macgregor', 'Eight Mile Plains']},
+    {'id': 6, 'name': 'Eight Mile Plains State School', 'school_type': 'primary', 'suburb': 'Eight Mile Plains', 'naplan_percentile': 71, 'catchment_suburbs': ['Eight Mile Plains', 'Macgregor']},
+    {'id': 7, 'name': 'Eight Mile Plains Community College', 'school_type': 'combined', 'suburb': 'Eight Mile Plains', 'naplan_percentile': 64, 'catchment_suburbs': ['Eight Mile Plains', 'Wishart']},
+    {'id': 8, 'name': 'Calamvale State School', 'school_type': 'primary', 'suburb': 'Calamvale', 'naplan_percentile': 75, 'catchment_suburbs': ['Calamvale', 'Algester']},
+    {'id': 9, 'name': 'Calamvale Community College', 'school_type': 'combined', 'suburb': 'Calamvale', 'naplan_percentile': 59, 'catchment_suburbs': ['Calamvale']},
+    {'id': 10, 'name': 'Algester State School', 'school_type': 'primary', 'suburb': 'Algester', 'naplan_percentile': 68, 'catchment_suburbs': ['Algester', 'Calamvale']},
+    {'id': 11, 'name': 'Robertson State School', 'school_type': 'primary', 'suburb': 'Robertson', 'naplan_percentile': 82, 'catchment_suburbs': ['Robertson', 'Sunnybank']},
+    {'id': 12, 'name': 'Runcorn State School', 'school_type': 'primary', 'suburb': 'Runcorn', 'naplan_percentile': 73, 'catchment_suburbs': ['Runcorn', 'Sunnybank Hills']},
+    {'id': 13, 'name': 'Runcorn State High School', 'school_type': 'secondary', 'suburb': 'Runcorn', 'naplan_percentile': 61, 'catchment_suburbs': ['Runcorn']},
+    {'id': 14, 'name': 'Stretton State School', 'school_type': 'primary', 'suburb': 'Stretton', 'naplan_percentile': 87, 'catchment_suburbs': ['Stretton', 'Calamvale']},
+    {'id': 15, 'name': 'Stretton State High School', 'school_type': 'secondary', 'suburb': 'Stretton', 'naplan_percentile': 79, 'catchment_suburbs': ['Stretton', 'Wishart']},
+    {'id': 16, 'name': 'Wishart State School', 'school_type': 'primary', 'suburb': 'Wishart', 'naplan_percentile': 91, 'catchment_suburbs': ['Wishart', 'Carindale']},
+    {'id': 17, 'name': 'Carindale State School', 'school_type': 'primary', 'suburb': 'Carindale', 'naplan_percentile': 85, 'catchment_suburbs': ['Carindale', 'Mount Gravatt']},
+    {'id': 18, 'name': 'Carindale State High School', 'school_type': 'secondary', 'suburb': 'Carindale', 'naplan_percentile': 76, 'catchment_suburbs': ['Carindale']},
+    {'id': 19, 'name': 'Mount Gravatt State School', 'school_type': 'primary', 'suburb': 'Mount Gravatt', 'naplan_percentile': 69, 'catchment_suburbs': ['Mount Gravatt', 'Carindale']},
+    {'id': 20, 'name': 'Mount Gravatt State High School', 'school_type': 'secondary', 'suburb': 'Mount Gravatt', 'naplan_percentile': 74, 'catchment_suburbs': ['Mount Gravatt']}
+]
+
 MOCK_SALES = [
     {'id': 1, 'property_id': 1, 'sold_price': 1358000, 'sold_date': '2025-11-05'},
     {'id': 2, 'property_id': 2, 'sold_price': 1780000, 'sold_date': '2025-10-25'},

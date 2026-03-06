@@ -100,6 +100,7 @@ export default function SalesPage() {
             <div className="flex space-x-6">
               <Link href="/" className="text-gray-600 hover:text-blue-600 transition">首页</Link>
               <Link href="/sales" className="text-blue-600 font-medium">成交列表</Link>
+              <Link href="/listings" className="text-gray-600 hover:text-blue-600 transition">在售房源</Link>
               <Link href="/suburb/Sunnybank" className="text-gray-600 hover:text-blue-600 transition">Sunnybank</Link>
               <Link href="/suburb/Eight Mile Plains" className="text-gray-600 hover:text-blue-600 transition">Eight Mile Plains</Link>
               <Link href="/suburb/Calamvale" className="text-gray-600 hover:text-blue-600 transition">Calamvale</Link>

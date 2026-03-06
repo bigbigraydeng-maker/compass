@@ -79,4 +79,36 @@ class SuburbTrends(BaseModel):
     monthly_trends: List[MonthlyTrend]
 
 
+class Listing(BaseModel):
+    """在售房源模型"""
+    id: int
+    address: str
+    suburb: str
+    property_type: Optional[str] = None
+    bedrooms: Optional[int] = 0
+    bathrooms: Optional[int] = 0
+    car_spaces: Optional[int] = 0
+    land_size: Optional[int] = 0
+    price_text: Optional[str] = None
+    price: Optional[float] = 0
+    sale_method: Optional[str] = None
+    latitude: Optional[float] = 0
+    longitude: Optional[float] = 0
+    agent_name: Optional[str] = None
+    agent_company: Optional[str] = None
+    link: Optional[str] = None
+    scraped_date: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+
+class ListingsResponse(BaseModel):
+    """在售房源列表响应模型"""
+    listings: List[Listing]
+    total: int
+    page: int
+    page_size: int
+
+
 

@@ -14,7 +14,7 @@ print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
 from models import (
     HomeData, SuburbStats, Sale, 
     SalesResponse, SuburbDetail, Property,
-    SuburbTrends, MonthlyTrend
+    SuburbTrends, MonthlyTrend, Listing, ListingsResponse
 )
 
 # 检查是否有真实数据库连接
@@ -357,6 +357,100 @@ def get_suburb_schools(suburb_name: str):
         all_schools = json.load(f)
     schools = all_schools.get(suburb_name, [])
     return {"suburb": suburb_name, "schools": schools}
+
+
+@app.get("/api/listings", response_model=ListingsResponse)
+def get_listings(
+    suburb: Optional[str] = None,
+    property_type: Optional[str] = None,
+    bedrooms: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    page: int = 1,
+    page_size: int = 20
+):
+    """
+    获取在售房源列表
+    
+    参数：
+    - suburb: 郊区名称（可选）
+    - property_type: 房产类型（可选）
+    - bedrooms: 卧室数（可选）
+    - min_price: 最低价格（可选）
+    - max_price: 最高价格（可选）
+    - page: 页码（默认1）
+    - page_size: 每页数量（默认20）
+    """
+    try:
+        offset = (page - 1) * page_size
+        
+        # 基础查询
+        base_query = """
+            SELECT id, address, suburb, property_type, bedrooms, bathrooms, 
+                   car_spaces, land_size, price_text, price, sale_method,
+                   latitude, longitude, agent_name, agent_company, link, scraped_date
+            FROM listings
+        """
+        
+        # 添加过滤条件
+        params = []
+        where_conditions = []
+        
+        if suburb:
+            where_conditions.append("suburb = %s")
+            params.append(suburb)
+        
+        if property_type:
+            where_conditions.append("LOWER(property_type) = LOWER(%s)")
+            params.append(property_type)
+        
+        if bedrooms:
+            if bedrooms >= 5:
+                where_conditions.append("bedrooms >= 5")
+            else:
+                where_conditions.append("bedrooms = %s")
+                params.append(bedrooms)
+        
+        if min_price:
+            where_conditions.append("price >= %s")
+            params.append(min_price)
+        
+        if max_price:
+            where_conditions.append("price <= %s")
+            params.append(max_price)
+        
+        if where_conditions:
+            base_query += " WHERE " + " AND ".join(where_conditions)
+        
+        # 获取总数
+        count_query = f"SELECT COUNT(*) as total FROM ({base_query}) as subq"
+        total_result = execute_query(count_query, tuple(params))
+        
+        # 处理结果格式
+        if total_result and len(total_result) > 0:
+            row = total_result[0]
+            if isinstance(row, dict):
+                total = row.get('total', 0)
+            else:
+                total = row[0]
+        else:
+            total = 0
+        
+        # 添加排序和分页
+        query = f"{base_query} ORDER BY id DESC LIMIT %s OFFSET %s"
+        params.extend([page_size, offset])
+        
+        # 执行查询
+        listings = execute_query(query, tuple(params))
+        
+        return ListingsResponse(
+            listings=[Listing(**listing) for listing in listings],
+            total=total,
+            page=page,
+            page_size=page_size
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取在售房源列表失败: {str(e)}")
 
 
 if __name__ == "__main__":

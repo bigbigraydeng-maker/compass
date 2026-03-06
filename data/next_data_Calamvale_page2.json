@@ -65,7 +65,7 @@
               "pageId": "search results - sold",
               "pageName": "search results - sold",
               "search": {
-                "agencyIds": "2497,17842,32832,35150,25142,30943,24176,37381,24665,35722",
+                "agencyIds": "17842,1664,32832,35150,25142,30943,24176,37381,24665,35722",
                 "bathroomsFrom": "0",
                 "bathroomsTo": "5+",
                 "bedroomsFrom": "0",
@@ -74,12 +74,12 @@
                 "geoType": "Suburb",
                 "mapSearch": "Off",
                 "searchType": "Location",
-                "medianPrice": 1100500,
+                "medianPrice": 1271500,
                 "postcode": "4116",
                 "primaryPropertyType": "Any",
                 "secondaryPropertyType": "Any",
                 "resultsPages": 50,
-                "resultsRecords": "2020457763,2020451328,2020452513,2020382619,2020445731,2020333346,2020438771,2020446472,2017683105,2020417403,2020408944,2020429726,2020435510",
+                "resultsRecords": "2020451328,2020470122,2020452513,2020382619,2020445731,2020333346,2020438771,2020446472,2017683105,2020417403,2020408944,2020429726,2020435510",
                 "searchArea": "Brisbane Region",
                 "searchDataDefaults": {
                   "sortBy": "Default",
@@ -95,7 +95,7 @@
                 "searchDepth": 2,
                 "searchLocationCat": "Suburb",
                 "searchRegion": "South East Queensland Greater Region",
-                "searchResultCount": 17512,
+                "searchResultCount": 17514,
                 "searchSuburb": "Calamvale",
                 "searchTerm": "Calamvale, 4116, QLD",
                 "searchTypeView": "ListView",
@@ -137,7 +137,7 @@
                 "4116"
               ],
               "usertype": "sold",
-              "medianPrice": 1100500
+              "medianPrice": 1271500
             },
             "adSite": "DOMAIN.COM.AU",
             "adSlots": []
@@ -147,10 +147,10 @@
           "events": [],
           "user": {
             "membershipType": "visitor",
-            "sessionToken": "ca4b9bee-e791-4c23-8495-60f8bb4206c9",
+            "sessionToken": "4c986b01-5e86-4079-840e-b1dc466bc10c",
             "membershipState": "Not_logged_in",
             "dhlMembership": "inactive",
-            "ipAddress": "lZylCIib5Wf+0vBIsgPzq8jpwBx6bqgfhUyfAVAt2SKn4IqLlNBDx61udaHudefi"
+            "ipAddress": "lZylCIib5Wf+0vBIsgPzq39BRGN1coWKzR0viOkpg1hb1v2WPfseh13qJXnziBj1"
           }
         },
         "jsonLdItems": [
@@ -171,7 +171,7 @@
             "@type": "Residence",
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": "16/28 Menser Street",
+              "streetAddress": "20/360 Benhiam Street",
               "addressLocality": "CALAMVALE",
               "addressRegion": "QLD",
               "postalCode": "4116"
@@ -182,7 +182,7 @@
             "@type": "Residence",
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": "20/360 Benhiam Street",
+              "streetAddress": "40 Gemview St",
               "addressLocality": "CALAMVALE",
               "addressRegion": "QLD",
               "postalCode": "4116"
@@ -423,7 +423,7 @@
           "enableContentSnippet": false,
           "enableContentSnippetWithPostcodes": false,
           "disableAdsFlag": false,
-          "enableEnquiryCustomisations": true,
+          "enableEnquiryCustomisations": false,
           "shortlistExperimentFlag": true,
           "enableSuggestedFeatures": true,
           "enableAdditionalDescriptionFeature": true,
@@ -444,7 +444,7 @@
           "enableIndependentTwo": false,
           "enableIndependentThree": false,
           "enableHomePagePropertyAlert": true,
-          "enableShortlistPhotoGallery": false,
+          "enableShortlistPhotoGallery": true,
           "enablePropertyAlertOverlay": true,
           "enableHomepageSchoolFirstTypeahead": false,
           "enableGraphQLSuggestLocations": true,
@@ -470,12 +470,12 @@
           "postEnquiryAd": true,
           "enableGraphQLUPVSoldListings": false,
           "premarketListingGQL": false,
-          "enableGraphQLFeaturedAgency": false,
-          "enableGraphQLTopspot": true,
+          "enableGraphQLFeaturedAgency": true,
+          "enableGraphQLTopspot": false,
           "platinumListingGalleryAds": true,
-          "disableProjectVerticalGallery": false,
+          "disableProjectVerticalGallery": true,
           "priceGuideExp": true,
-          "enableGraphQLNewToYou": false,
+          "enableGraphQLNewToYou": true,
           "platinumListingsInlineEnquiryExp": false,
           "enableRequestFloorPlanExp": true,
           "enablePpid": true,
@@ -499,11 +499,10 @@
           "enableEnquiryRecaptchaV2Fallback": true,
           "enableSearchListingsGTMDefer": true,
           "enableVendorLeadCTA": true,
-          "enableFaaLeadGenBannerCTA": false,
+          "enableFaaLeadGenBannerCTA": true,
           "enableVendorLeadCTABranded": true,
           "enableVendorLeadCTAOnTop": false,
           "enableSearchListingsINPOptimise": true,
-          "enableListingDetailsWebPImageFormat": true,
           "enableNewProjectBannerUrl": true,
           "enableResponsiveHeroImageCrop": true,
           "enableAgentAvatarImageResizeGQL": true,
@@ -513,12 +512,13 @@
           "enableMatterportExterior3DTour": false,
           "enableDepthGlowup": false
         },
-        "ppid": "4279fc3f0c594a8945d9e975d052584dfddccd8c44263f0432beda7a93c660b5",
+        "ppid": "bbe9773e63207b91ea41a3e63fd5e45b3400693ea560aa63b42f4c42db7352b7",
         "heroImages": {
-          "small": "https://rimh2.domainstatic.com.au/OHY-IqeeIKuDrq5DxkPXPHG2JeM=/660x440/filters:format(jpeg):quality(80)/2020457763_1_1_251128_055134-w6058-h4039",
-          "medium": "https://rimh2.domainstatic.com.au/OHY-IqeeIKuDrq5DxkPXPHG2JeM=/660x440/filters:format(jpeg):quality(80)/2020457763_1_1_251128_055134-w6058-h4039",
-          "large": "https://rimh2.domainstatic.com.au/OHY-IqeeIKuDrq5DxkPXPHG2JeM=/660x440/filters:format(jpeg):quality(80)/2020457763_1_1_251128_055134-w6058-h4039",
-          "xLarge": "https://rimh2.domainstatic.com.au/OHY-IqeeIKuDrq5DxkPXPHG2JeM=/660x440/filters:format(jpeg):quality(80)/2020457763_1_1_251128_055134-w6058-h4039"
+          "small": "https://rimh2.domainstatic.com.au/CsBw6AJ9Jj9LkiH7bmf7mGnSBOY=/660x440/filters:format(jpeg):quality(80)/2020470122_2_1_251204_041034-w1800-h1198",
+          "medium": "https://rimh2.domainstatic.com.au/CsBw6AJ9Jj9LkiH7bmf7mGnSBOY=/660x440/filters:format(jpeg):quality(80)/2020470122_2_1_251204_041034-w1800-h1198",
+          "large": "https://rimh2.domainstatic.com.au/CsBw6AJ9Jj9LkiH7bmf7mGnSBOY=/660x440/filters:format(jpeg):quality(80)/2020470122_2_1_251204_041034-w1800-h1198",
+          "xLarge": "https://rimh2.domainstatic.com.au/CsBw6AJ9Jj9LkiH7bmf7mGnSBOY=/660x440/filters:format(jpeg):quality(80)/2020470122_2_1_251204_041034-w1800-h1198",
+          "retinaImages": null
         }
       },
       "componentProps": {
@@ -553,8 +553,8 @@
         "totalPages": 50,
         "paginatorTemplateUrl": "/sold-listings/calamvale-qld-4116/?page={{ page }}",
         "listingSearchResultIds": [
-          2020457763,
           2020451328,
+          2020470122,
           2020452513,
           2020382619,
           2020445731,
@@ -584,6 +584,7 @@
               "images": [
                 "https://rimh2.domainstatic.com.au/iZ_MMKSKNI3qVwdwuEYKJT0ghT8=/660x440/filters:format(jpeg):quality(80)/2017683105_1_1_231006_070251-w3602-h1839"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -619,9 +620,9 @@
                   }
                 ],
                 "agentNames": "Tao Huang",
-                "brandLogo": "https://rimh2.domainstatic.com.au/gKi5OmOtalnMhCjQVG-5W4PtKCM=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/35150/logo_35150.jpeg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/pzuezwA_giZF0DX1LebSNdRIIHY=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/35150/logo_35150.jpeg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/GEHgbCV2lfG7RFrg4FCNcCkX_JE=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/35150/logo_35150.jpeg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/8ruQCLq7-io5XaL4Y1c3lLo2Q18=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/35150/logo_35150.jpeg?buster=2026-03-05",
                 "brandName": "Saturn Property Australia Pty Ltd",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/kJP17NPRGLiZKcn7rtX2_-MYz5o=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/35150/contact_1814457.jpeg?mod=240308-135150",
@@ -690,6 +691,7 @@
                 "https://rimh2.domainstatic.com.au/o_GlY7AHCW66pGtOmMJBxYuLwiI=/660x440/filters:format(jpeg):quality(80)/2020215029_26_1_250821_073157-w1920-h1440",
                 "https://rimh2.domainstatic.com.au/QKk6MvVcnkWCSz9NPU2jNt2U5II=/660x440/filters:format(jpeg):quality(80)/2020215029_27_1_250821_073157-w1920-h1440"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -1210,9 +1212,9 @@
                   }
                 ],
                 "agentNames": "Jackson Chow, Debbie Chow",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/fWBTkYlRWuMJb23JlqnJWfC_qZQ=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757291.jpeg?mod=260211-050406",
@@ -1292,6 +1294,7 @@
                 "https://rimh2.domainstatic.com.au/0Lw9vwlISBXsvwK4eHxM4NzKKMM=/660x440/filters:format(jpeg):quality(80)/2020333346_31_1_251009_070556-w1920-h1280",
                 "https://rimh2.domainstatic.com.au/KaUGbScMrngqwC5dj5whPvPyaKo=/660x440/filters:format(jpeg):quality(80)/2020333346_32_1_251009_070556-w1920-h1280"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -1972,9 +1975,9 @@
                   }
                 ],
                 "agentNames": "Jackson Chow, Debbie Chow",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/fWBTkYlRWuMJb23JlqnJWfC_qZQ=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757291.jpeg?mod=260211-050406",
@@ -2058,6 +2061,7 @@
                 "https://rimh2.domainstatic.com.au/XKxrI32N-N1amCWVr7W5BaXi4QQ=/660x440/filters:format(jpeg):quality(80)/2020382619_36_1_251029_122400-w1920-h1440",
                 "https://rimh2.domainstatic.com.au/j7V9-2GokgDwlIp5CFNan2Jpejc=/660x440/filters:format(jpeg):quality(80)/2020382619_37_1_251029_122400-w1920-h1440"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -2818,9 +2822,9 @@
                   }
                 ],
                 "agentNames": "Kevin Ahn, Sienna Kim",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/d_szdn5Me0Of2Zfj6J3QvD7lyvE=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757339.jpeg?mod=260219-163827",
@@ -2876,6 +2880,7 @@
                 "https://rimh2.domainstatic.com.au/-4WVMLhLViv36wuaQjrLZWVUjJ0=/660x440/filters:format(jpeg):quality(80)/2020385416_8_1_251030_051817-w768-h512",
                 "https://rimh2.domainstatic.com.au/1SWfpUODdskkftEB3HFwHEfeu9o=/660x440/filters:format(jpeg):quality(80)/2020385416_9_1_251030_051817-w768-h512"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -3076,9 +3081,9 @@
                   }
                 ],
                 "agentNames": "Leo Zhan, Chris Wong",
-                "brandLogo": "https://rimh2.domainstatic.com.au/1-OPqCzSmjEDxOmp5zML8YmHIzk=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/37381/logo_37381.jpg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/LvNsgoj6cbzM4wU-PlpOinTiZuY=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/37381/logo_37381.jpg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/Z53_ldhcB5eJOgV4tthIv2S3A6M=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/37381/logo_37381.jpg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/T4B4HYiqutcELVcMYi97DXx6afE=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/37381/logo_37381.jpg?buster=2026-03-05",
                 "brandName": "Ray White Sunnybank Hills",
                 "brandColor": "#FEE536",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/n8TWozMAvu8WgX5p-BGcXAkV4Yc=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/37381/contact_1924716.jpeg?mod=260127-115557",
@@ -3128,6 +3133,7 @@
                 "https://rimh2.domainstatic.com.au/bsnoptiUmrywk8rmxtr8i7Fax7M=/660x440/filters:format(jpeg):quality(80)/2020388571_2_1_251031_050811-w2000-h1500",
                 "https://rimh2.domainstatic.com.au/U2I6Tjsso-vJwH_yLZU5UqOLxdU=/660x440/filters:format(jpeg):quality(80)/2020388571_3_1_251031_050811-w2000-h1500"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -3208,9 +3214,9 @@
                   }
                 ],
                 "agentNames": "Jane Yoo, Jae Choi",
-                "brandLogo": "https://rimh2.domainstatic.com.au/poRSr82Q6Wr9g12pl8fDlKXeJto=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/35722/logo_35722.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/H2Td7S8NzAeTvmTTqdNX8_eV_Ak=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/35722/logo_35722.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/0UUTqBVc-0clF6dPqHE_PbIf-GM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/35722/logo_35722.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/r7pVmgdKlQijNCdLlHD8HuPsV_c=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/35722/logo_35722.png?buster=2026-03-05",
                 "brandName": "Belle Property Sunnybank",
                 "brandColor": "#396451",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/4pWFzdbcH_d0UISBSRVpw_ptyWk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/35722/contact_1977645.jpeg?mod=260106-135827",
@@ -3283,6 +3289,7 @@
                 "https://rimh2.domainstatic.com.au/0UfiBcoCJqMCVY3q2tTqNWQkvPE=/660x440/filters:format(jpeg):quality(80)/2020396806_25_1_251104_115018-w1920-h1440",
                 "https://rimh2.domainstatic.com.au/AMrip68oCp5k9A_8IXlTPR9Mhgo=/660x440/filters:format(jpeg):quality(80)/2020396806_26_1_251104_115018-w1920-h1280"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -3823,9 +3830,9 @@
                   }
                 ],
                 "agentNames": "Jackson Chow, Debbie Chow",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/ZzQsVdrlMNuvZbsIvISVjCXQSiY=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/voe7kq8Rohpu2clOnYMhwR1c0B4=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/fWBTkYlRWuMJb23JlqnJWfC_qZQ=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757291.jpeg?mod=260211-050406",
@@ -3889,6 +3896,7 @@
                 "https://rimh2.domainstatic.com.au/rAgx45VaWV8FJNbwHSx499Z_qFY=/660x440/filters:format(jpeg):quality(80)/2020400188_20_1_251105_070937-w2000-h1333",
                 "https://rimh2.domainstatic.com.au/_0CdUYjNyV5vBAFc0acbrT_4duo=/660x440/filters:format(jpeg):quality(80)/2020400188_21_1_251106_072323-w2000-h1333"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -4244,9 +4252,9 @@
                   }
                 ],
                 "agentNames": "Jason Song",
-                "brandLogo": "https://rimh2.domainstatic.com.au/O3F9eyYSiC2QQBnscsK7IC8Hwmg=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/E8eslJ9UsIOi6OkwIpxQ9VUJH1c=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/vDVc2W_zCiMyFN0IOpX_ZM3FZ_0=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/fM1Vg3YjVQ10YmtcY_3pfi4pdGc=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-05",
                 "brandName": "Ray White Rochedale",
                 "brandColor": "#FEE536",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/YfAxl7I2TQOxiHstZ5Gc2rXSkms=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24665/contact_1915532.jpeg?mod=260227-103114",
@@ -4327,6 +4335,7 @@
                 "https://rimh2.domainstatic.com.au/nQoV4o2knm_0mSVsvaRKnohYtgs=/660x440/filters:format(jpeg):quality(80)/2020408944_33_1_251110_122939-w1920-h1440",
                 "https://rimh2.domainstatic.com.au/xCI9kDTJiLLZhS75qEvUTQocjnA=/660x440/filters:format(jpeg):quality(80)/2020408944_34_1_251110_122939-w1920-h1440"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -5027,9 +5036,9 @@
                   }
                 ],
                 "agentNames": "Jonas Leong, Benjamin Leong",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/6U1xGUj1xTfK3VDC2vxHjs7zoTM=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1919966.jpeg?mod=260208-050443",
@@ -5096,6 +5105,7 @@
                 "https://rimh2.domainstatic.com.au/WvvsDswTG_AdNJp0PJ7H-xGj8OI=/660x440/filters:format(jpeg):quality(80)/2020410968_19_1_251110_064550-w1920-h1335",
                 "https://rimh2.domainstatic.com.au/VZC7M55-JlVZd0eSWfOsqpr9P4U=/660x440/filters:format(jpeg):quality(80)/2020410968_20_1_251110_064550-w1920-h1335"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -5516,9 +5526,9 @@
                   }
                 ],
                 "agentNames": "Karl Gillespie, Anthony Calderoni",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/mEO1XXR2qCERwivDtE3nA0rDF7I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757294.jpeg?mod=260223-173211",
@@ -5584,6 +5594,7 @@
                 "https://rimh2.domainstatic.com.au/UAdvsziR1Qh--IS0ZZY1z1y3XDQ=/660x440/filters:format(jpeg):quality(80)/2020413394_18_1_251111_044757-w2000-h1333",
                 "https://rimh2.domainstatic.com.au/70I8fqCTy0uZNFaVexVKfntHqTQ=/660x440/filters:format(jpeg):quality(80)/2020413394_19_1_251111_044757-w2000-h1333"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -5984,9 +5995,9 @@
                   }
                 ],
                 "agentNames": "Adam Muntazir, David Hills",
-                "brandLogo": "https://rimh2.domainstatic.com.au/WR_jh174fk8k_x-MT_nmooUYPAc=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24176/logo_24176.jpeg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/5Jr-an-jHRbcgI3_FjM2Y0ASIIE=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24176/logo_24176.jpeg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/rt8AiZZ1LpDxtS9N-jm6gCS9uF4=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24176/logo_24176.jpeg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/DKYZbNBNvkr94QpPkerr3Yi3MSA=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24176/logo_24176.jpeg?buster=2026-03-05",
                 "brandName": "Harcourts Results Calamvale",
                 "brandColor": "#002049",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/yTP0CE3gHcEGNcJHcZrbKTUdYQQ=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24176/contact_1609223.jpeg?mod=260113-162010",
@@ -6058,6 +6069,7 @@
                 "https://rimh2.domainstatic.com.au/o-lkx2Ql6dBbp226eaWbb0DqZr4=/660x440/filters:format(jpeg):quality(80)/2020417403_24_1_251112_052619-w1920-h1280",
                 "https://rimh2.domainstatic.com.au/5NOr0JYqbjcCJpJu-4bHHUyURUI=/660x440/filters:format(jpeg):quality(80)/2020417403_25_1_251112_052619-w1920-h1280"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -6573,9 +6585,9 @@
                   }
                 ],
                 "agentNames": "Alex Fan",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/cutuXUZHQ88TCjyelgQOx7a42OY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1931576.jpeg?mod=260211-122612",
@@ -6651,6 +6663,7 @@
                 "https://rimh2.domainstatic.com.au/hcoDyDAFp0F7quWn26vhUWSQqX8=/660x440/filters:format(jpeg):quality(80)/2020429726_28_1_251117_101105-w2048-h1152",
                 "https://rimh2.domainstatic.com.au/d3iz2RcW_Arlt4jz_VeDycHdkdc=/660x440/filters:format(jpeg):quality(80)/2020429726_29_1_251117_101105-w2048-h1152"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -7246,9 +7259,9 @@
                   }
                 ],
                 "agentNames": "Edison Cui",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ZhC_eOaYrl_QBwHyJu2ztQeMVps=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/25142/logo_25142.jpeg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/xkY-b61WneC7hRhZ2JHN8R9dNac=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/25142/logo_25142.jpeg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/q-0R3gtA6em_Mc-D-64peZQj2JE=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/25142/logo_25142.jpeg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/G3l6eynT11iY2CCyvw_4Gx8AVqg=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/25142/logo_25142.jpeg?buster=2026-03-05",
                 "brandName": "Place Purpose Group",
                 "brandColor": "#001f49",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/o4A2hfVdbFOmzmzrk6Vvd1khHeY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/25142/contact_1962534.png?mod=260127-174109",
@@ -7321,6 +7334,7 @@
                 "https://rimh2.domainstatic.com.au/K6QomwMOOl1cpz3F-LJej5pLIB8=/660x440/filters:format(jpeg):quality(80)/2020435510_25_1_251119_040619-w2000-h1335",
                 "https://rimh2.domainstatic.com.au/f4m7LG8MRYkm-vrPuGJc4yLBvBA=/660x440/filters:format(jpeg):quality(80)/2020435510_26_1_251119_040619-w2000-h1335"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -7856,9 +7870,9 @@
                   }
                 ],
                 "agentNames": "Lexsie Li",
-                "brandLogo": "https://rimh2.domainstatic.com.au/xuBMFMgSRjqSkrbvquqpMUr6vxY=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/30943/logo_30943.jpeg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/t5NAPUdF2mvkSLx1B_fGJoOPgRs=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/30943/logo_30943.jpeg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/B5E6RMMcjpmAhGYkeRwZLFz75hQ=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/30943/logo_30943.jpeg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/uR0C1tC-Gqn3t-cZWRjxUz_qMTQ=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/30943/logo_30943.jpeg?buster=2026-03-05",
                 "brandName": "Torres Property",
                 "brandColor": "#000000",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/DhXZg7jOExqiVX4dYc-J0Fgn8Ps=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/30943/contact_2013496.png?mod=260121-175803",
@@ -7931,6 +7945,7 @@
                 "https://rimh2.domainstatic.com.au/FRi8gEQARt3AD615ERT9YEaqgMo=/660x440/filters:format(jpeg):quality(80)/2020438771_25_1_251120_020527-w1920-h1280",
                 "https://rimh2.domainstatic.com.au/zKz7tZzKNu3YsffyXbQRfh0Ld_0=/660x440/filters:format(jpeg):quality(80)/2020438771_26_1_251120_020527-w1920-h1280"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -8471,9 +8486,9 @@
                   }
                 ],
                 "agentNames": "Jackson Chow, Debbie Chow",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/fWBTkYlRWuMJb23JlqnJWfC_qZQ=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757291.jpeg?mod=260211-050406",
@@ -8550,6 +8565,7 @@
                 "https://rimh2.domainstatic.com.au/cHNzrT0k6UbtwgPB0nnBdYuWRlU=/660x440/filters:format(jpeg):quality(80)/2020445731_29_1_251124_030920-w1920-h1280",
                 "https://rimh2.domainstatic.com.au/dU8utWylHJgingRUNOHDYfu7h14=/660x440/filters:format(jpeg):quality(80)/2020445731_30_1_251124_030920-w1920-h1280"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -9170,9 +9186,9 @@
                   }
                 ],
                 "agentNames": "Welly Cendana, Taan Suwanduang",
-                "brandLogo": "https://rimh2.domainstatic.com.au/hfuy7A1-ujPT7iC3yw4g1A63jg4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/32832/logo_32832.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/XgPdJZtAdyS_eLXA89Tf93w9p5w=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/32832/logo_32832.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/lygAKbmXsBofOPSXbyWKjUBM5Xc=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/32832/logo_32832.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/NCU4pUPQsd82viAWPC7PUsouRbk=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/32832/logo_32832.png?buster=2026-03-05",
                 "brandName": "eresidential",
                 "brandColor": "#013468",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/ZNjaUgSIGVx7R75nk78q1pV1eIE=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/32832/contact_1976354.png?mod=260218-151410",
@@ -9234,6 +9250,7 @@
                 "https://rimh2.domainstatic.com.au/dor1A_MQlQ7PbaK_9B7s8_kVz8A=/660x440/filters:format(jpeg):quality(80)/2020446472_14_1_251124_055332-w1920-h1333",
                 "https://rimh2.domainstatic.com.au/RfMwyPRSm1XrYEEhWGmAv2bG4hI=/660x440/filters:format(jpeg):quality(80)/2020446472_15_1_251124_055332-w1920-h1333"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -9554,9 +9571,9 @@
                   }
                 ],
                 "agentNames": "Karl Gillespie, Anthony Calderoni",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/mEO1XXR2qCERwivDtE3nA0rDF7I=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757294.jpeg?mod=260223-173211",
@@ -9621,6 +9638,7 @@
                 "https://rimh2.domainstatic.com.au/8nikKEUF5YdYDVtpNEPjFBHlHnk=/660x440/filters:format(jpeg):quality(80)/2020451328_17_1_251126_032237-w1920-h1335",
                 "https://rimh2.domainstatic.com.au/5nsmPsN4ocuoXZcOPgcXFgK3WkM=/660x440/filters:format(jpeg):quality(80)/2020451328_18_1_251126_032237-w1920-h1335"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -10001,9 +10019,9 @@
                   }
                 ],
                 "agentNames": "Karl Gillespie, Bailey Atherton",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/xTlnby39qil-BAcqn9Ycge7BD-Q=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757294.jpeg?mod=260210-103618",
@@ -10070,6 +10088,7 @@
                 "https://rimh2.domainstatic.com.au/QFUuQgkzbjKhPuBdNvVU9XCfSy0=/660x440/filters:format(jpeg):quality(80)/2020452513_19_1_251126_062218-w1920-h1335",
                 "https://rimh2.domainstatic.com.au/8teKAXQgTZW4gr2NZsG3tl0lFRw=/660x440/filters:format(jpeg):quality(80)/2020452513_20_1_251126_062218-w1920-h1335"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -10490,9 +10509,9 @@
                   }
                 ],
                 "agentNames": "Karl Gillespie, Bailey Atherton",
-                "brandLogo": "https://rimh2.domainstatic.com.au/ND4cEbdkEQhw-vOxjruKIfhqv3Y=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/YFpEd1avoL4chcaSabwb2PGBkjI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/tRDFeKJPUrYLOwL_URksA5nAQKM=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/3v6xXtqnnM1IsSdu0hxeFjX4TNw=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/17842/logo_17842.png?buster=2026-03-05",
                 "brandName": "LJ Hooker Property Partners - SunnyBank Hills & Mount Gravatt",
                 "brandColor": "#ffffff",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/xTlnby39qil-BAcqn9Ycge7BD-Q=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/17842/contact_1757294.jpeg?mod=260210-103618",
@@ -10531,45 +10550,49 @@
               "enableSingleLineAddress": true
             }
           },
-          "2020457763": {
-            "id": 2020457763,
+          "2020470122": {
+            "id": 2020470122,
             "listingType": "listing",
             "listingModel": {
-              "promoType": "elite",
-              "url": "/16-28-menser-street-calamvale-qld-4116-2020457763",
+              "promoType": "premiumplus",
+              "url": "/40-gemview-st-calamvale-qld-4116-2020470122",
               "images": [
-                "https://rimh2.domainstatic.com.au/OHY-IqeeIKuDrq5DxkPXPHG2JeM=/660x440/filters:format(jpeg):quality(80)/2020457763_1_1_251128_055134-w6058-h4039",
-                "https://rimh2.domainstatic.com.au/HR2Eaw5uFeLhl-F01g90pqfGDXY=/660x440/filters:format(jpeg):quality(80)/2020457763_4_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/HAkL2BTDPEvtHDGpFrJiNpNgT4o=/660x440/filters:format(jpeg):quality(80)/2020457763_5_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/sXUHRS6Fahpf7LlLEppY7J9VOWk=/660x440/filters:format(jpeg):quality(80)/2020457763_7_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/TgEg9cGfvwCcn-D-1kLiTU7bEb8=/660x440/filters:format(jpeg):quality(80)/2020457763_8_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/NGsmrx4xG2i8B-u6E1pHjXo6UEI=/660x440/filters:format(jpeg):quality(80)/2020457763_9_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/3yANyqIir_VJpRP561CtEmQ7vTM=/660x440/filters:format(jpeg):quality(80)/2020457763_10_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/7I5a9UJ2YCteT3-KFZ1AEuYItrE=/660x440/filters:format(jpeg):quality(80)/2020457763_11_1_251128_055134-w7008-h4672",
-                "https://rimh2.domainstatic.com.au/NGLcE6AUxz3Mr4YxQt07debuEbc=/660x440/filters:format(jpeg):quality(80)/2020457763_13_1_251128_055134-w5272-h2962",
-                "https://rimh2.domainstatic.com.au/C1LQixRMFd6BaLWXqjMGkW6oPOM=/660x440/filters:format(jpeg):quality(80)/2020457763_14_1_251128_055134-w5272-h2962",
-                "https://rimh2.domainstatic.com.au/Nfq2iPZXKPbrMy6z8q10hPV78Do=/660x440/filters:format(jpeg):quality(80)/2020457763_15_1_251128_055134-w5272-h2962",
-                "https://rimh2.domainstatic.com.au/9qTeNrBQJhoP0__r5r_NcuhIvrw=/660x440/filters:format(jpeg):quality(80)/2020457763_16_1_251128_055134-w5272-h2962",
-                "https://rimh2.domainstatic.com.au/FIKrgrqnlBFP00-24xcgN1aeAg8=/660x440/filters:format(jpeg):quality(80)/2020457763_17_1_251128_055134-w5166-h2903",
-                "https://rimh2.domainstatic.com.au/lsZtQB11eXhBkTpVPdvngIvPbxs=/660x440/filters:format(jpeg):quality(80)/2020457763_18_1_251128_055134-w7008-h4672"
+                "https://rimh2.domainstatic.com.au/CsBw6AJ9Jj9LkiH7bmf7mGnSBOY=/660x440/filters:format(jpeg):quality(80)/2020470122_2_1_251204_041034-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/krs4nPE48wyNTPzX14r7NThNMQg=/660x440/filters:format(jpeg):quality(80)/2020470122_1_1_251204_041034-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/Cs1dVsHYKKOexvEwzbl8X4q9zFM=/660x440/filters:format(jpeg):quality(80)/2020470122_12_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/ITxj0_XQqKAvj7urb8j8b7j1BzM=/660x440/filters:format(jpeg):quality(80)/2020470122_3_1_251204_041034-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/kj4M5iD8HOoM0y8BWQMIhdYPOVI=/660x440/filters:format(jpeg):quality(80)/2020470122_4_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/4tUTXLL3rkp9a77PGG3c_f_oLlw=/660x440/filters:format(jpeg):quality(80)/2020470122_5_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/deKeY5LYT_xkDIuE9_0MgD1Ld3Y=/660x440/filters:format(jpeg):quality(80)/2020470122_6_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/RVzh3Zfm6bqu5pTbfzeYEGQApMc=/660x440/filters:format(jpeg):quality(80)/2020470122_7_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/FhYOBC7Ch3PW_lSpyhfs8PfXlzY=/660x440/filters:format(jpeg):quality(80)/2020470122_8_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/46bgk42XTyaDOVwHx0luRbp2XNA=/660x440/filters:format(jpeg):quality(80)/2020470122_9_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/RV3Cj0UjLg85IXMnldlYV19QhS4=/660x440/filters:format(jpeg):quality(80)/2020470122_10_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/DDBl8X8GQ1W9Z2WtkfmYSIE_mr8=/660x440/filters:format(jpeg):quality(80)/2020470122_11_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/PPNvwXWnqMnNFkIWJDoQMOD7pCc=/660x440/filters:format(jpeg):quality(80)/2020470122_13_1_251204_041032-w1800-h1198",
+                "https://rimh2.domainstatic.com.au/r0fXHkrLsGzat9A_0e9rBcr_ATA=/660x440/filters:format(jpeg):quality(80)/2020470122_14_1_251204_041032-w1800-h1012",
+                "https://rimh2.domainstatic.com.au/vNnKx0Ma5RMeNPCbxiCTLHEmSSU=/660x440/filters:format(jpeg):quality(80)/2020470122_15_1_251204_041032-w1800-h1012",
+                "https://rimh2.domainstatic.com.au/ngpkVU5PpLmJexlLmwXFvEktjxw=/660x440/filters:format(jpeg):quality(80)/2020470122_16_1_251204_041032-w1800-h1012",
+                "https://rimh2.domainstatic.com.au/8bYfxDlxbk1K6Oagbc8RKXfKx8w=/660x440/filters:format(jpeg):quality(80)/2020470122_17_1_251204_041032-w1800-h1012"
               ],
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/WBtYBVr-j9JS-2eZ7-lfg-HgM_s=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_1_1_251128_055134-w6058-h4039",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/AEIfwNy1elkZrAzkP1XsPDcsgTs=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_2_1_251204_041034-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/NjgfHWFByWiT5LNvtXK0tu5wc4I=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_1_1_251128_055134-w6058-h4039",
+                      "url": "https://rimh2.domainstatic.com.au/aNkwt-hSjCCUagJo8X_X0ZTbwxc=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_2_1_251204_041034-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/_ppQVOUP7nNc6I4OoL-t1gl5UWo=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_1_1_251128_055134-w6058-h4039",
+                      "url": "https://rimh2.domainstatic.com.au/LfdgA0pvuyj8OUaFHDad6XC2rog=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_2_1_251204_041034-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10577,19 +10600,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/f2eXpH0MUD7DrUfBi2YuS6RUeBM=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_4_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/6W6aebUjEEpg7lbPPJgZfiqUOp4=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_1_1_251204_041034-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/yuV95WuNtLSFe7cmcFTaaCTDzuM=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_4_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/9kgzAbVdC_RJPo97qSGpiYbkjAw=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_1_1_251204_041034-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/vAT9Iq0hJ8NY33eksqQheOVghjs=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_4_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/qc9RypmbGsrkxq6NYsj1Fz4620w=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_1_1_251204_041034-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10597,19 +10620,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/kFW2ZsLN2qynbD4g-kuAuziiUdA=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_5_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/tAxI1wGyEUTN-f-dFcFiQYXyxh8=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_12_1_251204_041032-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/rh4yDr2zOhHv_c63Hr-dMVUFVPU=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_5_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/Y2wvSzzoGoB0TDg9tq6w1TjKkZE=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_12_1_251204_041032-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/5AsUl4t-fHrpK8FAq8IXuTdJcps=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_5_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/PZGYGNERjiVE51LOJiiyMugm7eM=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_12_1_251204_041032-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10617,19 +10640,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/mK84OwA3gGQl3TV9qDaZXkaCde8=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_7_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/YjuYkZErJDmV7gtufnwPsVzKCxA=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_3_1_251204_041034-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/EHsLx58ERUGJ-hFdNHLldbdc_WA=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_7_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/zQGTxqbDXrZdoZqJogG19mdtARE=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_3_1_251204_041034-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/8yKttJ-Yis6wICbGCiC-tFRS_Es=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_7_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/lgPvHcjtKVwGewYes0dEScvbVY4=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_3_1_251204_041034-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10637,19 +10660,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/9BY5ZphRRl5H-OcOKhbBzO3nLk8=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_8_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/d4Utx07YxDSZc3hKdUbL1zF3GkY=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_4_1_251204_041032-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/uu4a4e0jPocuSJsYxon719K3o14=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_8_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/sXx6m7RRBk9Kb0dn4nWnI5wtZC0=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_4_1_251204_041032-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/30fEPGWIrAIvhZgjTds7JTq4o2U=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_8_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/WyreksV2jKVDPUXcWyPSZiPFBJ8=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_4_1_251204_041032-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10657,19 +10680,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/2ylR8MZz73UPd5xDrlZBG4t-K9U=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_9_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/SKBCJact2rrx7rXffOAfxz0VIGk=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_5_1_251204_041032-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/JiiDcRPuLGIQHw9SSRIaBRd9fmQ=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_9_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/Ow1DrjlMhB4eCgkVmNkn6yyf6Uw=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_5_1_251204_041032-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/424sD1LcnbA02NEFY5HPjuU6yrE=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_9_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/Mf20WWixJDDyEMSw82lLnWH3at4=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_5_1_251204_041032-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10677,19 +10700,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/OLEo1472EZD8Pf7uyN9rPu1HHIE=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_10_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/p6arwJgcwamslQGji1IBiAq1jNI=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_6_1_251204_041032-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/ZFj6AKhhRbDV-zndRH-0lh1KUSI=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_10_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/eynTGtMXJoaIKm49CTt8b7jdkVQ=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_6_1_251204_041032-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/d3xjWyXaEAnUJ0sqYGBnrkey0m4=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_10_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/qRmcRqcphtHRfQHtLcnyb7ZMdIA=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_6_1_251204_041032-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10697,19 +10720,19 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/ngqgZGPcaVjiGTeE2_kpAEwVt3I=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_11_1_251128_055134-w7008-h4672",
-                      "width": 1620,
+                      "url": "https://rimh2.domainstatic.com.au/pqytAuUFgGMq-wMCZhIpDsGkHmM=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_7_1_251204_041032-w1800-h1198",
+                      "width": 1623,
                       "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/dxQUzGJZ2lwjRVGGziQUfXGaW9Q=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_11_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/yUEv7dim2R5sbf4L30c5DZ1Cavw=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_7_1_251204_041032-w1800-h1198",
                       "width": 1020,
-                      "height": 680
+                      "height": 679
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/qGl1QapbKNlGW8R8BWehCNtDgAo=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_11_1_251128_055134-w7008-h4672",
+                      "url": "https://rimh2.domainstatic.com.au/rQ5lDuu9pW_sa9Hh3ACKQBQF5Po=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_7_1_251204_041032-w1800-h1198",
                       "width": 600,
-                      "height": 400
+                      "height": 399
                     }
                   },
                   "mediaType": "image"
@@ -10717,17 +10740,117 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/gT3iXEv7ff0MaS2EupcuUJ0OfJU=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_13_1_251128_055134-w5272-h2962",
-                      "width": 1920,
-                      "height": 1079
+                      "url": "https://rimh2.domainstatic.com.au/kWTFxsJHKlCb3nKaqiDy8ZcQTo8=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_8_1_251204_041032-w1800-h1198",
+                      "width": 1623,
+                      "height": 1080
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/sPFcS49ns8ew_5bfA8rSbPeUNRc=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_13_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/MM385Bc_sTpaV1zZHP5WuWgVTUw=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_8_1_251204_041032-w1800-h1198",
+                      "width": 1020,
+                      "height": 679
+                    },
+                    "mobile": {
+                      "url": "https://rimh2.domainstatic.com.au/4kb_Z9y1xE8tbzpXRTo9mZeVA90=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_8_1_251204_041032-w1800-h1198",
+                      "width": 600,
+                      "height": 399
+                    }
+                  },
+                  "mediaType": "image"
+                },
+                {
+                  "images": {
+                    "original": {
+                      "url": "https://rimh2.domainstatic.com.au/NCsGtTeHpdY-hZ_Pca3SsK9PxpU=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_9_1_251204_041032-w1800-h1198",
+                      "width": 1623,
+                      "height": 1080
+                    },
+                    "tablet": {
+                      "url": "https://rimh2.domainstatic.com.au/dWA14EBNuzQv-1tGZlemugCprmE=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_9_1_251204_041032-w1800-h1198",
+                      "width": 1020,
+                      "height": 679
+                    },
+                    "mobile": {
+                      "url": "https://rimh2.domainstatic.com.au/ykUlmBLBaG0hwiqQrfFuMq8uy1g=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_9_1_251204_041032-w1800-h1198",
+                      "width": 600,
+                      "height": 399
+                    }
+                  },
+                  "mediaType": "image"
+                },
+                {
+                  "images": {
+                    "original": {
+                      "url": "https://rimh2.domainstatic.com.au/SGn-w9XECfMl0i4PH4q3uXHwx9M=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_10_1_251204_041032-w1800-h1198",
+                      "width": 1623,
+                      "height": 1080
+                    },
+                    "tablet": {
+                      "url": "https://rimh2.domainstatic.com.au/QOQNQUQA1cXDWdylQSV26FvunSc=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_10_1_251204_041032-w1800-h1198",
+                      "width": 1020,
+                      "height": 679
+                    },
+                    "mobile": {
+                      "url": "https://rimh2.domainstatic.com.au/uE4BddzJH_gmVJLzldhDc8XKXPk=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_10_1_251204_041032-w1800-h1198",
+                      "width": 600,
+                      "height": 399
+                    }
+                  },
+                  "mediaType": "image"
+                },
+                {
+                  "images": {
+                    "original": {
+                      "url": "https://rimh2.domainstatic.com.au/30k9tJrCy5a123dxZ9o4aSMMUkE=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_11_1_251204_041032-w1800-h1198",
+                      "width": 1623,
+                      "height": 1080
+                    },
+                    "tablet": {
+                      "url": "https://rimh2.domainstatic.com.au/bXZmVThD36_bfCMgYc7-gDVceSU=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_11_1_251204_041032-w1800-h1198",
+                      "width": 1020,
+                      "height": 679
+                    },
+                    "mobile": {
+                      "url": "https://rimh2.domainstatic.com.au/Iy_LBVsv0cnDjl0U-rp0cIf0LME=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_11_1_251204_041032-w1800-h1198",
+                      "width": 600,
+                      "height": 399
+                    }
+                  },
+                  "mediaType": "image"
+                },
+                {
+                  "images": {
+                    "original": {
+                      "url": "https://rimh2.domainstatic.com.au/ltoKL2cbTPDU8nfKncQTMLtrmSs=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_13_1_251204_041032-w1800-h1198",
+                      "width": 1623,
+                      "height": 1080
+                    },
+                    "tablet": {
+                      "url": "https://rimh2.domainstatic.com.au/wjNfgXIZ2UIAwxd4gEpbaT0fEkA=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_13_1_251204_041032-w1800-h1198",
+                      "width": 1020,
+                      "height": 679
+                    },
+                    "mobile": {
+                      "url": "https://rimh2.domainstatic.com.au/PHC_XZciXawkzmZG1Lv0NhNMSVE=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_13_1_251204_041032-w1800-h1198",
+                      "width": 600,
+                      "height": 399
+                    }
+                  },
+                  "mediaType": "image"
+                },
+                {
+                  "images": {
+                    "original": {
+                      "url": "https://rimh2.domainstatic.com.au/_aqIjbF3SpO6KOUSIi3MkxDDlBs=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_14_1_251204_041032-w1800-h1012",
+                      "width": 1800,
+                      "height": 1012
+                    },
+                    "tablet": {
+                      "url": "https://rimh2.domainstatic.com.au/VrukzcpG85chG-JVkwgyV658-Uk=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_14_1_251204_041032-w1800-h1012",
                       "width": 1020,
                       "height": 573
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/nN-324H75KwDwsPxhnl4_KlfJJU=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_13_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/hcho5JT304Imo2RWV925gZKcoXM=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_14_1_251204_041032-w1800-h1012",
                       "width": 600,
                       "height": 337
                     }
@@ -10737,17 +10860,17 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/1lY1h-ohS4zm60VSxWdiSv5c5GY=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_14_1_251128_055134-w5272-h2962",
-                      "width": 1920,
-                      "height": 1079
+                      "url": "https://rimh2.domainstatic.com.au/cNngKDjnJ7S4FvLektM-VSZhhtI=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_15_1_251204_041032-w1800-h1012",
+                      "width": 1800,
+                      "height": 1012
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/MYln4989b_OI5azEfhM8XgAJLO8=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_14_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/g8ejukLqJPJWaiy299U22kmLN14=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_15_1_251204_041032-w1800-h1012",
                       "width": 1020,
                       "height": 573
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/x7gREg1ZmD3oxFp44hcwv2JWAhg=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_14_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/TySmOnslUThCXVcDmEW7IhBSRzc=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_15_1_251204_041032-w1800-h1012",
                       "width": 600,
                       "height": 337
                     }
@@ -10757,17 +10880,17 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/ZI2NIdTZ_HopSULQ4ot5Gahhs00=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_15_1_251128_055134-w5272-h2962",
-                      "width": 1920,
-                      "height": 1079
+                      "url": "https://rimh2.domainstatic.com.au/9qwTH80aZaYPintwESIppD99h6k=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_16_1_251204_041032-w1800-h1012",
+                      "width": 1800,
+                      "height": 1012
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/QzROBUwQfdcst3uzpfkI7L5RfUE=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_15_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/mYZeM0iVIiawKiUr54rqeVW-P6o=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_16_1_251204_041032-w1800-h1012",
                       "width": 1020,
                       "height": 573
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/WcciAQyD3h63VM8MayAASeXdFHY=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_15_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/bgxEXTJZfpYdpqQZ6-PBEtVvMnI=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_16_1_251204_041032-w1800-h1012",
                       "width": 600,
                       "height": 337
                     }
@@ -10777,107 +10900,67 @@
                 {
                   "images": {
                     "original": {
-                      "url": "https://rimh2.domainstatic.com.au/h4ODvnfPnta8dmKeQflnh2CRL7U=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_16_1_251128_055134-w5272-h2962",
-                      "width": 1920,
-                      "height": 1079
+                      "url": "https://rimh2.domainstatic.com.au/lv0cagrofRA6hnb3SbEVvmMIUlQ=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020470122_17_1_251204_041032-w1800-h1012",
+                      "width": 1800,
+                      "height": 1012
                     },
                     "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/eGIoBfkBR55D-fl2-onErA63_2Q=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_16_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/DFngm2EBUpu4a_FxFH562SvY5fc=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020470122_17_1_251204_041032-w1800-h1012",
                       "width": 1020,
                       "height": 573
                     },
                     "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/mEGD2W2OwFSD89-dfLMu1pLRjwY=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_16_1_251128_055134-w5272-h2962",
+                      "url": "https://rimh2.domainstatic.com.au/ru8TF90Hl9LsZx9GtBkd1pw215Q=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020470122_17_1_251204_041032-w1800-h1012",
                       "width": 600,
                       "height": 337
-                    }
-                  },
-                  "mediaType": "image"
-                },
-                {
-                  "images": {
-                    "original": {
-                      "url": "https://rimh2.domainstatic.com.au/rzXmmNLJUvtN16HXKjiEUuKMgGM=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_17_1_251128_055134-w5166-h2903",
-                      "width": 1920,
-                      "height": 1079
-                    },
-                    "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/Mb1DtoQcpZURuTz9QErUlFnl5pQ=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_17_1_251128_055134-w5166-h2903",
-                      "width": 1020,
-                      "height": 573
-                    },
-                    "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/R5m4FNC3aP7oxh8HmUJIdEQHS4s=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_17_1_251128_055134-w5166-h2903",
-                      "width": 600,
-                      "height": 337
-                    }
-                  },
-                  "mediaType": "image"
-                },
-                {
-                  "images": {
-                    "original": {
-                      "url": "https://rimh2.domainstatic.com.au/YEFvJN-MYQyjfH_KyMWprISHXwc=/fit-in/1920x1080/filters:format(jpeg):quality(80):no_upscale()/2020457763_18_1_251128_055134-w7008-h4672",
-                      "width": 1620,
-                      "height": 1080
-                    },
-                    "tablet": {
-                      "url": "https://rimh2.domainstatic.com.au/KRE4bJox4G4xXnlwlDhrF9dcS5g=/fit-in/1020x1020/filters:format(jpeg):quality(80):no_upscale()/2020457763_18_1_251128_055134-w7008-h4672",
-                      "width": 1020,
-                      "height": 680
-                    },
-                    "mobile": {
-                      "url": "https://rimh2.domainstatic.com.au/E2jzIsKoU_5R1HF7D_PDYwo52Pc=/fit-in/600x800/filters:format(jpeg):quality(80):no_upscale()/2020457763_18_1_251128_055134-w7008-h4672",
-                      "width": 600,
-                      "height": 400
                     }
                   },
                   "mediaType": "image"
                 }
               ],
-              "brandingAppearance": "light",
-              "price": "$730,000",
+              "brandingAppearance": "dark",
+              "price": "$1,480,000",
               "hasVideo": false,
               "branding": {
-                "agencyId": 2497,
+                "agencyId": 1664,
                 "agents": [
                   {
-                    "agentName": "Matt Thompson",
-                    "agentPhoto": "https://rimh2.domainstatic.com.au/AYRvIBdoC5yxNKzHAMF-fh1fhaY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/2497/contact_2001223.png?mod=260227-114053",
+                    "agentName": "George Zhang",
+                    "agentPhoto": "https://rimh2.domainstatic.com.au/zTQMH-GWG9fsk9n1YBL_drI85Qk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_2012188.jpeg?mod=260226-145536",
                     "agentRetinaPhotos": null
                   },
                   {
-                    "agentName": "Dan Kelly",
-                    "agentPhoto": "https://rimh2.domainstatic.com.au/S0lWvQhmLg3SV4AhqzCXghfmBPI=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/2497/contact_1999897.png?mod=260227-112619",
+                    "agentName": "Peter Huang",
+                    "agentPhoto": "https://rimh2.domainstatic.com.au/I9frzmatYv_R8yV1BmX1mAH8UHs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_1554260.jpeg?mod=260304-171128",
                     "agentRetinaPhotos": null
                   }
                 ],
-                "agentNames": "Matt Thompson, Dan Kelly",
-                "brandLogo": "https://rimh2.domainstatic.com.au/U3NyuyMZN4HVCkd7wVE2TrK0fJQ=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/2497/logo_2497.jpg?buster=2026-03-04",
+                "agentNames": "George Zhang, Peter Huang",
+                "brandLogo": "https://rimh2.domainstatic.com.au/GE2shzPtc9-TvFn7YWhr_tIeevI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/1664/logo_1664.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/zwBy1FnrAiBMlFy4GEIxQQy0jq4=/120x42/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/2497/logo_2497.jpg?buster=2026-03-04",
-                "brandName": "Ray White Surfers Paradise",
-                "brandColor": "#FEE536",
-                "agentPhoto": "https://rimh2.domainstatic.com.au/AYRvIBdoC5yxNKzHAMF-fh1fhaY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/2497/contact_2001223.png?mod=260227-114053",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/4T0o7Om9N40VKkMEs5stPDLpPsI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/1664/logo_1664.png?buster=2026-03-05",
+                "brandName": "Yong Corporate",
+                "brandColor": "#EC1D25",
+                "agentPhoto": "https://rimh2.domainstatic.com.au/zTQMH-GWG9fsk9n1YBL_drI85Qk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_2012188.jpeg?mod=260226-145536",
                 "agentRetinaPhotos": null,
-                "agentName": "Matt Thompson"
+                "agentName": "George Zhang"
               },
               "address": {
-                "street": "16/28 Menser Street",
+                "street": "40 Gemview St",
                 "suburb": "CALAMVALE",
                 "state": "QLD",
                 "postcode": "4116",
-                "lat": -27.627836,
-                "lng": 153.03413
+                "lat": -27.62573,
+                "lng": 153.03268
               },
               "features": {
-                "beds": 3,
+                "beds": 4,
                 "baths": 2,
-                "parking": 2,
-                "propertyType": "Townhouse",
-                "propertyTypeFormatted": "Townhouse",
+                "parking": 3,
+                "propertyType": "House",
+                "propertyTypeFormatted": "House",
                 "isRural": false,
-                "landSize": 162,
+                "landSize": 876,
                 "landUnit": "m²",
                 "isRetirement": false
               },
@@ -10887,7 +10970,7 @@
               },
               "auction": null,
               "tags": {
-                "tagText": "Sold at auction 19 Dec 2025",
+                "tagText": "Sold by private treaty 13 Dec 2025",
                 "tagClassName": "is-sold"
               },
               "displaySearchPriceRange": null,
@@ -10895,7 +10978,7 @@
             }
           }
         },
-        "totalListings": 17512,
+        "totalListings": 17514,
         "user": null,
         "loginAndReturnUrl": "https://www.domain.com.au/authentications/login?ReturnUrl=%2Fsold-listings%2Fcalamvale-qld-4116%2F%3Fpage%3D2",
         "signupAndReturnUrl": "https://www.domain.com.au/authentications/signup?ReturnUrl=%2Fsold-listings%2Fcalamvale-qld-4116%2F%3Fpage%3D2",
@@ -10905,7 +10988,7 @@
         "enableMRECAd": false,
         "enableEarlyAccessPromos": false,
         "footerSeoMarkup": "<div>Domain makes searching for your new home easy with a number of <a href=\"https://www.domain.com.au/sale/calamvale-qld-4116/\">properties for sale in Calamvale</a>, as well as <a href=\"https://www.domain.com.au/rent/calamvale-qld-4116/\">properties for rent</a>. Have your sights set on a certain type of property? Search popular property types within Calamvale and nearby suburbs, including <a href=\"https://www.domain.com.au/sale/calamvale-qld-4116/house/\">houses for sale</a>. Research the property market with a <a href=\"https://www.domain.com.au/property-profile\">property report</a> on Domain Home Price Guide, <a href=\"https://www.domain.com.au/auction-results/brisbane/\">Brisbane auction results</a> and <a href=\"https://www.domain.com.au/suburb-profile/calamvale-qld-4116\">Calamvale suburb profile</a>. Browse <a href=\"https://www.domain.com.au/real-estate-agencies/calamvale-qld-4116/\">real estate agencies in Calamvale</a> and get in touch to find a local expert who can help you find your dream property.</div>",
-        "seoResultHeaderHtml": "<strong>17512 Properties</strong> sold<span> in Calamvale, QLD, 4116 and surroundings</span>",
+        "seoResultHeaderHtml": "<strong>17514 Properties</strong> sold<span> in Calamvale, QLD, 4116 and surroundings</span>",
         "locationPriceVolumeProps": {
           "suburb": "Calamvale",
           "suburbProfileUrl": "https://www.domain.com.au/suburb-profile/calamvale-qld-4116",
@@ -11055,7 +11138,7 @@
                 {
                   "type": "PropertyListing",
                   "listing": {
-                    "id": 2020457763,
+                    "id": 2020451328,
                     "promoLevel": "Elite",
                     "listingType": "Sold"
                   }
@@ -11063,8 +11146,8 @@
                 {
                   "type": "PropertyListing",
                   "listing": {
-                    "id": 2020451328,
-                    "promoLevel": "Elite",
+                    "id": 2020470122,
+                    "promoLevel": "PremiumPlus",
                     "listingType": "Sold"
                   }
                 },
@@ -11213,10 +11296,10 @@
                   }
                 }
               ],
-              "totalResults": 17512,
+              "totalResults": 17514,
               "totalPages": 50,
               "page": 2,
-              "actualTotalResults": 17512,
+              "actualTotalResults": 17514,
               "actualTotalResultsExceedsMaximum": true
             }
           }
@@ -11225,7 +11308,7 @@
           "enableContentSnippet": false,
           "enableContentSnippetWithPostcodes": false,
           "disableAdsFlag": false,
-          "enableEnquiryCustomisations": true,
+          "enableEnquiryCustomisations": false,
           "shortlistExperimentFlag": true,
           "enableSuggestedFeatures": true,
           "enableAdditionalDescriptionFeature": true,
@@ -11246,7 +11329,7 @@
           "enableIndependentTwo": false,
           "enableIndependentThree": false,
           "enableHomePagePropertyAlert": true,
-          "enableShortlistPhotoGallery": false,
+          "enableShortlistPhotoGallery": true,
           "enablePropertyAlertOverlay": true,
           "enableHomepageSchoolFirstTypeahead": false,
           "enableGraphQLSuggestLocations": true,
@@ -11272,12 +11355,12 @@
           "postEnquiryAd": true,
           "enableGraphQLUPVSoldListings": false,
           "premarketListingGQL": false,
-          "enableGraphQLFeaturedAgency": false,
-          "enableGraphQLTopspot": true,
+          "enableGraphQLFeaturedAgency": true,
+          "enableGraphQLTopspot": false,
           "platinumListingGalleryAds": true,
-          "disableProjectVerticalGallery": false,
+          "disableProjectVerticalGallery": true,
           "priceGuideExp": true,
-          "enableGraphQLNewToYou": false,
+          "enableGraphQLNewToYou": true,
           "platinumListingsInlineEnquiryExp": false,
           "enableRequestFloorPlanExp": true,
           "enablePpid": true,
@@ -11301,11 +11384,10 @@
           "enableEnquiryRecaptchaV2Fallback": true,
           "enableSearchListingsGTMDefer": true,
           "enableVendorLeadCTA": true,
-          "enableFaaLeadGenBannerCTA": false,
+          "enableFaaLeadGenBannerCTA": true,
           "enableVendorLeadCTABranded": true,
           "enableVendorLeadCTAOnTop": false,
           "enableSearchListingsINPOptimise": true,
-          "enableListingDetailsWebPImageFormat": true,
           "enableNewProjectBannerUrl": true,
           "enableResponsiveHeroImageCrop": true,
           "enableAgentAvatarImageResizeGQL": true,
@@ -11317,7 +11399,7 @@
           "startUPVExperiment": true
         },
         "mixpanelToken": "ab0bde70050c3eabaaf8824402fa01e0",
-        "sessionToken": "ca4b9bee-e791-4c23-8495-60f8bb4206c9",
+        "sessionToken": "4c986b01-5e86-4079-840e-b1dc466bc10c",
         "initialRetirementsOnly": false,
         "initialSelectAllPropertyTypes": true,
         "clientType": "Website - Desktop",
@@ -11327,7 +11409,7 @@
               "pageId": "search results - sold",
               "pageName": "search results - sold",
               "search": {
-                "agencyIds": "2497,17842,32832,35150,25142,30943,24176,37381,24665,35722",
+                "agencyIds": "17842,1664,32832,35150,25142,30943,24176,37381,24665,35722",
                 "bathroomsFrom": "0",
                 "bathroomsTo": "5+",
                 "bedroomsFrom": "0",
@@ -11336,12 +11418,12 @@
                 "geoType": "Suburb",
                 "mapSearch": "Off",
                 "searchType": "Location",
-                "medianPrice": 1100500,
+                "medianPrice": 1271500,
                 "postcode": "4116",
                 "primaryPropertyType": "Any",
                 "secondaryPropertyType": "Any",
                 "resultsPages": 50,
-                "resultsRecords": "2020457763,2020451328,2020452513,2020382619,2020445731,2020333346,2020438771,2020446472,2017683105,2020417403,2020408944,2020429726,2020435510",
+                "resultsRecords": "2020451328,2020470122,2020452513,2020382619,2020445731,2020333346,2020438771,2020446472,2017683105,2020417403,2020408944,2020429726,2020435510",
                 "searchArea": "Brisbane Region",
                 "searchDataDefaults": {
                   "sortBy": "Default",
@@ -11357,7 +11439,7 @@
                 "searchDepth": 2,
                 "searchLocationCat": "Suburb",
                 "searchRegion": "South East Queensland Greater Region",
-                "searchResultCount": 17512,
+                "searchResultCount": 17514,
                 "searchSuburb": "Calamvale",
                 "searchTerm": "Calamvale, 4116, QLD",
                 "searchTypeView": "ListView",
@@ -11399,7 +11481,7 @@
                 "4116"
               ],
               "usertype": "sold",
-              "medianPrice": 1100500
+              "medianPrice": 1271500
             },
             "adSite": "DOMAIN.COM.AU",
             "adSlots": []
@@ -11409,17 +11491,17 @@
           "events": [],
           "user": {
             "membershipType": "visitor",
-            "sessionToken": "ca4b9bee-e791-4c23-8495-60f8bb4206c9",
+            "sessionToken": "4c986b01-5e86-4079-840e-b1dc466bc10c",
             "membershipState": "Not_logged_in",
             "dhlMembership": "inactive",
-            "ipAddress": "lZylCIib5Wf+0vBIsgPzq8jpwBx6bqgfhUyfAVAt2SKn4IqLlNBDx61udaHudefi"
+            "ipAddress": "lZylCIib5Wf+0vBIsgPzq39BRGN1coWKzR0viOkpg1hb1v2WPfseh13qJXnziBj1"
           }
         },
         "pageTitle": "4000+ Properties Sold & Auction Results in Calamvale, QLD, 4116 | Domain",
         "raygunTags": [
           "isSearchResults"
         ],
-        "pageCorrelation": "3dcbfe7f-42a4-4c58-b3b2-98e4029450a8",
+        "pageCorrelation": "944d7592-813c-40b7-ae4d-d80d66024fd8",
         "recaptchaSiteKey": "6LeDUaUbAAAAALoyaiI4Yv9TKESEc727OK6H0SmK",
         "recaptchaSiteKeyV2": "6LeYd44rAAAAACY1tpXGEmJY8vjBr35RWnEzSSVG",
         "rootGraphQuery": {
@@ -11432,6 +11514,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/36-gemview-street-calamvale-qld-4116-2020266646",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -11912,9 +11995,9 @@
                   }
                 ],
                 "agentNames": "Owen Chen, Jacky Chu",
-                "brandLogo": "https://rimh2.domainstatic.com.au/aPb9J5xhCcm0c2qY5NlKL_dfWak=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/ODDqwgb4Cj61S6l5e-EaO4jzmKQ=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/sQ1MLCOXceh6FK5B9-Q93-JN8w8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/QJFR8e-zQjtUO7xKnbXRQ0RRhx8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "brandName": "Place Sunnybank",
                 "brandColor": "#090c39",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/0mjRnoWSvkKv2_cPIS7GKeYvYyo=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/27337/contact_1298399.jpeg?mod=260113-175721",
@@ -11962,6 +12045,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/15-88-shelduck-place-calamvale-qld-4116-2020271153",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -12302,9 +12386,9 @@
                   }
                 ],
                 "agentNames": "Jess Chia, Andy Guo",
-                "brandLogo": "https://rimh2.domainstatic.com.au/aPb9J5xhCcm0c2qY5NlKL_dfWak=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/ODDqwgb4Cj61S6l5e-EaO4jzmKQ=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/sQ1MLCOXceh6FK5B9-Q93-JN8w8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/QJFR8e-zQjtUO7xKnbXRQ0RRhx8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "brandName": "Place Sunnybank",
                 "brandColor": "#090c39",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/cJzeIg8QoFc96CTh4IjpED5lwxI=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/27337/contact_1344298.jpeg?mod=260113-113003",
@@ -12352,6 +12436,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/16-22-highgrove-street-calamvale-qld-4116-2020285111",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -12392,9 +12477,9 @@
                   }
                 ],
                 "agentNames": "Shannon Harvey, Tara Hartnell",
-                "brandLogo": "https://rimh2.domainstatic.com.au/bjP5kMWKS1_ktGyABe2Ie_eOcrk=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/4702/logo_4702.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/DdUM6Betpk-ltN1cRFChpFLVj7s=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/4702/logo_4702.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/aWZ0MOeVPZNTLhp_4tFYBDUMtiE=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/4702/logo_4702.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/DlXr9l-GkLNqtjY3m0l3BngGRKQ=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/4702/logo_4702.png?buster=2026-03-05",
                 "brandName": "Place Estate Agents - Bulimba",
                 "brandColor": "#090c39",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/JWqz1A7gzdqySiiTwXHqmQFMHDY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/4702/contact_1750587.jpeg?mod=260302-171731",
@@ -12442,6 +12527,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/3-rutherglen-crescent-calamvale-qld-4116-2020373843",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -13162,9 +13248,9 @@
                   }
                 ],
                 "agentNames": "Owen Chen, Andy Guo",
-                "brandLogo": "https://rimh2.domainstatic.com.au/aPb9J5xhCcm0c2qY5NlKL_dfWak=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/ODDqwgb4Cj61S6l5e-EaO4jzmKQ=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/sQ1MLCOXceh6FK5B9-Q93-JN8w8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/QJFR8e-zQjtUO7xKnbXRQ0RRhx8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "brandName": "Place Sunnybank",
                 "brandColor": "#090c39",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/drcHtVHn2d1j16r_0WcJdPo_YDg=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/27337/contact_1298399.jpeg?mod=260123-213016",
@@ -13212,6 +13298,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/52-semper-place-calamvale-qld-4116-2020404158",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -13612,9 +13699,9 @@
                   }
                 ],
                 "agentNames": "Andy Guo, Janet Tseng",
-                "brandLogo": "https://rimh2.domainstatic.com.au/aPb9J5xhCcm0c2qY5NlKL_dfWak=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/ODDqwgb4Cj61S6l5e-EaO4jzmKQ=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/sQ1MLCOXceh6FK5B9-Q93-JN8w8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/QJFR8e-zQjtUO7xKnbXRQ0RRhx8=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/27337/logo_27337.png?buster=2026-03-05",
                 "brandName": "Place Sunnybank",
                 "brandColor": "#090c39",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/9UYPjTtxpD4iOlbskxZl_lXhDs4=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/27337/contact_1709582.png?mod=260204-130141",
@@ -13662,6 +13749,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/40-gemview-st-calamvale-qld-4116-2020470122",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -14012,22 +14100,22 @@
                 "agents": [
                   {
                     "agentName": "George Zhang",
-                    "agentPhoto": "https://rimh2.domainstatic.com.au/mYRTDKoRsfyCxjdPZAwXdcrVTx4=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_2012188.jpeg?mod=260130-172719",
+                    "agentPhoto": "https://rimh2.domainstatic.com.au/zTQMH-GWG9fsk9n1YBL_drI85Qk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_2012188.jpeg?mod=260226-145536",
                     "agentRetinaPhotos": null
                   },
                   {
                     "agentName": "Peter Huang",
-                    "agentPhoto": "https://rimh2.domainstatic.com.au/GsbT3WjenNWnkYMxW55Db0wbM_o=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_1554260.jpeg?mod=260204-154717",
+                    "agentPhoto": "https://rimh2.domainstatic.com.au/I9frzmatYv_R8yV1BmX1mAH8UHs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_1554260.jpeg?mod=260304-171128",
                     "agentRetinaPhotos": null
                   }
                 ],
                 "agentNames": "George Zhang, Peter Huang",
-                "brandLogo": "https://rimh2.domainstatic.com.au/HDLVMbhu5W_5TCf3A3YlNcivU58=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/1664/logo_1664.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/GE2shzPtc9-TvFn7YWhr_tIeevI=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/1664/logo_1664.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/etJ5foWtGAbHOlpG4V4it9JK1v4=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/1664/logo_1664.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/4T0o7Om9N40VKkMEs5stPDLpPsI=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/1664/logo_1664.png?buster=2026-03-05",
                 "brandName": "Yong Corporate",
                 "brandColor": "#EC1D25",
-                "agentPhoto": "https://rimh2.domainstatic.com.au/mYRTDKoRsfyCxjdPZAwXdcrVTx4=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_2012188.jpeg?mod=260130-172719",
+                "agentPhoto": "https://rimh2.domainstatic.com.au/zTQMH-GWG9fsk9n1YBL_drI85Qk=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/1664/contact_2012188.jpeg?mod=260226-145536",
                 "agentRetinaPhotos": null,
                 "agentName": "George Zhang"
               },
@@ -14072,6 +14160,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/1-mead-place-calamvale-qld-4116-2020480547",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -14132,9 +14221,9 @@
                   }
                 ],
                 "agentNames": "Eddie Singh, AJ Singh",
-                "brandLogo": "https://rimh2.domainstatic.com.au/gIQfFjvtHCsKma3h1aRGQizkyFU=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/yGE5ra8B7O1lyx8XfkrpqWUJXlY=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/VhzjOnO8Hr81TuxSQLjmh5-Z260=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/Wl8nSWOLyjRW0gmSnsdxJK4i0Gk=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-05",
                 "brandName": "LJ Hooker St Lucia",
                 "brandColor": "#FFFAEB",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/h4-9BNZ7lqqgDZZv9Lw0POGMI-Y=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/36118/contact_1871475.jpeg?mod=260213-121957",
@@ -14182,6 +14271,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/26-8-honeysuckle-way-calamvale-qld-4116-2020542537",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -14602,9 +14692,9 @@
                   }
                 ],
                 "agentNames": "Ela Milne, Michael Mau",
-                "brandLogo": "https://rimh2.domainstatic.com.au/O3F9eyYSiC2QQBnscsK7IC8Hwmg=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/E8eslJ9UsIOi6OkwIpxQ9VUJH1c=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/vDVc2W_zCiMyFN0IOpX_ZM3FZ_0=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/fM1Vg3YjVQ10YmtcY_3pfi4pdGc=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/24665/logo_24665.jpg?buster=2026-03-05",
                 "brandName": "Ray White Rochedale",
                 "brandColor": "#FEE536",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/7bNSAo5ecuFG2G5NYkxwcOQmqZY=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/24665/contact_1833309.jpeg?mod=260217-141233",
@@ -14652,6 +14742,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/19-earnshaw-street-calamvale-qld-4116-2020603015",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -15252,9 +15343,9 @@
                   }
                 ],
                 "agentNames": "Eddie Singh, AJ Singh",
-                "brandLogo": "https://rimh2.domainstatic.com.au/gIQfFjvtHCsKma3h1aRGQizkyFU=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/yGE5ra8B7O1lyx8XfkrpqWUJXlY=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/VhzjOnO8Hr81TuxSQLjmh5-Z260=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/Wl8nSWOLyjRW0gmSnsdxJK4i0Gk=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/36118/logo_36118.png?buster=2026-03-05",
                 "brandName": "LJ Hooker St Lucia",
                 "brandColor": "#FFFAEB",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/4zFk2VcGYJLDt-EV8-to7MRkyg4=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/36118/contact_1871475.jpeg?mod=260214-004926",
@@ -15302,6 +15393,7 @@
             "listingModel": {
               "promoType": "standard",
               "url": "/25-currajong-street-calamvale-qld-4116-2020640961",
+              "retinaImages": null,
               "skeletonImages": [
                 {
                   "images": {
@@ -15342,9 +15434,9 @@
                   }
                 ],
                 "agentNames": "Jeremiah Chung, Ting  Harden",
-                "brandLogo": "https://rimh2.domainstatic.com.au/HjSBtcTrNqZks1EeRnDenBV8Ob4=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/38018/logo_38018.jpeg?buster=2026-03-04",
+                "brandLogo": "https://rimh2.domainstatic.com.au/soq7xQo4RYxnIPwYe8i2OR3kKuk=/170x60/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/Agencys/38018/logo_38018.jpeg?buster=2026-03-05",
                 "retinaBrandLogos": null,
-                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/IaSN8r-m6_EiFjDxrlR3rjO23es=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/38018/logo_38018.jpeg?buster=2026-03-04",
+                "skeletonBrandLogo": "https://rimh2.domainstatic.com.au/8xqlN2WzzbeiKjgggENuKVMr1nE=/200x70/filters:format(jpeg):quality(80):no_upscale()/https://images.domain.com.au/img/Agencys/38018/logo_38018.jpeg?buster=2026-03-05",
                 "brandName": "Fortitude Real Estate Group",
                 "brandColor": "#ccc6c1",
                 "agentPhoto": "https://rimh2.domainstatic.com.au/OdGSmEdHKxpHzTqMUVBDtKsPlrs=/90x90/filters:format(jpeg):quality(80)/https://images.domain.com.au/img/38018/contact_1943929.jpeg?mod=260227-103602",
@@ -15389,7 +15481,7 @@
         ],
         "vendorLeadData": null,
         "experimentsRaw": {
-          "enableFaaLeadGenBannerCTA": "seller-appraisal-v1"
+          "enableFaaLeadGenBannerCTA": "local-agent-discovery-v1"
         },
         "displayNewToYouListings": false,
         "totalNewToYouListings": 0,
@@ -15461,9 +15553,9 @@
         "bathroomCounts": {},
         "parkingCounts": {},
         "propertyCounts": {
-          "house": 13415,
+          "house": 13416,
           "apartment": 314,
-          "town-house": 3401,
+          "town-house": 3402,
           "land": 380,
           "rural": 2
         },
@@ -15485,10 +15577,10 @@
     "listingType": "sold-listings",
     "location": "calamvale-qld-4116"
   },
-  "buildId": "lD2cw33e16sSgEHYzXCY-",
-  "assetPrefix": "https://s.domainstatic.com.au/fe-server-search-listings/master-6979",
+  "buildId": "Bcv5xqqoW63oPguh_oJbB",
+  "assetPrefix": "https://s.domainstatic.com.au/fe-server-search-listings/master-6994",
   "runtimeConfig": {
-    "version": "9.198.0",
+    "version": "9.200.0",
     "raygunApiKey": "Jc2EG8UJC5PYaGq58+JtVA==",
     "isDevMode": false,
     "gtmId": "GTM-M3HVG4",
