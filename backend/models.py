@@ -3,7 +3,7 @@ Compass MVP 数据模型
 """
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import date
+from datetime import date, datetime
 
 
 class Property(BaseModel):
@@ -95,8 +95,8 @@ class Listing(BaseModel):
     agent_name: Optional[str] = None
     agent_company: Optional[str] = None
     link: Optional[str] = None
-    scraped_date: Optional[str] = None
-    created_at: Optional[str] = None
+    scraped_date: Optional[date] = None
+    created_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True
