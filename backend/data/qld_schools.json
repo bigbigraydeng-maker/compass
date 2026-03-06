@@ -1,10 +1,20 @@
 [
   {
     "id": 1,
-    "name": "Sunnybank State High School",
-    "school_type": "secondary",
+    "name": "Sunnybank Community College",
+    "school_type": "combined",
     "suburb": "Sunnybank",
-    "naplan_percentile": 66,
+    "naplan_percentile": 58,
+    "catchment_suburbs": [
+      "Sunnybank"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Sunnybank Community College",
+    "school_type": "combined",
+    "suburb": "Sunnybank",
+    "naplan_percentile": 92,
     "catchment_suburbs": [
       "Sunnybank",
       "Eight Mile Plains",
@@ -12,129 +22,119 @@
     ]
   },
   {
-    "id": 2,
-    "name": "Sunnybank State High School",
-    "school_type": "secondary",
-    "suburb": "Sunnybank",
-    "naplan_percentile": 50,
-    "catchment_suburbs": [
-      "Sunnybank"
-    ]
-  },
-  {
     "id": 3,
-    "name": "Sunnybank Hills State School",
-    "school_type": "primary",
+    "name": "Sunnybank Hills State High School",
+    "school_type": "secondary",
     "suburb": "Sunnybank Hills",
-    "naplan_percentile": 62,
+    "naplan_percentile": 66,
     "catchment_suburbs": [
-      "Sunnybank Hills",
-      "Carindale"
+      "Sunnybank Hills"
     ]
   },
   {
     "id": 4,
-    "name": "Macgregor State School",
-    "school_type": "primary",
+    "name": "Macgregor State High School",
+    "school_type": "secondary",
     "suburb": "Macgregor",
-    "naplan_percentile": 76,
+    "naplan_percentile": 64,
     "catchment_suburbs": [
       "Macgregor"
     ]
   },
   {
     "id": 5,
-    "name": "Eight Mile Plains Community College",
+    "name": "Macgregor Community College",
     "school_type": "combined",
-    "suburb": "Eight Mile Plains",
-    "naplan_percentile": 50,
+    "suburb": "Macgregor",
+    "naplan_percentile": 78,
     "catchment_suburbs": [
-      "Eight Mile Plains"
+      "Macgregor"
     ]
   },
   {
     "id": 6,
-    "name": "Eight Mile Plains State High School",
-    "school_type": "secondary",
-    "suburb": "Eight Mile Plains",
-    "naplan_percentile": 69,
+    "name": "Macgregor State School",
+    "school_type": "primary",
+    "suburb": "Macgregor",
+    "naplan_percentile": 89,
     "catchment_suburbs": [
-      "Eight Mile Plains"
+      "Macgregor",
+      "Calamvale"
     ]
   },
   {
     "id": 7,
-    "name": "Calamvale State School",
-    "school_type": "primary",
-    "suburb": "Calamvale",
-    "naplan_percentile": 90,
+    "name": "Eight Mile Plains Community College",
+    "school_type": "combined",
+    "suburb": "Eight Mile Plains",
+    "naplan_percentile": 94,
     "catchment_suburbs": [
-      "Calamvale",
       "Eight Mile Plains",
-      "Mount Gravatt"
+      "Mount Gravatt",
+      "Carindale"
     ]
   },
   {
     "id": 8,
-    "name": "Calamvale State High School",
-    "school_type": "secondary",
-    "suburb": "Calamvale",
-    "naplan_percentile": 74,
+    "name": "Eight Mile Plains Community College",
+    "school_type": "combined",
+    "suburb": "Eight Mile Plains",
+    "naplan_percentile": 65,
     "catchment_suburbs": [
-      "Calamvale",
       "Eight Mile Plains",
       "Stretton"
     ]
   },
   {
     "id": 9,
-    "name": "Algester Community College",
-    "school_type": "combined",
-    "suburb": "Algester",
-    "naplan_percentile": 89,
+    "name": "Eight Mile Plains State School",
+    "school_type": "primary",
+    "suburb": "Eight Mile Plains",
+    "naplan_percentile": 63,
     "catchment_suburbs": [
-      "Algester"
+      "Eight Mile Plains"
     ]
   },
   {
     "id": 10,
-    "name": "Algester State High School",
-    "school_type": "secondary",
-    "suburb": "Algester",
-    "naplan_percentile": 56,
+    "name": "Calamvale State School",
+    "school_type": "primary",
+    "suburb": "Calamvale",
+    "naplan_percentile": 67,
     "catchment_suburbs": [
-      "Algester"
+      "Calamvale"
     ]
   },
   {
     "id": 11,
-    "name": "Algester State School",
-    "school_type": "primary",
+    "name": "Algester State High School",
+    "school_type": "secondary",
     "suburb": "Algester",
-    "naplan_percentile": 94,
+    "naplan_percentile": 91,
     "catchment_suburbs": [
       "Algester"
     ]
   },
   {
     "id": 12,
-    "name": "Robertson Community College",
-    "school_type": "combined",
-    "suburb": "Robertson",
-    "naplan_percentile": 92,
+    "name": "Algester State School",
+    "school_type": "primary",
+    "suburb": "Algester",
+    "naplan_percentile": 53,
     "catchment_suburbs": [
-      "Robertson",
-      "Calamvale"
+      "Algester"
     ]
   },
   {
     "id": 13,
-    "name": "Robertson State High School",
+    "name": "Algester State High School",
     "school_type": "secondary",
-    "suburb": "Robertson",
-    "naplan_percentile": 75,
+    "suburb": "Algester",
+    "naplan_percentile": 95,
     "catchment_suburbs": [
-      "Robertson"
+      "Algester",
+      "Eight Mile Plains",
+      "Carindale"
     ]
   },
   {
@@ -142,19 +142,21 @@
     "name": "Robertson Community College",
     "school_type": "combined",
     "suburb": "Robertson",
-    "naplan_percentile": 65,
+    "naplan_percentile": 52,
     "catchment_suburbs": [
       "Robertson"
     ]
   },
   {
     "id": 15,
-    "name": "Runcorn State School",
-    "school_type": "primary",
-    "suburb": "Runcorn",
-    "naplan_percentile": 94,
+    "name": "Robertson Community College",
+    "school_type": "combined",
+    "suburb": "Robertson",
+    "naplan_percentile": 64,
     "catchment_suburbs": [
-      "Runcorn"
+      "Robertson",
+      "Carindale",
+      "Eight Mile Plains"
     ]
   },
   {
@@ -162,21 +164,21 @@
     "name": "Runcorn State High School",
     "school_type": "secondary",
     "suburb": "Runcorn",
-    "naplan_percentile": 84,
+    "naplan_percentile": 54,
     "catchment_suburbs": [
       "Runcorn",
-      "Stretton"
+      "Calamvale"
     ]
   },
   {
     "id": 17,
-    "name": "Stretton State School",
-    "school_type": "primary",
-    "suburb": "Stretton",
-    "naplan_percentile": 90,
+    "name": "Runcorn State High School",
+    "school_type": "secondary",
+    "suburb": "Runcorn",
+    "naplan_percentile": 77,
     "catchment_suburbs": [
-      "Stretton",
-      "Calamvale"
+      "Runcorn",
+      "Stretton"
     ]
   },
   {
@@ -184,15 +186,44 @@
     "name": "Stretton State School",
     "school_type": "primary",
     "suburb": "Stretton",
-    "naplan_percentile": 89,
+    "naplan_percentile": 86,
     "catchment_suburbs": [
-      "Stretton",
-      "Carindale",
-      "Calamvale"
+      "Stretton"
     ]
   },
   {
     "id": 19,
+    "name": "Stretton Community College",
+    "school_type": "combined",
+    "suburb": "Stretton",
+    "naplan_percentile": 79,
+    "catchment_suburbs": [
+      "Stretton"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Stretton State High School",
+    "school_type": "secondary",
+    "suburb": "Stretton",
+    "naplan_percentile": 81,
+    "catchment_suburbs": [
+      "Stretton",
+      "Mount Gravatt"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Wishart Community College",
+    "school_type": "combined",
+    "suburb": "Wishart",
+    "naplan_percentile": 67,
+    "catchment_suburbs": [
+      "Wishart"
+    ]
+  },
+  {
+    "id": 22,
     "name": "Wishart State High School",
     "school_type": "secondary",
     "suburb": "Wishart",
@@ -202,61 +233,57 @@
     ]
   },
   {
-    "id": 20,
-    "name": "Wishart Community College",
-    "school_type": "combined",
-    "suburb": "Wishart",
-    "naplan_percentile": 68,
-    "catchment_suburbs": [
-      "Wishart",
-      "Algester"
-    ]
-  },
-  {
-    "id": 21,
-    "name": "Wishart Community College",
-    "school_type": "combined",
-    "suburb": "Wishart",
-    "naplan_percentile": 84,
-    "catchment_suburbs": [
-      "Wishart",
-      "Eight Mile Plains"
-    ]
-  },
-  {
-    "id": 22,
-    "name": "Carindale State School",
-    "school_type": "primary",
-    "suburb": "Carindale",
-    "naplan_percentile": 79,
-    "catchment_suburbs": [
-      "Carindale",
-      "Sunnybank",
-      "Robertson"
-    ]
-  },
-  {
     "id": 23,
-    "name": "Mount Gravatt Community College",
+    "name": "Wishart Community College",
     "school_type": "combined",
-    "suburb": "Mount Gravatt",
-    "naplan_percentile": 62,
+    "suburb": "Wishart",
+    "naplan_percentile": 89,
     "catchment_suburbs": [
-      "Mount Gravatt",
-      "Sunnybank",
-      "Sunnybank Hills"
+      "Wishart"
     ]
   },
   {
     "id": 24,
+    "name": "Carindale State School",
+    "school_type": "primary",
+    "suburb": "Carindale",
+    "naplan_percentile": 93,
+    "catchment_suburbs": [
+      "Carindale",
+      "Sunnybank",
+      "Mount Gravatt"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Carindale State School",
+    "school_type": "primary",
+    "suburb": "Carindale",
+    "naplan_percentile": 91,
+    "catchment_suburbs": [
+      "Carindale"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Carindale State School",
+    "school_type": "primary",
+    "suburb": "Carindale",
+    "naplan_percentile": 57,
+    "catchment_suburbs": [
+      "Carindale",
+      "Runcorn"
+    ]
+  },
+  {
+    "id": 27,
     "name": "Mount Gravatt Community College",
     "school_type": "combined",
     "suburb": "Mount Gravatt",
-    "naplan_percentile": 64,
+    "naplan_percentile": 89,
     "catchment_suburbs": [
       "Mount Gravatt",
-      "Sunnybank Hills",
-      "Calamvale"
+      "Sunnybank"
     ]
   }
 ]
