@@ -348,11 +348,35 @@ def get_suburb_trends(suburb_name: str):
 def get_suburb_schools(suburb_name: str):
     import os
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(script_dir, "schools_data.json")
-    with open(json_path, "r", encoding="utf-8") as f:
-        all_schools = json.load(f)
-    schools = all_schools.get(suburb_name, [])
-    return {"suburb": suburb_name, "schools": schools}
+    json_path = os.path.join(script_dir, "data", "qld_schools.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            all_schools = json.load(f)
+        # 过滤出属于该郊区的学校
+        schools = []
+        for school in all_schools:
+            # 检查学校是否在该郊区
+            if school.get('suburb', '').lower() == suburb_name.lower():
+                schools.append(school)
+            else:
+                # 检查该郊区是否在招生范围内
+                catchment = school.get('catchment_suburbs', [])
+                if isinstance(catchment, list):
+                    # 如果是数组
+                    for s in catchment:
+                        if isinstance(s, str) and s.strip().lower() == suburb_name.lower():
+                            schools.append(school)
+                            break
+                elif isinstance(catchment, str):
+                    # 如果是字符串
+                    for s in catchment.split(','):
+                        if s.strip().lower() == suburb_name.lower():
+                            schools.append(school)
+                            break
+        return {"suburb": suburb_name, "schools": schools}
+    except Exception as e:
+        # 如果文件不存在或解析失败，返回空列表
+        return {"suburb": suburb_name, "schools": []}
 
 
 @app.get("/api/listings", response_model=ListingsResponse)
