@@ -73,6 +73,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [data, setData] = useState<SuburbData | null>(null);
   const [trends, setTrends] = useState<MonthlyTrend[]>([]);
   const [schools, setSchools] = useState<any[]>([]);
+  const [zoning, setZoning] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -114,11 +115,21 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           const schoolsData = await schoolsRes.json();
           setSchools(schoolsData.schools || []);
         }
+
+        // 获取分区数据
+        const zoningRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/zoning`);
+        if (!zoningRes.ok) {
+          setZoning(null);
+        } else {
+          const zoningData = await zoningRes.json();
+          setZoning(zoningData);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
         setTrends([]);
         setSchools([]);
+        setZoning(null);
       } finally {
         setLoading(false);
       }
@@ -298,6 +309,20 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* 土地分区 */}
+        {zoning && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">🏘️ 土地分区</h2>
+            <div className="space-y-2">
+              {zoning.zones.map((zone, index) => (
+                <div key={index} className="flex justify-between items-center">
+                  <span className="text-gray-700">{zone.percentage}% {zone.zone_name} ({zone.zone_code})</span>
+                </div>
+              ))}
             </div>
           </div>
         )}

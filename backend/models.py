@@ -110,4 +110,17 @@ class ListingsResponse(BaseModel):
     page_size: int
 
 
+class Zone(BaseModel):
+    """分区信息模型"""
+    zone_code: str
+    zone_name: str
+    percentage: int
+
+
+class ZoningResponse(BaseModel):
+    """分区信息响应模型"""
+    suburb: str
+    zones: List[Zone]
+
+
 

@@ -454,6 +454,65 @@ def get_listings(
         raise HTTPException(status_code=500, detail=f"获取在售房源列表失败: {str(e)}")
 
 
+@app.get("/api/suburb/{suburb_name}/zoning", response_model=ZoningResponse)
+def get_suburb_zoning(suburb_name: str):
+    """
+    获取郊区的分区信息
+    
+    参数：
+    - suburb_name: 郊区名称
+    """
+    # 模拟数据，实际应该调用 Brisbane Open Data API
+    zone_data = {
+        "Sunnybank": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 65},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 20},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
+        ],
+        "Eight Mile Plains": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 70},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 15},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
+        ],
+        "Calamvale": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 60},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 25},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
+        ],
+        "Rochedale": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 75},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 10},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
+        ],
+        "Mansfield": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 80},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 10},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 10}
+        ],
+        "Ascot": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 85},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 5},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 10}
+        ],
+        "Hamilton": [
+            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 70},
+            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 20},
+            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 10}
+        ]
+    }
+    
+    zones = zone_data.get(suburb_name, [
+        {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 60},
+        {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 20},
+        {"zone_code": "OTHER", "zone_name": "Other", "percentage": 20}
+    ])
+    
+    return ZoningResponse(
+        suburb=suburb_name,
+        zones=zones
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8888)
