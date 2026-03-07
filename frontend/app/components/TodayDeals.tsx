@@ -6,6 +6,10 @@ interface DealData {
   estimated_value: number;
   discount_percent: number;
   compass_score: number;
+  why_deal: string;
+  update_time: string;
+  comparable_sales: number;
+  risk_level: string;
 }
 
 interface TodayDealsProps {
@@ -21,38 +25,57 @@ export default function TodayDeals({ deals }: TodayDealsProps) {
     }).format(price);
   };
 
-  // 模拟数据
+  // 模拟数据 - 使用更真实的地址
   const mockDeals: DealData[] = [
     {
       id: '1',
-      address: '123 Main St',
+      address: '18 Karingal Street',
       suburb: 'Sunnybank',
       listing_price: 850000,
       estimated_value: 980000,
       discount_percent: 13,
-      compass_score: 82
+      compass_score: 82,
+      why_deal: '低于区域中位价13%，附近有优质学校和华人超市',
+      update_time: '2026-03-08 10:30',
+      comparable_sales: 5,
+      risk_level: '低'
     },
     {
       id: '2',
-      address: '456 Oak Ave',
+      address: '45 Appleby Road',
       suburb: 'Rochedale',
       listing_price: 720000,
       estimated_value: 850000,
       discount_percent: 15,
-      compass_score: 79
+      compass_score: 79,
+      why_deal: '新区发展潜力大，未来规划有地铁站',
+      update_time: '2026-03-08 09:15',
+      comparable_sales: 3,
+      risk_level: '中'
     },
     {
       id: '3',
-      address: '789 Pine Rd',
+      address: '72 Ham Road',
       suburb: 'Mansfield',
       listing_price: 920000,
       estimated_value: 1050000,
       discount_percent: 12,
-      compass_score: 76
+      compass_score: 76,
+      why_deal: '学区房，靠近Mansfield State High School',
+      update_time: '2026-03-07 16:45',
+      comparable_sales: 4,
+      risk_level: '低'
     }
   ];
 
   const displayDeals = deals.length > 0 ? deals : mockDeals;
+
+  // 风险等级样式映射
+  const riskLevelStyles: Record<string, string> = {
+    '低': 'bg-green-100 text-green-800',
+    '中': 'bg-yellow-100 text-yellow-800',
+    '高': 'bg-red-100 text-red-800'
+  };
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
@@ -85,6 +108,12 @@ export default function TodayDeals({ deals }: TodayDealsProps) {
                   </div>
                 </div>
                 
+                {/* Why it's a deal */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">为什么是捡漏</h4>
+                  <p className="text-sm text-gray-600">{deal.why_deal}</p>
+                </div>
+                
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">挂牌价</span>
@@ -98,15 +127,30 @@ export default function TodayDeals({ deals }: TodayDealsProps) {
                     <span className="text-sm text-gray-600">Compass 评分</span>
                     <span className="font-semibold text-orange-600">{deal.compass_score}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">可比成交</span>
+                    <span className="font-semibold text-gray-700">{deal.comparable_sales} 套</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">风险等级</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${riskLevelStyles[deal.risk_level] || 'bg-gray-100 text-gray-800'}`}>
+                      {deal.risk_level}
+                    </span>
+                  </div>
                 </div>
                 
-                <div className="flex gap-3">
+                <div className="flex gap-3 mb-4">
                   <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
                     🤖 分析
                   </button>
                   <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors">
                     查看
                   </button>
+                </div>
+                
+                {/* 数据更新时间 */}
+                <div className="text-xs text-gray-400">
+                  数据更新时间: {deal.update_time} | 来源: Compass AI 分析
                 </div>
               </div>
             </div>
