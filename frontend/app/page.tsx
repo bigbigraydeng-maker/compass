@@ -1,65 +1,9 @@
+'use client';
 import Link from 'next/link';
 import Navbar from './components/Navbar';
+import { useState, useEffect } from 'react';
 
-async function getHomeData() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/home`, {
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) return { latest_sales: [], suburb_stats: [] };
-    return res.json();
-  } catch (e) {
-    return { latest_sales: [], suburb_stats: [] };
-  }
-}
-
-async function getDealsData() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/deals`, {
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) return { deals: [], total: 0 };
-    return res.json();
-  } catch (e) {
-    return { deals: [], total: 0 };
-  }
-}
-
-async function getRankingsData() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/rankings`, {
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) return { rankings: [] };
-    return res.json();
-  } catch (e) {
-    return { rankings: [] };
-  }
-}
-
-async function getMarketPulseData() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/market-pulse`, {
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch (e) {
-    return null;
-  }
-}
-
-async function getPoiData(suburb: string) {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com'}/api/suburb/${encodeURIComponent(suburb)}/poi`, {
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch (e) {
-    return null;
-  }
-}
+const API_BASE = 'https://compass-r58x.onrender.com';
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat('en-AU', {
@@ -69,30 +13,53 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
-export default async function Home() {
-  const data = await getHomeData();
-  const dealsData = await getDealsData();
-  const rankingsData = await getRankingsData();
-  const marketPulseData = await getMarketPulseData();
-  const poiData = await getPoiData("Sunnybank");
-  
-  // 确保数据结构完整
-  const suburbs = data?.suburbs || [];
-  const latestSales = data?.latest_sales || [];
-  const deals = dealsData?.deals || [];
-  const totalDeals = dealsData?.total || 0;
-  const rankings = rankingsData?.rankings || [];
-  const marketPulse = marketPulseData || {
-    hottest_suburb: "Sunnybank",
-    highest_growth_suburb: "Rochedale",
-    highest_growth_rate: 8.3,
-    best_value_suburb: "Eight Mile Plains"
-  };
-  const poi = poiData || {
+export default function Home() {
+  const [rankings, setRankings] = useState<any[]>([]);
+  const [deals, setDeals] = useState<any[]>([]);
+  const [totalDeals, setTotalDeals] = useState(0);
+  const [pulse, setPulse] = useState<any>(null);
+  const [recentSales, setRecentSales] = useState<any[]>([]);
+  const [poi, setPoi] = useState<any>({
     suburb: "Sunnybank",
     category_counts: {},
     total_poi: 0
-  };
+  });
+  const [suburbs, setSuburbs] = useState<any[]>([]);
+
+  useEffect(() => {
+    // 获取排名数据
+    fetch(`${API_BASE}/api/rankings`)
+      .then(r => r.json())
+      .then(d => setRankings(d.rankings || []));
+    
+    // 获取捡漏数据
+    fetch(`${API_BASE}/api/deals`)
+      .then(r => r.json())
+      .then(d => {
+        setDeals(d.deals || []);
+        setTotalDeals(d.total || 0);
+      });
+    
+    // 获取市场快报数据
+    fetch(`${API_BASE}/api/market-pulse`)
+      .then(r => r.json())
+      .then(d => setPulse(d));
+    
+    // 获取最新成交数据
+    fetch(`${API_BASE}/api/sales?page_size=10`)
+      .then(r => r.json())
+      .then(d => setRecentSales(d.sales || []));
+    
+    // 获取POI数据
+    fetch(`${API_BASE}/api/suburb/Sunnybank/poi`)
+      .then(r => r.json())
+      .then(d => setPoi(d));
+    
+    // 获取郊区数据
+    fetch(`${API_BASE}/api/home`)
+      .then(r => r.json())
+      .then(d => setSuburbs(d.suburb_stats || []));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -113,21 +80,27 @@ export default async function Home() {
         {/* 市场快报横幅 */}
         <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl p-6 mb-8">
           <h2 className="text-xl font-bold mb-4">本月布里斯班市场快报</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <p className="text-orange-100 text-sm mb-1">🔥 最热区域</p>
-              <p className="text-2xl font-bold">{marketPulse.hottest_suburb}</p>
+          {pulse ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <p className="text-orange-100 text-sm mb-1">🔥 最热区域</p>
+                <p className="text-2xl font-bold">{pulse.hottest_suburb}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-orange-100 text-sm mb-1">📈 本月涨幅最高</p>
+                <p className="text-2xl font-bold">{pulse.highest_growth_suburb}</p>
+                <p className="text-orange-100 text-sm">+{pulse.highest_growth_rate?.toFixed(1)}%</p>
+              </div>
+              <div className="text-center">
+                <p className="text-orange-100 text-sm mb-1">🏆 性价比最高</p>
+                <p className="text-2xl font-bold">{pulse.best_value_suburb}</p>
+              </div>
             </div>
-            <div className="text-center">
-              <p className="text-orange-100 text-sm mb-1">📈 本月涨幅最高</p>
-              <p className="text-2xl font-bold">{marketPulse.highest_growth_suburb}</p>
-              <p className="text-orange-100 text-sm">+{marketPulse.highest_growth_rate}%</p>
+          ) : (
+            <div className="text-center py-4">
+              <p>加载中...</p>
             </div>
-            <div className="text-center">
-              <p className="text-orange-100 text-sm mb-1">🏆 性价比最高</p>
-              <p className="text-2xl font-bold">{marketPulse.best_value_suburb}</p>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Suburb 统计卡片 */}
@@ -339,7 +312,7 @@ export default async function Home() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {latestSales.map((sale: any) => (
+                {recentSales.map((sale: any) => (
                   <tr key={sale.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.address}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.suburb}</td>

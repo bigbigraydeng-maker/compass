@@ -700,15 +700,16 @@ def get_deals():
         
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
-                # 先计算每个郊区每种房产类型的中位价
+                # 先计算每个郊区每种房产类型+卧室数的中位价
                 median_query = """
                     SELECT 
                         p.suburb,
                         p.property_type,
+                        p.bedrooms,
                         PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price
                     FROM sales s
                     JOIN properties p ON s.property_id = p.id
-                    GROUP BY p.suburb, p.property_type
+                    GROUP BY p.suburb, p.property_type, p.bedrooms
                 """
                 cur.execute(median_query)
                 median_results = cur.fetchall()
@@ -718,10 +719,33 @@ def get_deals():
                 for row in median_results:
                     suburb = row.get('suburb')
                     prop_type = row.get('property_type')
+                    bedrooms = row.get('bedrooms')
+                    median_price = row.get('median_price')
+                    if suburb and prop_type and bedrooms and median_price:
+                        key = f"{suburb.lower()}_{prop_type.lower()}_{bedrooms}"
+                        median_map[key] = median_price
+                
+                # 如果没有精确匹配，尝试只按郊区+房型匹配
+                fallback_median_query = """
+                    SELECT 
+                        p.suburb,
+                        p.property_type,
+                        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price
+                    FROM sales s
+                    JOIN properties p ON s.property_id = p.id
+                    GROUP BY p.suburb, p.property_type
+                """
+                cur.execute(fallback_median_query)
+                fallback_results = cur.fetchall()
+                
+                for row in fallback_results:
+                    suburb = row.get('suburb')
+                    prop_type = row.get('property_type')
                     median_price = row.get('median_price')
                     if suburb and prop_type and median_price:
-                        key = f"{suburb.lower()}_{prop_type.lower()}"
-                        median_map[key] = median_price
+                        key = f"{suburb.lower()}_{prop_type.lower()}_fallback"
+                        if key not in median_map:
+                            median_map[key] = median_price
                 
                 # 找出低于中位价10%的成交记录
                 deals_query = """
@@ -740,10 +764,16 @@ def get_deals():
                 for sale in sales:
                     suburb = sale.get('suburb')
                     prop_type = sale.get('property_type')
+                    bedrooms = sale.get('bedrooms')
                     sold_price = sale.get('sold_price')
                     
                     if suburb and prop_type and sold_price:
-                        key = f"{suburb.lower()}_{prop_type.lower()}"
+                        # 优先使用郊区+房型+卧室数的精确匹配
+                        key = f"{suburb.lower()}_{prop_type.lower()}_{bedrooms}"
+                        if key not in median_map:
+                            # 如果没有精确匹配，使用郊区+房型的 fallback
+                            key = f"{suburb.lower()}_{prop_type.lower()}_fallback"
+                        
                         if key in median_map:
                             median_price = median_map[key]
                             if median_price > 0:
@@ -834,7 +864,11 @@ def get_market_pulse():
                         AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sold_price END) as current_month,
                         AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
                                  AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
-                            THEN s.sold_price END) as last_month
+                            THEN s.sold_price END) as last_month,
+                        COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN 1 END) as recent_count,
+                        COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
+                                 AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
+                            THEN 1 END) as prev_count
                     FROM sales s
                     JOIN properties p ON s.property_id = p.id
                     GROUP BY p.suburb
@@ -842,6 +876,10 @@ def get_market_pulse():
                        AND AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
                                 AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
                            THEN s.sold_price END) IS NOT NULL
+                       AND COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN 1 END) >= 3
+                       AND COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
+                                AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
+                           THEN 1 END) >= 3
                 """
                 cur.execute(growth_query)
                 growth_results = cur.fetchall()
