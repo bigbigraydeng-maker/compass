@@ -1,0 +1,58 @@
+{
+  "Sunnybank": {
+    "chinese_restaurant": 23,
+    "asian_grocery": 4,
+    "chinese_school": 2,
+    "chinese_church": 3,
+    "chinese_clinic": 5,
+    "chinese_hair_salon": 8
+  },
+  "Eight Mile Plains": {
+    "chinese_restaurant": 15,
+    "asian_grocery": 2,
+    "chinese_school": 1,
+    "chinese_church": 2,
+    "chinese_clinic": 3,
+    "chinese_hair_salon": 5
+  },
+  "Calamvale": {
+    "chinese_restaurant": 18,
+    "asian_grocery": 3,
+    "chinese_school": 1,
+    "chinese_church": 2,
+    "chinese_clinic": 4,
+    "chinese_hair_salon": 6
+  },
+  "Rochedale": {
+    "chinese_restaurant": 10,
+    "asian_grocery": 1,
+    "chinese_school": 0,
+    "chinese_church": 1,
+    "chinese_clinic": 2,
+    "chinese_hair_salon": 3
+  },
+  "Mansfield": {
+    "chinese_restaurant": 12,
+    "asian_grocery": 2,
+    "chinese_school": 0,
+    "chinese_church": 1,
+    "chinese_clinic": 2,
+    "chinese_hair_salon": 4
+  },
+  "Ascot": {
+    "chinese_restaurant": 8,
+    "asian_grocery": 0,
+    "chinese_school": 0,
+    "chinese_church": 0,
+    "chinese_clinic": 1,
+    "chinese_hair_salon": 2
+  },
+  "Hamilton": {
+    "chinese_restaurant": 15,
+    "asian_grocery": 1,
+    "chinese_school": 0,
+    "chinese_church": 6,
+    "chinese_clinic": 1,
+    "chinese_hair_salon": 11
+  }
+}

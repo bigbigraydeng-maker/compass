@@ -135,6 +135,7 @@ export default function SalesPage() {
                 <option value="House">House</option>
                 <option value="Unit">Unit</option>
                 <option value="Townhouse">Townhouse</option>
+                <option value="vacant_land">Vacant Land</option>
               </select>
             </div>
             
@@ -226,7 +227,7 @@ export default function SalesPage() {
         ) : (
           <>
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto w-full">
                 <table className="min-w-full">
                   <thead className="bg-gray-50">
                     <tr>

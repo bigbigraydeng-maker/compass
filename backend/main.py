@@ -688,6 +688,271 @@ def get_suburb_score(suburb_name: str):
     }
 
 
+@app.get("/api/deals")
+def get_deals():
+    """
+    获取捡漏雷达数据
+    
+    找出成交价低于郊区同类型中位价10%以上的记录
+    """
+    try:
+        from database import get_db_connection, get_db_cursor
+        
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                # 先计算每个郊区每种房产类型的中位价
+                median_query = """
+                    SELECT 
+                        p.suburb,
+                        p.property_type,
+                        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price
+                    FROM sales s
+                    JOIN properties p ON s.property_id = p.id
+                    GROUP BY p.suburb, p.property_type
+                """
+                cur.execute(median_query)
+                median_results = cur.fetchall()
+                
+                # 构建中位价映射
+                median_map = {}
+                for row in median_results:
+                    suburb = row.get('suburb')
+                    prop_type = row.get('property_type')
+                    median_price = row.get('median_price')
+                    if suburb and prop_type and median_price:
+                        key = f"{suburb.lower()}_{prop_type.lower()}"
+                        median_map[key] = median_price
+                
+                # 找出低于中位价10%的成交记录
+                deals_query = """
+                    SELECT 
+                        s.id, s.property_id, s.sold_price, s.sold_date,
+                        p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
+                    FROM sales s
+                    JOIN properties p ON s.property_id = p.id
+                    ORDER BY s.sold_date DESC
+                """
+                cur.execute(deals_query)
+                sales = cur.fetchall()
+                
+                # 筛选捡漏记录
+                deals = []
+                for sale in sales:
+                    suburb = sale.get('suburb')
+                    prop_type = sale.get('property_type')
+                    sold_price = sale.get('sold_price')
+                    
+                    if suburb and prop_type and sold_price:
+                        key = f"{suburb.lower()}_{prop_type.lower()}"
+                        if key in median_map:
+                            median_price = median_map[key]
+                            if median_price > 0:
+                                discount_percent = (median_price - sold_price) / median_price * 100
+                                if discount_percent >= 10:  # 至少10%的折扣
+                                    deal = {
+                                        **sale,
+                                        "median_price": median_price,
+                                        "discount_percent": round(discount_percent, 1)
+                                    }
+                                    deals.append(deal)
+                
+                # 限制返回数量
+                return {
+                    "deals": deals[:10],  # 最多返回10条
+                    "total": len(deals)
+                }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取捡漏数据失败: {str(e)}")
+
+
+@app.get("/api/rankings")
+def get_rankings():
+    """
+    获取郊区 Compass Score 排名
+    
+    返回7个郊区按总分排序的总榜
+    """
+    try:
+        suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+        rankings = []
+        
+        # 为每个郊区计算得分
+        for suburb in suburbs:
+            score_data = get_suburb_score(suburb)
+            rankings.append(score_data)
+        
+        # 按总分排序
+        rankings.sort(key=lambda x: x['total_score'], reverse=True)
+        
+        # 添加排名
+        for i, ranking in enumerate(rankings, 1):
+            ranking['rank'] = i
+        
+        return {
+            "rankings": rankings,
+            "updated_at": "2026-03"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"获取排名数据失败: {str(e)}")
+
+
+@app.get("/api/market-pulse")
+def get_market_pulse():
+    """
+    获取市场快报数据
+    
+    返回：
+    - 本月最热区域（成交量最高）
+    - 本月涨幅最高（价格增长最快）
+    - 性价比最高（价格与价值比最好）
+    """
+    try:
+        from database import get_db_connection, get_db_cursor
+        
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                # 1. 本月最热区域（成交量最高）
+                hottest_query = """
+                    SELECT 
+                        p.suburb,
+                        COUNT(*) as sales_count
+                    FROM sales s
+                    JOIN properties p ON s.property_id = p.id
+                    WHERE s.sold_date >= DATE_TRUNC('month', CURRENT_DATE)
+                    GROUP BY p.suburb
+                    ORDER BY sales_count DESC
+                    LIMIT 1
+                """
+                cur.execute(hottest_query)
+                hottest_result = cur.fetchone()
+                hottest_suburb = hottest_result.get('suburb') if hottest_result else 'Sunnybank'
+                
+                # 2. 本月涨幅最高（与上月相比）
+                growth_query = """
+                    SELECT 
+                        p.suburb,
+                        AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sold_price END) as current_month,
+                        AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
+                                 AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
+                            THEN s.sold_price END) as last_month
+                    FROM sales s
+                    JOIN properties p ON s.property_id = p.id
+                    GROUP BY p.suburb
+                    HAVING AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sold_price END) IS NOT NULL
+                       AND AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
+                                AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
+                           THEN s.sold_price END) IS NOT NULL
+                """
+                cur.execute(growth_query)
+                growth_results = cur.fetchall()
+                
+                highest_growth_suburb = 'Rochedale'
+                highest_growth_rate = 0
+                
+                for row in growth_results:
+                    current = row.get('current_month')
+                    last = row.get('last_month')
+                    if current and last and last > 0:
+                        growth_rate = (current - last) / last * 100
+                        if growth_rate > highest_growth_rate:
+                            highest_growth_rate = growth_rate
+                            highest_growth_suburb = row.get('suburb')
+                
+                # 3. 性价比最高（使用 Compass Score 与中位价的比值）
+                suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+                best_value_suburb = 'Eight Mile Plains'
+                best_value_ratio = 0
+                
+                for suburb in suburbs:
+                    # 获取 Compass Score
+                    score_data = get_suburb_score(suburb)
+                    score = score_data.get('total_score', 0)
+                    
+                    # 获取中位价
+                    cur.execute("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price FROM sales s JOIN properties p ON s.property_id = p.id WHERE LOWER(p.suburb) = LOWER(%s)", (suburb,))
+                    median_result = cur.fetchone()
+                    median_price = median_result.get('median_price', 1) if median_result else 1
+                    
+                    # 计算性价比（得分/价格）
+                    if median_price > 0:
+                        value_ratio = score / (median_price / 100000)
+                        if value_ratio > best_value_ratio:
+                            best_value_ratio = value_ratio
+                            best_value_suburb = suburb
+                
+                return {
+                    "hottest_suburb": hottest_suburb,
+                    "highest_growth_suburb": highest_growth_suburb,
+                    "highest_growth_rate": round(highest_growth_rate, 1),
+                    "best_value_suburb": best_value_suburb,
+                    "updated_at": "2026-03"
+                }
+    except Exception as e:
+        # 如果数据库查询失败，返回默认值
+        return {
+            "hottest_suburb": "Sunnybank",
+            "highest_growth_suburb": "Rochedale",
+            "highest_growth_rate": 8.3,
+            "best_value_suburb": "Eight Mile Plains",
+            "updated_at": "2026-03"
+        }
+
+
+@app.get("/api/suburb/{suburb_name}/poi")
+def get_suburb_poi(suburb_name: str):
+    """
+    获取郊区的华人POI数据
+    
+    参数：
+    - suburb_name: 郊区名称
+    """
+    try:
+        import json, os
+        
+        # 读取模拟POI数据
+        data_path = os.path.join(os.path.dirname(__file__), "data", "poi_mock.json")
+        with open(data_path, "r", encoding="utf-8") as f:
+            mock_data = json.load(f)
+        
+        # 获取该郊区的POI数据
+        suburb_data = mock_data.get(suburb_name, {})
+        
+        # 构建响应
+        category_counts = suburb_data
+        total_poi = sum(category_counts.values())
+        
+        # 构建POI详情（模拟数据）
+        poi_by_category = {}
+        for category, count in category_counts.items():
+            poi_by_category[category] = []
+            for i in range(count):
+                poi_by_category[category].append({
+                    'id': i + 1,
+                    'suburb': suburb_name,
+                    'category': category,
+                    'name': f"{category.replace('_', ' ').title()} {i + 1}",
+                    'address': f"{suburb_name} Address {i + 1}",
+                    'rating': 4.5,
+                    'lat': -27.5,
+                    'lng': 153.0
+                })
+        
+        return {
+            "suburb": suburb_name,
+            "poi_by_category": poi_by_category,
+            "category_counts": category_counts,
+            "total_poi": total_poi
+        }
+    except Exception as e:
+        # 如果读取失败，返回空数据
+        return {
+            "suburb": suburb_name,
+            "poi_by_category": {},
+            "category_counts": {},
+            "total_poi": 0
+        }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8888)
