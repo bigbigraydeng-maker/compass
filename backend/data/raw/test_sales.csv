@@ -1,0 +1,7 @@
+address,suburb,postcode,sale_price,sale_date,property_type,bedrooms,bathrooms,land_size
+123 Main St,Brisbane,4000,500000,2023-01-01,house,3,2,600
+456 George St,Sydney,2000,1000000,2023-02-01,apartment,2,1,0
+789 Park Ave,Melbourne,3000,800000,2023-03-01,vacant land,0,0,1000
+321 Market Rd,Brisbane,4000,600000,2023-04-01,house,4,2,800
+654 Oak Ave,Sydney,2000,900000,2023-05-01,land,0,0,1200
+987 Pine St,Melbourne,3000,700000,2023-06-01,house,3,1,500
