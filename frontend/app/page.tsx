@@ -50,7 +50,7 @@ export default function Home() {
       <Hero />
 
       {/* Today's Deals - 首页核心模块 */}
-      <TodayDeals deals={deals} />
+      <TodayDeals />
 
       {/* Top Investment Suburbs - 投资排名 */}
       <TopInvestmentSuburbs rankings={rankings} />
