@@ -85,6 +85,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [trends, setTrends] = useState<MonthlyTrend[]>([]);
   const [schools, setSchools] = useState<any[]>([]);
   const [zoning, setZoning] = useState<ZoningData | null>(null);
+  const [landListings, setLandListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -135,12 +136,22 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           const zoningData = await zoningRes.json();
           setZoning(zoningData);
         }
+
+        // 获取在售土地数据
+        const landRes = await fetch(`${apiUrl}/api/listings?suburb=${encodeURIComponent(suburbName)}&property_type=vacant_land&page_size=20`);
+        if (!landRes.ok) {
+          setLandListings([]);
+        } else {
+          const landData = await landRes.json();
+          setLandListings(landData.listings || []);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
         setTrends([]);
         setSchools([]);
         setZoning(null);
+        setLandListings([]);
       } finally {
         setLoading(false);
       }
@@ -318,6 +329,36 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* 在售土地 */}
+        {landListings.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-4">🌍 在售土地 ({landListings.length} 块)</h3>
+            <div className="space-y-3">
+              {landListings.slice(0, 5).map((land, i) => (
+                <div key={i} className="flex justify-between items-center border-b pb-2">
+                  <div>
+                    <p className="font-medium text-sm">{land.address}</p>
+                    <p className="text-gray-500 text-xs">{land.land_size ? `${land.land_size}㎡` : "面积待询"}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-blue-600 text-sm">
+                      {land.price ? `$${(land.price/10000).toFixed(0)}万` : land.price_text}
+                    </p>
+                    <a href={land.link} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-blue-500">
+                      查看详情 →
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {landListings.length > 5 && (
+              <p className="text-center text-sm text-gray-400 mt-3">
+                还有 {landListings.length - 5} 块土地，前往在售房源页面查看
+              </p>
+            )}
           </div>
         )}
 
