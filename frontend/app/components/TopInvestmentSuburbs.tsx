@@ -94,7 +94,10 @@ export default function TopInvestmentSuburbs({ rankings }: TopInvestmentSuburbsP
         
         <div className="space-y-6">
           {displayRankings.map((ranking, index) => (
-            <div key={ranking.id} className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-shadow">
+            <div 
+              key={ranking.id} 
+              className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => console.log(`查看郊区 ${ranking.name} 的详细信息`)}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-6">
                   <div className="text-3xl font-bold text-gray-800 w-12 text-center">
@@ -103,9 +106,9 @@ export default function TopInvestmentSuburbs({ rankings }: TopInvestmentSuburbsP
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-1">{ranking.name}</h3>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span>中位价: {formatPrice(ranking.median_price)}</span>
-                      <span>增长率: +{ranking.growth_rate}%</span>
-                      <span>潜力: {potentialMap[ranking.investment_potential] || ranking.investment_potential}</span>
+                      <span>中位价: {ranking.median_price ? formatPrice(ranking.median_price) : '数据加载中'}</span>
+                      <span>增长率: {ranking.growth_rate ? `+${ranking.growth_rate}%` : '数据加载中'}</span>
+                      <span>潜力: {potentialMap[ranking.investment_potential] || ranking.investment_potential || '数据加载中'}</span>
                     </div>
                   </div>
                 </div>
@@ -114,7 +117,12 @@ export default function TopInvestmentSuburbs({ rankings }: TopInvestmentSuburbsP
                     <p className="text-sm text-gray-600 mb-1">Compass 评分</p>
                     <p className="text-2xl font-bold text-blue-600">{ranking.compass_score}</p>
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                  <button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log(`查看郊区 ${ranking.name} 的详细信息`);
+                    }}>
                     查看详情
                   </button>
                 </div>

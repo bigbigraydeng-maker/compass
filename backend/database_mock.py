@@ -4,6 +4,28 @@ Compass MVP 数据库连接模块（模拟数据版本）
 from contextlib import contextmanager
 from mock_data import MOCK_PROPERTIES, MOCK_SALES
 
+# 生成模拟在售房源数据
+MOCK_LISTINGS = []
+for i, prop in enumerate(MOCK_PROPERTIES[:50], 1):
+    MOCK_LISTINGS.append({
+        "id": i,
+        "address": prop["address"],
+        "suburb": prop["suburb"],
+        "property_type": prop["property_type"],
+        "bedrooms": prop["bedrooms"],
+        "bathrooms": prop["bathrooms"],
+        "car_spaces": 2 if prop["bedrooms"] >= 3 else 1,
+        "land_size": prop["land_size"],
+        "price_text": f"${prop['bedrooms'] * 300000 + prop['bathrooms'] * 100000}",
+        "price": prop['bedrooms'] * 300000 + prop['bathrooms'] * 100000,
+        "sale_method": "Private Treaty",
+        "agent_name": "John Smith",
+        "agent_company": "Compass Realty",
+        "link": f"https://example.com/listing/{i}",
+        "scraped_date": "2026-03-01",
+        "created_at": "2026-03-01"
+    })
+
 
 @contextmanager
 def get_db_connection():
@@ -99,6 +121,40 @@ def get_db_cursor(conn):
                 self.rowcount = 1
             
 
+            
+            # 处理 listings 查询
+            elif "from listings" in query_lower:
+                filtered = MOCK_LISTINGS
+                
+                # 应用过滤条件
+                if target_suburb:
+                    filtered = [r for r in filtered if r["suburb"] == target_suburb]
+                
+                # 排序
+                if "order by id desc" in query_lower:
+                    filtered.sort(key=lambda x: x["id"], reverse=True)
+                
+                # 限制数量
+                limit = 20
+                offset = 0
+                if "limit" in query_lower and params:
+                    for i, param in enumerate(params):
+                        if isinstance(param, int) and i == len(params) - 2:
+                            limit = param
+                        elif isinstance(param, int) and i == len(params) - 1:
+                            offset = param
+                
+                # 应用分页
+                filtered = filtered[offset:offset + limit]
+                
+                self.description = [
+                    ("id",), ("address",), ("suburb",), ("property_type",),
+                    ("bedrooms",), ("bathrooms",), ("car_spaces",), ("land_size",),
+                    ("price_text",), ("price",), ("sale_method",), ("agent_name",),
+                    ("agent_company",), ("link",), ("scraped_date",), ("created_at",)
+                ]
+                self._result = filtered
+                self.rowcount = len(filtered)
             
             # 最后处理 JOIN 查询（返回销售记录）
             elif "from sales s" in query_lower and "join properties p" in query_lower:

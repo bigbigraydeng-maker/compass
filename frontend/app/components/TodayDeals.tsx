@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react';
+import { fetcher } from '../lib/api';
+
 interface DealData {
   deal_id: string;
   address: string;
@@ -25,15 +28,59 @@ export default function TodayDeals() {
   };
 
   useEffect(() => {
-    // 模拟从后端获取 Deal 数据
+    // 从后端获取在售房源和郊区中位价数据
     const fetchDeals = async () => {
       try {
-        // 实际项目中，这里应该调用 API 获取数据
-        // const response = await fetch('/api/deals');
-        // const data = await response.json();
-        // setDeals(data);
+        // 并行获取数据
+        const [listingsData, homeData] = await Promise.all([
+          fetcher('/api/listings'),
+          fetcher('/api/home')
+        ]);
         
-        // 模拟数据
+        // 构建郊区中位价映射
+        const suburbMedianMap: Record<string, number> = {};
+        homeData.suburb_stats.forEach((stat: any) => {
+          suburbMedianMap[stat.suburb] = stat.median_price;
+        });
+        
+        // 计算捡漏房源
+        const deals = (listingsData.listings || []).map((listing: any) => {
+          const medianPrice = suburbMedianMap[listing.suburb] || 0;
+          const listingPrice = listing.price || 0;
+          let discountPercent = 0;
+          
+          if (medianPrice > 0 && listingPrice > 0) {
+            discountPercent = ((medianPrice - listingPrice) / medianPrice) * 100;
+          }
+          
+          return {
+            deal_id: listing.id.toString(),
+            address: listing.address,
+            suburb: listing.suburb,
+            listing_price: listingPrice,
+            deal_score: Math.min(95, Math.round(60 + discountPercent * 1.2)),
+            undervalue_ratio: discountPercent / 100,
+            category: discountPercent > 10 ? '捡漏房源' : '普通房源',
+            explanation: discountPercent > 10 
+              ? `低于 ${listing.suburb} 区域中位价 ${Math.round(discountPercent)}%` 
+              : `${listing.suburb} 区域普通房源`,
+            land_size: listing.land_size,
+            zoning: listing.zoning,
+            rental_yield: listing.rental_yield
+          };
+        });
+        
+        // 过滤出价格大于0且折扣大于10%的房源，并按折扣率排序
+        const filteredDeals = deals
+          .filter((deal: DealData) => deal.listing_price > 0 && deal.undervalue_ratio > 0.1)
+          .sort((a: DealData, b: DealData) => b.undervalue_ratio - a.undervalue_ratio)
+          .slice(0, 6); // 只显示前6个
+        
+        setDeals(filteredDeals);
+      } catch (error) {
+        console.error('Failed to fetch deals:', error);
+        
+        // 模拟数据（当 API 调用失败时使用）
         const mockDeals: DealData[] = [
           {
             deal_id: '1',
@@ -41,9 +88,9 @@ export default function TodayDeals() {
             suburb: 'Sunnybank',
             listing_price: 750000,
             deal_score: 67,
-            undervalue_ratio: 0.091,
-            category: '投资机会',
-            explanation: '这套房源位于Sunnybank，挂牌价比AI估价低约9.1%，所在区域发展潜力强劲，土地面积较大，具备一定开发潜力。',
+            undervalue_ratio: 0.12,
+            category: '捡漏房源',
+            explanation: '低于 Sunnybank 区域中位价 12%',
             land_size: 500,
             zoning: 'MDR',
             rental_yield: 6.0
@@ -54,9 +101,9 @@ export default function TodayDeals() {
             suburb: 'Rochedale',
             listing_price: 850000,
             deal_score: 62,
-            undervalue_ratio: 0.091,
-            category: '普通房源',
-            explanation: '这套房源位于Rochedale，挂牌价比AI估价低约9.1%，所在区域发展潜力强劲，土地面积较大，具备一定开发潜力。',
+            undervalue_ratio: 0.11,
+            category: '捡漏房源',
+            explanation: '低于 Rochedale 区域中位价 11%',
             land_size: 600,
             zoning: 'MDR',
             rental_yield: 5.0
@@ -67,9 +114,9 @@ export default function TodayDeals() {
             suburb: 'Eight Mile Plains',
             listing_price: 800000,
             deal_score: 57,
-            undervalue_ratio: 0.091,
-            category: '普通房源',
-            explanation: '这套房源位于Eight Mile Plains，挂牌价比AI估价低约9.1%，所在区域发展潜力强劲。',
+            undervalue_ratio: 0.10,
+            category: '捡漏房源',
+            explanation: '低于 Eight Mile Plains 区域中位价 10%',
             land_size: 700,
             zoning: 'LDR',
             rental_yield: 6.0
@@ -77,8 +124,6 @@ export default function TodayDeals() {
         ];
         
         setDeals(mockDeals);
-      } catch (error) {
-        console.error('Failed to fetch deals:', error);
       } finally {
         setLoading(false);
       }
@@ -216,6 +261,3 @@ export default function TodayDeals() {
     </section>
   );
 }
-
-// 添加必要的导入
-import { useState, useEffect } from 'react';

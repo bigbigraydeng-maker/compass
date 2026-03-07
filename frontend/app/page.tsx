@@ -8,12 +8,12 @@ import AIPropertyAnalysis from './components/AIPropertyAnalysis';
 import MarketStats from './components/MarketStats';
 import Community from './components/Community';
 import Footer from './components/Footer';
-
-const API_BASE = 'https://compass-r58x.onrender.com';
+import { fetcher } from './lib/api';
 
 export default function Home() {
-  const [deals, setDeals] = useState<any[]>([]);
+
   const [rankings, setRankings] = useState<any[]>([]);
+  const [suburbStats, setSuburbStats] = useState<Record<string, number>>({});
   const [marketStats, setMarketStats] = useState({
     totalSales: 0,
     totalListings: 0,
@@ -22,15 +22,37 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // 获取捡漏数据
-    fetch(`${API_BASE}/api/deals`)
-      .then(r => r.json())
-      .then(d => setDeals(d.deals || []));
-    
     // 获取排名数据
-    fetch(`${API_BASE}/api/rankings`)
-      .then(r => r.json())
-      .then(d => setRankings(d.rankings || []));
+    fetcher('/api/rankings')
+      .then(d => {
+        const mapped = (d.rankings || []).map((r: any) => ({
+          ...r,
+          name: r.suburb,
+          compass_score: r.total_score,
+          median_price: suburbStats[r.suburb] ?? null,
+          growth_rate: null,
+        }));
+        setRankings(mapped);
+      });
+    
+    // 获取郊区中位价数据
+    fetcher('/api/home')
+      .then(homeData => {
+        const statsMap: Record<string, number> = {};
+        homeData.suburb_stats.forEach((s: any) => {
+          statsMap[s.suburb] = s.median_price;
+        });
+        setSuburbStats(statsMap);
+        
+        // 同时更新排名数据中的中位价
+        if (rankings.length > 0) {
+          const updatedRankings = rankings.map((r: any) => ({
+            ...r,
+            median_price: statsMap[r.suburb] ?? null,
+          }));
+          setRankings(updatedRankings);
+        }
+      });
     
     // 模拟市场统计数据
     setMarketStats({
@@ -39,7 +61,7 @@ export default function Home() {
       medianPrice: 980000,
       topSchool: 'Mansfield State High School'
     });
-  }, []);
+  }, [suburbStats]);
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -3,21 +3,30 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import { fetcher } from '../lib/api';
 
 interface Sale {
   id: number;
-  address: string;
-  suburb: string;
+  property_id: number;
   sold_price: number;
   sold_date: string;
+  address: string;
+  suburb: string;
+  property_type: string;
+  land_size: number;
   bedrooms: number;
   bathrooms: number;
-  land_size: number;
-  building_size: number;
-  property_type: string;
+}
+
+interface SalesResponse {
+  sales: Sale[];
+  total: number;
+  page: number;
+  page_size: number;
 }
 
 function formatPrice(price: number) {
+  if (!price || price === 0) return '-';
   return new Intl.NumberFormat('en-AU', {
     style: 'currency',
     currency: 'AUD',
@@ -25,9 +34,15 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
+function formatDate(dateString: string) {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('zh-CN');
+}
+
 export default function SalesPage() {
   const [sales, setSales] = useState<Sale[]>([]);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [suburb, setSuburb] = useState('');
   const [propertyType, setPropertyType] = useState('');
@@ -57,26 +72,19 @@ export default function SalesPage() {
       params.append('page', page.toString());
       params.append('page_size', perPage.toString());
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
-      const response = await fetch(`${apiUrl}/api/sales?${params}`);
-      if (!response.ok) {
-        setSales([]);
-        setTotal(0);
-        return;
-      }
-      const data = await response.json();
+      const data = await fetcher(`/api/sales?${params}`);
       setSales(data.sales || []);
       setTotal(data.total || 0);
     } catch (error) {
       console.error('Error fetching sales:', error);
       setSales([]);
-      setTotal(0);
+      setTotal(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const totalPages = Math.ceil(total / perPage);
+  const totalPages = total ? Math.ceil(total / perPage) : 0;
 
   const resetFilters = () => {
     setSuburb('');
@@ -95,7 +103,7 @@ export default function SalesPage() {
       <Navbar activePage="sales" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">成交列表</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">成交记录</h1>
 
         {/* 筛选器 */}
         <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
@@ -135,7 +143,6 @@ export default function SalesPage() {
                 <option value="House">House</option>
                 <option value="Unit">Unit</option>
                 <option value="Townhouse">Townhouse</option>
-                <option value="vacant_land">Vacant Land</option>
               </select>
             </div>
             
@@ -159,7 +166,7 @@ export default function SalesPage() {
             </div>
           </div>
           
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4 mb-4">
             <div className="flex items-center space-x-2">
               <label className="text-gray-700 font-medium">价格范围：</label>
               <input
@@ -184,9 +191,11 @@ export default function SalesPage() {
                 className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-32"
               />
             </div>
-            
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center space-x-2">
-              <label className="text-gray-700 font-medium">成交日期：</label>
+              <label className="text-gray-700 font-medium">日期范围：</label>
               <input
                 type="date"
                 value={minDate}
@@ -215,7 +224,12 @@ export default function SalesPage() {
               重置筛选
             </button>
             
-            <span className="text-gray-600">共 {total} 条记录</span>
+            {!loading && total !== null && (
+              <span className="text-gray-600">共 {total} 条记录</span>
+            )}
+            {loading && (
+              <span className="text-gray-600">加载中...</span>
+            )}
           </div>
         </div>
 
@@ -249,9 +263,11 @@ export default function SalesPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.property_type}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bedrooms}🛏</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bathrooms}🚿</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.land_size > 0 ? `${sale.land_size}㎡` : '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{formatPrice(sale.sold_price)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.sold_date}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.land_size} m²</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                          {formatPrice(sale.sold_price)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{formatDate(sale.sold_date)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -284,13 +300,6 @@ export default function SalesPage() {
           </>
         )}
       </main>
-
-      {/* 页脚 */}
-      <footer className="bg-white border-t mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500 text-sm">
-          <p>© 2026 Compass - 布里斯班华人房地产数据平台</p>
-        </div>
-      </footer>
     </div>
   );
 }

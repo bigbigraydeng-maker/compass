@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import { fetcher } from '../lib/api';
 
 interface Listing {
   id: number;
@@ -31,7 +32,7 @@ function formatPrice(price: number) {
 
 export default function ListingsPage() {
   const [listings, setListings] = useState<Listing[]>([]);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [suburb, setSuburb] = useState('');
   const [propertyType, setPropertyType] = useState('');
@@ -57,26 +58,19 @@ export default function ListingsPage() {
       params.append('page', page.toString());
       params.append('page_size', perPage.toString());
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
-      const response = await fetch(`${apiUrl}/api/listings?${params}`);
-      if (!response.ok) {
-        setListings([]);
-        setTotal(0);
-        return;
-      }
-      const data = await response.json();
+      const data = await fetcher(`/api/listings?${params}`);
       setListings(data.listings || []);
       setTotal(data.total || 0);
     } catch (error) {
       console.error('Error fetching listings:', error);
       setListings([]);
-      setTotal(0);
+      setTotal(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const totalPages = Math.ceil(total / perPage);
+  const totalPages = total ? Math.ceil(total / perPage) : 0;
 
   const resetFilters = () => {
     setSuburb('');
@@ -190,7 +184,12 @@ export default function ListingsPage() {
               重置筛选
             </button>
             
-            <span className="text-gray-600">共 {total} 条记录</span>
+            {!loading && total !== null && (
+              <span className="text-gray-600">共 {total} 条记录</span>
+            )}
+            {loading && (
+              <span className="text-gray-600">加载中...</span>
+            )}
           </div>
         </div>
 
