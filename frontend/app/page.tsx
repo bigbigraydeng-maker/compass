@@ -2,18 +2,18 @@
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import TopSuburbs from './components/TopSuburbs';
+import TodayDeals from './components/TodayDeals';
+import TopInvestmentSuburbs from './components/TopInvestmentSuburbs';
+import AIPropertyAnalysis from './components/AIPropertyAnalysis';
 import MarketStats from './components/MarketStats';
-import RecentSales from './components/RecentSales';
-import RecommendedListings from './components/RecommendedListings';
+import Community from './components/Community';
 import Footer from './components/Footer';
 
 const API_BASE = 'https://compass-r58x.onrender.com';
 
 export default function Home() {
-  const [sales, setSales] = useState<any[]>([]);
-  const [listings, setListings] = useState<any[]>([]);
-  const [suburbs, setSuburbs] = useState<any[]>([]);
+  const [deals, setDeals] = useState<any[]>([]);
+  const [rankings, setRankings] = useState<any[]>([]);
   const [marketStats, setMarketStats] = useState({
     totalSales: 0,
     totalListings: 0,
@@ -22,20 +22,15 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // 获取最新成交数据
-    fetch(`${API_BASE}/api/sales?page_size=10`)
+    // 获取捡漏数据
+    fetch(`${API_BASE}/api/deals`)
       .then(r => r.json())
-      .then(d => setSales(d.sales || []));
+      .then(d => setDeals(d.deals || []));
     
-    // 获取在售房源数据
-    fetch(`${API_BASE}/api/listings?page_size=10`)
+    // 获取排名数据
+    fetch(`${API_BASE}/api/rankings`)
       .then(r => r.json())
-      .then(d => setListings(d.listings || []));
-    
-    // 获取郊区数据
-    fetch(`${API_BASE}/api/home`)
-      .then(r => r.json())
-      .then(d => setSuburbs(d.suburb_stats || []));
+      .then(d => setRankings(d.rankings || []));
     
     // 模拟市场统计数据
     setMarketStats({
@@ -51,41 +46,35 @@ export default function Home() {
       {/* Header */}
       <Header />
 
-      {/* Hero */}
+      {/* Hero - AI搜索 + 房源分析入口 */}
       <Hero />
 
-      {/* Top Suburbs */}
-      <TopSuburbs suburbs={suburbs} />
+      {/* Today's Deals - 首页核心模块 */}
+      <TodayDeals deals={deals} />
 
-      {/* Market Intelligence */}
-      <MarketStats 
-        totalSales={marketStats.totalSales}
-        totalListings={marketStats.totalListings}
-        medianPrice={marketStats.medianPrice}
-        topSchool={marketStats.topSchool}
-      />
+      {/* Top Investment Suburbs - 投资排名 */}
+      <TopInvestmentSuburbs rankings={rankings} />
 
-      {/* Recent Sales */}
-      <RecentSales sales={sales.map(sale => ({
-        id: sale.id,
-        address: sale.address,
-        suburb: sale.suburb,
-        price: sale.sold_price,
-        beds: sale.bedrooms || 0,
-        land_size: sale.land_size || 0,
-        date: sale.sold_date
-      }))} />
+      {/* AI Property Analysis - 单独强化入口 */}
+      <AIPropertyAnalysis />
 
-      {/* Recommended Listings */}
-      <RecommendedListings listings={listings.map(listing => ({
-        id: listing.id,
-        address: listing.address,
-        suburb: listing.suburb,
-        price: listing.price || 0,
-        beds: listing.bedrooms || 0,
-        land_size: listing.land_size || 0,
-        domain_link: listing.link || 'https://www.domain.com.au'
-      }))} />
+      {/* Market Trends - 放后面 */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12">
+            Market Trends
+          </h2>
+          <MarketStats 
+            totalSales={marketStats.totalSales}
+            totalListings={marketStats.totalListings}
+            medianPrice={marketStats.medianPrice}
+            topSchool={marketStats.topSchool}
+          />
+        </div>
+      </section>
+
+      {/* Community - 预留模块 */}
+      <Community />
 
       {/* Footer */}
       <Footer />
