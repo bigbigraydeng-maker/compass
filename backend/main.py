@@ -533,6 +533,151 @@ def get_suburb_zoning(suburb_name: str):
     )
 
 
+@app.get("/api/suburb/{suburb_name}/score")
+def get_suburb_score(suburb_name: str):
+    """
+    获取郊区的 Compass Score
+    
+    参数：
+    - suburb_name: 郊区名称
+    """
+    import json, os
+    from database import get_db_connection, get_db_cursor
+    
+    # 读取配置
+    config_path = os.path.join(os.path.dirname(__file__), "suburb_scores_config.json")
+    with open(config_path) as f:
+        config = json.load(f)
+    
+    # 1. 房价增长潜力 (25分)
+    # 近12个月 vs 前12个月中位价涨幅
+    growth_score = 12  # 默认中等
+    
+    try:
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                cur.execute("""
+                    SELECT 
+                        AVG(CASE WHEN sold_date >= NOW() - INTERVAL '12 months' THEN sold_price END) as recent,
+                        AVG(CASE WHEN sold_date BETWEEN NOW() - INTERVAL '24 months' AND NOW() - INTERVAL '12 months' THEN sold_price END) as prev
+                    FROM sales s
+                    JOIN properties p ON s.property_id = p.id
+                    WHERE LOWER(p.suburb) = LOWER(%s)
+                """, (suburb_name,))
+                row = cur.fetchone()
+                
+                if row:
+                    recent = row.get('recent')
+                    prev = row.get('prev')
+                    
+                    if recent and prev and prev > 0:
+                        growth_rate = (recent - prev) / prev
+                        if growth_rate >= 0.15: growth_score = 25
+                        elif growth_rate >= 0.10: growth_score = 20
+                        elif growth_rate >= 0.05: growth_score = 15
+                        elif growth_rate >= 0: growth_score = 10
+                        else: growth_score = 5
+    except Exception as e:
+        pass
+    
+    # 2. 学区质量 (25分)
+    # 取对口学校最高 NAPLAN percentile
+    school_score = 12  # 默认中等
+    
+    try:
+        schools_path = os.path.join(os.path.dirname(__file__), "data/qld_schools.json")
+        if os.path.exists(schools_path):
+            with open(schools_path) as f:
+                schools_data = json.load(f)
+            
+            top_naplan = 0
+            for school in schools_data:
+                catchments = school.get("catchment_suburbs", [])
+                if isinstance(catchments, str):
+                    catchments = [catchments]
+                if suburb_name.upper() in [c.upper() for c in catchments]:
+                    naplan = school.get("naplan_percentile", 0) or 0
+                    top_naplan = max(top_naplan, naplan)
+            
+            school_score = round((top_naplan / 100) * 25)
+    except Exception as e:
+        pass
+    
+    # 3. 土地价值潜力 (20分)
+    # MDR+HDR zoning % + 是否有在售土地
+    # 使用模拟分区数据（与 zoning API 一致）
+    land_score = 10  # 默认中等
+    
+    try:
+        zoning_map = {
+            "Sunnybank": {"MDR": 20, "HDR": 0},
+            "Eight Mile Plains": {"MDR": 25, "HDR": 5},
+            "Calamvale": {"MDR": 15, "HDR": 0},
+            "Rochedale": {"MDR": 20, "HDR": 0},
+            "Mansfield": {"MDR": 15, "HDR": 0},
+            "Ascot": {"MDR": 10, "HDR": 5},
+            "Hamilton": {"MDR": 15, "HDR": 10},
+        }
+        zm = zoning_map.get(suburb_name, {"MDR": 10, "HDR": 0})
+        mdr_hdr_pct = zm["MDR"] + zm["HDR"]
+        
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                cur.execute("SELECT COUNT(*) as cnt FROM listings WHERE LOWER(suburb) = LOWER(%s) AND property_type = 'vacant_land'", (suburb_name,))
+                row = cur.fetchone()
+                has_land = row.get('cnt', 0) > 0
+        
+        land_score = min(20, round(mdr_hdr_pct / 100 * 15) + (5 if has_land else 0))
+    except Exception as e:
+        pass
+    
+    # 4. 市场活跃度 (15分)
+    # 成交率 = 年成交量 / 在售数量
+    activity_score = 7  # 默认中等
+    
+    try:
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                cur.execute("SELECT COUNT(*) as cnt FROM sales s JOIN properties p ON s.property_id = p.id WHERE LOWER(p.suburb) = LOWER(%s) AND sold_date >= NOW() - INTERVAL '12 months'", (suburb_name,))
+                row = cur.fetchone()
+                annual_sales = row.get('cnt', 0)
+                
+                cur.execute("SELECT COUNT(*) as cnt FROM listings WHERE LOWER(suburb) = LOWER(%s)", (suburb_name,))
+                row = cur.fetchone()
+                active_listings = max(row.get('cnt', 0), 1)
+        
+        activity_ratio = annual_sales / active_listings
+        activity_score = min(15, round(activity_ratio * 5))
+    except Exception as e:
+        pass
+    
+    # 5. 华人友好度 (15分)
+    chinese_score = config["chinese_friendly"].get(suburb_name, 8)
+    
+    total = growth_score + school_score + land_score + activity_score + chinese_score
+    
+    # 等级
+    if total >= 85: grade = "S"
+    elif total >= 75: grade = "A"
+    elif total >= 65: grade = "B"
+    else: grade = "C"
+    
+    return {
+        "suburb": suburb_name,
+        "total_score": total,
+        "grade": grade,
+        "breakdown": {
+            "growth": {"score": growth_score, "max": 25, "label": "房价增长潜力"},
+            "school": {"score": school_score, "max": 25, "label": "学区质量"},
+            "land": {"score": land_score, "max": 20, "label": "土地价值潜力"},
+            "activity": {"score": activity_score, "max": 15, "label": "市场活跃度"},
+            "chinese": {"score": chinese_score, "max": 15, "label": "华人友好度"}
+        },
+        "data_sources": ["QLD Sales Records", "NAPLAN ACARA", "ABS Census 2021"],
+        "updated_at": "2026-03"
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8888)

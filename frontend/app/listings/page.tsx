@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Navbar from '../components/Navbar';
 
 interface Listing {
   id: number;
@@ -89,27 +90,7 @@ export default function ListingsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 导航栏 */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              Compass
-            </Link>
-            <div className="flex space-x-6">
-              <Link href="/" className="text-gray-600 hover:text-blue-600 transition">首页</Link>
-              <Link href="/sales" className="text-gray-600 hover:text-blue-600 transition">成交列表</Link>
-              <Link href="/listings" className="text-blue-600 font-medium">在售房源</Link>
-              <Link href="/suburb/Sunnybank" className="text-gray-600 hover:text-blue-600 transition">Sunnybank</Link>
-              <Link href="/suburb/Eight Mile Plains" className="text-gray-600 hover:text-blue-600 transition">Eight Mile Plains</Link>
-              <Link href="/suburb/Calamvale" className="text-gray-600 hover:text-blue-600 transition">Calamvale</Link>
-              <Link href="/suburb/Rochedale" className="text-gray-600 hover:text-blue-600 transition">Rochedale</Link>
-              <Link href="/suburb/Mansfield" className="text-gray-600 hover:text-blue-600 transition">Mansfield</Link>
-              <Link href="/suburb/Ascot" className="text-gray-600 hover:text-blue-600 transition">Ascot</Link>
-              <Link href="/suburb/Hamilton" className="text-gray-600 hover:text-blue-600 transition">Hamilton</Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar activePage="listings" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">在售房源</h1>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Navbar from '../../components/Navbar';
 import {
   LineChart,
   Line,
@@ -86,6 +87,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [schools, setSchools] = useState<any[]>([]);
   const [zoning, setZoning] = useState<ZoningData | null>(null);
   const [landListings, setLandListings] = useState<any[]>([]);
+  const [score, setScore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -145,6 +147,15 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           const landData = await landRes.json();
           setLandListings(landData.listings || []);
         }
+
+        // 获取 Compass Score 数据
+        const scoreRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/score`);
+        if (!scoreRes.ok) {
+          setScore(null);
+        } else {
+          const scoreData = await scoreRes.json();
+          setScore(scoreData);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
@@ -178,27 +189,8 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              Compass
-            </Link>
-            <div className="flex space-x-6">
-              <Link href="/" className="text-gray-600 hover:text-blue-600 transition">首页</Link>
-              <Link href="/sales" className="text-gray-600 hover:text-blue-600 transition">成交列表</Link>
-              <Link href="/listings" className="text-gray-600 hover:text-blue-600 transition">在售房源</Link>
-              <Link href="/suburb/Sunnybank" className="text-gray-600 hover:text-blue-600 transition">Sunnybank</Link>
-              <Link href="/suburb/Eight Mile Plains" className="text-gray-600 hover:text-blue-600 transition">Eight Mile Plains</Link>
-              <Link href="/suburb/Calamvale" className="text-gray-600 hover:text-blue-600 transition">Calamvale</Link>
-              <Link href="/suburb/Rochedale" className="text-gray-600 hover:text-blue-600 transition">Rochedale</Link>
-              <Link href="/suburb/Mansfield" className="text-gray-600 hover:text-blue-600 transition">Mansfield</Link>
-              <Link href="/suburb/Ascot" className="text-gray-600 hover:text-blue-600 transition">Ascot</Link>
-              <Link href="/suburb/Hamilton" className="text-gray-600 hover:text-blue-600 transition">Hamilton</Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* 导航栏 */}
+      <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
@@ -211,6 +203,54 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{data.suburb}</h1>
           <p className="text-blue-100">布里斯班华人热门区域</p>
         </div>
+
+        {/* Compass Score 卡片 */}
+        {score && (
+          <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-1">Compass Score</h3>
+                <p className="text-5xl font-bold text-blue-600">{score.total_score}</p>
+              </div>
+              <div>
+                <span className={`px-4 py-2 rounded-full text-lg font-bold ${
+                  score.grade === 'S' ? 'bg-yellow-100 text-yellow-600' :
+                  score.grade === 'A' ? 'bg-blue-100 text-blue-600' :
+                  score.grade === 'B' ? 'bg-green-100 text-green-600' :
+                  'bg-gray-100 text-gray-600'
+                }`}>
+                  {score.grade} 级
+                </span>
+              </div>
+            </div>
+            
+            {/* 维度进度条 */}
+            <div className="space-y-4 mb-6">
+              {Object.entries(score.breakdown).map(([key, item]) => {
+                const breakdownItem = item as { score: number; max: number; label: string };
+                return (
+                  <div key={key}>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm font-medium text-gray-700">{breakdownItem.label}</span>
+                      <span className="text-sm text-gray-500">{breakdownItem.score}/{breakdownItem.max}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full" 
+                        style={{ width: `${(breakdownItem.score / breakdownItem.max) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="flex justify-between items-center pt-4 border-t">
+              <p className="text-xs text-gray-500">数据来源：QLD Gov / NAPLAN / ABS</p>
+              <p className="text-sm font-semibold text-blue-600">Compass</p>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-6">

@@ -1,34 +1,49 @@
-#!/usr/bin/env python3
-"""
-检查数据库表结构
-"""
 import psycopg2
 import os
 
-# 尝试连接数据库
-DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL:
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        cursor = conn.cursor()
-        
-        # 获取 properties 表结构
-        cursor.execute("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'properties' ORDER BY ordinal_position")
-        print('Properties 表结构:')
-        print('=' * 40)
-        for column in cursor.fetchall():
-            print(f'{column[0]:20} {column[1]}')
-        
-        # 获取 sales 表结构
-        print('\nSales 表结构:')
-        print('=' * 40)
-        cursor.execute("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'sales' ORDER BY ordinal_position")
-        for column in cursor.fetchall():
-            print(f'{column[0]:20} {column[1]}')
-        
-        cursor.close()
-        conn.close()
-    except Exception as e:
-        print(f'无法连接数据库: {e}')
-else:
-    print('DATABASE_URL 环境变量未设置')
+# 数据库连接信息
+DATABASE_URL = "postgresql://postgres:Francis501!@db.evzkrexygwdnoqhyjylf.supabase.co:5432/postgres"
+
+try:
+    # 连接数据库
+    conn = psycopg2.connect(DATABASE_URL)
+    print("✅ 成功连接到数据库")
+    
+    # 检查 listings 表结构
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT column_name, data_type 
+        FROM information_schema.columns 
+        WHERE table_name = 'listings' 
+        ORDER BY ordinal_position
+    """)
+    columns = cur.fetchall()
+    print("\n📋 listings 表结构:")
+    for col in columns:
+        print(f"  {col[0]}: {col[1]}")
+    
+    # 检查当前数据
+    cur.execute("SELECT property_type, COUNT(*) FROM listings GROUP BY property_type")
+    data = cur.fetchall()
+    print("\n📊 当前数据统计:")
+    for row in data:
+        print(f"  {row[0]}: {row[1]} 条")
+    
+    # 检查 vacant_land 数据
+    cur.execute("SELECT * FROM listings WHERE property_type = 'vacant_land' LIMIT 5")
+    land_data = cur.fetchall()
+    print("\n🏞️ 土地数据示例:")
+    if land_data:
+        for row in land_data:
+            print(f"  ID: {row[0]}, Address: {row[1]}, Suburb: {row[2]}")
+    else:
+        print("  暂无土地数据")
+    
+    # 关闭连接
+    cur.close()
+    conn.close()
+    
+except Exception as e:
+    print(f"❌ 数据库操作失败: {e}")
+    import traceback
+    traceback.print_exc()
