@@ -604,7 +604,7 @@ def get_suburb_score(suburb_name: str):
         pass
     
     # 3. 土地价值潜力 (20分)
-    # MDR+HDR zoning % + 是否有在售土地
+    # MDR+HDR zoning % + 是否有在售土地 + 中位价加成
     # 使用模拟分区数据（与 zoning API 一致）
     land_score = 10  # 默认中等
     
@@ -621,13 +621,23 @@ def get_suburb_score(suburb_name: str):
         zm = zoning_map.get(suburb_name, {"MDR": 10, "HDR": 0})
         mdr_hdr_pct = zm["MDR"] + zm["HDR"]
         
+        # 获取中位价用于加成
+        median_price = 0
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
+                cur.execute("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price FROM sales s JOIN properties p ON s.property_id = p.id WHERE LOWER(p.suburb) = LOWER(%s)", (suburb_name,))
+                row = cur.fetchone()
+                if row:
+                    median_price = row.get('median_price', 0) or 0
+                
                 cur.execute("SELECT COUNT(*) as cnt FROM listings WHERE LOWER(suburb) = LOWER(%s) AND property_type = 'vacant_land'", (suburb_name,))
                 row = cur.fetchone()
                 has_land = row.get('cnt', 0) > 0
         
-        land_score = min(20, round(mdr_hdr_pct / 100 * 15) + (5 if has_land else 0))
+        # 中位价加成：每30万加1分，最多5分
+        median_bonus = min(5, int(median_price / 300000))
+        
+        land_score = min(20, round(mdr_hdr_pct / 100 * 12) + (3 if has_land else 0) + median_bonus)
     except Exception as e:
         pass
     
