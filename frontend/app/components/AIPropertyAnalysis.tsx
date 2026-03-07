@@ -4,36 +4,36 @@ export default function AIPropertyAnalysis() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-6">
-            AI Property Analysis
+            AI房产分析
           </h2>
           <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">
-            Leverage AI to analyze any property and get detailed investment insights
+            利用AI分析任何房产，获取详细的投资洞察
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8">
-            <h3 className="text-2xl font-semibold mb-6">How It Works</h3>
+            <h3 className="text-2xl font-semibold mb-6">如何使用</h3>
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="bg-white/20 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
                 <div>
-                  <h4 className="font-semibold mb-2">Enter Property Details</h4>
-                  <p className="text-blue-100">Provide address or paste Domain/Realestate URL</p>
+                  <h4 className="font-semibold mb-2">输入房产信息</h4>
+                  <p className="text-blue-100">提供地址或粘贴 Domain/Realestate 网址</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="bg-white/20 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
                 <div>
-                  <h4 className="font-semibold mb-2">AI Analysis</h4>
-                  <p className="text-blue-100">Our AI analyzes market data and comparable sales</p>
+                  <h4 className="font-semibold mb-2">AI分析</h4>
+                  <p className="text-blue-100">我们的AI分析市场数据和 comparable sales</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="bg-white/20 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
                 <div>
-                  <h4 className="font-semibold mb-2">Get Insights</h4>
-                  <p className="text-blue-100">Receive detailed investment report and recommendations</p>
+                  <h4 className="font-semibold mb-2">获取洞察</h4>
+                  <p className="text-blue-100">收到详细的投资报告和建议</p>
                 </div>
               </div>
             </div>
@@ -41,10 +41,10 @@ export default function AIPropertyAnalysis() {
           
           <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
             <div className="p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Try AI Analysis</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">尝试AI分析</h3>
               <form className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Property Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">房产地址</label>
                   <input
                     type="text"
                     placeholder="123 Main St, Sunnybank"
@@ -52,7 +52,7 @@ export default function AIPropertyAnalysis() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Or Paste URL</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">或粘贴网址</label>
                   <input
                     type="text"
                     placeholder="https://www.domain.com.au/..."
@@ -63,7 +63,7 @@ export default function AIPropertyAnalysis() {
                   type="button"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-medium transition-colors text-lg"
                 >
-                  🤖 Start AI Analysis
+                  🤖 开始AI分析
                 </button>
               </form>
             </div>

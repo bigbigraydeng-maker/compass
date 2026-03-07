@@ -8,49 +8,49 @@ export default function Footer() {
           <div>
             <h3 className="text-2xl font-bold mb-4">Compass</h3>
             <p className="text-gray-400 mb-6">
-              Brisbane Chinese Property Intelligence
+              布里斯班华人房产情报平台
             </p>
             <p className="text-gray-500 text-sm">
-              © 2026 Compass. All rights reserved.
+              © 2026 Compass. 保留所有权利。
             </p>
           </div>
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <h4 className="font-semibold mb-4">Links</h4>
+              <h4 className="font-semibold mb-4">链接</h4>
               <ul className="space-y-2">
                 <li>
                   <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                    Home
+                    首页
                   </Link>
                 </li>
                 <li>
                   <Link href="/listings" className="text-gray-400 hover:text-white transition-colors">
-                    Listings
+                    在售房源
                   </Link>
                 </li>
                 <li>
                   <Link href="/sales" className="text-gray-400 hover:text-white transition-colors">
-                    Sales
+                    成交记录
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Info</h4>
+              <h4 className="font-semibold mb-4">信息</h4>
               <ul className="space-y-2">
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    About
+                    关于我们
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Contact
+                    联系我们
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Privacy
+                    隐私政策
                   </Link>
                 </li>
               </ul>

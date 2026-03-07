@@ -18,36 +18,36 @@ export default function MarketStats({ totalSales, totalListings, medianPrice, to
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">
-          Market Intelligence
+          市场情报
         </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Total Sales */}
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">Total Sales</h3>
+            <h3 className="text-sm font-medium text-gray-600 mb-2">总成交量</h3>
             <p className="text-3xl font-bold text-blue-600">{totalSales}</p>
-            <p className="text-xs text-gray-500 mt-2">Past 30 days</p>
+            <p className="text-xs text-gray-500 mt-2">过去30天</p>
           </div>
           
           {/* Total Listings */}
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">Total Listings</h3>
+            <h3 className="text-sm font-medium text-gray-600 mb-2">总在售量</h3>
             <p className="text-3xl font-bold text-green-600">{totalListings}</p>
-            <p className="text-xs text-gray-500 mt-2">Past 30 days</p>
+            <p className="text-xs text-gray-500 mt-2">过去30天</p>
           </div>
           
           {/* Median Price */}
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">Median Price</h3>
+            <h3 className="text-sm font-medium text-gray-600 mb-2">中位价</h3>
             <p className="text-3xl font-bold text-orange-600">{formatPrice(medianPrice)}</p>
-            <p className="text-xs text-gray-500 mt-2">Past 30 days</p>
+            <p className="text-xs text-gray-500 mt-2">过去30天</p>
           </div>
           
           {/* Top School */}
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">Top School</h3>
+            <h3 className="text-sm font-medium text-gray-600 mb-2">顶级学校</h3>
             <p className="text-2xl font-bold text-purple-600">{topSchool}</p>
-            <p className="text-xs text-gray-500 mt-2">Highest NAPLAN score</p>
+            <p className="text-xs text-gray-500 mt-2">最高NAPLAN分数</p>
           </div>
         </div>
       </div>

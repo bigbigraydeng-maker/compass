@@ -66,20 +66,29 @@ export default function TopInvestmentSuburbs({ rankings }: TopInvestmentSuburbsP
 
   const displayRankings = rankings.length > 0 ? rankings : mockRankings;
 
+  // 投资潜力中文映射
+  const potentialMap: Record<string, string> = {
+    'Very High': '极高',
+    'High': '高',
+    'Medium-High': '中高',
+    'Medium': '中等',
+    'Low': '低'
+  };
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Top Investment Suburbs
+              投资优选郊区
             </h2>
             <p className="text-lg text-gray-600">
-              Ranked by Compass Score and investment potential
+              按 Compass 评分和投资潜力排名
             </p>
           </div>
           <button className="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-            View Full Rankings
+            查看完整排名
           </button>
         </div>
         
@@ -94,19 +103,19 @@ export default function TopInvestmentSuburbs({ rankings }: TopInvestmentSuburbsP
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-1">{ranking.name}</h3>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span>Median Price: {formatPrice(ranking.median_price)}</span>
-                      <span>Growth: +{ranking.growth_rate}%</span>
-                      <span>Potential: {ranking.investment_potential}</span>
+                      <span>中位价: {formatPrice(ranking.median_price)}</span>
+                      <span>增长率: +{ranking.growth_rate}%</span>
+                      <span>潜力: {potentialMap[ranking.investment_potential] || ranking.investment_potential}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-1">Compass Score</p>
+                    <p className="text-sm text-gray-600 mb-1">Compass 评分</p>
                     <p className="text-2xl font-bold text-blue-600">{ranking.compass_score}</p>
                   </div>
                   <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                    View Details
+                    查看详情
                   </button>
                 </div>
               </div>

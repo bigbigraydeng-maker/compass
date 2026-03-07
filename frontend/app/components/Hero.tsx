@@ -28,7 +28,7 @@ export default function Hero() {
             Compass 2.0
           </h1>
           <h2 className="text-2xl md:text-3xl font-semibold mb-8">
-            AI-Powered Property Investment Intelligence
+            AI驱动的房产投资情报平台
           </h2>
           <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">
             找捡漏 · 看机会 · 做判断<br />
@@ -40,7 +40,7 @@ export default function Hero() {
             <div className="flex flex-col md:flex-row gap-4">
               <input
                 type="text"
-                placeholder="Suburb, Postcode, or Address"
+                placeholder="郊区、邮编或地址"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg"
@@ -49,7 +49,7 @@ export default function Hero() {
                 type="submit"
                 className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap"
               >
-                🔍 Find Opportunities
+                🔍 寻找机会
               </button>
             </div>
           </form>
@@ -59,7 +59,7 @@ export default function Hero() {
             <div className="flex flex-col md:flex-row gap-4">
               <input
                 type="text"
-                placeholder="Domain or Realestate URL for Analysis"
+                placeholder="粘贴 Domain 或 Realestate 网址进行分析"
                 value={urlQuery}
                 onChange={(e) => setUrlQuery(e.target.value)}
                 className="flex-1 px-6 py-3 rounded-lg focus:outline-none text-gray-800"
@@ -68,7 +68,7 @@ export default function Hero() {
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-medium transition-colors whitespace-nowrap"
               >
-                🤖 AI Analyze
+                🤖 AI 分析
               </button>
             </div>
           </form>
@@ -78,18 +78,18 @@ export default function Hero() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
             <div className="text-3xl mb-4">💰</div>
-            <h3 className="text-xl font-semibold mb-2">Find Deals</h3>
-            <p className="text-blue-100">Discover properties below market value</p>
+            <h3 className="text-xl font-semibold mb-2">发现捡漏</h3>
+            <p className="text-blue-100">找到低于市场价值的房产</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
             <div className="text-3xl mb-4">📈</div>
-            <h3 className="text-xl font-semibold mb-2">Smart Analysis</h3>
-            <p className="text-blue-100">AI-powered property valuation and insights</p>
+            <h3 className="text-xl font-semibold mb-2">智能分析</h3>
+            <p className="text-blue-100">AI驱动的房产估值和洞察</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
             <div className="text-3xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold mb-2">Investment Rankings</h3>
-            <p className="text-blue-100">Top suburbs for Chinese investors</p>
+            <h3 className="text-xl font-semibold mb-2">投资排名</h3>
+            <p className="text-blue-100">华人投资者首选郊区</p>
           </div>
         </div>
       </div>

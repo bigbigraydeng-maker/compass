@@ -60,14 +60,14 @@ export default function TodayDeals({ deals }: TodayDealsProps) {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Today's Deals
+              今日捡漏
             </h2>
             <p className="text-lg text-gray-600">
-              Handpicked investment opportunities below market value
+              精心挑选的低于市场价值的投资机会
             </p>
           </div>
           <button className="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-            View All Deals
+            查看全部捡漏
           </button>
         </div>
         
@@ -81,31 +81,31 @@ export default function TodayDeals({ deals }: TodayDealsProps) {
                     <p className="text-sm text-gray-500">{deal.suburb}</p>
                   </div>
                   <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    {deal.discount_percent}% OFF
+                    省 {deal.discount_percent}%
                   </div>
                 </div>
                 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Listing Price</span>
+                    <span className="text-sm text-gray-600">挂牌价</span>
                     <span className="font-semibold text-gray-900">{formatPrice(deal.listing_price)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Estimated Value</span>
+                    <span className="text-sm text-gray-600">估计价值</span>
                     <span className="font-semibold text-blue-600">{formatPrice(deal.estimated_value)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Compass Score</span>
+                    <span className="text-sm text-gray-600">Compass 评分</span>
                     <span className="font-semibold text-orange-600">{deal.compass_score}</span>
                   </div>
                 </div>
                 
                 <div className="flex gap-3">
                   <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
-                    🤖 Analyze
+                    🤖 分析
                   </button>
                   <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors">
-                    View
+                    查看
                   </button>
                 </div>
               </div>
