@@ -80,11 +80,10 @@ def get_home_data():
     try:
         # 获取最新10条成交记录
         latest_sales_query = """
-            SELECT s.id, s.property_id, s.sold_price, s.sold_date,
-                   p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
+            SELECT s.sale_id AS id, s.property_id, s.sale_price AS sold_price, s.sale_date AS sold_date,
+                   s.full_address AS address, INITCAP(s.suburb) AS suburb, s.property_type, s.land_size, s.bedrooms, s.bathrooms
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            ORDER BY s.sold_date DESC
+            ORDER BY s.sale_date DESC
             LIMIT 10
         """
         latest_sales = execute_query(latest_sales_query)
@@ -96,11 +95,10 @@ def get_home_data():
         for suburb in suburbs:
             # 获取中位价
             median_query = """
-                SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price,
+                SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
                        COUNT(*) as total_sales
                 FROM sales s
-                JOIN properties p ON s.property_id = p.id
-                WHERE LOWER(p.suburb) = LOWER(%s)
+                WHERE UPPER(s.suburb) = UPPER(%s)
             """
             result = execute_query(median_query, (suburb,))
             
@@ -158,10 +156,9 @@ def get_sales(
         
         # 基础查询
         base_query = """
-            SELECT s.id, s.property_id, s.sold_price, s.sold_date,
-                   p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
+            SELECT s.sale_id AS id, s.property_id, s.sale_price AS sold_price, s.sale_date AS sold_date,
+                   s.full_address AS address, INITCAP(s.suburb) AS suburb, s.property_type, s.land_size, s.bedrooms, s.bathrooms
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
         """
         
         # 添加过滤条件
@@ -169,34 +166,34 @@ def get_sales(
         where_conditions = []
         
         if suburb:
-            where_conditions.append("p.suburb = %s")
+            where_conditions.append("UPPER(s.suburb) = UPPER(%s)")
             params.append(suburb)
-        
+
         if property_type:
-            where_conditions.append("LOWER(p.property_type) = LOWER(%s)")
+            where_conditions.append("LOWER(s.property_type) = LOWER(%s)")
             params.append(property_type)
-        
+
         if bedrooms:
             if bedrooms >= 5:
-                where_conditions.append("p.bedrooms >= 5")
+                where_conditions.append("s.bedrooms >= 5")
             else:
-                where_conditions.append("p.bedrooms = %s")
+                where_conditions.append("s.bedrooms = %s")
                 params.append(bedrooms)
-        
+
         if min_price:
-            where_conditions.append("s.sold_price >= %s")
+            where_conditions.append("s.sale_price >= %s")
             params.append(min_price)
-        
+
         if max_price:
-            where_conditions.append("s.sold_price <= %s")
+            where_conditions.append("s.sale_price <= %s")
             params.append(max_price)
-        
+
         if min_date:
-            where_conditions.append("s.sold_date >= %s")
+            where_conditions.append("s.sale_date >= %s")
             params.append(min_date)
-        
+
         if max_date:
-            where_conditions.append("s.sold_date <= %s")
+            where_conditions.append("s.sale_date <= %s")
             params.append(max_date)
         
         if where_conditions:
@@ -217,7 +214,7 @@ def get_sales(
             total = 0
         
         # 添加排序和分页
-        query = f"{base_query} ORDER BY s.sold_date DESC LIMIT %s OFFSET %s"
+        query = f"{base_query} ORDER BY s.sale_date DESC LIMIT %s OFFSET %s"
         params.extend([page_size, offset])
         
         # 执行查询
@@ -244,11 +241,10 @@ def get_suburb_detail(suburb_name: str):
     try:
         # 获取中位价和总成交数
         stats_query = """
-            SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price,
+            SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
                    COUNT(*) as total_sales
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            WHERE LOWER(p.suburb) = LOWER(%s)
+            WHERE UPPER(s.suburb) = UPPER(%s)
         """
         stats_result = execute_query(stats_query, (suburb_name,))
         
@@ -267,12 +263,11 @@ def get_suburb_detail(suburb_name: str):
         
         # 获取最近10条成交记录
         recent_sales_query = """
-            SELECT s.id, s.property_id, s.sold_price, s.sold_date,
-                   p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
+            SELECT s.sale_id AS id, s.property_id, s.sale_price AS sold_price, s.sale_date AS sold_date,
+                   s.full_address AS address, INITCAP(s.suburb) AS suburb, s.property_type, s.land_size, s.bedrooms, s.bathrooms
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            WHERE LOWER(p.suburb) = LOWER(%s)
-            ORDER BY s.sold_date DESC
+            WHERE UPPER(s.suburb) = UPPER(%s)
+            ORDER BY s.sale_date DESC
             LIMIT 10
         """
         recent_sales = execute_query(recent_sales_query, (suburb_name,))
@@ -302,15 +297,14 @@ def get_suburb_trends(suburb_name: str):
     try:
         # 获取过去12个月的月度趋势数据
         trends_query = """
-            SELECT 
-                TO_CHAR(DATE_TRUNC('month', s.sold_date), 'YYYY-MM') as month,
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price,
+            SELECT
+                TO_CHAR(DATE_TRUNC('month', s.sale_date), 'YYYY-MM') as month,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
                 COUNT(*) as total_sales
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            WHERE p.suburb = %s
-              AND s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '12 months')
-            GROUP BY DATE_TRUNC('month', s.sold_date)
+            WHERE UPPER(s.suburb) = UPPER(%s)
+              AND s.sale_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '12 months')
+            GROUP BY DATE_TRUNC('month', s.sale_date)
             HAVING COUNT(*) >= 3
             ORDER BY month ASC
         """
@@ -554,12 +548,11 @@ def get_suburb_score(suburb_name: str):
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
                 cur.execute("""
-                    SELECT 
-                        AVG(CASE WHEN sold_date >= NOW() - INTERVAL '12 months' THEN sold_price END) as recent,
-                        AVG(CASE WHEN sold_date BETWEEN NOW() - INTERVAL '24 months' AND NOW() - INTERVAL '12 months' THEN sold_price END) as prev
+                    SELECT
+                        AVG(CASE WHEN s.sale_date >= NOW() - INTERVAL '12 months' THEN s.sale_price END) as recent,
+                        AVG(CASE WHEN s.sale_date BETWEEN NOW() - INTERVAL '24 months' AND NOW() - INTERVAL '12 months' THEN s.sale_price END) as prev
                     FROM sales s
-                    JOIN properties p ON s.property_id = p.id
-                    WHERE LOWER(p.suburb) = LOWER(%s)
+                    WHERE UPPER(s.suburb) = UPPER(%s)
                 """, (suburb_name,))
                 row = cur.fetchone()
                 
@@ -622,7 +615,7 @@ def get_suburb_score(suburb_name: str):
         median_price = 0
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
-                cur.execute("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price FROM sales s JOIN properties p ON s.property_id = p.id WHERE LOWER(p.suburb) = LOWER(%s)", (suburb_name,))
+                cur.execute("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price FROM sales s WHERE UPPER(s.suburb) = UPPER(%s)", (suburb_name,))
                 row = cur.fetchone()
                 if row:
                     median_price = row.get('median_price', 0) or 0
@@ -645,7 +638,7 @@ def get_suburb_score(suburb_name: str):
     try:
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
-                cur.execute("SELECT COUNT(*) as cnt FROM sales s JOIN properties p ON s.property_id = p.id WHERE LOWER(p.suburb) = LOWER(%s) AND sold_date >= NOW() - INTERVAL '12 months'", (suburb_name,))
+                cur.execute("SELECT COUNT(*) as cnt FROM sales s WHERE UPPER(s.suburb) = UPPER(%s) AND s.sale_date >= NOW() - INTERVAL '12 months'", (suburb_name,))
                 row = cur.fetchone()
                 annual_sales = row.get('cnt', 0)
                 
@@ -695,14 +688,13 @@ def get_deals():
     try:
         # 先计算每个郊区每种房产类型+卧室数的中位价
         median_query = """
-            SELECT 
-                p.suburb,
-                p.property_type,
-                p.bedrooms,
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price
+            SELECT
+                s.suburb,
+                s.property_type,
+                s.bedrooms,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            GROUP BY p.suburb, p.property_type, p.bedrooms
+            GROUP BY s.suburb, s.property_type, s.bedrooms
         """
         median_results = execute_query(median_query)
         
@@ -721,17 +713,16 @@ def get_deals():
             median_price = row.get('median_price')
             if suburb and prop_type and bedrooms and median_price:
                 key = f"{suburb.lower()}_{prop_type.lower()}_{bedrooms}"
-                median_map[key] = median_price
+                median_map[key] = float(median_price)
         
         # 如果没有精确匹配，尝试只按郊区+房型匹配
         fallback_median_query = """
-            SELECT 
-                p.suburb,
-                p.property_type,
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price
+            SELECT
+                s.suburb,
+                s.property_type,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            GROUP BY p.suburb, p.property_type
+            GROUP BY s.suburb, s.property_type
         """
         fallback_results = execute_query(fallback_median_query)
         
@@ -748,16 +739,15 @@ def get_deals():
             if suburb and prop_type and median_price:
                 key = f"{suburb.lower()}_{prop_type.lower()}_fallback"
                 if key not in median_map:
-                    median_map[key] = median_price
+                    median_map[key] = float(median_price)
         
         # 找出低于中位价10%的成交记录
         deals_query = """
-            SELECT 
-                s.id, s.property_id, s.sold_price, s.sold_date,
-                p.address, p.suburb, p.property_type, p.land_size, p.bedrooms, p.bathrooms
+            SELECT
+                s.sale_id AS id, s.property_id, s.sale_price AS sold_price, s.sale_date AS sold_date,
+                s.full_address AS address, INITCAP(s.suburb) AS suburb, s.property_type, s.land_size, s.bedrooms, s.bathrooms
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            ORDER BY s.sold_date DESC
+            ORDER BY s.sale_date DESC
         """
         sales = execute_query(deals_query)
         
@@ -839,9 +829,10 @@ def get_deals():
                         key = f"{suburb.lower()}_{prop_type.lower()}_fallback"
                     
                     if key in median_map:
-                        median_price = median_map[key]
+                        median_price = float(median_map[key])
+                        sold_price_f = float(sold_price)
                         if median_price > 0:
-                            discount_percent = (median_price - sold_price) / median_price * 100
+                            discount_percent = (median_price - sold_price_f) / median_price * 100
                             if discount_percent >= 10:  # 至少10%的折扣
                                 deal = {
                                     **sale_dict,
@@ -907,13 +898,12 @@ def get_market_pulse():
             with get_db_cursor(conn) as cur:
                 # 1. 本月最热区域（成交量最高）
                 hottest_query = """
-                    SELECT 
-                        p.suburb,
+                    SELECT
+                        INITCAP(s.suburb) AS suburb,
                         COUNT(*) as sales_count
                     FROM sales s
-                    JOIN properties p ON s.property_id = p.id
-                    WHERE s.sold_date >= DATE_TRUNC('month', CURRENT_DATE)
-                    GROUP BY p.suburb
+                    WHERE s.sale_date >= DATE_TRUNC('month', CURRENT_DATE)
+                    GROUP BY s.suburb
                     ORDER BY sales_count DESC
                     LIMIT 1
                 """
@@ -923,26 +913,25 @@ def get_market_pulse():
                 
                 # 2. 本月涨幅最高（与上月相比）
                 growth_query = """
-                    SELECT 
-                        p.suburb,
-                        AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sold_price END) as current_month,
-                        AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
-                                 AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
-                            THEN s.sold_price END) as last_month,
-                        COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN 1 END) as recent_count,
-                        COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
-                                 AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
+                    SELECT
+                        INITCAP(s.suburb) AS suburb,
+                        AVG(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sale_price END) as current_month,
+                        AVG(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+                                 AND s.sale_date < DATE_TRUNC('month', CURRENT_DATE)
+                            THEN s.sale_price END) as last_month,
+                        COUNT(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE) THEN 1 END) as recent_count,
+                        COUNT(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+                                 AND s.sale_date < DATE_TRUNC('month', CURRENT_DATE)
                             THEN 1 END) as prev_count
                     FROM sales s
-                    JOIN properties p ON s.property_id = p.id
-                    GROUP BY p.suburb
-                    HAVING AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sold_price END) IS NOT NULL
-                       AND AVG(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
-                                AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
-                           THEN s.sold_price END) IS NOT NULL
-                       AND COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE) THEN 1 END) >= 3
-                       AND COUNT(CASE WHEN s.sold_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month') 
-                                AND s.sold_date < DATE_TRUNC('month', CURRENT_DATE) 
+                    GROUP BY s.suburb
+                    HAVING AVG(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE) THEN s.sale_price END) IS NOT NULL
+                       AND AVG(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+                                AND s.sale_date < DATE_TRUNC('month', CURRENT_DATE)
+                           THEN s.sale_price END) IS NOT NULL
+                       AND COUNT(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE) THEN 1 END) >= 3
+                       AND COUNT(CASE WHEN s.sale_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+                                AND s.sale_date < DATE_TRUNC('month', CURRENT_DATE)
                            THEN 1 END) >= 3
                 """
                 cur.execute(growth_query)
@@ -971,7 +960,7 @@ def get_market_pulse():
                     score = score_data.get('total_score', 0)
                     
                     # 获取中位价
-                    cur.execute("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price FROM sales s JOIN properties p ON s.property_id = p.id WHERE LOWER(p.suburb) = LOWER(%s)", (suburb,))
+                    cur.execute("SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price FROM sales s WHERE UPPER(s.suburb) = UPPER(%s)", (suburb,))
                     median_result = cur.fetchone()
                     median_price = median_result.get('median_price', 1) if median_result else 1
                     
@@ -1067,14 +1056,13 @@ def _get_suburb_full_profile(suburb_name: str) -> dict:
         # 1. 价格数据
         price_query = """
             SELECT
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
                 COUNT(*) as total_sales,
-                AVG(s.sold_price) as avg_price,
-                MIN(s.sold_price) as min_price,
-                MAX(s.sold_price) as max_price
+                AVG(s.sale_price) as avg_price,
+                MIN(s.sale_price) as min_price,
+                MAX(s.sale_price) as max_price
             FROM sales s
-            JOIN properties p ON s.property_id = p.id
-            WHERE LOWER(p.suburb) = LOWER(%s)
+            WHERE UPPER(s.suburb) = UPPER(%s)
         """
         price_result = execute_query(price_query, (suburb_name,))
         if price_result and len(price_result) > 0:

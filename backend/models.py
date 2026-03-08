@@ -22,17 +22,17 @@ class Property(BaseModel):
 
 class Sale(BaseModel):
     """成交记录模型"""
-    id: int
-    property_id: int
-    sold_price: int
+    id: str
+    property_id: Optional[str] = None
+    sold_price: float
     sold_date: date
     address: str
     suburb: str
     property_type: Optional[str] = None
-    land_size: Optional[int] = None
+    land_size: Optional[float] = None
     bedrooms: Optional[int] = 0
     bathrooms: Optional[int] = 0
-    
+
     class Config:
         from_attributes = True
 
