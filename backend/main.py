@@ -1580,13 +1580,56 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
     return prompt
 
 
+def _get_mode_system_prompt(mode: str) -> str:
+    """根据分析模式返回不同的系统提示"""
+    prompts = {
+        "school": "你是一位专注布里斯班学区房投资的资深顾问，精通NAPLAN排名、学区划分、家庭友好度评估。请重点分析学区质量对房产投资价值的影响。全中文回复。",
+        "first_home": "你是一位帮助首次置业者的布里斯班房产顾问，精通昆士兰州首次置业补贴(FHOG $30,000)、印花税减免、首置担保计划(5%首付)。请重点分析适合首次购房者的入门机会。全中文回复。",
+        "overseas": "你是一位专注服务海外投资者的布里斯班房产顾问，精通FIRB审批流程、额外8%印花税(AFAD)、非居民CGT预扣12.5%、海外人士只能购买新房限制。请重点分析适合海外投资者的投资机会和合规要求。全中文回复。",
+    }
+    return prompts.get(mode, "You are a senior Brisbane real estate investment analyst. Respond in Chinese.")
+
+
+def _get_mode_extra_instructions(mode: str) -> str:
+    """根据分析模式返回额外的分析指引"""
+    instructions = {
+        "school": """
+**额外分析重点（学区模式）：**
+- NAPLAN 排名在全州的百分位，对学区房价的溢价效应
+- 学区覆盖范围内的房源性价比
+- 公立 vs 私立学校的选择建议
+- 对有学龄儿童的华人家庭的具体推荐
+""",
+        "first_home": """
+**额外分析重点（首次置业模式）：**
+- 昆士兰首次置业补贴 FHOG $30,000（仅限新房/大翻新，房价≤$750,000）
+- 印花税减免（首置新房≤$500,000全免，$500k-$550k递减）
+- 首置担保计划（仅需5%首付，无需LMI）
+- 推荐适合首次购房者的入门户型和预算区间
+- 月供估算（按当前利率约6.5%）
+""",
+        "overseas": """
+**额外分析重点（海外人士模式）：**
+- FIRB 审批要求和费用（房价<$75万约$14,100，$75万-$100万约$28,200）
+- AFAD 额外印花税 8%（昆士兰州附加）
+- 海外人士只能购买全新住宅或空地（不能购买二手房）
+- CGT 预扣税 12.5%（出售时）
+- 非居民租金收入预扣税
+- 推荐适合海外投资者的新房项目和开发区
+""",
+    }
+    return instructions.get(mode, "")
+
+
 @app.post("/api/analyze")
-def analyze_property(address: str = Body(...), url: str = Body(None)):
+def analyze_property(address: str = Body(...), url: str = Body(None), mode: str = Body("general")):
     """
     AI 多维度投资分析接口
 
     聚合 POI、治安、交通、学区、分区等多维数据，
     通过 Moonshot Kimi 2.5 生成结构化投资决策报告。
+
+    mode: "general" | "school" | "first_home" | "overseas"
     """
     try:
         # 从地址中提取郊区
@@ -1614,8 +1657,11 @@ def analyze_property(address: str = Body(...), url: str = Body(None)):
         # 1. 聚合全量数据
         profile = _get_suburb_full_profile(suburb)
 
-        # 2. 构建 AI prompt
+        # 2. 构建 AI prompt（基础 + 模式额外指引）
         prompt = _build_ai_prompt(address, suburb, profile)
+        extra = _get_mode_extra_instructions(mode)
+        if extra:
+            prompt += extra
 
         # 3. 调用 Moonshot Kimi 2.5 API
         moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
@@ -1628,10 +1674,12 @@ def analyze_property(address: str = Body(...), url: str = Body(None)):
             base_url="https://api.moonshot.cn/v1"
         )
 
+        system_prompt = _get_mode_system_prompt(mode)
+
         response = client.chat.completions.create(
             model="kimi-k2.5",
             messages=[
-                {"role": "system", "content": "You are a senior Brisbane real estate investment analyst. Respond in Chinese."},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=4096,
@@ -1643,6 +1691,7 @@ def analyze_property(address: str = Body(...), url: str = Body(None)):
         return {
             "analysis": analysis,
             "suburb": suburb,
+            "mode": mode,
             "data_dimensions": {
                 "price": bool(profile.get("price")),
                 "price_by_type": bool(profile.get("price_by_type")),
@@ -1662,6 +1711,134 @@ def analyze_property(address: str = Body(...), url: str = Body(None)):
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
+
+
+@app.get("/api/schools")
+def get_all_schools(suburb: Optional[str] = None, school_type: Optional[str] = None):
+    """
+    获取学校列表，按 NAPLAN 分数排序
+
+    参数：
+    - suburb: 按郊区过滤（可选）
+    - school_type: 按学校类型过滤 primary/secondary/combined（可选）
+    """
+    try:
+        schools_path = os.path.join(os.path.dirname(__file__), "data/qld_schools.json")
+        with open(schools_path, "r", encoding="utf-8") as f:
+            all_schools = json.load(f)
+
+        # 过滤
+        filtered = all_schools
+        if suburb:
+            filtered = [s for s in filtered if (
+                s.get('suburb', '').lower() == suburb.lower() or
+                suburb.lower() in [c.lower() for c in (s.get('catchment_suburbs', []) if isinstance(s.get('catchment_suburbs', []), list) else [s.get('catchment_suburbs', '')])]
+            )]
+        if school_type:
+            filtered = [s for s in filtered if s.get('school_type', '').lower() == school_type.lower()]
+
+        # 按 NAPLAN 分数排序
+        filtered.sort(key=lambda x: x.get('naplan_percentile', 0) or 0, reverse=True)
+
+        return {"schools": filtered, "total": len(filtered)}
+    except Exception as e:
+        return {"schools": [], "total": 0}
+
+
+@app.post("/api/chat")
+def chat_with_advisor(
+    message: str = Body(...),
+    context: str = Body("general"),
+    history: list = Body([])
+):
+    """
+    AI 聊天顾问接口
+
+    参数：
+    - message: 用户消息
+    - context: 场景 "first_home" | "overseas" | "general"
+    - history: 对话历史 [{"role": "user"|"assistant", "content": "..."}]
+    """
+    try:
+        moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+        if not moonshot_key:
+            raise HTTPException(status_code=500, detail="MOONSHOT_API_KEY not configured")
+
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=moonshot_key,
+            base_url="https://api.moonshot.cn/v1"
+        )
+
+        system_prompts = {
+            "first_home": """你是 Compass AI 首次置业顾问，专注帮助在布里斯班首次购房的华人买家。你精通：
+- 昆士兰首次置业补贴 (FHOG $30,000，仅限新房，房价≤$750,000)
+- 印花税减免政策（首置新房≤$500,000全免）
+- 首置担保计划（5%首付，免LMI）
+- 布里斯班各郊区适合首次购房的入门区域
+- 贷款预批、验房、交割流程
+请用通俗易懂的中文回答，给出实用建议。每次回答控制在200字以内。""",
+            "overseas": """你是 Compass AI 海外投资顾问，专注帮助海外华人投资者在布里斯班购房。你精通：
+- FIRB 审批流程和费用（<$75万约$14,100）
+- AFAD 额外印花税 8%（昆士兰附加费）
+- 海外人士只能购买全新住宅或空地
+- CGT 预扣税 12.5%
+- 非居民租金收入税务处理
+- 布里斯班新楼盘和开发区推荐
+请用专业但通俗的中文回答，给出实用建议。每次回答控制在200字以内。""",
+        }
+
+        system_content = system_prompts.get(context, "你是 Compass AI 布里斯班房产投资顾问，帮助华人投资者做出明智的房产投资决策。用中文回答，每次回答控制在200字以内。")
+
+        # 构建消息列表
+        messages = [{"role": "system", "content": system_content}]
+
+        # 添加历史对话（限制最近10轮）
+        for h in history[-20:]:
+            if h.get("role") in ["user", "assistant"] and h.get("content"):
+                messages.append({"role": h["role"], "content": h["content"]})
+
+        messages.append({"role": "user", "content": message})
+
+        response = client.chat.completions.create(
+            model="kimi-k2.5",
+            messages=messages,
+            max_tokens=1024,
+            temperature=1.0,
+        )
+
+        reply = response.choices[0].message.content
+
+        # 生成建议后续问题
+        suggestions_map = {
+            "first_home": [
+                "首次置业补贴具体怎么申请？",
+                "哪些郊区适合首次购房？",
+                "50万预算能买什么样的房？",
+                "贷款预批需要什么材料？",
+            ],
+            "overseas": [
+                "FIRB申请需要多长时间？",
+                "布里斯班有哪些新楼盘推荐？",
+                "海外人士贷款能贷多少？",
+                "购房后如何管理出租？",
+            ],
+        }
+        suggestions = suggestions_map.get(context, [
+            "哪个郊区投资回报最高？",
+            "现在是买房的好时机吗？",
+            "布里斯班房价还会涨吗？",
+        ])
+
+        return {
+            "reply": reply,
+            "suggestions": suggestions,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Chat error: {e}")
+        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,11 @@
+'use client';
+
 import { useState } from 'react';
-import { fetcher } from '../lib/api';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Hero() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [aiInput, setAiInput] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -57,8 +61,50 @@ export default function Hero() {
       });
   };
 
+  // 快捷郊区按钮
+  const quickSuburbs = [
+    { name: 'Sunnybank', label: 'Sunnybank' },
+    { name: 'Eight Mile Plains', label: 'EMP' },
+    { name: 'Calamvale', label: 'Calamvale' },
+    { name: 'Rochedale', label: 'Rochedale' },
+    { name: 'Mansfield', label: 'Mansfield' },
+    { name: 'Ascot', label: 'Ascot' },
+    { name: 'Hamilton', label: 'Hamilton' },
+  ];
+
+  // 三个功能入口
+  const featureCards = [
+    {
+      icon: '🏫',
+      title: '校区找房',
+      desc: '按学区质量寻找投资机会',
+      href: '/school-search',
+      gradient: 'from-emerald-500/20 to-emerald-600/10',
+      border: 'border-emerald-400/30',
+      hoverBg: 'hover:bg-emerald-500/20',
+    },
+    {
+      icon: '🏠',
+      title: '首次置业',
+      desc: '首置补贴 · 预算计算 · AI顾问',
+      href: '/first-home',
+      gradient: 'from-blue-500/20 to-blue-600/10',
+      border: 'border-blue-400/30',
+      hoverBg: 'hover:bg-blue-500/20',
+    },
+    {
+      icon: '🌏',
+      title: '海外人士购房',
+      desc: 'FIRB指南 · 税费 · AI顾问',
+      href: '/overseas-buyer',
+      gradient: 'from-purple-500/20 to-purple-600/10',
+      border: 'border-purple-400/30',
+      hoverBg: 'hover:bg-purple-500/20',
+    },
+  ];
+
   return (
-    <section className="relative text-white py-20 md:py-32 overflow-hidden">
+    <section className="relative text-white py-16 md:py-32 overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -69,32 +115,32 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
+        <div className="text-center mb-10 md:mb-16">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 drop-shadow-lg">
             Compass 2.0
           </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 drop-shadow-md">
+          <h2 className="text-xl md:text-3xl font-semibold mb-4 md:mb-8 drop-shadow-md">
             AI驱动的房产投资机会发现平台
           </h2>
-          <p className="text-xl text-gray-200 mb-12 max-w-3xl mx-auto drop-shadow">
+          <p className="text-base md:text-xl text-gray-200 mb-8 md:mb-12 max-w-3xl mx-auto drop-shadow">
             找捡漏 · 看机会 · 做判断<br />
             AI 帮你发现布里斯班房地产市场的投资机会
           </p>
 
           {/* 主要搜索框 */}
-          <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-10">
-            <div className="flex flex-col md:flex-row gap-4">
+          <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-4 md:mb-10">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4">
               <input
                 type="text"
                 placeholder="输入郊区名称，如 Sunnybank、Hamilton"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg shadow-lg"
+                className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-lg focus:outline-none text-gray-800 text-base md:text-lg shadow-lg"
                 required
               />
               <button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
+                className="bg-orange-500 hover:bg-orange-600 px-6 md:px-8 py-3 md:py-4 rounded-lg font-medium transition-colors text-base md:text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
                 disabled={isSearching}
               >
                 {isSearching ? (
@@ -108,23 +154,38 @@ export default function Hero() {
                 ) : '🔍 寻找机会'}
               </button>
             </div>
-            <p className="text-gray-300 text-sm mt-3">支持 7 个郊区：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton</p>
           </form>
+
+          {/* 移动端快捷郊区按钮 */}
+          <div className="md:hidden flex flex-wrap justify-center gap-2 mb-6">
+            {quickSuburbs.map((s) => (
+              <button
+                key={s.name}
+                onClick={() => router.push(`/suburb/${encodeURIComponent(s.name)}`)}
+                className="bg-white/15 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 hover:bg-white/25 transition-colors"
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
+          {/* 桌面端支持提示 */}
+          <p className="hidden md:block text-gray-300 text-sm mb-10">支持 7 个郊区：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton</p>
 
           {/* AI 分析入口 */}
           <form onSubmit={handleAiAnalysis} className="max-w-3xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4">
               <input
                 type="text"
                 placeholder="输入地址或郊区名进行 AI 投资分析"
                 value={aiInput}
                 onChange={(e) => setAiInput(e.target.value)}
-                className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg shadow-lg"
+                className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-lg focus:outline-none text-gray-800 text-base md:text-lg shadow-lg"
                 required
               />
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
+                className="bg-blue-500 hover:bg-blue-600 px-6 md:px-8 py-3 md:py-4 rounded-lg font-medium transition-colors text-base md:text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
@@ -138,7 +199,7 @@ export default function Hero() {
                 ) : '🤖 AI 分析'}
               </button>
             </div>
-            <p className="text-gray-300 text-sm mt-3">例如：10 Main St, Sunnybank 或 Sunnybank</p>
+            <p className="text-gray-300 text-xs md:text-sm mt-2 md:mt-3">例如：10 Main St, Sunnybank 或 Sunnybank</p>
           </form>
 
           {/* AI 分析结果展示 */}
@@ -183,23 +244,21 @@ export default function Hero() {
           )}
         </div>
 
-        {/* 核心价值主张 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-colors border border-white/10">
-            <div className="text-3xl mb-4">💰</div>
-            <h3 className="text-xl font-semibold mb-2">发现捡漏</h3>
-            <p className="text-gray-300">找到低于市场价值的房产</p>
-          </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-colors border border-white/10">
-            <div className="text-3xl mb-4">📈</div>
-            <h3 className="text-xl font-semibold mb-2">智能分析</h3>
-            <p className="text-gray-300">AI驱动的房产估值和洞察</p>
-          </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-colors border border-white/10">
-            <div className="text-3xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold mb-2">投资排名</h3>
-            <p className="text-gray-300">华人投资者首选郊区</p>
-          </div>
+        {/* 三个功能入口卡片 */}
+        <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-8 mt-8 md:mt-16">
+          {featureCards.map((card) => (
+            <Link
+              key={card.title}
+              href={card.href}
+              className={`bg-gradient-to-br ${card.gradient} backdrop-blur-md rounded-xl p-4 md:p-6 text-center ${card.hoverBg} transition-all border ${card.border} group hover:scale-105`}
+            >
+              <div className="text-2xl md:text-4xl mb-2 md:mb-4 group-hover:scale-110 transition-transform">
+                {card.icon}
+              </div>
+              <h3 className="text-sm md:text-xl font-semibold mb-1 md:mb-2">{card.title}</h3>
+              <p className="text-gray-300 text-[10px] md:text-sm hidden md:block">{card.desc}</p>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
