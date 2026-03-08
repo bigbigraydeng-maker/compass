@@ -26,18 +26,20 @@ execute_query = None
 
 if DATABASE_URL:
     try:
-        print("[INFO] Connecting to Supabase...")
-        from database import execute_query as real_execute_query
-        real_execute_query("SELECT 1")
+        print("[INFO] Connecting to Supabase (with retry)...")
+        from database import test_connection, execute_query as real_execute_query
+        test_connection()
         print("[OK] Connected to Supabase")
         print(f"   DB: {DATABASE_URL[:30]}...")
         USING_REAL_DB = True
         execute_query = real_execute_query
     except Exception as e:
-        print(f"[ERROR] DB connection failed: {e}")
+        print(f"[ERROR] DB connection failed after all retries: {e}")
+        print(f"[ERROR] Please check DATABASE_URL and Supabase status")
         raise SystemExit(1)
 else:
     print("[ERROR] DATABASE_URL not configured")
+    print("[ERROR] Set DATABASE_URL environment variable in Render dashboard")
     raise SystemExit(1)
 
 # 创建 FastAPI 应用
