@@ -1,41 +1,60 @@
 import { useState } from 'react';
+import { fetcher } from '../lib/api';
 
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [urlQuery, setUrlQuery] = useState('');
+  const [aiInput, setAiInput] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiReport, setAiReport] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
+    const q = searchQuery.trim();
+    if (q) {
       setIsSearching(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        window.location.href = `/suburb/${encodeURIComponent(searchQuery)}`;
-      } catch (error) {
-        console.error('搜索失败:', error);
-        alert('搜索失败，请稍后重试');
-      } finally {
-        setIsSearching(false);
-      }
+      window.location.href = `/suburb/${encodeURIComponent(q)}`;
     }
   };
 
-  const handleUrlAnalysis = async (e: React.FormEvent) => {
+  const handleAiAnalysis = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (urlQuery.trim()) {
-      setIsAnalyzing(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        alert('URL分析功能即将上线，敬请期待！');
-      } catch (error) {
-        console.error('分析失败:', error);
-        alert('分析失败，请稍后重试');
-      } finally {
-        setIsAnalyzing(false);
-      }
+    const input = aiInput.trim();
+    if (!input) return;
+
+    setIsAnalyzing(true);
+    setAiReport(null);
+    setAiError(null);
+
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
+      const res = await fetch(`${apiBase}/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: input, url: input }),
+      });
+
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
+      const data = await res.json();
+      setAiReport(data.analysis || data.report || '分析完成，但未返回内容');
+    } catch (error: any) {
+      setAiError(error.message || '分析失败，请稍后重试');
+    } finally {
+      setIsAnalyzing(false);
     }
+  };
+
+  // 简单 markdown 渲染
+  const renderMarkdown = (text: string) => {
+    return text
+      .split('\n')
+      .map((line, i) => {
+        if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold mt-4 mb-2 text-white">{line.replace('## ', '')}</h3>;
+        if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-bold text-white mt-2">{line.replace(/\*\*/g, '')}</p>;
+        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return <p key={i} className="text-gray-200 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />;
+      });
   };
 
   return (
@@ -47,7 +66,6 @@ export default function Hero() {
           backgroundImage: `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80')`,
         }}
       />
-      {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,7 +86,7 @@ export default function Hero() {
             <div className="flex flex-col md:flex-row gap-4">
               <input
                 type="text"
-                placeholder="输入郊区、邮编或地址"
+                placeholder="输入郊区名称，如 Sunnybank、Hamilton"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg shadow-lg"
@@ -87,24 +105,20 @@ export default function Hero() {
                     </svg>
                     搜索中...
                   </>
-                ) : (
-                  <>
-                    🔍 寻找机会
-                  </>
-                )}
+                ) : '🔍 寻找机会'}
               </button>
             </div>
-            <p className="text-gray-300 text-sm mt-3">例如：Sunnybank, 4109, 123 Main St</p>
+            <p className="text-gray-300 text-sm mt-3">支持 7 个郊区：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton</p>
           </form>
 
-          {/* URL 分析入口 */}
-          <form onSubmit={handleUrlAnalysis} className="max-w-3xl mx-auto">
+          {/* AI 分析入口 */}
+          <form onSubmit={handleAiAnalysis} className="max-w-3xl mx-auto">
             <div className="flex flex-col md:flex-row gap-4">
               <input
                 type="text"
-                placeholder="粘贴 Domain 或 Realestate 网址进行AI分析"
-                value={urlQuery}
-                onChange={(e) => setUrlQuery(e.target.value)}
+                placeholder="输入地址或郊区名进行 AI 投资分析"
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
                 className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg shadow-lg"
                 required
               />
@@ -119,17 +133,54 @@ export default function Hero() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    分析中...
+                    AI 分析中...
                   </>
-                ) : (
-                  <>
-                    🤖 AI 分析
-                  </>
-                )}
+                ) : '🤖 AI 分析'}
               </button>
             </div>
-            <p className="text-gray-300 text-sm mt-3">例如：https://www.domain.com.au/123456789</p>
+            <p className="text-gray-300 text-sm mt-3">例如：10 Main St, Sunnybank 或 Sunnybank</p>
           </form>
+
+          {/* AI 分析结果展示 */}
+          {(aiReport || aiError || isAnalyzing) && (
+            <div className="max-w-3xl mx-auto mt-8">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 text-left">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold">🤖 AI 投资分析报告</h3>
+                  {aiReport && (
+                    <button
+                      onClick={() => { setAiReport(null); setAiError(null); }}
+                      className="text-gray-400 hover:text-white text-sm"
+                    >
+                      ✕ 关闭
+                    </button>
+                  )}
+                </div>
+
+                {isAnalyzing && (
+                  <div className="flex items-center gap-3 text-gray-300">
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>正在分析中，请稍候（约 10-15 秒）...</span>
+                  </div>
+                )}
+
+                {aiError && (
+                  <div className="text-red-300 bg-red-900/30 rounded-lg p-4">
+                    分析失败：{aiError}
+                  </div>
+                )}
+
+                {aiReport && (
+                  <div className="max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                    {renderMarkdown(aiReport)}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 核心价值主张 */}
