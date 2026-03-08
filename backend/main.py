@@ -1365,13 +1365,13 @@ def analyze_property(address: str = Body(...), url: str = Body(None)):
         )
 
         response = client.chat.completions.create(
-            model="kimi-2.5",
+            model="kimi-k2.5",
             messages=[
                 {"role": "system", "content": "You are a senior Brisbane real estate investment analyst. Respond in Chinese."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=2048,
-            temperature=0.7,
+            max_tokens=4096,
+            temperature=1.0,
         )
 
         analysis = response.choices[0].message.content
