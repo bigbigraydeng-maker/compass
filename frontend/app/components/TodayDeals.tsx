@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { fetcher } from '../lib/api';
 
 interface DealData {
@@ -16,6 +17,7 @@ interface DealData {
 }
 
 export default function TodayDeals() {
+  const router = useRouter();
   const [deals, setDeals] = useState<DealData[]>([]);
   const [loading, setLoading] = useState(true);
   const hasLoaded = useRef(false);
@@ -109,7 +111,10 @@ export default function TodayDeals() {
               精心挑选的低于市场价值的投资机会
             </p>
           </div>
-          <button className="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+          <button
+            className="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            onClick={() => router.push('/suburbs')}
+          >
             查看全部捡漏
           </button>
         </div>
@@ -162,10 +167,16 @@ export default function TodayDeals() {
                 </div>
 
                 <div className="flex gap-3 mb-4">
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
+                  <button
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+                    onClick={() => router.push(`/suburb/${encodeURIComponent(deal.suburb)}?analyze=${encodeURIComponent(deal.address)}`)}
+                  >
                     🤖 分析
                   </button>
-                  <button className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors">
+                  <button
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors"
+                    onClick={() => router.push(`/suburb/${encodeURIComponent(deal.suburb)}`)}
+                  >
                     查看
                   </button>
                 </div>
