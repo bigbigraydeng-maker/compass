@@ -25,7 +25,6 @@ export default function TodayDeals() {
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
   const [aiReport, setAiReport] = useState<Record<string, string>>({});
   const [aiError, setAiError] = useState<Record<string, string>>({});
-  const hasLoaded = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const formatPrice = (price: number) => {
@@ -51,9 +50,6 @@ export default function TodayDeals() {
   };
 
   useEffect(() => {
-    if (hasLoaded.current) return;
-    hasLoaded.current = true;
-
     let cancelled = false;
 
     const loadDeals = async () => {
