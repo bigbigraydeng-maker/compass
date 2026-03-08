@@ -99,7 +99,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
       
       try {
         // 获取郊区详情
@@ -205,7 +205,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
     setAiError(null);
     setAiReport(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
     try {
       const res = await fetch(`${apiUrl}/api/analyze`, {
