@@ -11,9 +11,7 @@ export default function Hero() {
     if (searchQuery.trim()) {
       setIsSearching(true);
       try {
-        // 模拟搜索过程
         await new Promise(resolve => setTimeout(resolve, 1000));
-        // 导航到对应的郊区页面
         window.location.href = `/suburb/${encodeURIComponent(searchQuery)}`;
       } catch (error) {
         console.error('搜索失败:', error);
@@ -29,9 +27,7 @@ export default function Hero() {
     if (urlQuery.trim()) {
       setIsAnalyzing(true);
       try {
-        // 模拟URL分析过程
         await new Promise(resolve => setTimeout(resolve, 1500));
-        // 这里可以添加实际的URL分析逻辑
         alert('URL分析功能即将上线，敬请期待！');
       } catch (error) {
         console.error('分析失败:', error);
@@ -43,20 +39,30 @@ export default function Hero() {
   };
 
   return (
-    <section className="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-20 md:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative text-white py-20 md:py-32 overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80')`,
+        }}
+      />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
             Compass 2.0
           </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-8 drop-shadow-md">
             AI驱动的房产投资机会发现平台
           </h2>
-          <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 mb-12 max-w-3xl mx-auto drop-shadow">
             找捡漏 · 看机会 · 做判断<br />
             AI 帮你发现布里斯班房地产市场的投资机会
           </p>
-          
+
           {/* 主要搜索框 */}
           <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-10">
             <div className="flex flex-col md:flex-row gap-4">
@@ -65,12 +71,12 @@ export default function Hero() {
                 placeholder="输入郊区、邮编或地址"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg"
+                className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg shadow-lg"
                 required
               />
               <button
                 type="submit"
-                className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2"
+                className="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
                 disabled={isSearching}
               >
                 {isSearching ? (
@@ -88,7 +94,7 @@ export default function Hero() {
                 )}
               </button>
             </div>
-            <p className="text-blue-200 text-sm mt-3">例如：Sunnybank, 4109, 123 Main St</p>
+            <p className="text-gray-300 text-sm mt-3">例如：Sunnybank, 4109, 123 Main St</p>
           </form>
 
           {/* URL 分析入口 */}
@@ -99,12 +105,12 @@ export default function Hero() {
                 placeholder="粘贴 Domain 或 Realestate 网址进行AI分析"
                 value={urlQuery}
                 onChange={(e) => setUrlQuery(e.target.value)}
-                className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg"
+                className="flex-1 px-6 py-4 rounded-lg focus:outline-none text-gray-800 text-lg shadow-lg"
                 required
               />
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2"
+                className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-lg font-medium transition-colors text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
@@ -122,26 +128,26 @@ export default function Hero() {
                 )}
               </button>
             </div>
-            <p className="text-blue-200 text-sm mt-3">例如：https://www.domain.com.au/123456789</p>
+            <p className="text-gray-300 text-sm mt-3">例如：https://www.domain.com.au/123456789</p>
           </form>
         </div>
 
         {/* 核心价值主张 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center hover:bg-white/15 transition-colors">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-colors border border-white/10">
             <div className="text-3xl mb-4">💰</div>
             <h3 className="text-xl font-semibold mb-2">发现捡漏</h3>
-            <p className="text-blue-100">找到低于市场价值的房产</p>
+            <p className="text-gray-300">找到低于市场价值的房产</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center hover:bg-white/15 transition-colors">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-colors border border-white/10">
             <div className="text-3xl mb-4">📈</div>
             <h3 className="text-xl font-semibold mb-2">智能分析</h3>
-            <p className="text-blue-100">AI驱动的房产估值和洞察</p>
+            <p className="text-gray-300">AI驱动的房产估值和洞察</p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center hover:bg-white/15 transition-colors">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-colors border border-white/10">
             <div className="text-3xl mb-4">🏆</div>
             <h3 className="text-xl font-semibold mb-2">投资排名</h3>
-            <p className="text-blue-100">华人投资者首选郊区</p>
+            <p className="text-gray-300">华人投资者首选郊区</p>
           </div>
         </div>
       </div>
