@@ -15,7 +15,7 @@ class Geocoder:
     }
     
     @classmethod
-    def geocode_address(cls, address: str, provider: str = 'google') -> Tuple[Optional[Tuple[float, float]], str]:
+    def geocode_address(cls, address: str, provider: str = 'mock') -> Tuple[Optional[Tuple[float, float]], str]:
         """使用指定服务提供商进行地理编码
         
         Args:

@@ -20,13 +20,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 # 7个郊区的中心坐标
 SUBURBS = {
-    'Sunnybank': {'lat': -27.5916, 'lng': 153.0622},
-    'Eight Mile Plains': {'lat': -27.5644, 'lng': 153.0672},
-    'Calamvale': {'lat': -27.5833, 'lng': 153.0417},
-    'Rochedale': {'lat': -27.5833, 'lng': 153.0833},
-    'Mansfield': {'lat': -27.5667, 'lng': 153.0750},
-    'Ascot': {'lat': -27.4444, 'lng': 153.0556},
-    'Hamilton': {'lat': -27.4478, 'lng': 153.0756}
+    'Sunnybank': {'lat': -27.5916, 'lng': 153.0622}
 }
 
 # POI类别和关键词

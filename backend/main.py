@@ -1,6 +1,6 @@
 """
 Compass MVP FastAPI 主应用
-v1.0.1 - 使用 psycopg2-binary 连接 Supabase
+v1.1.0 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5)
 """
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,9 +8,12 @@ from typing import List, Optional
 from datetime import date, timedelta
 import os
 import json
-import anthropic
+from dotenv import load_dotenv
 
-print("🚀 Compass API 版本 v1.0.1 - 使用 psycopg2-binary")
+# 加载 .env 文件
+load_dotenv()
+
+print("Compass API v1.1.0 - Multi-dimensional AI Engine")
 
 from models import HomeData, SuburbStats, SalesResponse, Sale, SuburbDetail, SuburbTrends, MonthlyTrend, Listing, ListingsResponse, Zone, ZoningResponse
 
@@ -23,26 +26,19 @@ execute_query = None
 
 if DATABASE_URL:
     try:
-        # 先尝试真实数据库
-        print("🔍 尝试使用真实数据库（Supabase）...")
+        print("[INFO] Connecting to Supabase...")
         from database import execute_query as real_execute_query
-        # 测试连接
         real_execute_query("SELECT 1")
-        print("✅ 成功连接到真实数据库（Supabase）")
-        print(f"   数据库连接: {DATABASE_URL[:30]}...")
+        print("[OK] Connected to Supabase")
+        print(f"   DB: {DATABASE_URL[:30]}...")
         USING_REAL_DB = True
         execute_query = real_execute_query
     except Exception as e:
-        print(f"⚠️  真实数据库连接失败: {e}")
-        print("✅ 回退到模拟数据库")
-        from database_mock import execute_query as mock_execute_query
-        USING_REAL_DB = False
-        execute_query = mock_execute_query
+        print(f"[ERROR] DB connection failed: {e}")
+        raise SystemExit(1)
 else:
-    print("✅ 使用模拟数据库（完整 155 条真实数据）")
-    from database_mock import execute_query as mock_execute_query
-    USING_REAL_DB = False
-    execute_query = mock_execute_query
+    print("[ERROR] DATABASE_URL not configured")
+    raise SystemExit(1)
 
 # 创建 FastAPI 应用
 app = FastAPI(
@@ -1007,42 +1003,35 @@ def get_market_pulse():
 @app.get("/api/suburb/{suburb_name}/poi")
 def get_suburb_poi(suburb_name: str):
     """
-    获取郊区的华人POI数据
-    
+    获取郊区的华人POI数据（从 poi_data 表查询）
+
     参数：
     - suburb_name: 郊区名称
     """
     try:
-        import json, os
-        
-        # 读取模拟POI数据
-        data_path = os.path.join(os.path.dirname(__file__), "data", "poi_mock.json")
-        with open(data_path, "r", encoding="utf-8") as f:
-            mock_data = json.load(f)
-        
-        # 获取该郊区的POI数据
-        suburb_data = mock_data.get(suburb_name, {})
-        
-        # 构建响应
-        category_counts = suburb_data
-        total_poi = sum(category_counts.values())
-        
-        # 构建POI详情（模拟数据）
+        # 从真实数据库查询 POI 数据
+        poi_query = """
+            SELECT id, suburb, category, name, address, rating, lat, lng
+            FROM poi_data
+            WHERE LOWER(suburb) = LOWER(%s)
+            ORDER BY category, rating DESC
+        """
+        poi_results = execute_query(poi_query, (suburb_name,))
+
+        # 按类别分组
         poi_by_category = {}
-        for category, count in category_counts.items():
-            poi_by_category[category] = []
-            for i in range(count):
-                poi_by_category[category].append({
-                    'id': i + 1,
-                    'suburb': suburb_name,
-                    'category': category,
-                    'name': f"{category.replace('_', ' ').title()} {i + 1}",
-                    'address': f"{suburb_name} Address {i + 1}",
-                    'rating': 4.5,
-                    'lat': -27.5,
-                    'lng': 153.0
-                })
-        
+        category_counts = {}
+
+        for poi in poi_results:
+            category = poi.get('category', 'other')
+            if category not in poi_by_category:
+                poi_by_category[category] = []
+                category_counts[category] = 0
+            poi_by_category[category].append(poi)
+            category_counts[category] += 1
+
+        total_poi = sum(category_counts.values())
+
         return {
             "suburb": suburb_name,
             "poi_by_category": poi_by_category,
@@ -1050,7 +1039,6 @@ def get_suburb_poi(suburb_name: str):
             "total_poi": total_poi
         }
     except Exception as e:
-        # 如果读取失败，返回空数据
         return {
             "suburb": suburb_name,
             "poi_by_category": {},
@@ -1059,91 +1047,367 @@ def get_suburb_poi(suburb_name: str):
         }
 
 
+def _get_suburb_full_profile(suburb_name: str) -> dict:
+    """
+    聚合所有维度数据，构建郊区完整 profile。
+    用于喂给 AI 引擎做投资决策分析。
+    """
+    profile = {
+        "suburb": suburb_name,
+        "price": {},
+        "poi": {},
+        "crime": {},
+        "transport": {},
+        "schools": [],
+        "zoning": {},
+        "compass_score": {},
+    }
+
+    try:
+        # 1. 价格数据
+        price_query = """
+            SELECT
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sold_price) as median_price,
+                COUNT(*) as total_sales,
+                AVG(s.sold_price) as avg_price,
+                MIN(s.sold_price) as min_price,
+                MAX(s.sold_price) as max_price
+            FROM sales s
+            JOIN properties p ON s.property_id = p.id
+            WHERE LOWER(p.suburb) = LOWER(%s)
+        """
+        price_result = execute_query(price_query, (suburb_name,))
+        if price_result and len(price_result) > 0:
+            row = price_result[0]
+            profile["price"] = {
+                "median_price": int(row.get('median_price', 0) or 0),
+                "total_sales": int(row.get('total_sales', 0) or 0),
+                "avg_price": int(row.get('avg_price', 0) or 0),
+                "min_price": int(row.get('min_price', 0) or 0),
+                "max_price": int(row.get('max_price', 0) or 0),
+            }
+
+        # Listings count
+        listings_query = """
+            SELECT COUNT(*) as cnt FROM listings WHERE LOWER(suburb) = LOWER(%s)
+        """
+        listings_result = execute_query(listings_query, (suburb_name,))
+        if listings_result and len(listings_result) > 0:
+            profile["price"]["active_listings"] = int(listings_result[0].get('cnt', 0) or 0)
+
+    except Exception as e:
+        print(f"Price data error for {suburb_name}: {e}")
+
+    try:
+        # 2. POI 数据
+        poi_query = """
+            SELECT category, COUNT(*) as cnt, ROUND(AVG(rating)::numeric, 1) as avg_rating
+            FROM poi_data
+            WHERE LOWER(suburb) = LOWER(%s)
+            GROUP BY category
+        """
+        poi_results = execute_query(poi_query, (suburb_name,))
+        poi_summary = {}
+        for row in poi_results:
+            cat = row.get('category', 'other')
+            poi_summary[cat] = {
+                "count": int(row.get('cnt', 0)),
+                "avg_rating": float(row.get('avg_rating', 0) or 0)
+            }
+        profile["poi"] = poi_summary
+
+    except Exception as e:
+        print(f"POI data error for {suburb_name}: {e}")
+
+    try:
+        # 3. 治安数据（最近12个月汇总）
+        crime_query = """
+            SELECT category, SUM(count) as total
+            FROM crime_stats
+            WHERE LOWER(suburb) = LOWER(%s)
+              AND month_year >= TO_CHAR(NOW() - INTERVAL '12 months', 'YYYY-MM')
+            GROUP BY category
+            ORDER BY total DESC
+        """
+        crime_results = execute_query(crime_query, (suburb_name,))
+        crime_summary = {}
+        for row in crime_results:
+            crime_summary[row.get('category', 'unknown')] = int(row.get('total', 0))
+        profile["crime"] = crime_summary
+
+    except Exception as e:
+        print(f"Crime data error for {suburb_name}: {e}")
+
+    try:
+        # 4. 交通数据
+        transport_query = """
+            SELECT type, COUNT(*) as cnt
+            FROM transport_data
+            WHERE LOWER(suburb) = LOWER(%s)
+            GROUP BY type
+        """
+        transport_results = execute_query(transport_query, (suburb_name,))
+        transport_summary = {}
+        for row in transport_results:
+            transport_summary[row.get('type', 'unknown')] = int(row.get('cnt', 0))
+        profile["transport"] = transport_summary
+
+    except Exception as e:
+        print(f"Transport data error for {suburb_name}: {e}")
+
+    try:
+        # 5. 学校数据
+        schools_path = os.path.join(os.path.dirname(__file__), "data/qld_schools.json")
+        if os.path.exists(schools_path):
+            with open(schools_path) as f:
+                schools_data = json.load(f)
+            suburb_schools = []
+            for school in schools_data:
+                catchments = school.get("catchment_suburbs", [])
+                if isinstance(catchments, str):
+                    catchments = [catchments]
+                if suburb_name.upper() in [c.upper() for c in catchments]:
+                    suburb_schools.append({
+                        "name": school.get("name", ""),
+                        "type": school.get("school_type", ""),
+                        "naplan_percentile": school.get("naplan_percentile", 0),
+                    })
+            profile["schools"] = suburb_schools
+
+    except Exception as e:
+        print(f"School data error for {suburb_name}: {e}")
+
+    try:
+        # 6. Compass Score
+        score_data = get_suburb_score(suburb_name)
+        profile["compass_score"] = {
+            "total": score_data.get("total_score", 0),
+            "grade": score_data.get("grade", "C"),
+            "breakdown": score_data.get("breakdown", {}),
+        }
+
+    except Exception as e:
+        print(f"Score data error for {suburb_name}: {e}")
+
+    try:
+        # 7. Zoning 数据（复用现有 endpoint 逻辑）
+        zoning_data = get_suburb_zoning(suburb_name)
+        profile["zoning"] = {
+            "zones": [{"code": z.zone_code, "name": z.zone_name, "pct": z.percentage} for z in zoning_data.zones]
+        }
+
+    except Exception as e:
+        print(f"Zoning data error for {suburb_name}: {e}")
+
+    return profile
+
+
+def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
+    """
+    构建多维度结构化 prompt，喂给 Kimi 2.5。
+    """
+    # Category name mapping for crime
+    crime_label = {
+        "violent_crime": "Violent Crime",
+        "property_crime": "Property Crime (Break-in)",
+        "theft_fraud": "Theft & Fraud",
+        "drug_offences": "Drug Offences",
+        "public_order": "Public Order",
+    }
+
+    # Category name mapping for POI
+    poi_label = {
+        "chinese_restaurant": "Chinese Restaurants",
+        "asian_grocery": "Asian Grocery Stores",
+        "chinese_school": "Chinese Schools",
+        "chinese_church": "Chinese Churches",
+        "chinese_clinic": "Chinese Clinics",
+        "chinese_hair_salon": "Chinese Hair Salons",
+    }
+
+    # Build price section
+    price = profile.get("price", {})
+    price_section = f"""## Price Data
+- Median Price: ${price.get('median_price', 0):,}
+- Average Price: ${price.get('avg_price', 0):,}
+- Price Range: ${price.get('min_price', 0):,} ~ ${price.get('max_price', 0):,}
+- Total Historical Sales: {price.get('total_sales', 0)}
+- Active Listings: {price.get('active_listings', 0)}"""
+
+    # Build POI section
+    poi = profile.get("poi", {})
+    poi_lines = []
+    for cat, info in poi.items():
+        label = poi_label.get(cat, cat)
+        poi_lines.append(f"- {label}: {info.get('count', 0)} (avg rating: {info.get('avg_rating', 0)})")
+    poi_section = "## Chinese Community Amenities (POI)\n" + ("\n".join(poi_lines) if poi_lines else "- No data")
+
+    # Build crime section
+    crime = profile.get("crime", {})
+    crime_lines = []
+    for cat, count in crime.items():
+        label = crime_label.get(cat, cat)
+        crime_lines.append(f"- {label}: {count} (last 12 months)")
+    crime_section = "## Safety / Crime Statistics\n" + ("\n".join(crime_lines) if crime_lines else "- No data")
+
+    # Build transport section
+    transport = profile.get("transport", {})
+    transport_lines = []
+    for t, cnt in transport.items():
+        transport_lines.append(f"- {t.replace('_', ' ').title()}: {cnt} within 5km")
+    transport_section = "## Transport Access\n" + ("\n".join(transport_lines) if transport_lines else "- No data")
+
+    # Build schools section
+    schools = profile.get("schools", [])
+    school_lines = []
+    for s in schools:
+        school_lines.append(f"- {s.get('name', '')} ({s.get('type', '')}) - NAPLAN: {s.get('naplan_percentile', 'N/A')}")
+    schools_section = "## School Quality\n" + ("\n".join(school_lines) if school_lines else "- No data")
+
+    # Build Compass Score section
+    cs = profile.get("compass_score", {})
+    breakdown = cs.get("breakdown", {})
+    score_lines = []
+    for key, item in breakdown.items():
+        if isinstance(item, dict):
+            score_lines.append(f"- {item.get('label', key)}: {item.get('score', 0)}/{item.get('max', 0)}")
+    score_section = f"""## Compass Score: {cs.get('total', 0)} (Grade: {cs.get('grade', 'N/A')})
+{chr(10).join(score_lines)}"""
+
+    # Build zoning section
+    zoning = profile.get("zoning", {})
+    zones = zoning.get("zones", [])
+    zoning_lines = [f"- {z.get('name', '')}: {z.get('pct', 0)}%" for z in zones]
+    zoning_section = "## Land Zoning\n" + ("\n".join(zoning_lines) if zoning_lines else "- No data")
+
+    prompt = f"""You are a senior real estate investment analyst specializing in the Brisbane (Australia) property market, with expertise in Chinese investor needs.
+
+A Chinese investor is considering the property at: **{address}** in **{suburb}**, Brisbane.
+
+Below is the comprehensive multi-dimensional data for {suburb}:
+
+{price_section}
+
+{poi_section}
+
+{crime_section}
+
+{transport_section}
+
+{schools_section}
+
+{score_section}
+
+{zoning_section}
+
+---
+
+Based on ALL the data above, please provide a detailed investment analysis report in **Chinese** with the following 5 sections:
+
+## 1. Investment Rating (Overall assessment with a score out of 10)
+Give an overall investment rating and briefly explain why.
+
+## 2. Core Advantages (What makes this area attractive)
+List 3-5 key advantages based on data evidence. Reference specific data points.
+
+## 3. Risk Alerts (What the investor should watch out for)
+List 2-4 risk factors. Be specific and honest.
+
+## 4. Investment Recommendation (Actionable advice)
+Provide specific, actionable advice: buy/hold/avoid? What type of property? Short-term vs long-term strategy?
+
+## 5. Comparative Reference (How does this suburb compare)
+Compare this suburb to other Brisbane suburbs in our coverage (Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton) based on the data you see.
+
+IMPORTANT:
+- Use CHINESE for the entire response
+- Be data-driven, reference specific numbers
+- Be practical and actionable, not generic
+- Limit to 800 words total
+"""
+    return prompt
+
+
 @app.post("/api/analyze")
 def analyze_property(address: str = Body(...), url: str = Body(None)):
     """
-    AI房产分析接口
-    
-    参数：
-    - address: 房产地址
-    - url: 房产网址（可选）
+    AI 多维度投资分析接口
+
+    聚合 POI、治安、交通、学区、分区等多维数据，
+    通过 Moonshot Kimi 2.5 生成结构化投资决策报告。
     """
     try:
         # 从地址中提取郊区
         suburb = "Sunnybank"  # 默认郊区
         if address:
-            # 简单的郊区提取逻辑
-            parts = address.split(',')
-            if len(parts) > 1:
-                suburb = parts[-1].strip()
-        
-        # 从数据库取郊区数据
-        def get_suburb_stats(suburb_name):
-            try:
-                # 基础查询
-                query = """
-                    SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sold_price) as median_price,
-                           COUNT(*) as total_sales
-                    FROM sales s
-                    JOIN properties p ON s.property_id = p.id
-                    WHERE LOWER(p.suburb) = LOWER(%s)
-                """
-                result = execute_query(query, (suburb_name,))
-                
-                if result and len(result) > 0:
-                    row = result[0]
-                    if isinstance(row, dict):
-                        median_price = int(row.get('median_price', 0) or 0)
-                        total_sales = int(row.get('total_sales', 0) or 0)
-                    else:
-                        median_price = int(row[0] or 0)
-                        total_sales = int(row[1] or 0)
-                    return {'median_price': median_price, 'total_sales': total_sales}
-                return {'median_price': 1000000, 'total_sales': 50}  # 默认值
-            except Exception:
-                return {'median_price': 1000000, 'total_sales': 50}  # 默认值
-        
-        suburb_data = get_suburb_stats(suburb)
-        
-        # 构建提示词
-        prompt = f"""
-        分析这个布里斯班房产的投资价值：
-        地址：{address}，郊区：{suburb}
-        
-        郊区数据：
-        - 中位价：${suburb_data['median_price']:,}
-        - 近期成交量：{suburb_data['total_sales']} 套
-        
-        请分析：1. 投资潜力 2. 风险点 3. 建议
-        用中文回答，300字以内。
-        """
-        
-        # 调用 Claude API
-        client = anthropic.Anthropic(
-            api_key=os.getenv("ANTHROPIC_API_KEY", "demo_key")  # 使用环境变量或默认值
-        )
-        
-        # 由于是演示，返回模拟分析结果
-        # 在实际生产环境中，取消注释以下代码
-        """
-        message = client.messages.create(
-            model="claude-3-opus-20240229",
-            max_tokens=1024,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        analysis = message.content[0].text
-        """
-        
-        # 模拟分析结果
-        analysis = f"""投资潜力：该房产位于{suburb}，中位价${suburb_data['median_price']:,}，区域近期成交量{suburb_data['total_sales']}套，市场活跃度较高。周边配套完善，交通便利，适合投资。
+            # 尝试匹配已知郊区
+            known_suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale',
+                             'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+            address_lower = address.lower()
+            for s in known_suburbs:
+                if s.lower() in address_lower:
+                    suburb = s
+                    break
+            else:
+                # 简单的逗号分割提取
+                parts = address.split(',')
+                if len(parts) > 1:
+                    candidate = parts[-1].strip()
+                    # Check if the candidate matches any known suburb
+                    for s in known_suburbs:
+                        if s.lower() in candidate.lower():
+                            suburb = s
+                            break
 
-风险点：需要注意房产的具体位置和周边环境，以及未来可能的政策变化对房价的影响。
+        # 1. 聚合全量数据
+        profile = _get_suburb_full_profile(suburb)
 
-建议：建议进一步实地考察，了解房屋具体状况和周边设施，同时关注区域未来发展规划，综合评估投资价值。"""
-        
-        return {"analysis": analysis}
+        # 2. 构建 AI prompt
+        prompt = _build_ai_prompt(address, suburb, profile)
+
+        # 3. 调用 Moonshot Kimi 2.5 API
+        moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+        if not moonshot_key:
+            raise HTTPException(status_code=500, detail="MOONSHOT_API_KEY not configured")
+
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=moonshot_key,
+            base_url="https://api.moonshot.cn/v1"
+        )
+
+        response = client.chat.completions.create(
+            model="kimi-2.5",
+            messages=[
+                {"role": "system", "content": "You are a senior Brisbane real estate investment analyst. Respond in Chinese."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=2048,
+            temperature=0.7,
+        )
+
+        analysis = response.choices[0].message.content
+
+        return {
+            "analysis": analysis,
+            "suburb": suburb,
+            "data_dimensions": {
+                "price": bool(profile.get("price")),
+                "poi": bool(profile.get("poi")),
+                "crime": bool(profile.get("crime")),
+                "transport": bool(profile.get("transport")),
+                "schools": bool(profile.get("schools")),
+                "compass_score": bool(profile.get("compass_score")),
+                "zoning": bool(profile.get("zoning")),
+            }
+        }
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"分析失败: {str(e)}")
+        print(f"AI Analysis error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
 
 
 if __name__ == "__main__":

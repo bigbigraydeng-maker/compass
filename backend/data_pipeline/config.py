@@ -2,7 +2,9 @@ import os
 from dotenv import load_dotenv
 
 # 加载环境变量
-load_dotenv()
+# 确保从 backend 目录加载 .env 文件
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+load_dotenv(env_path)
 
 # 环境配置
 ENV = os.getenv('ENV', 'local')

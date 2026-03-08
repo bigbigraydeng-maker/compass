@@ -89,6 +89,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [landListings, setLandListings] = useState<any[]>([]);
   const [score, setScore] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiReport, setAiReport] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -171,6 +174,34 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
     fetchData();
   }, [suburbName]);
 
+  const handleAiAnalysis = async () => {
+    setAiLoading(true);
+    setAiError(null);
+    setAiReport(null);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
+
+    try {
+      const res = await fetch(`${apiUrl}/api/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: `${suburbName}, Brisbane` }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'AI analysis request failed');
+      }
+
+      const result = await res.json();
+      setAiReport(result.analysis);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : 'AI analysis failed');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -251,6 +282,90 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             </div>
           </div>
         )}
+
+        {/* AI Investment Analysis Section */}
+        <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-xl p-6 mb-8 text-white">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h3 className="text-xl font-bold">AI Investment Analysis</h3>
+              <p className="text-blue-200 text-sm mt-1">
+                Multi-dimensional data analysis powered by AI
+              </p>
+            </div>
+            <button
+              onClick={handleAiAnalysis}
+              disabled={aiLoading}
+              className="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {aiLoading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Analyzing...
+                </>
+              ) : (
+                'AI Analysis'
+              )}
+            </button>
+          </div>
+
+          {aiLoading && (
+            <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <svg className="animate-spin h-5 w-5 text-blue-200" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <span className="text-blue-100">Analyzing POI, crime, transport, school, zoning data...</span>
+              </div>
+              <div className="space-y-2">
+                {['POI', 'Crime Stats', 'Transport', 'Schools', 'Zoning', 'Market Data'].map((dim, i) => (
+                  <div key={dim} className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${i < 3 ? 'bg-green-400' : 'bg-blue-300 animate-pulse'}`} />
+                    <span className="text-sm text-blue-200">{dim}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {aiError && (
+            <div className="bg-red-500/20 border border-red-400/30 rounded-lg p-4 mt-4">
+              <p className="text-red-200">{aiError}</p>
+            </div>
+          )}
+
+          {aiReport && (
+            <div className="bg-white rounded-xl p-6 mt-4 text-gray-800 max-h-[600px] overflow-y-auto">
+              <div className="prose prose-sm max-w-none">
+                {aiReport.split('\n').map((line, i) => {
+                  if (line.startsWith('## ')) {
+                    return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace('## ', '')}</h3>;
+                  }
+                  if (line.startsWith('### ')) {
+                    return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace('### ', '')}</h4>;
+                  }
+                  if (line.startsWith('- ')) {
+                    return <li key={i} className="ml-4 text-gray-700 mb-1">{line.replace('- ', '')}</li>;
+                  }
+                  if (line.startsWith('**') && line.endsWith('**')) {
+                    return <p key={i} className="font-semibold text-gray-900 mt-2">{line.replace(/\*\*/g, '')}</p>;
+                  }
+                  if (line.trim() === '') {
+                    return <br key={i} />;
+                  }
+                  return <p key={i} className="text-gray-700 mb-1">{line}</p>;
+                })}
+              </div>
+              <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+                <span className="text-xs text-gray-400">Powered by Compass AI Engine</span>
+                <span className="text-xs text-gray-400">{new Date().toLocaleString('zh-CN')}</span>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm border p-6">

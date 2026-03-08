@@ -8,9 +8,16 @@ import os
 from supabase import create_client
 import json
 
-# Supabase 项目信息
-SUPABASE_URL = "https://evzkrexygwdnoqhyjylf.supabase.co"
-SUPABASE_SERVICE_KEY = "**************************************************************************************************************************************************************************************************************************"
+# Supabase 项目信息（从环境变量读取）
+from dotenv import load_dotenv
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://evzkrexygwdnoqhyjylf.supabase.co")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+
+if not SUPABASE_SERVICE_KEY:
+    print("❌ 请在 .env 文件中设置 SUPABASE_SERVICE_KEY")
+    exit(1)
 
 # 创建 Supabase 客户端
 supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)

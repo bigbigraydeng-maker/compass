@@ -137,6 +137,7 @@ class Database:
             self.execute('''
                 CREATE TABLE IF NOT EXISTS sales (
                     sale_id UUID PRIMARY KEY,
+                    property_id TEXT NOT NULL,
                     full_address TEXT NOT NULL,
                     unit_number TEXT,
                     street_number TEXT,

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import TodayDeals from './components/TodayDeals';
@@ -13,7 +13,6 @@ import { fetcher } from './lib/api';
 export default function Home() {
 
   const [rankings, setRankings] = useState<any[]>([]);
-  const [suburbStats, setSuburbStats] = useState<Record<string, number>>({});
   const [marketStats, setMarketStats] = useState({
     totalSales: 0,
     totalListings: 0,
@@ -21,47 +20,44 @@ export default function Home() {
     topSchool: 'Mansfield State High School'
   });
 
+  const hasLoaded = useRef(false);
+
   useEffect(() => {
-    // 获取排名数据
-    fetcher('/api/rankings')
-      .then(d => {
-        const mapped = (d.rankings || []).map((r: any) => ({
-          ...r,
-          name: r.suburb,
-          compass_score: r.total_score,
-          median_price: suburbStats[r.suburb] ?? null,
-          growth_rate: null,
-        }));
-        setRankings(mapped);
-      });
-    
-    // 获取郊区中位价数据
-    fetcher('/api/home')
-      .then(homeData => {
-        const statsMap: Record<string, number> = {};
-        homeData.suburb_stats.forEach((s: any) => {
-          statsMap[s.suburb] = s.median_price;
-        });
-        setSuburbStats(statsMap);
-        
-        // 同时更新排名数据中的中位价
-        if (rankings.length > 0) {
-          const updatedRankings = rankings.map((r: any) => ({
-            ...r,
-            median_price: statsMap[r.suburb] ?? null,
-          }));
-          setRankings(updatedRankings);
+    if (hasLoaded.current) return;
+    hasLoaded.current = true;
+
+    let cancelled = false;
+
+    const loadData = async () => {
+      try {
+        const [homeData, rankingsData] = await Promise.all([
+          fetcher('/api/home').catch(() => null),
+          fetcher('/api/rankings').catch(() => null),
+        ]);
+
+        if (cancelled) return;
+
+        if (rankingsData?.rankings) {
+          setRankings(rankingsData.rankings);
         }
-      });
-    
-    // 模拟市场统计数据
-    setMarketStats({
-      totalSales: 156,
-      totalListings: 193,
-      medianPrice: 980000,
-      topSchool: 'Mansfield State High School'
-    });
-  }, [suburbStats]);
+
+        if (homeData) {
+          setMarketStats({
+            totalSales: homeData.total_sales || 0,
+            totalListings: homeData.total_listings || 0,
+            medianPrice: homeData.median_price || 0,
+            topSchool: homeData.top_school || 'Mansfield State High School'
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load home data:', error);
+      }
+    };
+
+    loadData();
+
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -86,7 +82,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-gray-900 mb-12">
             Market Trends
           </h2>
-          <MarketStats 
+          <MarketStats
             totalSales={marketStats.totalSales}
             totalListings={marketStats.totalListings}
             medianPrice={marketStats.medianPrice}

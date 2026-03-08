@@ -106,7 +106,9 @@ class DataProcessor:
                     stats['total'] += 1
                     
                     # 验证必要字段
-                    if not row.get('address') or not row.get('suburb') or not row.get('sale_price') or not row.get('sale_date'):
+                    sale_price = row.get('sale_price', row.get('sold_price', '').strip()).strip()
+                    sale_date = row.get('sale_date', row.get('sold_date', '').strip()).strip()
+                    if not row.get('address') or not row.get('suburb') or not sale_price or not sale_date:
                         DataProcessor._quarantine_data(row, "缺少必要字段", source)
                         stats['invalid'] += 1
                         stats['quarantined'] += 1
@@ -118,8 +120,8 @@ class DataProcessor:
                         'source_record_id': row.get('id') or str(uuid.uuid4()),
                         'raw_address': row.get('address', '').strip(),
                         'raw_suburb': row.get('suburb', '').strip(),
-                        'raw_price': row.get('sale_price', '').strip(),
-                        'raw_sale_date': row.get('sale_date', '').strip(),
+                        'raw_price': sale_price,
+                        'raw_sale_date': sale_date,
                         'raw_payload': row
                     }
                     
@@ -191,8 +193,8 @@ class DataProcessor:
             'address': row.get('address', '').strip(),
             'suburb': row.get('suburb', '').strip(),
             'postcode': row.get('postcode', '').strip(),
-            'sale_price': row.get('sale_price', '').strip(),
-            'sale_date': row.get('sale_date', '').strip(),
+            'sale_price': row.get('sale_price', row.get('sold_price', '').strip()).strip(),
+            'sale_date': row.get('sale_date', row.get('sold_date', '').strip()).strip(),
             'property_type': row.get('property_type', '').strip(),
             'bedrooms': row.get('bedrooms', '').strip(),
             'bathrooms': row.get('bathrooms', '').strip(),
@@ -219,6 +221,9 @@ class DataProcessor:
         # 生成 sale_id
         sale_id = AddressProcessor.generate_sale_id(full_address, data['sale_date'], data['sale_price'])
         
+        # 生成 property_id (SHA-256 Hash)
+        property_id = AddressProcessor.generate_property_id(full_address, data['suburb'])
+        
         # 地理编码
         lat_lng, status = Geocoder.geocode_address(f"{full_address}, {data['suburb']}")
         if lat_lng:
@@ -229,6 +234,7 @@ class DataProcessor:
         # 准备处理后的数据
         return {
             'sale_id': sale_id,
+            'property_id': property_id,
             'full_address': full_address,
             'unit_number': address_parts.get('unit_number'),
             'street_number': address_parts.get('street_number'),
@@ -268,13 +274,14 @@ class DataProcessor:
             # 构建 upsert 语句
             query = """
                 INSERT INTO sales (
-                    sale_id, full_address, unit_number, street_number, street_name, street_type,
+                    sale_id, property_id, full_address, unit_number, street_number, street_name, street_type,
                     suburb, state, postcode, sale_price, sale_date, property_type,
                     bedrooms, bathrooms, car_spaces, land_size, building_size, latitude, longitude,
                     address_key, source, created_at, updated_at
                 ) VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW()
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW()
                 ) ON CONFLICT (address_key, sale_date, sale_price) DO UPDATE SET
+                    property_id = EXCLUDED.property_id,
                     full_address = EXCLUDED.full_address,
                     unit_number = EXCLUDED.unit_number,
                     street_number = EXCLUDED.street_number,
@@ -298,7 +305,7 @@ class DataProcessor:
             # 准备参数
             params = [
                 (
-                    data['sale_id'], data['full_address'], data['unit_number'], data['street_number'],
+                    data['sale_id'], data['property_id'], data['full_address'], data['unit_number'], data['street_number'],
                     data['street_name'], data['street_type'], data['suburb'], data['state'],
                     data['postcode'], data['sale_price'], data['sale_date'], data['property_type'],
                     data['bedrooms'], data['bathrooms'], data['car_spaces'], data['land_size'],

@@ -1,6 +1,7 @@
 import re
 import json
 import uuid
+import hashlib
 from typing import Dict, Tuple, Optional
 
 class AddressProcessor:
@@ -200,3 +201,21 @@ class AddressProcessor:
         """
         unique_string = f"{address}_{sale_date}_{sale_price}"
         return str(uuid.uuid5(uuid.NAMESPACE_DNS, unique_string))
+    
+    @classmethod
+    def generate_property_id(cls, address: str, suburb: str) -> str:
+        """生成 property_id，使用 SHA-256 哈希算法
+        
+        Args:
+            address: 标准化后的地址
+            suburb: 郊区名称
+            
+        Returns:
+            SHA-256 哈希值作为 property_id
+        """
+        # 生成地址键作为哈希输入
+        address_key = cls.generate_address_key(address, suburb)
+        # 使用 SHA-256 哈希
+        hasher = hashlib.sha256()
+        hasher.update(address_key.encode('utf-8'))
+        return hasher.hexdigest()
