@@ -1044,6 +1044,9 @@ def _get_suburb_full_profile(suburb_name: str) -> dict:
     profile = {
         "suburb": suburb_name,
         "price": {},
+        "price_by_type": {},
+        "price_trends": [],
+        "recent_sales": [],
         "poi": {},
         "crime": {},
         "transport": {},
@@ -1053,7 +1056,7 @@ def _get_suburb_full_profile(suburb_name: str) -> dict:
     }
 
     try:
-        # 1. 价格数据
+        # 1. 价格总览
         price_query = """
             SELECT
                 PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
@@ -1075,13 +1078,80 @@ def _get_suburb_full_profile(suburb_name: str) -> dict:
                 "max_price": int(row.get('max_price', 0) or 0),
             }
 
-        # Listings count
+        # Listings count + absorption rate
         listings_query = """
             SELECT COUNT(*) as cnt FROM listings WHERE LOWER(suburb) = LOWER(%s)
         """
         listings_result = execute_query(listings_query, (suburb_name,))
         if listings_result and len(listings_result) > 0:
-            profile["price"]["active_listings"] = int(listings_result[0].get('cnt', 0) or 0)
+            active = int(listings_result[0].get('cnt', 0) or 0)
+            profile["price"]["active_listings"] = active
+
+        # 1b. 按房型分类的中位价
+        type_query = """
+            SELECT
+                s.property_type,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
+                COUNT(*) as cnt,
+                AVG(CASE WHEN s.land_size > 0 THEN s.sale_price / s.land_size END) as avg_price_per_sqm
+            FROM sales s
+            WHERE UPPER(s.suburb) = UPPER(%s)
+            GROUP BY s.property_type
+            ORDER BY cnt DESC
+        """
+        type_results = execute_query(type_query, (suburb_name,))
+        for row in type_results:
+            pt = row.get('property_type', 'unknown')
+            profile["price_by_type"][pt] = {
+                "median_price": int(float(row.get('median_price', 0) or 0)),
+                "count": int(row.get('cnt', 0)),
+                "avg_price_per_sqm": int(float(row.get('avg_price_per_sqm', 0) or 0)),
+            }
+
+        # 1c. 月度价格趋势（最近12个月）
+        trends_query = """
+            SELECT
+                TO_CHAR(s.sale_date, 'YYYY-MM') as month,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
+                COUNT(*) as sales_count
+            FROM sales s
+            WHERE UPPER(s.suburb) = UPPER(%s)
+              AND s.sale_date >= NOW() - INTERVAL '12 months'
+            GROUP BY TO_CHAR(s.sale_date, 'YYYY-MM')
+            ORDER BY month
+        """
+        trends_results = execute_query(trends_query, (suburb_name,))
+        for row in trends_results:
+            profile["price_trends"].append({
+                "month": row.get('month', ''),
+                "median_price": int(float(row.get('median_price', 0) or 0)),
+                "sales_count": int(row.get('sales_count', 0)),
+            })
+
+        # 1d. 最近5笔成交（含户型、面积、单价）
+        recent_query = """
+            SELECT
+                s.full_address AS address, s.sale_price, s.sale_date,
+                s.property_type, s.bedrooms, s.bathrooms, s.land_size
+            FROM sales s
+            WHERE UPPER(s.suburb) = UPPER(%s)
+            ORDER BY s.sale_date DESC
+            LIMIT 5
+        """
+        recent_results = execute_query(recent_query, (suburb_name,))
+        for row in recent_results:
+            price = float(row.get('sale_price', 0) or 0)
+            land = float(row.get('land_size', 0) or 0)
+            profile["recent_sales"].append({
+                "address": row.get('address', ''),
+                "price": int(price),
+                "date": str(row.get('sale_date', '')),
+                "type": row.get('property_type', ''),
+                "beds": row.get('bedrooms', 0),
+                "baths": row.get('bathrooms', 0),
+                "land_sqm": int(land),
+                "price_per_sqm": int(price / land) if land > 0 else 0,
+            })
 
     except Exception as e:
         print(f"Price data error for {suburb_name}: {e}")
@@ -1192,89 +1262,149 @@ def _get_suburb_full_profile(suburb_name: str) -> dict:
 
 def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
     """
-    构建多维度结构化 prompt，喂给 Kimi 2.5。
+    构建多维度结构化 prompt，喂给 Kimi K2.5。
+    数据驱动，要求 AI 仅基于提供的数据做分析，不编造。
     """
-    # Category name mapping for crime
-    crime_label = {
-        "violent_crime": "Violent Crime",
-        "property_crime": "Property Crime (Break-in)",
-        "theft_fraud": "Theft & Fraud",
-        "drug_offences": "Drug Offences",
-        "public_order": "Public Order",
-    }
 
-    # Category name mapping for POI
-    poi_label = {
-        "chinese_restaurant": "Chinese Restaurants",
-        "asian_grocery": "Asian Grocery Stores",
-        "chinese_school": "Chinese Schools",
-        "chinese_church": "Chinese Churches",
-        "chinese_clinic": "Chinese Clinics",
-        "chinese_hair_salon": "Chinese Hair Salons",
-    }
-
-    # Build price section
+    # === 1. Price Overview ===
     price = profile.get("price", {})
-    price_section = f"""## Price Data
-- Median Price: ${price.get('median_price', 0):,}
-- Average Price: ${price.get('avg_price', 0):,}
-- Price Range: ${price.get('min_price', 0):,} ~ ${price.get('max_price', 0):,}
-- Total Historical Sales: {price.get('total_sales', 0)}
-- Active Listings: {price.get('active_listings', 0)}"""
+    active = price.get('active_listings', 0)
+    total_12m = 0
+    trends = profile.get("price_trends", [])
+    for t in trends:
+        total_12m += t.get("sales_count", 0)
+    # absorption months = active / (monthly avg sales)
+    monthly_avg = total_12m / max(len(trends), 1)
+    absorption = round(active / monthly_avg, 1) if monthly_avg > 0 else 0
 
-    # Build POI section
+    price_section = f"""## 1. 价格总览
+- 历史中位价: ${price.get('median_price', 0):,}
+- 均价: ${price.get('avg_price', 0):,}
+- 价格区间: ${price.get('min_price', 0):,} ~ ${price.get('max_price', 0):,}
+- 历史总成交: {price.get('total_sales', 0)} 套
+- 当前在售: {active} 套
+- 近12个月成交: {total_12m} 套
+- 库存去化周期: {absorption} 个月"""
+
+    # === 2. Price by property type ===
+    pbt = profile.get("price_by_type", {})
+    type_label = {"house": "House独立屋", "unit": "Unit公寓", "townhouse": "Townhouse联排",
+                  "vacant_land": "Vacant Land空地"}
+    type_lines = []
+    for pt, info in pbt.items():
+        label = type_label.get(pt, pt)
+        sqm_str = f", 土地均价${info['avg_price_per_sqm']:,}/sqm" if info.get('avg_price_per_sqm') else ""
+        type_lines.append(f"- {label}: 中位价 ${info['median_price']:,} ({info['count']}套{sqm_str})")
+    type_section = "## 2. 按房型分类\n" + ("\n".join(type_lines) if type_lines else "- 无数据")
+
+    # === 3. Monthly trends ===
+    trend_lines = []
+    prev_price = None
+    for t in trends:
+        mp = t["median_price"]
+        if prev_price and prev_price > 0:
+            chg = (mp - prev_price) / prev_price * 100
+            arrow = "+" if chg >= 0 else ""
+            trend_lines.append(f"- {t['month']}: ${mp:,} ({arrow}{chg:.1f}%) | {t['sales_count']}套")
+        else:
+            trend_lines.append(f"- {t['month']}: ${mp:,} | {t['sales_count']}套")
+        prev_price = mp
+    # compute YoY if enough data
+    yoy_str = ""
+    if len(trends) >= 6:
+        first_half = [t["median_price"] for t in trends[:len(trends)//2]]
+        second_half = [t["median_price"] for t in trends[len(trends)//2:]]
+        avg_first = sum(first_half) / len(first_half)
+        avg_second = sum(second_half) / len(second_half)
+        if avg_first > 0:
+            yoy = (avg_second - avg_first) / avg_first * 100
+            yoy_str = f"\n- 半年趋势: {'上涨' if yoy > 0 else '下跌'}{abs(yoy):.1f}%"
+    trend_section = "## 3. 月度价格走势（近12月）\n" + ("\n".join(trend_lines) if trend_lines else "- 无数据") + yoy_str
+
+    # === 4. Recent comparable sales ===
+    recent = profile.get("recent_sales", [])
+    recent_lines = []
+    for s in recent:
+        sqm_str = f" | ${s['price_per_sqm']:,}/sqm" if s.get('price_per_sqm') else ""
+        recent_lines.append(
+            f"- {s['date']} | ${s['price']:,} | {s['type']} {s['beds']}bed/{s['baths']}bath | {s['land_sqm']}sqm{sqm_str}"
+        )
+    recent_section = "## 4. 最近成交记录\n" + ("\n".join(recent_lines) if recent_lines else "- 无数据")
+
+    # === 5. POI (Chinese community) ===
+    poi_label_map = {
+        "chinese_restaurant": "中餐厅", "asian_grocery": "亚洲超市",
+        "chinese_school": "中文学校", "chinese_church": "华人教会",
+        "chinese_clinic": "华人诊所", "chinese_hair_salon": "华人理发店",
+    }
     poi = profile.get("poi", {})
     poi_lines = []
+    total_poi = 0
     for cat, info in poi.items():
-        label = poi_label.get(cat, cat)
-        poi_lines.append(f"- {label}: {info.get('count', 0)} (avg rating: {info.get('avg_rating', 0)})")
-    poi_section = "## Chinese Community Amenities (POI)\n" + ("\n".join(poi_lines) if poi_lines else "- No data")
+        label = poi_label_map.get(cat, cat)
+        cnt = info.get('count', 0)
+        total_poi += cnt
+        poi_lines.append(f"- {label}: {cnt}家 (均分{info.get('avg_rating', 0)})")
+    poi_section = f"## 5. 华人生活配套 (共{total_poi}家)\n" + ("\n".join(poi_lines) if poi_lines else "- 无数据")
 
-    # Build crime section
+    # === 6. Crime ===
+    crime_label_map = {
+        "violent_crime": "暴力犯罪", "property_crime": "入室盗窃",
+        "theft_fraud": "盗窃诈骗", "drug_offences": "毒品犯罪",
+        "public_order": "公共秩序",
+    }
     crime = profile.get("crime", {})
     crime_lines = []
+    crime_total = sum(crime.values()) if crime else 0
     for cat, count in crime.items():
-        label = crime_label.get(cat, cat)
-        crime_lines.append(f"- {label}: {count} (last 12 months)")
-    crime_section = "## Safety / Crime Statistics\n" + ("\n".join(crime_lines) if crime_lines else "- No data")
+        label = crime_label_map.get(cat, cat)
+        crime_lines.append(f"- {label}: {count:,}起")
+    crime_section = f"## 6. 治安数据 (近12月共{crime_total:,}起)\n" + ("\n".join(crime_lines) if crime_lines else "- 无数据")
 
-    # Build transport section
+    # === 7. Transport ===
     transport = profile.get("transport", {})
+    transport_label = {"train_station": "火车站", "bus_station": "公交站",
+                       "transit_station": "交通枢纽", "light_rail_station": "轻轨站"}
     transport_lines = []
+    total_transport = sum(transport.values()) if transport else 0
     for t, cnt in transport.items():
-        transport_lines.append(f"- {t.replace('_', ' ').title()}: {cnt} within 5km")
-    transport_section = "## Transport Access\n" + ("\n".join(transport_lines) if transport_lines else "- No data")
+        label = transport_label.get(t, t)
+        transport_lines.append(f"- {label}: {cnt}个")
+    transport_section = f"## 7. 公共交通 (5km内共{total_transport}个站点)\n" + ("\n".join(transport_lines) if transport_lines else "- 无数据")
 
-    # Build schools section
-    schools = profile.get("schools", [])
-    school_lines = []
-    for s in schools:
-        school_lines.append(f"- {s.get('name', '')} ({s.get('type', '')}) - NAPLAN: {s.get('naplan_percentile', 'N/A')}")
-    schools_section = "## School Quality\n" + ("\n".join(school_lines) if school_lines else "- No data")
-
-    # Build Compass Score section
+    # === 8. Compass Score ===
     cs = profile.get("compass_score", {})
     breakdown = cs.get("breakdown", {})
+    score_label_map = {
+        "growth": "房价增长潜力", "school": "学区质量",
+        "land": "土地价值潜力", "activity": "市场活跃度", "chinese": "华人友好度",
+    }
     score_lines = []
     for key, item in breakdown.items():
         if isinstance(item, dict):
-            score_lines.append(f"- {item.get('label', key)}: {item.get('score', 0)}/{item.get('max', 0)}")
-    score_section = f"""## Compass Score: {cs.get('total', 0)} (Grade: {cs.get('grade', 'N/A')})
-{chr(10).join(score_lines)}"""
+            label = score_label_map.get(key, key)
+            score_lines.append(f"- {label}: {item.get('score', 0)}/{item.get('max', 0)}")
+    score_section = f"## 8. Compass评分: {cs.get('total', 0)}/100 (等级: {cs.get('grade', 'N/A')})\n" + "\n".join(score_lines)
 
-    # Build zoning section
+    # === 9. Zoning ===
     zoning = profile.get("zoning", {})
     zones = zoning.get("zones", [])
     zoning_lines = [f"- {z.get('name', '')}: {z.get('pct', 0)}%" for z in zones]
-    zoning_section = "## Land Zoning\n" + ("\n".join(zoning_lines) if zoning_lines else "- No data")
+    zoning_section = "## 9. 土地规划\n" + ("\n".join(zoning_lines) if zoning_lines else "- 无数据")
 
-    prompt = f"""You are a senior real estate investment analyst specializing in the Brisbane (Australia) property market, with expertise in Chinese investor needs.
+    prompt = f"""你是一位专注布里斯班房产市场的资深投资分析师，精通华人投资者需求。
 
-A Chinese investor is considering the property at: **{address}** in **{suburb}**, Brisbane.
+投资者正在考虑: **{address}** ({suburb}区)
 
-Below is the comprehensive multi-dimensional data for {suburb}:
+以下是{suburb}区的【真实数据】，请**严格基于数据**进行分析，不要编造任何数据或假设：
 
 {price_section}
+
+{type_section}
+
+{trend_section}
+
+{recent_section}
 
 {poi_section}
 
@@ -1282,36 +1412,37 @@ Below is the comprehensive multi-dimensional data for {suburb}:
 
 {transport_section}
 
-{schools_section}
-
 {score_section}
 
 {zoning_section}
 
 ---
 
-Based on ALL the data above, please provide a detailed investment analysis report in **Chinese** with the following 5 sections:
+请基于以上**全部真实数据**，输出投资分析报告。严格要求：
 
-## 1. Investment Rating (Overall assessment with a score out of 10)
-Give an overall investment rating and briefly explain why.
+## 1. 投资评级 (X/10)
+给出评级并用2-3句话解释。必须引用具体数据支撑评分。
 
-## 2. Core Advantages (What makes this area attractive)
-List 3-5 key advantages based on data evidence. Reference specific data points.
+## 2. 核心优势 (3-4条)
+每条必须引用具体数字。例如"中位价$XX万，近12月成交XX套"。
 
-## 3. Risk Alerts (What the investor should watch out for)
-List 2-4 risk factors. Be specific and honest.
+## 3. 风险警示 (2-3条)
+必须引用具体数据。例如"近12月发生XX起盗窃案"。
 
-## 4. Investment Recommendation (Actionable advice)
-Provide specific, actionable advice: buy/hold/avoid? What type of property? Short-term vs long-term strategy?
+## 4. 投资建议
+- 推荐房型：基于按房型价格数据，明确推荐house/unit/townhouse
+- 合理预算区间：基于中位价和最近成交
+- 持有策略：短期/长期，给出具体理由
+- 议价建议：基于库存去化周期和市场活跃度
 
-## 5. Comparative Reference (How does this suburb compare)
-Compare this suburb to other Brisbane suburbs in our coverage (Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton) based on the data you see.
+## 5. 对比参考
+与覆盖的其他6个区(Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton)做简要对比。
 
-IMPORTANT:
-- Use CHINESE for the entire response
-- Be data-driven, reference specific numbers
-- Be practical and actionable, not generic
-- Limit to 800 words total
+**输出要求：**
+- 全中文回复
+- 每个数据引用必须来自上面提供的数据，禁止编造
+- 控制在1000字以内
+- 语言风格：专业、直接、实用
 """
     return prompt
 
@@ -1381,10 +1512,12 @@ def analyze_property(address: str = Body(...), url: str = Body(None)):
             "suburb": suburb,
             "data_dimensions": {
                 "price": bool(profile.get("price")),
+                "price_by_type": bool(profile.get("price_by_type")),
+                "price_trends": bool(profile.get("price_trends")),
+                "recent_sales": bool(profile.get("recent_sales")),
                 "poi": bool(profile.get("poi")),
                 "crime": bool(profile.get("crime")),
                 "transport": bool(profile.get("transport")),
-                "schools": bool(profile.get("schools")),
                 "compass_score": bool(profile.get("compass_score")),
                 "zoning": bool(profile.get("zoning")),
             }
