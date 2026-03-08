@@ -88,6 +88,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [zoning, setZoning] = useState<ZoningData | null>(null);
   const [landListings, setLandListings] = useState<any[]>([]);
   const [score, setScore] = useState<any>(null);
+  const [poiData, setPoiData] = useState<any>(null);
+  const [crimeData, setCrimeData] = useState<any>(null);
+  const [transportData, setTransportData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiReport, setAiReport] = useState<string | null>(null);
@@ -158,6 +161,27 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
         } else {
           const scoreData = await scoreRes.json();
           setScore(scoreData);
+        }
+
+        // 获取 POI 数据
+        const poiRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/poi`);
+        if (poiRes.ok) {
+          const poi = await poiRes.json();
+          setPoiData(poi);
+        }
+
+        // 获取治安数据
+        const crimeRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/crime`);
+        if (crimeRes.ok) {
+          const crime = await crimeRes.json();
+          setCrimeData(crime);
+        }
+
+        // 获取交通数据
+        const transportRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/transport`);
+        if (transportRes.ok) {
+          const transport = await transportRes.json();
+          setTransportData(transport);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -282,6 +306,131 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             </div>
           </div>
         )}
+
+        {/* POI / Crime / Transport 三栏数据 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* 华人生活配套 */}
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <span className="text-2xl">🏪</span> 华人生活配套
+            </h3>
+            {poiData && poiData.total_poi > 0 ? (
+              <>
+                <p className="text-3xl font-bold text-orange-500 mb-3">{poiData.total_poi} <span className="text-base font-normal text-gray-500">家商户</span></p>
+                <div className="space-y-2">
+                  {Object.entries(poiData.category_counts || {}).sort(([,a]: any, [,b]: any) => b - a).map(([cat, count]: any) => {
+                    const labelMap: Record<string, string> = {
+                      chinese_restaurant: '中餐厅', asian_grocery: '亚洲超市',
+                      chinese_hair_salon: '华人理发', chinese_church: '华人教会',
+                      chinese_clinic: '华人诊所', chinese_school: '中文学校',
+                    };
+                    const iconMap: Record<string, string> = {
+                      chinese_restaurant: '🍜', asian_grocery: '🛒',
+                      chinese_hair_salon: '💇', chinese_church: '⛪',
+                      chinese_clinic: '🏥', chinese_school: '📚',
+                    };
+                    return (
+                      <div key={cat} className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">{iconMap[cat] || '📍'} {labelMap[cat] || cat}</span>
+                        <span className="font-semibold text-gray-800">{count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-400 text-sm">暂无数据</p>
+            )}
+          </div>
+
+          {/* 治安数据 */}
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <span className="text-2xl">🛡️</span> 治安数据
+            </h3>
+            {crimeData && crimeData.total_crimes > 0 ? (
+              <>
+                <p className="text-3xl font-bold text-red-500 mb-1">{crimeData.total_crimes.toLocaleString()} <span className="text-base font-normal text-gray-500">起</span></p>
+                <p className="text-xs text-gray-400 mb-3">近12个月犯罪记录</p>
+                <div className="space-y-2">
+                  {Object.entries(crimeData.categories || {}).sort(([,a]: any, [,b]: any) => b - a).map(([cat, count]: any) => {
+                    const labelMap: Record<string, string> = {
+                      violent_crime: '暴力犯罪', property_crime: '入室盗窃',
+                      theft_fraud: '盗窃诈骗', drug_offences: '毒品犯罪',
+                      public_order: '公共秩序',
+                    };
+                    const colorMap: Record<string, string> = {
+                      violent_crime: 'bg-red-100 text-red-700',
+                      property_crime: 'bg-orange-100 text-orange-700',
+                      theft_fraud: 'bg-yellow-100 text-yellow-700',
+                      drug_offences: 'bg-purple-100 text-purple-700',
+                      public_order: 'bg-gray-100 text-gray-700',
+                    };
+                    const pct = crimeData.total_crimes > 0 ? Math.round(count / crimeData.total_crimes * 100) : 0;
+                    return (
+                      <div key={cat}>
+                        <div className="flex justify-between items-center text-sm mb-1">
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${colorMap[cat] || 'bg-gray-100 text-gray-700'}`}>
+                            {labelMap[cat] || cat}
+                          </span>
+                          <span className="text-gray-600">{count.toLocaleString()} ({pct}%)</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-1.5">
+                          <div className="bg-red-400 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-400 text-sm">暂无数据</p>
+            )}
+          </div>
+
+          {/* 公共交通 */}
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+              <span className="text-2xl">🚉</span> 公共交通
+            </h3>
+            {transportData && transportData.total_stations > 0 ? (
+              <>
+                <p className="text-3xl font-bold text-green-500 mb-1">{transportData.total_stations} <span className="text-base font-normal text-gray-500">个站点</span></p>
+                <p className="text-xs text-gray-400 mb-3">5公里范围内</p>
+                <div className="space-y-2">
+                  {Object.entries(transportData.by_type || {}).sort(([,a]: any, [,b]: any) => b - a).map(([type, count]: any) => {
+                    const labelMap: Record<string, string> = {
+                      train_station: '火车站', bus_station: '公交站',
+                      transit_station: '交通枢纽', light_rail_station: '轻轨站',
+                    };
+                    const iconMap: Record<string, string> = {
+                      train_station: '🚂', bus_station: '🚌',
+                      transit_station: '🚏', light_rail_station: '🚊',
+                    };
+                    return (
+                      <div key={type} className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">{iconMap[type] || '🚉'} {labelMap[type] || type}</span>
+                        <span className="font-semibold text-gray-800">{count} 个</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* 显示部分站点名称 */}
+                {transportData.stations_by_type?.train_station && (
+                  <div className="mt-3 pt-3 border-t">
+                    <p className="text-xs text-gray-400 mb-1">附近火车站：</p>
+                    <p className="text-xs text-gray-500">
+                      {transportData.stations_by_type.train_station.slice(0, 3).map((s: any) => s.name).join('、')}
+                      {transportData.stations_by_type.train_station.length > 3 && '...'}
+                    </p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-gray-400 text-sm">暂无数据</p>
+            )}
+          </div>
+        </div>
 
         {/* AI Investment Analysis Section */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-xl p-6 mb-8 text-white">

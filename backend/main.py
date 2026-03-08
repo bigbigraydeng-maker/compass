@@ -1036,6 +1036,126 @@ def get_suburb_poi(suburb_name: str):
         }
 
 
+@app.get("/api/suburb/{suburb_name}/crime")
+def get_suburb_crime(suburb_name: str):
+    """
+    获取郊区治安数据（近12个月犯罪统计）
+    """
+    try:
+        # 按类别汇总
+        summary_query = """
+            SELECT category, SUM(count) as total
+            FROM crime_stats
+            WHERE LOWER(suburb) = LOWER(%s)
+              AND month_year >= TO_CHAR(NOW() - INTERVAL '12 months', 'YYYY-MM')
+            GROUP BY category
+            ORDER BY total DESC
+        """
+        summary_results = execute_query(summary_query, (suburb_name,))
+
+        categories = {}
+        grand_total = 0
+        for row in summary_results:
+            cat = row.get('category', 'unknown')
+            total = int(row.get('total', 0))
+            categories[cat] = total
+            grand_total += total
+
+        # 月度趋势
+        trend_query = """
+            SELECT month_year, SUM(count) as total
+            FROM crime_stats
+            WHERE LOWER(suburb) = LOWER(%s)
+              AND month_year >= TO_CHAR(NOW() - INTERVAL '12 months', 'YYYY-MM')
+            GROUP BY month_year
+            ORDER BY month_year
+        """
+        trend_results = execute_query(trend_query, (suburb_name,))
+        monthly_trend = []
+        for row in trend_results:
+            monthly_trend.append({
+                "month": row.get('month_year', ''),
+                "total": int(row.get('total', 0)),
+            })
+
+        return {
+            "suburb": suburb_name,
+            "categories": categories,
+            "total_crimes": grand_total,
+            "monthly_trend": monthly_trend,
+            "period": "last 12 months"
+        }
+    except Exception as e:
+        return {
+            "suburb": suburb_name,
+            "categories": {},
+            "total_crimes": 0,
+            "monthly_trend": [],
+            "period": "last 12 months"
+        }
+
+
+@app.get("/api/suburb/{suburb_name}/transport")
+def get_suburb_transport(suburb_name: str):
+    """
+    获取郊区公共交通数据（5km范围内站点）
+    """
+    try:
+        # 按类型汇总
+        summary_query = """
+            SELECT type, COUNT(*) as cnt
+            FROM transport_data
+            WHERE LOWER(suburb) = LOWER(%s)
+            GROUP BY type
+            ORDER BY cnt DESC
+        """
+        summary_results = execute_query(summary_query, (suburb_name,))
+
+        by_type = {}
+        total_stations = 0
+        for row in summary_results:
+            t = row.get('type', 'unknown')
+            cnt = int(row.get('cnt', 0))
+            by_type[t] = cnt
+            total_stations += cnt
+
+        # 站点列表（按类型分组，每类取前5个）
+        stations_query = """
+            SELECT type, name, address, lat, lng
+            FROM transport_data
+            WHERE LOWER(suburb) = LOWER(%s)
+            ORDER BY type, name
+        """
+        stations_results = execute_query(stations_query, (suburb_name,))
+
+        stations_by_type = {}
+        for row in stations_results:
+            t = row.get('type', 'unknown')
+            if t not in stations_by_type:
+                stations_by_type[t] = []
+            if len(stations_by_type[t]) < 5:
+                stations_by_type[t].append({
+                    "name": row.get('name', ''),
+                    "address": row.get('address', ''),
+                })
+
+        return {
+            "suburb": suburb_name,
+            "by_type": by_type,
+            "total_stations": total_stations,
+            "stations_by_type": stations_by_type,
+            "radius": "5km"
+        }
+    except Exception as e:
+        return {
+            "suburb": suburb_name,
+            "by_type": {},
+            "total_stations": 0,
+            "stations_by_type": {},
+            "radius": "5km"
+        }
+
+
 def _get_suburb_full_profile(suburb_name: str) -> dict:
     """
     聚合所有维度数据，构建郊区完整 profile。
