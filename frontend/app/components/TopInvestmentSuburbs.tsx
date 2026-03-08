@@ -34,6 +34,13 @@ export default function TopInvestmentSuburbs({ rankings, suburbStats }: TopInves
 
   const formatPrice = (price: number) => {
     if (!price) return '-';
+    if (price >= 1000000) return `$${(price / 1000000).toFixed(1)}M`;
+    if (price >= 1000) return `$${(price / 1000).toFixed(0)}K`;
+    return `$${price}`;
+  };
+
+  const formatPriceFull = (price: number) => {
+    if (!price) return '-';
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: 'AUD',
@@ -76,11 +83,11 @@ export default function TopInvestmentSuburbs({ rankings, suburbStats }: TopInves
 
   // 维度名称中文映射
   const dimensionLabels: Record<string, string> = {
-    'growth': '房价增长',
-    'school': '学区质量',
-    'land': '土地价值',
-    'activity': '市场活跃度',
-    'chinese': '华人友好度',
+    'growth': '增长',
+    'school': '学区',
+    'land': '土地',
+    'activity': '活跃度',
+    'chinese': '华人',
   };
 
   const dimensionColors: Record<string, string> = {
@@ -94,38 +101,102 @@ export default function TopInvestmentSuburbs({ rankings, suburbStats }: TopInves
   // 没有排名数据时显示提示
   if (!rankings || rankings.length === 0) {
     return (
-      <section className="py-20 bg-white">
+      <section className="py-10 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">投资优选郊区</h2>
-          <p className="text-lg text-gray-600 mb-8">基于 Compass 多维评分，发现最具投资价值的郊区</p>
-          <div className="text-center py-12 text-gray-400">排名数据加载中...</div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">投资优选郊区</h2>
+          <p className="text-sm md:text-lg text-gray-600 mb-6">基于 Compass 多维评分</p>
+          <div className="text-center py-8 text-gray-400">排名数据加载中...</div>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-10 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6 md:mb-12">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-4">
               投资优选郊区
             </h2>
-            <p className="text-lg text-gray-600">
-              基于 Compass 多维评分，发现最具投资价值的郊区
+            <p className="text-sm md:text-lg text-gray-600">
+              基于 Compass 多维评分
             </p>
           </div>
           <button
-            className="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg text-sm md:text-base font-medium transition-colors whitespace-nowrap"
             onClick={() => router.push('/rankings')}
           >
-            查看完整排名
+            完整排名
           </button>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* ===== 手机端：2列紧凑网格，只显示4个 ===== */}
+        <div className="grid grid-cols-2 gap-3 md:hidden">
+          {rankings.slice(0, 4).map((ranking) => {
+            const potential = gradeConfig[ranking.grade] || gradeConfig['C'];
+            const medianPrice = getMedianPrice(ranking.suburb);
+
+            return (
+              <div
+                key={ranking.suburb}
+                onClick={() => router.push(`/suburb/${encodeURIComponent(ranking.suburb)}`)}
+                className="bg-white rounded-xl border border-gray-200 p-3 active:bg-gray-50 transition-colors cursor-pointer relative overflow-hidden"
+              >
+                {/* Score badge - 小号 */}
+                <div className={`absolute top-2 right-2 w-10 h-10 rounded-full bg-gradient-to-br ${getScoreColor(ranking.total_score)} flex items-center justify-center shadow`}>
+                  <span className="text-white font-bold text-sm">{ranking.total_score}</span>
+                </div>
+
+                {/* Suburb name */}
+                <h3 className="font-bold text-sm text-gray-900 mb-1 pr-12 leading-tight">
+                  {ranking.suburb}
+                </h3>
+
+                {/* Grade tag - 精简 */}
+                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-medium mb-2 ${potential.style}`}>
+                  {ranking.grade}级·{potential.label}
+                </span>
+
+                {/* 中位价 */}
+                <div className="bg-gray-50 rounded-lg p-2 mb-2">
+                  <p className="text-[10px] text-gray-500">中位价</p>
+                  <p className="text-xs font-bold text-gray-900">
+                    {medianPrice ? formatPrice(medianPrice) : '-'}
+                  </p>
+                </div>
+
+                {/* 迷你维度条 - 只显示前2个 */}
+                {ranking.breakdown && (
+                  <div className="space-y-1">
+                    {Object.entries(ranking.breakdown).slice(0, 2).map(([key, dim]) => (
+                      <div key={key} className="flex items-center gap-1">
+                        <span className="text-[9px] text-gray-400 w-8 text-right truncate">
+                          {dimensionLabels[key] || key}
+                        </span>
+                        <div className="flex-1 bg-gray-100 rounded-full h-1 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${dimensionColors[key] || 'bg-blue-500'}`}
+                            style={{ width: `${(dim.score / dim.max) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* CTA */}
+                <div className="mt-2 text-right">
+                  <span className="text-blue-500 font-medium text-xs">详情 →</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ===== 桌面端：3列网格，显示6个 ===== */}
+        <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
           {rankings.slice(0, 6).map((ranking) => {
             const potential = gradeConfig[ranking.grade] || gradeConfig['C'];
             const medianPrice = getMedianPrice(ranking.suburb);
@@ -159,7 +230,7 @@ export default function TopInvestmentSuburbs({ rankings, suburbStats }: TopInves
                   <div className="bg-gray-50 rounded-lg p-3">
                     <p className="text-xs text-gray-500 mb-1">中位价</p>
                     <p className="text-sm font-bold text-gray-900">
-                      {medianPrice ? formatPrice(medianPrice) : '-'}
+                      {medianPrice ? formatPriceFull(medianPrice) : '-'}
                     </p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3">
