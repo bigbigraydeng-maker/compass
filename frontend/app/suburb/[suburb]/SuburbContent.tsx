@@ -100,90 +100,53 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   useEffect(() => {
     const fetchData = async () => {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
-      
+      const encodedName = encodeURIComponent(suburbName);
+
+      // 安全 fetch 封装：失败不抛异常
+      const safeFetch = async (url: string) => {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return null;
+          return await res.json();
+        } catch {
+          return null;
+        }
+      };
+
       try {
-        // 获取郊区详情
-        const detailRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}`);
-        if (!detailRes.ok) {
-          setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
-        } else {
-          const detailData = await detailRes.json();
-          // 获取最近成交记录
-          const salesRes = await fetch(`${apiUrl}/api/sales?suburb=${encodeURIComponent(suburbName)}&page_size=10`);
-          if (salesRes.ok) {
-            const salesData = await salesRes.json();
-            detailData.recent_sales = salesData.sales || [];
-          } else {
-            detailData.recent_sales = [];
-          }
+        // === 所有 9 个请求并行执行（原来串行 ~900ms → 并行 ~100-150ms） ===
+        const [
+          detailData, salesData, trendsData, schoolsData,
+          zoningData, landData, scoreData, poiResult, crimeResult, transportResult
+        ] = await Promise.all([
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}`),
+          safeFetch(`${apiUrl}/api/sales?suburb=${encodedName}&page_size=10`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/trends`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/schools`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/zoning`),
+          safeFetch(`${apiUrl}/api/listings?suburb=${encodedName}&property_type=vacant_land&page_size=20`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/score`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/poi`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/crime`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/transport`),
+        ]);
+
+        // 合并详情 + 成交记录
+        if (detailData) {
+          detailData.recent_sales = salesData?.sales || [];
           setData(detailData);
-        }
-
-        // 获取价格走势
-        const trendsRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/trends`);
-        if (!trendsRes.ok) {
-          setTrends([]);
         } else {
-          const trendsData = await trendsRes.json();
-          setTrends(trendsData.monthly_trends || []);
+          setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
         }
 
-        // 获取学校数据
-        const schoolsRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/schools`);
-        if (!schoolsRes.ok) {
-          setSchools([]);
-        } else {
-          const schoolsData = await schoolsRes.json();
-          setSchools(schoolsData.schools || []);
-        }
-
-        // 获取分区数据
-        const zoningRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/zoning`);
-        if (!zoningRes.ok) {
-          setZoning(null);
-        } else {
-          const zoningData = await zoningRes.json();
-          setZoning(zoningData);
-        }
-
-        // 获取在售土地数据
-        const landRes = await fetch(`${apiUrl}/api/listings?suburb=${encodeURIComponent(suburbName)}&property_type=vacant_land&page_size=20`);
-        if (!landRes.ok) {
-          setLandListings([]);
-        } else {
-          const landData = await landRes.json();
-          setLandListings(landData.listings || []);
-        }
-
-        // 获取 Compass Score 数据
-        const scoreRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/score`);
-        if (!scoreRes.ok) {
-          setScore(null);
-        } else {
-          const scoreData = await scoreRes.json();
-          setScore(scoreData);
-        }
-
-        // 获取 POI 数据
-        const poiRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/poi`);
-        if (poiRes.ok) {
-          const poi = await poiRes.json();
-          setPoiData(poi);
-        }
-
-        // 获取治安数据
-        const crimeRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/crime`);
-        if (crimeRes.ok) {
-          const crime = await crimeRes.json();
-          setCrimeData(crime);
-        }
-
-        // 获取交通数据
-        const transportRes = await fetch(`${apiUrl}/api/suburb/${encodeURIComponent(suburbName)}/transport`);
-        if (transportRes.ok) {
-          const transport = await transportRes.json();
-          setTransportData(transport);
-        }
+        setTrends(trendsData?.monthly_trends || []);
+        setSchools(schoolsData?.schools || []);
+        setZoning(zoningData || null);
+        setLandListings(landData?.listings || []);
+        setScore(scoreData || null);
+        if (poiResult) setPoiData(poiResult);
+        if (crimeResult) setCrimeData(crimeResult);
+        if (transportResult) setTransportData(transportResult);
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });

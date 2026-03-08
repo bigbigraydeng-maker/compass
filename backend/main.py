@@ -683,169 +683,69 @@ def get_suburb_score(suburb_name: str):
 @app.get("/api/deals")
 def get_deals():
     """
-    获取捡漏雷达数据
-    
-    找出成交价低于郊区同类型中位价10%以上的记录
+    获取捡漏雷达数据（优化版：单次SQL完成，数据库端过滤）
+
+    原：3次全表扫描 + Python端循环筛选
+    优化后：1次窗口函数查询，数据库直接返回捡漏结果
     """
     try:
-        # 先计算每个郊区每种房产类型+卧室数的中位价
-        median_query = """
-            SELECT
-                s.suburb,
-                s.property_type,
-                s.bedrooms,
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price
-            FROM sales s
-            GROUP BY s.suburb, s.property_type, s.bedrooms
-        """
-        median_results = execute_query(median_query)
-        
-        # 构建中位价映射
-        median_map = {}
-        for row in median_results:
-            # 处理元组格式的结果
-            if isinstance(row, tuple):
-                # 对于模拟数据库的情况，返回的是 (median_price, total_sales)
-                # 这里我们需要跳过，因为模拟数据库不支持复杂的分组查询
-                continue
-            # 处理字典格式的结果
-            suburb = row.get('suburb')
-            prop_type = row.get('property_type')
-            bedrooms = row.get('bedrooms')
-            median_price = row.get('median_price')
-            if suburb and prop_type and bedrooms and median_price:
-                key = f"{suburb.lower()}_{prop_type.lower()}_{bedrooms}"
-                median_map[key] = float(median_price)
-        
-        # 如果没有精确匹配，尝试只按郊区+房型匹配
-        fallback_median_query = """
-            SELECT
-                s.suburb,
-                s.property_type,
-                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price
-            FROM sales s
-            GROUP BY s.suburb, s.property_type
-        """
-        fallback_results = execute_query(fallback_median_query)
-        
-        for row in fallback_results:
-            # 处理元组格式的结果
-            if isinstance(row, tuple):
-                # 对于模拟数据库的情况，返回的是 (median_price, total_sales)
-                # 这里我们需要跳过，因为模拟数据库不支持复杂的分组查询
-                continue
-            # 处理字典格式的结果
-            suburb = row.get('suburb')
-            prop_type = row.get('property_type')
-            median_price = row.get('median_price')
-            if suburb and prop_type and median_price:
-                key = f"{suburb.lower()}_{prop_type.lower()}_fallback"
-                if key not in median_map:
-                    median_map[key] = float(median_price)
-        
-        # 找出低于中位价10%的成交记录
-        deals_query = """
-            SELECT
-                s.sale_id AS id, s.property_id, s.sale_price AS sold_price, s.sale_date AS sold_date,
-                s.full_address AS address, INITCAP(s.suburb) AS suburb, s.property_type, s.land_size, s.bedrooms, s.bathrooms
-            FROM sales s
-            ORDER BY s.sale_date DESC
-        """
-        sales = execute_query(deals_query)
-        
-        # 筛选捡漏记录
-        deals = []
-        
-        # 检查是否使用模拟数据库（median_map 为空）
-        if not median_map and sales:
-            # 对于模拟数据库，使用简单的方法生成捡漏记录
-            # 假设中位价为销售价的 110%
-            for sale in sales:
-                # 处理元组格式的结果
-                if isinstance(sale, tuple):
-                    # 对于模拟数据库的情况，返回的是完整的销售记录
-                    # 这里我们需要手动构建字典
-                    sale_dict = {
-                        "id": sale[0],
-                        "property_id": sale[1],
-                        "sold_price": sale[2],
-                        "sold_date": sale[3],
-                        "address": sale[4],
-                        "suburb": sale[5],
-                        "property_type": sale[6],
-                        "land_size": sale[7],
-                        "bedrooms": sale[8],
-                        "bathrooms": sale[9]
-                    }
-                else:
-                    # 处理字典格式的结果
-                    sale_dict = sale
-                
-                suburb = sale_dict.get('suburb')
-                sold_price = sale_dict.get('sold_price')
-                
-                if suburb and sold_price:
-                    # 假设中位价为销售价的 110%
-                    median_price = sold_price * 1.1
-                    discount_percent = 10.0  # 固定 10% 的折扣
-                    
-                    deal = {
-                        **sale_dict,
-                        "median_price": median_price,
-                        "discount_percent": discount_percent
-                    }
-                    deals.append(deal)
-        else:
-            # 对于真实数据库，使用正常的筛选逻辑
-            for sale in sales:
-                # 处理元组格式的结果
-                if isinstance(sale, tuple):
-                    # 对于模拟数据库的情况，返回的是完整的销售记录
-                    # 这里我们需要手动构建字典
-                    sale_dict = {
-                        "id": sale[0],
-                        "property_id": sale[1],
-                        "sold_price": sale[2],
-                        "sold_date": sale[3],
-                        "address": sale[4],
-                        "suburb": sale[5],
-                        "property_type": sale[6],
-                        "land_size": sale[7],
-                        "bedrooms": sale[8],
-                        "bathrooms": sale[9]
-                    }
-                else:
-                    # 处理字典格式的结果
-                    sale_dict = sale
-                
-                suburb = sale_dict.get('suburb')
-                prop_type = sale_dict.get('property_type')
-                bedrooms = sale_dict.get('bedrooms')
-                sold_price = sale_dict.get('sold_price')
-                
-                if suburb and prop_type and sold_price:
-                    # 优先使用郊区+房型+卧室数的精确匹配
-                    key = f"{suburb.lower()}_{prop_type.lower()}_{bedrooms}"
-                    if key not in median_map:
-                        # 如果没有精确匹配，使用郊区+房型的 fallback
-                        key = f"{suburb.lower()}_{prop_type.lower()}_fallback"
-                    
-                    if key in median_map:
-                        median_price = float(median_map[key])
-                        sold_price_f = float(sold_price)
-                        if median_price > 0:
-                            discount_percent = (median_price - sold_price_f) / median_price * 100
-                            if discount_percent >= 10:  # 至少10%的折扣
-                                deal = {
-                                    **sale_dict,
-                                    "median_price": median_price,
-                                    "discount_percent": round(discount_percent, 1)
-                                }
-                                deals.append(deal)
-        
-        # 限制返回数量
+        from database import get_db_connection, get_db_cursor
+
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                # 一次查询完成：窗口函数计算中位价 → 直接筛选低估10%以上
+                cur.execute("""
+                    WITH median_prices AS (
+                        SELECT
+                            suburb,
+                            property_type,
+                            bedrooms,
+                            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sale_price) as median_price
+                        FROM sales
+                        GROUP BY suburb, property_type, bedrooms
+                    ),
+                    fallback_medians AS (
+                        SELECT
+                            suburb,
+                            property_type,
+                            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sale_price) as median_price
+                        FROM sales
+                        GROUP BY suburb, property_type
+                    )
+                    SELECT
+                        s.sale_id AS id, s.property_id,
+                        s.sale_price AS sold_price, s.sale_date AS sold_date,
+                        s.full_address AS address, INITCAP(s.suburb) AS suburb,
+                        s.property_type, s.land_size, s.bedrooms, s.bathrooms,
+                        COALESCE(mp.median_price, fm.median_price) as median_price,
+                        ROUND(
+                            ((COALESCE(mp.median_price, fm.median_price) - s.sale_price)
+                             / NULLIF(COALESCE(mp.median_price, fm.median_price), 0) * 100)::numeric,
+                            1
+                        ) as discount_percent
+                    FROM sales s
+                    LEFT JOIN median_prices mp
+                        ON LOWER(s.suburb) = LOWER(mp.suburb)
+                        AND LOWER(s.property_type) = LOWER(mp.property_type)
+                        AND s.bedrooms = mp.bedrooms
+                    LEFT JOIN fallback_medians fm
+                        ON LOWER(s.suburb) = LOWER(fm.suburb)
+                        AND LOWER(s.property_type) = LOWER(fm.property_type)
+                    WHERE COALESCE(mp.median_price, fm.median_price) > 0
+                      AND s.sale_price < COALESCE(mp.median_price, fm.median_price) * 0.9
+                    ORDER BY discount_percent DESC
+                    LIMIT 10
+                """)
+                deals = [dict(row) for row in cur.fetchall()]
+
+                # 转换 Decimal 类型
+                for deal in deals:
+                    for k in ['sold_price', 'median_price', 'discount_percent', 'land_size']:
+                        if deal.get(k) is not None:
+                            deal[k] = float(deal[k])
+
         return {
-            "deals": deals[:10],  # 最多返回10条
+            "deals": deals,
             "total": len(deals)
         }
     except Exception as e:
@@ -855,30 +755,141 @@ def get_deals():
 @app.get("/api/rankings")
 def get_rankings():
     """
-    获取郊区 Compass Score 排名
-    
-    返回7个郊区按总分排序的总榜
+    获取郊区 Compass Score 排名（优化版：批量查询代替 N+1）
+
+    原：7个郊区 × 6-7条SQL = 42-49次查询
+    优化后：3次批量查询 + 内存计算
     """
     try:
+        import json as json_mod
+        from database import get_db_connection, get_db_cursor
+
         suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+
+        # 读取配置（1次文件读取）
+        config_path = os.path.join(os.path.dirname(__file__), "suburb_scores_config.json")
+        with open(config_path) as f:
+            config = json_mod.load(f)
+
+        # 读取学校数据（1次文件读取）
+        schools_data = []
+        schools_path = os.path.join(os.path.dirname(__file__), "data/qld_schools.json")
+        if os.path.exists(schools_path):
+            with open(schools_path) as f:
+                schools_data = json_mod.load(f)
+
+        # === 批量查询 1：所有郊区的增长率 + 中位价 + 年成交量 ===
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                cur.execute("""
+                    SELECT
+                        INITCAP(s.suburb) AS suburb,
+                        AVG(CASE WHEN s.sale_date >= NOW() - INTERVAL '12 months' THEN s.sale_price END) as recent_avg,
+                        AVG(CASE WHEN s.sale_date BETWEEN NOW() - INTERVAL '24 months' AND NOW() - INTERVAL '12 months' THEN s.sale_price END) as prev_avg,
+                        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price,
+                        COUNT(CASE WHEN s.sale_date >= NOW() - INTERVAL '12 months' THEN 1 END) as annual_sales
+                    FROM sales s
+                    WHERE UPPER(s.suburb) IN (SELECT UPPER(unnest) FROM unnest(%s::text[]))
+                    GROUP BY INITCAP(s.suburb)
+                """, (suburbs,))
+                sales_stats = {row['suburb']: row for row in cur.fetchall()}
+
+                # === 批量查询 2：所有郊区的活跃房源数 ===
+                cur.execute("""
+                    SELECT INITCAP(suburb) AS suburb, COUNT(*) as cnt
+                    FROM listings
+                    WHERE UPPER(suburb) IN (SELECT UPPER(unnest) FROM unnest(%s::text[]))
+                    GROUP BY INITCAP(suburb)
+                """, (suburbs,))
+                listings_counts = {row['suburb']: row['cnt'] for row in cur.fetchall()}
+
+                # === 批量查询 3：所有郊区的空地数量 ===
+                cur.execute("""
+                    SELECT INITCAP(suburb) AS suburb, COUNT(*) as cnt
+                    FROM listings
+                    WHERE UPPER(suburb) IN (SELECT UPPER(unnest) FROM unnest(%s::text[]))
+                      AND property_type = 'vacant_land'
+                    GROUP BY INITCAP(suburb)
+                """, (suburbs,))
+                land_counts = {row['suburb']: row['cnt'] for row in cur.fetchall()}
+
+        # === 内存计算所有评分 ===
+        zoning_map = {
+            "Sunnybank": {"MDR": 20, "HDR": 0}, "Eight Mile Plains": {"MDR": 25, "HDR": 5},
+            "Calamvale": {"MDR": 15, "HDR": 0}, "Rochedale": {"MDR": 20, "HDR": 0},
+            "Mansfield": {"MDR": 15, "HDR": 0}, "Ascot": {"MDR": 10, "HDR": 5},
+            "Hamilton": {"MDR": 15, "HDR": 10},
+        }
+
         rankings = []
-        
-        # 为每个郊区计算得分
         for suburb in suburbs:
-            score_data = get_suburb_score(suburb)
-            rankings.append(score_data)
-        
-        # 按总分排序
+            stats = sales_stats.get(suburb, {})
+
+            # 1. 增长潜力 (25分)
+            growth_score = 12
+            recent = stats.get('recent_avg')
+            prev = stats.get('prev_avg')
+            if recent and prev and float(prev) > 0:
+                growth_rate = (float(recent) - float(prev)) / float(prev)
+                if growth_rate >= 0.15: growth_score = 25
+                elif growth_rate >= 0.10: growth_score = 20
+                elif growth_rate >= 0.05: growth_score = 15
+                elif growth_rate >= 0: growth_score = 10
+                else: growth_score = 5
+
+            # 2. 学区质量 (25分)
+            school_score = 12
+            top_naplan = 0
+            for school in schools_data:
+                catchments = school.get("catchment_suburbs", [])
+                if isinstance(catchments, str):
+                    catchments = [catchments]
+                if suburb.upper() in [c.upper() for c in catchments]:
+                    naplan = school.get("naplan_percentile", 0) or 0
+                    top_naplan = max(top_naplan, naplan)
+            if top_naplan > 0:
+                school_score = round((top_naplan / 100) * 25)
+
+            # 3. 土地价值 (20分)
+            zm = zoning_map.get(suburb, {"MDR": 10, "HDR": 0})
+            mdr_hdr_pct = zm["MDR"] + zm["HDR"]
+            median_price = float(stats.get('median_price', 0) or 0)
+            has_land = land_counts.get(suburb, 0) > 0
+            median_bonus = min(5, int(median_price / 300000))
+            land_score = min(20, round(mdr_hdr_pct / 100 * 12) + (3 if has_land else 0) + median_bonus)
+
+            # 4. 市场活跃度 (15分)
+            annual_sales = int(stats.get('annual_sales', 0) or 0)
+            active_listings = max(listings_counts.get(suburb, 0), 1)
+            activity_ratio = annual_sales / active_listings
+            activity_score = min(15, round(activity_ratio * 5))
+
+            # 5. 华人友好度 (15分)
+            chinese_score = config["chinese_friendly"].get(suburb, 8)
+
+            total = growth_score + school_score + land_score + activity_score + chinese_score
+            grade = "S" if total >= 85 else "A" if total >= 75 else "B" if total >= 65 else "C"
+
+            rankings.append({
+                "suburb": suburb,
+                "total_score": total,
+                "grade": grade,
+                "breakdown": {
+                    "growth": {"score": growth_score, "max": 25, "label": "房价增长潜力"},
+                    "school": {"score": school_score, "max": 25, "label": "学区质量"},
+                    "land": {"score": land_score, "max": 20, "label": "土地价值潜力"},
+                    "activity": {"score": activity_score, "max": 15, "label": "市场活跃度"},
+                    "chinese": {"score": chinese_score, "max": 15, "label": "华人友好度"}
+                },
+                "data_sources": ["QLD Sales Records", "NAPLAN ACARA", "ABS Census 2021"],
+                "updated_at": "2026-03"
+            })
+
         rankings.sort(key=lambda x: x['total_score'], reverse=True)
-        
-        # 添加排名
         for i, ranking in enumerate(rankings, 1):
             ranking['rank'] = i
-        
-        return {
-            "rankings": rankings,
-            "updated_at": "2026-03"
-        }
+
+        return {"rankings": rankings, "updated_at": "2026-03"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"获取排名数据失败: {str(e)}")
 
