@@ -13,6 +13,7 @@ import { fetcher } from './lib/api';
 export default function Home() {
 
   const [rankings, setRankings] = useState<any[]>([]);
+  const [suburbStats, setSuburbStats] = useState<any[]>([]);
   const [marketStats, setMarketStats] = useState({
     totalSales: 0,
     totalListings: 0,
@@ -42,6 +43,9 @@ export default function Home() {
         }
 
         if (homeData) {
+          if (homeData.suburb_stats) {
+            setSuburbStats(homeData.suburb_stats);
+          }
           setMarketStats({
             totalSales: homeData.total_sales || 0,
             totalListings: homeData.total_listings || 0,
@@ -71,7 +75,7 @@ export default function Home() {
       <TodayDeals />
 
       {/* Top Investment Suburbs - 投资排名 */}
-      <TopInvestmentSuburbs rankings={rankings} />
+      <TopInvestmentSuburbs rankings={rankings} suburbStats={suburbStats} />
 
       {/* AI Property Analysis - 单独强化入口 */}
       <AIPropertyAnalysis />
