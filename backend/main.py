@@ -1,6 +1,6 @@
 """
 Compass MVP FastAPI 主应用
-v1.1.0 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5)
+v1.1.1 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5) + DB Connection Resilience
 """
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
