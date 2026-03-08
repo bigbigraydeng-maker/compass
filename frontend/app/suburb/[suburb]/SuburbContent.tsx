@@ -95,10 +95,11 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiReport, setAiReport] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
+  const [aiAddress, setAiAddress] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
       
       try {
         // 获取郊区详情
@@ -199,17 +200,18 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   }, [suburbName]);
 
   const handleAiAnalysis = async () => {
+    const addressToAnalyze = aiAddress.trim() || `${suburbName}, Brisbane`;
     setAiLoading(true);
     setAiError(null);
     setAiReport(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
 
     try {
       const res = await fetch(`${apiUrl}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: `${suburbName}, Brisbane` }),
+        body: JSON.stringify({ address: addressToAnalyze }),
       });
 
       if (!res.ok) {
@@ -434,17 +436,37 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
 
         {/* AI Investment Analysis Section */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-xl p-6 mb-8 text-white">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h3 className="text-xl font-bold">AI Investment Analysis</h3>
-              <p className="text-blue-200 text-sm mt-1">
-                Multi-dimensional data analysis powered by AI
-              </p>
+          <div className="mb-4">
+            <h3 className="text-xl font-bold mb-1">AI 投资分析</h3>
+            <p className="text-blue-200 text-sm">
+              基于 POI、治安、交通、学区、分区等多维数据，AI 生成专业投资建议
+            </p>
+          </div>
+
+          {/* 地址输入 + 分析按钮 */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                value={aiAddress}
+                onChange={(e) => setAiAddress(e.target.value)}
+                placeholder={`输入具体地址，如：10 Main St, ${suburbName}`}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent"
+                onKeyDown={(e) => { if (e.key === 'Enter' && !aiLoading) handleAiAnalysis(); }}
+              />
+              {aiAddress && (
+                <button
+                  onClick={() => setAiAddress('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-white"
+                >
+                  x
+                </button>
+              )}
             </div>
             <button
               onClick={handleAiAnalysis}
               disabled={aiLoading}
-              className="bg-white text-blue-900 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
             >
               {aiLoading ? (
                 <>
@@ -452,13 +474,16 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Analyzing...
+                  分析中...
                 </>
               ) : (
-                'AI Analysis'
+                'AI 分析'
               )}
             </button>
           </div>
+          <p className="text-blue-300 text-xs mb-2">
+            不输入地址则分析整个 {suburbName} 区 | 数据维度：价格走势 + 房型分类 + 华人配套 + 治安 + 交通 + 学区 + 分区
+          </p>
 
           {aiLoading && (
             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
@@ -467,13 +492,27 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                <span className="text-blue-100">Analyzing POI, crime, transport, school, zoning data...</span>
+                <span className="text-blue-100">正在聚合多维数据并生成 AI 分析报告...</span>
               </div>
-              <div className="space-y-2">
-                {['POI', 'Crime Stats', 'Transport', 'Schools', 'Zoning', 'Market Data'].map((dim, i) => (
-                  <div key={dim} className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${i < 3 ? 'bg-green-400' : 'bg-blue-300 animate-pulse'}`} />
-                    <span className="text-sm text-blue-200">{dim}</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { name: '价格走势', icon: '📈' },
+                  { name: '华人配套', icon: '🏪' },
+                  { name: '治安数据', icon: '🛡️' },
+                  { name: '公共交通', icon: '🚉' },
+                  { name: '学区质量', icon: '🏫' },
+                  { name: '土地分区', icon: '🏘️' },
+                  { name: '市场活跃度', icon: '📊' },
+                  { name: 'AI 推理', icon: '🤖' },
+                ].map((dim, i) => (
+                  <div key={dim.name} className="flex items-center gap-2 bg-white/5 rounded px-2 py-1">
+                    <span>{dim.icon}</span>
+                    <span className="text-xs text-blue-200">{dim.name}</span>
+                    {i < 6 ? (
+                      <span className="text-green-400 text-xs ml-auto">OK</span>
+                    ) : (
+                      <span className="text-blue-300 text-xs ml-auto animate-pulse">...</span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -487,29 +526,47 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           )}
 
           {aiReport && (
-            <div className="bg-white rounded-xl p-6 mt-4 text-gray-800 max-h-[600px] overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 mt-4 text-gray-800 max-h-[700px] overflow-y-auto">
               <div className="prose prose-sm max-w-none">
                 {aiReport.split('\n').map((line, i) => {
                   if (line.startsWith('## ')) {
-                    return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace('## ', '')}</h3>;
+                    return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace(/^##\s*/, '').replace(/\*\*/g, '')}</h3>;
                   }
                   if (line.startsWith('### ')) {
-                    return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace('### ', '')}</h4>;
+                    return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace(/^###\s*/, '').replace(/\*\*/g, '')}</h4>;
                   }
-                  if (line.startsWith('- ')) {
-                    return <li key={i} className="ml-4 text-gray-700 mb-1">{line.replace('- ', '')}</li>;
-                  }
-                  if (line.startsWith('**') && line.endsWith('**')) {
-                    return <p key={i} className="font-semibold text-gray-900 mt-2">{line.replace(/\*\*/g, '')}</p>;
+                  if (line.match(/^[-•]\s/)) {
+                    const content = line.replace(/^[-•]\s*/, '');
+                    // 处理加粗文本
+                    const parts = content.split(/(\*\*[^*]+\*\*)/g);
+                    return (
+                      <li key={i} className="ml-4 text-gray-700 mb-1">
+                        {parts.map((part, j) =>
+                          part.startsWith('**') && part.endsWith('**')
+                            ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong>
+                            : <span key={j}>{part}</span>
+                        )}
+                      </li>
+                    );
                   }
                   if (line.trim() === '') {
-                    return <br key={i} />;
+                    return <div key={i} className="h-2" />;
                   }
-                  return <p key={i} className="text-gray-700 mb-1">{line}</p>;
+                  // 处理行内加粗
+                  const parts = line.split(/(\*\*[^*]+\*\*)/g);
+                  return (
+                    <p key={i} className="text-gray-700 mb-1">
+                      {parts.map((part, j) =>
+                        part.startsWith('**') && part.endsWith('**')
+                          ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong>
+                          : <span key={j}>{part}</span>
+                      )}
+                    </p>
+                  );
                 })}
               </div>
               <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
-                <span className="text-xs text-gray-400">Powered by Compass AI Engine</span>
+                <span className="text-xs text-gray-400">Powered by Compass AI + Kimi K2.5</span>
                 <span className="text-xs text-gray-400">{new Date().toLocaleString('zh-CN')}</span>
               </div>
             </div>
