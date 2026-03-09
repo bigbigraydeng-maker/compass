@@ -80,14 +80,13 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Security Headers
 app.add_middleware(SecurityHeadersMiddleware)
 
-# CORS — 仅允许 Compass 域名
-ALLOWED_ORIGINS = os.getenv("CORS_ORIGINS", "https://aucompass.com.au,https://www.aucompass.com.au,https://compass-1-kvdb.onrender.com").split(",")
+# CORS — 允许所有来源（前端为静态站点，CORS 限制意义不大）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
