@@ -2218,6 +2218,17 @@ def get_all_schools(suburb: Optional[str] = None, school_type: Optional[str] = N
         with open(schools_path, "r", encoding="utf-8") as f:
             all_schools = json.load(f)
 
+        # 统一字段名 + 计算百分位
+        for s in all_schools:
+            # 兼容 type / school_type
+            if 'school_type' not in s and 'type' in s:
+                s['school_type'] = s['type']
+            if 'type' not in s and 'school_type' in s:
+                s['type'] = s['school_type']
+            # 计算 naplan_percentile
+            if not s.get('naplan_percentile') and s.get('naplan_score'):
+                s['naplan_percentile'] = max(0, min(100, round((s['naplan_score'] - 300) / 4)))
+
         # 过滤
         filtered = all_schools
         if suburb:
@@ -2226,9 +2237,12 @@ def get_all_schools(suburb: Optional[str] = None, school_type: Optional[str] = N
                 suburb.lower() in [c.lower() for c in (s.get('catchment_suburbs', []) if isinstance(s.get('catchment_suburbs', []), list) else [s.get('catchment_suburbs', '')])]
             )]
         if school_type:
-            filtered = [s for s in filtered if s.get('school_type', '').lower() == school_type.lower()]
+            filtered = [s for s in filtered if (
+                s.get('school_type', '').lower() == school_type.lower() or
+                s.get('type', '').lower() == school_type.lower()
+            )]
 
-        # 按 NAPLAN 分数排序
+        # 按 NAPLAN 百分位排序
         filtered.sort(key=lambda x: x.get('naplan_percentile', 0) or 0, reverse=True)
 
         return {"schools": filtered, "total": len(filtered)}
