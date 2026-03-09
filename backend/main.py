@@ -2122,8 +2122,8 @@ def _generate_amanda_commentary(news_items: list) -> str:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            max_tokens=1024,
-            temperature=0.8,
+            max_tokens=4096,
+            temperature=1.0,
         )
 
         commentary = response.choices[0].message.content.strip()
