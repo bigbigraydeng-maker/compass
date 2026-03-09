@@ -372,6 +372,58 @@ def get_suburb_schools(suburb_name: str):
         return {"suburb": suburb_name, "schools": []}
 
 
+@app.get("/api/suburb/{suburb_name}/rental")
+def get_suburb_rental(suburb_name: str):
+    """获取郊区租赁回报数据"""
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(script_dir, "data", "suburb_rental_yields.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            all_data = json.load(f)
+        # 匹配郊区名（不区分大小写）
+        for key, val in all_data.items():
+            if key.lower() == suburb_name.lower():
+                return {"suburb": key, **val}
+        return {"suburb": suburb_name, "error": "No rental data found"}
+    except Exception as e:
+        return {"suburb": suburb_name, "error": str(e)}
+
+
+@app.get("/api/suburb/{suburb_name}/flood")
+def get_suburb_flood(suburb_name: str):
+    """获取郊区洪水风险数据"""
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(script_dir, "data", "suburb_flood_risk.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            all_data = json.load(f)
+        for key, val in all_data.items():
+            if key.lower() == suburb_name.lower():
+                return {"suburb": key, **val}
+        return {"suburb": suburb_name, "error": "No flood data found"}
+    except Exception as e:
+        return {"suburb": suburb_name, "error": str(e)}
+
+
+@app.get("/api/suburb/{suburb_name}/development")
+def get_suburb_development(suburb_name: str):
+    """获取郊区政府发展规划数据"""
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(script_dir, "data", "suburb_development.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            all_data = json.load(f)
+        for key, val in all_data.items():
+            if key.lower() == suburb_name.lower():
+                return {"suburb": key, **val}
+        return {"suburb": suburb_name, "error": "No development data found"}
+    except Exception as e:
+        return {"suburb": suburb_name, "error": str(e)}
+
+
 @app.get("/api/listings", response_model=ListingsResponse)
 def get_listings(
     suburb: Optional[str] = None,

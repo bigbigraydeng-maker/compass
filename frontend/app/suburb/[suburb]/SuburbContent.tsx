@@ -91,6 +91,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [poiData, setPoiData] = useState<any>(null);
   const [crimeData, setCrimeData] = useState<any>(null);
   const [transportData, setTransportData] = useState<any>(null);
+  const [rentalData, setRentalData] = useState<any>(null);
+  const [floodData, setFloodData] = useState<any>(null);
+  const [developmentData, setDevelopmentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiReport, setAiReport] = useState<string | null>(null);
@@ -117,7 +120,8 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
         // === 所有 9 个请求并行执行（原来串行 ~900ms → 并行 ~100-150ms） ===
         const [
           detailData, salesData, trendsData, schoolsData,
-          zoningData, landData, scoreData, poiResult, crimeResult, transportResult
+          zoningData, landData, scoreData, poiResult, crimeResult, transportResult,
+          rentalResult, floodResult, developmentResult
         ] = await Promise.all([
           safeFetch(`${apiUrl}/api/suburb/${encodedName}`),
           safeFetch(`${apiUrl}/api/sales?suburb=${encodedName}&page_size=10`),
@@ -129,6 +133,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           safeFetch(`${apiUrl}/api/suburb/${encodedName}/poi`),
           safeFetch(`${apiUrl}/api/suburb/${encodedName}/crime`),
           safeFetch(`${apiUrl}/api/suburb/${encodedName}/transport`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/rental`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/flood`),
+          safeFetch(`${apiUrl}/api/suburb/${encodedName}/development`),
         ]);
 
         // 合并详情 + 成交记录
@@ -147,6 +154,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
         if (poiResult) setPoiData(poiResult);
         if (crimeResult) setCrimeData(crimeResult);
         if (transportResult) setTransportData(transportResult);
+        if (rentalResult && !rentalResult.error) setRentalData(rentalResult);
+        if (floodResult && !floodResult.error) setFloodData(floodResult);
+        if (developmentResult && !developmentResult.error) setDevelopmentData(developmentResult);
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
@@ -628,27 +638,34 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           <div className="bg-white rounded-lg shadow p-6 mb-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">🏫 对口学校</h2>
             <div className="space-y-3">
-              {['primary', 'combined', 'secondary'].map(type => {
-                const typeSchools = schools.filter(s => s.school_type === type);
+              {['primary', 'combined', 'secondary'].map(stype => {
+                const typeSchools = schools.filter((s: any) => (s.type || s.school_type) === stype);
                 if (typeSchools.length === 0) return null;
-                const typeLabel = type === 'primary' ? '小学' : type === 'secondary' ? '中学' : '一贯制';
+                const typeLabel = stype === 'primary' ? '小学' : stype === 'secondary' ? '中学' : '一贯制';
                 return (
-                  <div key={type}>
+                  <div key={stype}>
                     <p className="text-sm text-gray-500 mb-2">{typeLabel}</p>
-                    {typeSchools.map(school => (
-                      <div key={school.name} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                        <div>
-                          <span className="font-medium text-gray-800">{school.name}</span>
-                          <span className="ml-2 text-xs text-gray-500">公立</span>
-                        </div>
-                        {school.naplan_percentile && (
-                          <div className="text-right">
-                            <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_percentile}</span>
-                            <p className="text-xs text-gray-500">评级: {Math.round(school.naplan_percentile / 10) * 10}%</p>
+                    {typeSchools.map((school: any) => {
+                      const sectorMap: Record<string, string> = { Government: '公立', Catholic: '天主教', Independent: '私立' };
+                      const sectorLabel = sectorMap[school.sector] || school.sector || '公立';
+                      return (
+                        <div key={school.name} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                          <div>
+                            <span className="font-medium text-gray-800">{school.name}</span>
+                            <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${school.sector === 'Government' ? 'bg-green-100 text-green-700' : school.sector === 'Catholic' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{sectorLabel}</span>
+                            {school.enrollment && <span className="ml-2 text-xs text-gray-400">{school.enrollment}人</span>}
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          <div className="text-right">
+                            {(school.naplan_score || school.naplan_percentile) && (
+                              <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_score || school.naplan_percentile}</span>
+                            )}
+                            {school.rating && (
+                              <p className="text-xs text-gray-500">评分: {school.rating}/10</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 );
               })}
@@ -707,6 +724,178 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* 📊 租赁回报 */}
+        {rentalData && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">📊 租赁回报</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b-2 border-gray-200">
+                    <th className="text-left py-2 text-gray-500">指标</th>
+                    <th className="text-right py-2 text-blue-600">🏠 别墅 House</th>
+                    <th className="text-right py-2 text-purple-600">🏢 公寓 Unit</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  <tr>
+                    <td className="py-2 text-gray-700">中位价</td>
+                    <td className="py-2 text-right font-bold text-gray-800">{formatPrice(rentalData.median_house_price)}</td>
+                    <td className="py-2 text-right font-bold text-gray-800">{formatPrice(rentalData.median_unit_price)}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-700">周租金</td>
+                    <td className="py-2 text-right">${rentalData.median_house_rent_weekly}/周</td>
+                    <td className="py-2 text-right">${rentalData.median_unit_rent_weekly}/周</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-700">年回报率</td>
+                    <td className={`py-2 text-right font-bold ${rentalData.house_rental_yield_pct >= 3 ? 'text-green-600' : 'text-orange-600'}`}>
+                      {rentalData.house_rental_yield_pct}%
+                    </td>
+                    <td className={`py-2 text-right font-bold ${rentalData.unit_rental_yield_pct >= 4 ? 'text-green-600' : 'text-orange-600'}`}>
+                      {rentalData.unit_rental_yield_pct}%
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-700">年增长率</td>
+                    <td className={`py-2 text-right font-semibold ${rentalData.annual_growth_house_pct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {rentalData.annual_growth_house_pct > 0 ? '+' : ''}{rentalData.annual_growth_house_pct}%
+                    </td>
+                    <td className={`py-2 text-right font-semibold ${rentalData.annual_growth_unit_pct >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {rentalData.annual_growth_unit_pct > 0 ? '+' : ''}{rentalData.annual_growth_unit_pct}%
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-700">上市天数</td>
+                    <td className="py-2 text-right">{rentalData.days_on_market_house} 天</td>
+                    <td className="py-2 text-right">{rentalData.days_on_market_unit} 天</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400">空置率</span>
+                <span className={`text-sm font-bold ${rentalData.vacancy_rate_pct < 2 ? 'text-green-600' : 'text-orange-600'}`}>
+                  {rentalData.vacancy_rate_pct}%
+                </span>
+                {rentalData.vacancy_rate_pct < 2 && <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded">供不应求</span>}
+              </div>
+              <span className="text-xs text-gray-400">数据来源: CoreLogic {rentalData.last_updated}</span>
+            </div>
+          </div>
+        )}
+
+        {/* 🌊 洪水风险 */}
+        {floodData && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">🌊 洪水风险评估</h2>
+            <div className="flex items-center gap-4 mb-4">
+              <div className={`px-4 py-2 rounded-lg font-bold text-lg ${
+                floodData.risk_level === 'low' ? 'bg-green-100 text-green-700' :
+                floodData.risk_level === 'moderate' ? 'bg-yellow-100 text-yellow-700' :
+                floodData.risk_level === 'high' ? 'bg-red-100 text-red-700' :
+                'bg-red-200 text-red-800'
+              }`}>
+                {floodData.risk_level === 'low' ? '低风险' :
+                 floodData.risk_level === 'moderate' ? '中风险' :
+                 floodData.risk_level === 'high' ? '高风险' : '极高风险'}
+              </div>
+              <div className="text-sm text-gray-600">
+                约 <span className="font-bold">{floodData.affected_percentage}%</span> 区域受洪水覆盖影响
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {floodData.flood_types?.map((ft: string) => {
+                const ftMap: Record<string, string> = {
+                  riverine: '河流洪水', creek: '溪流洪水',
+                  overland_flow: '地表径流', storm_tide: '风暴潮'
+                };
+                return (
+                  <span key={ft} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
+                    {ftMap[ft] || ft}
+                  </span>
+                );
+              })}
+            </div>
+            <p className="text-sm text-gray-600 mb-2">
+              <span className="font-medium">最近重大洪水:</span> {floodData.last_major_flood}
+            </p>
+            <p className="text-xs text-gray-500 mb-3">{floodData.notes}</p>
+            <a
+              href={floodData.map_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              查看 BCC 洪水地图 →
+            </a>
+          </div>
+        )}
+
+        {/* 🏗️ 政府发展规划 */}
+        {developmentData && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">🏗️ 政府发展规划</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-sm text-gray-500">议会优先级:</span>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                developmentData.council_priority === 'high' ? 'bg-green-100 text-green-700' :
+                developmentData.council_priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                'bg-gray-100 text-gray-600'
+              }`}>
+                {developmentData.council_priority === 'high' ? '🔥 高优先' :
+                 developmentData.council_priority === 'medium' ? '⚡ 中优先' : '📋 低优先'}
+              </span>
+            </div>
+            <p className="text-sm text-gray-600 mb-4">{developmentData.zoning_summary}</p>
+            {developmentData.key_projects?.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">重点项目</h3>
+                <div className="space-y-3">
+                  {developmentData.key_projects.map((proj: any, i: number) => {
+                    const statusMap: Record<string, { label: string; color: string }> = {
+                      completed: { label: '已完成', color: 'bg-green-100 text-green-700' },
+                      under_construction: { label: '建设中', color: 'bg-blue-100 text-blue-700' },
+                      approved: { label: '已批准', color: 'bg-yellow-100 text-yellow-700' },
+                      proposed: { label: '规划中', color: 'bg-gray-100 text-gray-600' },
+                    };
+                    const status = statusMap[proj.status] || { label: proj.status, color: 'bg-gray-100 text-gray-600' };
+                    return (
+                      <div key={i} className="border border-gray-100 rounded-lg p-3">
+                        <div className="flex items-start justify-between mb-1">
+                          <span className="font-medium text-gray-800 text-sm">{proj.name}</span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ml-2 ${status.color}`}>
+                            {status.label}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500">{proj.description}</p>
+                        {proj.estimated_completion && proj.estimated_completion !== 'TBD' && (
+                          <p className="text-xs text-gray-400 mt-1">预计完成: {proj.estimated_completion}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {developmentData.infrastructure?.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">基础设施</h3>
+                <ul className="space-y-1">
+                  {developmentData.infrastructure.map((item: string, i: number) => (
+                    <li key={i} className="text-xs text-gray-600 flex items-start gap-2">
+                      <span className="text-green-500 mt-0.5">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 

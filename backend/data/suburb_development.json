@@ -1,0 +1,213 @@
+{
+  "Sunnybank": {
+    "zoning_summary": "Low Density Residential with commercial zones along Mains Road corridor. Neighbourhood centres with retail and food precincts.",
+    "key_projects": [
+      {
+        "name": "Sunnybank Market Square Redevelopment",
+        "description": "$40M redevelopment with 7,911sqm retail extension, 304 car parks, laneway dining precinct",
+        "status": "completed",
+        "estimated_completion": "2024"
+      },
+      {
+        "name": "Sunnybank Community & Sports Club Renovation",
+        "description": "Multi-stage renovation including sports bar, kitchen expansion, gym upgrade, outdoor spaces",
+        "status": "completed",
+        "estimated_completion": "2024"
+      },
+      {
+        "name": "Sunny Central Shopping Centre Extension",
+        "description": "Purpose-built commercial building at 95 Mains Road with food/drink tenancies and streetscape improvements",
+        "status": "approved",
+        "estimated_completion": "2025"
+      }
+    ],
+    "infrastructure": [
+      "Brisbane Metro M1 (Eight Mile Plains to Roma Street) - nearest major transit connection",
+      "Stable Swamp Creek stormwater management upgrades",
+      "Brisbane City Plan 2014 Minor Amendment Package R (Aug 2024)"
+    ],
+    "council_priority": "medium"
+  },
+  "Eight Mile Plains": {
+    "zoning_summary": "Mix of Low Density, Low-Medium Density Residential, and Emerging Community zones. Gateway Neighbourhood Plan (adopted Nov 2022) guides development around bus station.",
+    "key_projects": [
+      {
+        "name": "Brisbane Metro (M1 Line)",
+        "description": "$1.6B rapid transit with Eight Mile Plains as key terminus. 60 electric vehicles, 65 chargers, 2,300+ solar panels",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      },
+      {
+        "name": "M1 Pacific Motorway Eight Mile Plains to Daisy Hill Upgrade",
+        "description": "$750M upgrade widening M1 to 5 northbound lanes, extended SE Busway to Springwood, new Rochedale bus station",
+        "status": "completed",
+        "estimated_completion": "2024"
+      },
+      {
+        "name": "Satellite Health Centre",
+        "description": "$65.4M health facility with Minor Injury Clinic, dialysis, cancer therapy, medical imaging. Open 8am-10pm 7 days",
+        "status": "completed",
+        "estimated_completion": "2024"
+      }
+    ],
+    "infrastructure": [
+      "Brisbane Metro depot completed Sept 2024",
+      "Eight Mile Plains Gateway Neighbourhood Plan (Nov 2022)",
+      "South East Busway extension to Springwood completed",
+      "Logan and Gold Coast Faster Rail ($5.75B) - completion 2031"
+    ],
+    "council_priority": "high"
+  },
+  "Calamvale": {
+    "zoning_summary": "Low-Medium Density Residential with neighbourhood centres at Algester Road and Beaudesert Road. Townhouse development up to 2-storey along Beaudesert Road.",
+    "key_projects": [
+      {
+        "name": "Calam Reserve Residential Development",
+        "description": "28 premium home sites (300-698sqm) by Neptune Homes/Keylin. Rare infill development",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      },
+      {
+        "name": "Beaudesert Road Townhouses",
+        "description": "86 townhouses (3-4 bed) over 26,554sqm with communal areas, pool, village park",
+        "status": "approved",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Calamvale Community College Expansion",
+        "description": "Education facility enhancement for growing population",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      }
+    ],
+    "infrastructure": [
+      "Brisbane Metro M1 accessible via Eight Mile Plains station",
+      "Logan and Gold Coast Faster Rail ($5.75B) - improved rail connectivity by 2031",
+      "Beaudesert Road widening proposed",
+      "Population growth 9.9% since 2021 Census"
+    ],
+    "council_priority": "medium"
+  },
+  "Rochedale": {
+    "zoning_summary": "Emerging Community Zone, Low-Medium Density Residential, and Mixed Use under Rochedale Urban Community Neighbourhood Plan. Town Centre allows retail, commercial, medium-density residential.",
+    "key_projects": [
+      {
+        "name": "Rochedale Terrace ($380M Masterplan)",
+        "description": "6,000sqm park, retail pavilions, 7-storey hotel, tavern, ~300 apartments by Kinstone on 4-hectare site",
+        "status": "proposed",
+        "estimated_completion": "2028"
+      },
+      {
+        "name": "Residential Activation Fund - 1,285 New Homes",
+        "description": "QLD Government fast-tracking infrastructure under $2B fund to unlock 1,285 new homes",
+        "status": "approved",
+        "estimated_completion": "2028"
+      },
+      {
+        "name": "Citrine Rochedale Townhouses",
+        "description": "$100M luxury 3-4 bedroom townhouse project by Creation Projects",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      },
+      {
+        "name": "Florian Rise Apartments",
+        "description": "188-apartment masterplanned community. Stage 1: 62 apartments in two buildings (3 and 5 storeys)",
+        "status": "under_construction",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Brisbane Metro depot completed in Rochedale area",
+      "M1 upgrade completed - new Rochedale bus station and park-n-ride",
+      "South East Busway extension to Springwood",
+      "Rochedale Urban Community Neighbourhood Plan"
+    ],
+    "council_priority": "high"
+  },
+  "Mansfield": {
+    "zoning_summary": "Low Density Residential with some Character Residential (pre-1947 protection). Neighbourhood centre at Wecker Road. Parks cover 24.1% of suburb's 4.9 sq km.",
+    "key_projects": [
+      {
+        "name": "Wecker Road Markets Redevelopment",
+        "description": "Mansfield Tavern site redevelopment: supermarket, health care, gym, food/drink, specialty stores across 3 buildings",
+        "status": "approved",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Newnham/Wecker Road Intersection Upgrade",
+        "description": "$13.3M upgrade of intersection handling 35,000 vehicles and 474 buses daily",
+        "status": "completed",
+        "estimated_completion": "2023"
+      }
+    ],
+    "infrastructure": [
+      "Brisbane Metro M1 accessible via Eight Mile Plains station",
+      "Bulimba Creek sewer upgrade (microtunnelling project)",
+      "Cross River Rail (improved network capacity, opening ~2029)",
+      "Brisbane 2032 Olympics venue upgrades in broader region"
+    ],
+    "council_priority": "low"
+  },
+  "Ascot": {
+    "zoning_summary": "Low Density Residential, Character Residential (heritage areas), Sport and Recreation (Eagle Farm Racecourse). Racecourse Road zoned District Centre with active commercial frontage.",
+    "key_projects": [
+      {
+        "name": "Ascot Green - Eagle Farm Racecourse",
+        "description": "Part of BRC's $1.2B masterplan. 8 residential towers, 1,100+ apartments by Mirvac. Three towers completed, Stage 2 underway",
+        "status": "under_construction",
+        "estimated_completion": "2027"
+      },
+      {
+        "name": "John Power Grandstand - The Terraces",
+        "description": "New 4-storey tiered grandstand at Eagle Farm Racecourse by Hassell and RWA",
+        "status": "approved",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "123-125 Racecourse Road Mixed-Use",
+        "description": "5-storey mixed-use development on Racecourse Road",
+        "status": "approved",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Cross River Rail - Shorncliffe line through Eagle Junction to CBD, opening ~2029",
+      "Ascot Railway Station on Doomben line",
+      "Eagle Farm Racecourse $1.2B masterplan transformation",
+      "Brisbane 2032 Olympics transport infrastructure"
+    ],
+    "council_priority": "medium"
+  },
+  "Hamilton": {
+    "zoning_summary": "Highly diverse: District Centre along Racecourse Road, Northshore Hamilton Priority Development Area (304 hectares, managed by EDQ). Former industrial/wharf lands transforming to high-density mixed-use.",
+    "key_projects": [
+      {
+        "name": "Northshore Hamilton Urban Renewal",
+        "description": "QLD's largest waterfront urban renewal: 304 hectares, 3km river frontage, 14,000+ homes for ~24,500 people. $14B economic contribution. QLD Govt investing $100M+ in enabling infrastructure",
+        "status": "under_construction",
+        "estimated_completion": "2035"
+      },
+      {
+        "name": "Hamilton Grove (Wentworth Equities)",
+        "description": "3-tower mixed-use at 19 Hercules Street within Northshore PDA. Residential with ground-level retail/dining",
+        "status": "proposed",
+        "estimated_completion": "2028"
+      },
+      {
+        "name": "Racecourse Road Mixed-Use (Graya)",
+        "description": "4-storey mixed-use: 8 commercial tenancies, 37 apartments with rooftop communal spaces",
+        "status": "approved",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Northshore Hamilton PDA Development Scheme amended Nov 2025",
+      "QLD Government $100M+ enabling infrastructure for Northshore (delivery by early-mid 2028)",
+      "Riverfront parklands delivery planned for 2029",
+      "New school planned within Northshore PDA",
+      "Cross River Rail improved rail network capacity, opening ~2029",
+      "Brisbane 2032 Olympics - Northshore land repurposed for residential/mixed-use"
+    ],
+    "council_priority": "high"
+  }
+}

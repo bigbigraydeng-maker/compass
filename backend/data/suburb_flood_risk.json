@@ -1,0 +1,58 @@
+{
+  "Sunnybank": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 8,
+    "last_major_flood": "Feb 2022 - flash flood warnings, minor impact from Stable Swamp Creek overflow",
+    "notes": "Located within Stable Swamp Creek catchment. Most of suburb on moderate elevation. Low-lying areas near creeks at risk of overland flow.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Eight Mile Plains": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 5,
+    "last_major_flood": "Feb 2022 - minor localised flooding, largely unaffected due to elevated terrain (avg 49m)",
+    "notes": "One of Brisbane's more elevated southern suburbs. Contains headwaters of Bulimba Creek. Low-lying pockets near creek corridors have some risk.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Calamvale": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 10,
+    "last_major_flood": "Feb 2022 - localised creek and overland flow flooding in low-lying areas",
+    "notes": "Within Stable Swamp Creek and Oxley Creek catchments. Overland flow most frequent flood type. BCC Stable Swamp Creek Flood Study provides detailed modelling.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Rochedale": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 7,
+    "last_major_flood": "Feb 2022 - some localised creek flooding, not significantly impacted",
+    "notes": "Elevated terrain with new development incorporating modern stormwater management. Parts in Bulimba Creek and Slacks Creek catchments.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Mansfield": {
+    "risk_level": "moderate",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 15,
+    "last_major_flood": "Feb 2022 - creek flooding from Bulimba Creek and tributaries",
+    "notes": "Bulimba Creek (122 sq km catchment) flows through suburb. Flood overlay updated Sept 2023 per Bulimba Creek flood study. Urbanisation increased impervious surfaces.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Ascot": {
+    "risk_level": "high",
+    "flood_types": ["riverine", "creek", "overland_flow", "storm_tide"],
+    "affected_percentage": 30,
+    "last_major_flood": "Feb 2022 - Brisbane River peak 3.85m AHD, Breakfast Creek flooding. Also impacted in 2011 (4.46m peak)",
+    "notes": "Adjacent to Brisbane River and Breakfast Creek. Low-lying areas near Eagle Farm racecourse historically inundated. Flood insurance premiums can exceed $10,000/year in high-risk zones.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Hamilton": {
+    "risk_level": "high",
+    "flood_types": ["riverine", "creek", "overland_flow", "storm_tide"],
+    "affected_percentage": 35,
+    "last_major_flood": "Feb 2022 - Brisbane River flooding, riverside areas and Northshore precinct impacted. Also severely affected in 2011, 1974, and 1893",
+    "notes": "Kingsford Smith Drive divides hilly residential (lower risk) from flat former-wharf areas (high risk). Northshore Hamilton PDA has extensive flood management infrastructure. Over 1,000 homes in Breakfast Creek area submerged historically.",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  }
+}
