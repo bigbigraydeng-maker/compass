@@ -1,278 +1,301 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
+import SchoolMap from './SchoolMap';
+import SchoolDetailPanel from './SchoolDetailPanel';
+import SchoolCard from './SchoolCard';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
+const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '';
+
+const CORE_SUBURBS = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
 
 interface School {
   name: string;
-  school_type: string;
+  type: string;
+  school_type?: string;
   suburb: string;
+  sector: string;
+  naplan_score: number;
   naplan_percentile: number;
-  catchment_suburbs: string[] | string;
-  address?: string;
+  enrollment: number;
+  rating: number;
+  lat: number;
+  lng: number;
+  catchment_suburbs: string[];
+}
+
+interface CatchmentData {
+  suburbs_with_data: string[];
+  suburbs_without_data: string[];
+  aggregated: any;
 }
 
 export default function SchoolSearchPage() {
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
+  const [catchmentData, setCatchmentData] = useState<CatchmentData | null>(null);
+  const [catchmentLoading, setCatchmentLoading] = useState(false);
+  const [suburbGeoJSON, setSuburbGeoJSON] = useState<any>(null);
+  const [mapCollapsed, setMapCollapsed] = useState(false);
+
+  // Filters
   const [filterSuburb, setFilterSuburb] = useState('');
   const [filterType, setFilterType] = useState('');
-  const [analyzing, setAnalyzing] = useState<string | null>(null);
-  const [analysisResult, setAnalysisResult] = useState<Record<string, string>>({});
+  const [filterSector, setFilterSector] = useState('');
 
-  const suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
-
+  // Load schools + GeoJSON on mount
   useEffect(() => {
-    const loadSchools = async () => {
+    const loadAll = async () => {
       try {
-        let url = `${API_BASE}/api/schools`;
-        const params = new URLSearchParams();
-        if (filterSuburb) params.set('suburb', filterSuburb);
-        if (filterType) params.set('school_type', filterType);
-        if (params.toString()) url += `?${params.toString()}`;
+        const [schoolsRes, geoRes] = await Promise.all([
+          fetch(`${API_BASE}/api/schools`).then(r => r.ok ? r.json() : null),
+          fetch('/data/brisbane_suburbs.geojson').then(r => r.ok ? r.json() : null).catch(() => null),
+        ]);
 
-        const res = await fetch(url);
-        if (res.ok) {
-          const data = await res.json();
-          setSchools(data.schools || []);
+        if (schoolsRes?.schools) {
+          setSchools(schoolsRes.schools);
+        }
+        if (geoRes) {
+          setSuburbGeoJSON(geoRes);
         }
       } catch (e) {
-        console.error('Failed to load schools:', e);
+        console.error('Failed to load data:', e);
       } finally {
         setLoading(false);
       }
     };
-    loadSchools();
-  }, [filterSuburb, filterType]);
+    loadAll();
+  }, []);
 
-  const handleAnalyze = async (school: School) => {
-    const key = school.name;
-    if (analysisResult[key]) return; // 已有结果
-    setAnalyzing(key);
+  // Load catchment data when school selected
+  const handleSchoolSelect = useCallback(async (school: School) => {
+    setSelectedSchool(school);
+    setCatchmentData(null);
+    setCatchmentLoading(true);
 
     try {
-      const suburb = school.suburb || (Array.isArray(school.catchment_suburbs) ? school.catchment_suburbs[0] : school.catchment_suburbs) || 'Sunnybank';
-      const res = await fetch(`${API_BASE}/api/analyze`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          address: `${school.name}, ${suburb}`,
-          mode: 'school',
-        }),
-      });
+      const res = await fetch(`${API_BASE}/api/school/${encodeURIComponent(school.name)}/catchment-data`);
       if (res.ok) {
         const data = await res.json();
-        setAnalysisResult(prev => ({ ...prev, [key]: data.analysis || '分析完成' }));
-      } else {
-        setAnalysisResult(prev => ({ ...prev, [key]: '分析失败，请稍后重试' }));
+        setCatchmentData(data.catchment_data);
       }
-    } catch {
-      setAnalysisResult(prev => ({ ...prev, [key]: '网络错误，请稍后重试' }));
+    } catch (e) {
+      console.error('Failed to load catchment data:', e);
     } finally {
-      setAnalyzing(null);
+      setCatchmentLoading(false);
     }
-  };
+  }, []);
 
-  const getNaplanColor = (percentile: number) => {
-    if (percentile >= 80) return 'bg-green-500';
-    if (percentile >= 60) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
+  const handleCloseDetail = useCallback(() => {
+    setSelectedSchool(null);
+    setCatchmentData(null);
+  }, []);
 
-  const getNaplanLabel = (percentile: number) => {
-    if (percentile >= 80) return '优秀';
-    if (percentile >= 60) return '良好';
-    return '一般';
-  };
+  // Filtered schools
+  const filteredSchools = schools.filter(s => {
+    if (filterSuburb) {
+      const subMatch = s.suburb.toLowerCase() === filterSuburb.toLowerCase();
+      const catchMatch = s.catchment_suburbs.some(c => c.toLowerCase() === filterSuburb.toLowerCase());
+      if (!subMatch && !catchMatch) return false;
+    }
+    if (filterType && (s.type || s.school_type || '').toLowerCase() !== filterType.toLowerCase()) return false;
+    if (filterSector && s.sector.toLowerCase() !== filterSector.toLowerCase()) return false;
+    return true;
+  });
 
-  const getTypeLabel = (type: string) => {
-    const map: Record<string, string> = {
-      primary: '小学',
-      secondary: '中学',
-      combined: '综合',
-      special: '特殊',
-    };
-    return map[type?.toLowerCase()] || type;
-  };
+  const suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
 
-  const getTypeColor = (type: string) => {
-    const map: Record<string, string> = {
-      primary: 'bg-blue-100 text-blue-700',
-      secondary: 'bg-purple-100 text-purple-700',
-      combined: 'bg-orange-100 text-orange-700',
-    };
-    return map[type?.toLowerCase()] || 'bg-gray-100 text-gray-700';
-  };
+  // Filter Bar Component
+  const FilterBar = () => (
+    <div className="flex flex-wrap gap-2 mb-4">
+      <select
+        value={filterSuburb}
+        onChange={(e) => setFilterSuburb(e.target.value)}
+        className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-700 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+      >
+        <option value="">全部郊区</option>
+        {suburbs.map(s => (
+          <option key={s} value={s}>{s}</option>
+        ))}
+      </select>
+      <select
+        value={filterType}
+        onChange={(e) => setFilterType(e.target.value)}
+        className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-700 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+      >
+        <option value="">全部类型</option>
+        <option value="primary">小学</option>
+        <option value="secondary">中学</option>
+        <option value="combined">综合</option>
+      </select>
+      <select
+        value={filterSector}
+        onChange={(e) => setFilterSector(e.target.value)}
+        className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-700 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+      >
+        <option value="">全部性质</option>
+        <option value="Government">公立</option>
+        <option value="Catholic">天主教</option>
+        <option value="Independent">私立</option>
+      </select>
+      <span className="text-xs text-gray-400 self-center ml-auto">
+        {filteredSchools.length} 所学校
+      </span>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 64px)' }}>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+            <p className="text-gray-500">加载学校数据...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      {/* Hero 横幅 */}
-      <section className="relative bg-gradient-to-r from-emerald-700 to-emerald-900 text-white py-12 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">🏫 校区找房</h1>
-          <p className="text-sm md:text-xl text-emerald-100 max-w-2xl mx-auto">
-            按学区质量寻找投资机会 · NAPLAN 排名 · 学区房价值分析
-          </p>
-        </div>
-      </section>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-        {/* 筛选栏 */}
-        <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6 md:mb-8 border border-gray-200">
-          <div className="flex flex-col md:flex-row gap-3 md:gap-4">
-            <div className="flex-1">
-              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">郊区</label>
-              <select
-                value={filterSuburb}
-                onChange={(e) => setFilterSuburb(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 text-xs md:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              >
-                <option value="">全部郊区</option>
-                {suburbs.map(s => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex-1">
-              <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">学校类型</label>
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 text-xs md:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              >
-                <option value="">全部类型</option>
-                <option value="primary">小学</option>
-                <option value="secondary">中学</option>
-                <option value="combined">综合</option>
-              </select>
-            </div>
-            <div className="flex items-end">
-              <span className="text-xs md:text-sm text-gray-500">
-                共 {schools.length} 所学校
+      {/* ===== PC 布局 (lg+) ===== */}
+      <div className="hidden lg:flex" style={{ height: 'calc(100vh - 64px)' }}>
+        {/* Left: Map */}
+        <div className="w-[55%] xl:w-[60%] relative">
+          <SchoolMap
+            schools={filteredSchools}
+            selectedSchool={selectedSchool}
+            onSchoolSelect={handleSchoolSelect}
+            suburbBoundaries={suburbGeoJSON}
+            dataSuburbs={CORE_SUBURBS}
+            apiKey={MAPS_KEY}
+          />
+          {/* Map Legend */}
+          <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2 text-xs">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> NAPLAN 优秀
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span> 良好
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span> 一般
               </span>
             </div>
           </div>
         </div>
 
-        {/* 学校列表 */}
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-            <p className="text-gray-500">加载学校数据...</p>
-          </div>
-        ) : schools.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg">暂无学校数据</p>
-            <p className="text-gray-400 text-sm mt-2">请尝试调整筛选条件</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {schools.map((school, i) => {
-              const catchments = Array.isArray(school.catchment_suburbs)
-                ? school.catchment_suburbs
-                : typeof school.catchment_suburbs === 'string'
-                  ? school.catchment_suburbs.split(',').map(s => s.trim())
-                  : [];
+        {/* Right: Detail Panel or School List */}
+        <div className="w-[45%] xl:w-[40%] overflow-y-auto border-l border-gray-200 bg-gray-50">
+          {selectedSchool ? (
+            <SchoolDetailPanel
+              school={selectedSchool}
+              catchmentData={catchmentData}
+              loading={catchmentLoading}
+              onClose={handleCloseDetail}
+            />
+          ) : (
+            <div className="p-4">
+              {/* Header */}
+              <div className="mb-4">
+                <h1 className="text-xl font-bold text-gray-900 mb-1">校区找房</h1>
+                <p className="text-xs text-gray-500">
+                  点击地图上的学校标注，查看学区投资数据
+                </p>
+              </div>
 
-              return (
-                <div key={`${school.name}-${i}`} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="p-4 md:p-5">
-                    {/* 学校名 + 类型 */}
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="font-bold text-sm md:text-base text-gray-900 leading-tight flex-1 mr-2">
-                        {school.name}
-                      </h3>
-                      <span className={`text-[10px] md:text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${getTypeColor(school.school_type)}`}>
-                        {getTypeLabel(school.school_type)}
-                      </span>
-                    </div>
+              <FilterBar />
 
-                    {/* NAPLAN 进度条 */}
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between text-xs md:text-sm mb-1">
-                        <span className="text-gray-600">NAPLAN 百分位</span>
-                        <span className={`font-bold ${school.naplan_percentile >= 80 ? 'text-green-600' : school.naplan_percentile >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                          {school.naplan_percentile || 0}% · {getNaplanLabel(school.naplan_percentile || 0)}
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full transition-all ${getNaplanColor(school.naplan_percentile || 0)}`}
-                          style={{ width: `${Math.min(100, school.naplan_percentile || 0)}%` }}
-                        />
-                      </div>
-                    </div>
+              {/* School List */}
+              <div className="space-y-2">
+                {filteredSchools.map((school, i) => (
+                  <SchoolCard
+                    key={`${school.name}-${i}`}
+                    school={school}
+                    isSelected={false}
+                    onClick={() => handleSchoolSelect(school)}
+                  />
+                ))}
+              </div>
 
-                    {/* 学区覆盖郊区 */}
-                    {catchments.length > 0 && (
-                      <div className="mb-3">
-                        <p className="text-[10px] md:text-xs text-gray-500 mb-1">学区覆盖：</p>
-                        <div className="flex flex-wrap gap-1">
-                          {catchments.slice(0, 5).map((s, j) => (
-                            <Link
-                              key={j}
-                              href={`/suburb/${encodeURIComponent(s.trim())}`}
-                              className="text-[10px] md:text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full hover:bg-blue-100 hover:text-blue-600 transition-colors"
-                            >
-                              {s.trim()}
-                            </Link>
-                          ))}
-                          {catchments.length > 5 && (
-                            <span className="text-[10px] text-gray-400">+{catchments.length - 5}</span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* AI 分析按钮 */}
-                    <button
-                      onClick={() => handleAnalyze(school)}
-                      disabled={analyzing === school.name}
-                      className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-1"
-                    >
-                      {analyzing === school.name ? (
-                        <>
-                          <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                          </svg>
-                          AI 分析中...
-                        </>
-                      ) : analysisResult[school.name] ? (
-                        '📋 查看分析结果'
-                      ) : (
-                        '🤖 AI 分析学区价值'
-                      )}
-                    </button>
-
-                    {/* 分析结果 */}
-                    {analysisResult[school.name] && (
-                      <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-100 max-h-48 overflow-y-auto">
-                        <div className="text-xs md:text-sm text-gray-700 leading-relaxed">
-                          {analysisResult[school.name].split('\n').map((line, j) => {
-                            if (line.startsWith('## ')) return <h4 key={j} className="font-bold text-emerald-800 mt-2 mb-1 text-xs md:text-sm">{line.replace('## ', '')}</h4>;
-                            if (line.startsWith('- ')) return <li key={j} className="ml-3 text-[10px] md:text-xs">{line.replace('- ', '')}</li>;
-                            if (line.trim() === '') return <br key={j} />;
-                            return <p key={j} className="text-[10px] md:text-xs mb-0.5">{line}</p>;
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+              {filteredSchools.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">暂无匹配的学校</p>
+                  <p className="text-gray-400 text-xs mt-1">请调整筛选条件</p>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <Footer />
+      {/* ===== 手机布局 (< lg) ===== */}
+      <div className="lg:hidden flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
+        {/* Map Section */}
+        <div
+          className={`relative transition-all duration-300 ${
+            mapCollapsed ? 'h-32' : 'h-56'
+          }`}
+        >
+          <SchoolMap
+            schools={filteredSchools}
+            selectedSchool={selectedSchool}
+            onSchoolSelect={handleSchoolSelect}
+            suburbBoundaries={suburbGeoJSON}
+            dataSuburbs={CORE_SUBURBS}
+            apiKey={MAPS_KEY}
+          />
+          {/* Collapse toggle */}
+          <button
+            onClick={() => setMapCollapsed(!mapCollapsed)}
+            className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center text-gray-600"
+          >
+            <svg className={`w-4 h-4 transition-transform ${mapCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Content below map */}
+        <div className="flex-1 overflow-y-auto">
+          {selectedSchool ? (
+            <SchoolDetailPanel
+              school={selectedSchool}
+              catchmentData={catchmentData}
+              loading={catchmentLoading}
+              onClose={handleCloseDetail}
+            />
+          ) : (
+            <div className="p-3">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="text-lg font-bold text-gray-900">校区找房</h1>
+                <span className="text-xs text-gray-400">{filteredSchools.length} 所学校</span>
+              </div>
+
+              <FilterBar />
+
+              <div className="space-y-2">
+                {filteredSchools.map((school, i) => (
+                  <SchoolCard
+                    key={`${school.name}-${i}`}
+                    school={school}
+                    isSelected={false}
+                    onClick={() => handleSchoolSelect(school)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

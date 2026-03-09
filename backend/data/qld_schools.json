@@ -7,7 +7,12 @@
     "naplan_score": 533,
     "enrollment": 1689,
     "rating": 9.5,
-    "catchment_suburbs": ["Sunnybank Hills", "Sunnybank"]
+    "catchment_suburbs": [
+      "Sunnybank Hills",
+      "Sunnybank"
+    ],
+    "lat": -27.594065,
+    "lng": 153.055765
   },
   {
     "name": "Sunnybank State School",
@@ -17,7 +22,11 @@
     "naplan_score": 460,
     "enrollment": 324,
     "rating": 6.5,
-    "catchment_suburbs": ["Sunnybank"]
+    "catchment_suburbs": [
+      "Sunnybank"
+    ],
+    "lat": -27.576079,
+    "lng": 153.051921
   },
   {
     "name": "Our Lady of Lourdes Primary School",
@@ -27,7 +36,15 @@
     "naplan_score": 490,
     "enrollment": 534,
     "rating": 7.5,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn", "Parkinson", "Underwood"]
+    "catchment_suburbs": [
+      "Sunnybank",
+      "Sunnybank Hills",
+      "Runcorn",
+      "Parkinson",
+      "Underwood"
+    ],
+    "lat": -27.581385,
+    "lng": 153.06125
   },
   {
     "name": "Runcorn State School",
@@ -37,7 +54,12 @@
     "naplan_score": 480,
     "enrollment": 555,
     "rating": 7.0,
-    "catchment_suburbs": ["Runcorn", "Sunnybank"]
+    "catchment_suburbs": [
+      "Runcorn",
+      "Sunnybank"
+    ],
+    "lat": -27.59308,
+    "lng": 153.076488
   },
   {
     "name": "Sunnybank State High School",
@@ -47,7 +69,14 @@
     "naplan_score": 470,
     "enrollment": 666,
     "rating": 5.5,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Robertson", "Runcorn"]
+    "catchment_suburbs": [
+      "Sunnybank",
+      "Sunnybank Hills",
+      "Robertson",
+      "Runcorn"
+    ],
+    "lat": -27.576475,
+    "lng": 153.058435
   },
   {
     "name": "St Thomas More College",
@@ -57,7 +86,16 @@
     "naplan_score": 500,
     "enrollment": 1100,
     "rating": 6.5,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn", "Parkinson", "Algester", "Calamvale"]
+    "catchment_suburbs": [
+      "Sunnybank",
+      "Sunnybank Hills",
+      "Runcorn",
+      "Parkinson",
+      "Algester",
+      "Calamvale"
+    ],
+    "lat": -27.574038,
+    "lng": 153.04928
   },
   {
     "name": "Eight Mile Plains State School",
@@ -67,7 +105,11 @@
     "naplan_score": 430,
     "enrollment": 336,
     "rating": 5.5,
-    "catchment_suburbs": ["Eight Mile Plains"]
+    "catchment_suburbs": [
+      "Eight Mile Plains"
+    ],
+    "lat": -27.593445,
+    "lng": 153.109212
   },
   {
     "name": "Warrigal Road State School",
@@ -77,7 +119,12 @@
     "naplan_score": 500,
     "enrollment": 1303,
     "rating": 7.5,
-    "catchment_suburbs": ["Eight Mile Plains", "Runcorn"]
+    "catchment_suburbs": [
+      "Eight Mile Plains",
+      "Runcorn"
+    ],
+    "lat": -27.586589,
+    "lng": 153.084693
   },
   {
     "name": "Runcorn State High School",
@@ -87,7 +134,13 @@
     "naplan_score": 440,
     "enrollment": 843,
     "rating": 4.5,
-    "catchment_suburbs": ["Runcorn", "Eight Mile Plains", "Sunnybank"]
+    "catchment_suburbs": [
+      "Runcorn",
+      "Eight Mile Plains",
+      "Sunnybank"
+    ],
+    "lat": -27.59308,
+    "lng": 153.076488
   },
   {
     "name": "MacGregor State High School",
@@ -97,7 +150,14 @@
     "naplan_score": 475,
     "enrollment": 1207,
     "rating": 6.0,
-    "catchment_suburbs": ["Macgregor", "Eight Mile Plains", "Robertson", "Sunnybank"]
+    "catchment_suburbs": [
+      "Macgregor",
+      "Eight Mile Plains",
+      "Robertson",
+      "Sunnybank"
+    ],
+    "lat": -27.566095,
+    "lng": 153.076722
   },
   {
     "name": "Calamvale Community College",
@@ -107,7 +167,13 @@
     "naplan_score": 485,
     "enrollment": 2520,
     "rating": 7.0,
-    "catchment_suburbs": ["Calamvale", "Stretton", "Drewvale"]
+    "catchment_suburbs": [
+      "Calamvale",
+      "Stretton",
+      "Drewvale"
+    ],
+    "lat": -27.6257,
+    "lng": 153.043133
   },
   {
     "name": "Stretton State College",
@@ -117,7 +183,13 @@
     "naplan_score": 490,
     "enrollment": 3491,
     "rating": 7.5,
-    "catchment_suburbs": ["Stretton", "Calamvale", "Parkinson"]
+    "catchment_suburbs": [
+      "Stretton",
+      "Calamvale",
+      "Parkinson"
+    ],
+    "lat": -27.639331,
+    "lng": 153.05614
   },
   {
     "name": "Wisdom College",
@@ -127,7 +199,14 @@
     "naplan_score": 445,
     "enrollment": 282,
     "rating": 5.0,
-    "catchment_suburbs": ["Calamvale", "Algester", "Parkinson", "Stretton"]
+    "catchment_suburbs": [
+      "Calamvale",
+      "Algester",
+      "Parkinson",
+      "Stretton"
+    ],
+    "lat": -27.621643,
+    "lng": 153.034288
   },
   {
     "name": "St Stephen's School",
@@ -137,7 +216,13 @@
     "naplan_score": 485,
     "enrollment": 516,
     "rating": 7.0,
-    "catchment_suburbs": ["Algester", "Calamvale", "Parkinson"]
+    "catchment_suburbs": [
+      "Algester",
+      "Calamvale",
+      "Parkinson"
+    ],
+    "lat": -27.618202,
+    "lng": 153.029527
   },
   {
     "name": "Rochedale State School",
@@ -147,7 +232,12 @@
     "naplan_score": 495,
     "enrollment": 1043,
     "rating": 7.5,
-    "catchment_suburbs": ["Rochedale", "Rochedale South"]
+    "catchment_suburbs": [
+      "Rochedale",
+      "Rochedale South"
+    ],
+    "lat": -27.580451,
+    "lng": 153.126041
   },
   {
     "name": "Rochedale South State School",
@@ -157,7 +247,12 @@
     "naplan_score": 465,
     "enrollment": 475,
     "rating": 6.0,
-    "catchment_suburbs": ["Rochedale South", "Rochedale"]
+    "catchment_suburbs": [
+      "Rochedale South",
+      "Rochedale"
+    ],
+    "lat": -27.59071,
+    "lng": 153.129456
   },
   {
     "name": "St Peter's Catholic Primary School",
@@ -167,7 +262,13 @@
     "naplan_score": 490,
     "enrollment": 501,
     "rating": 7.0,
-    "catchment_suburbs": ["Rochedale", "Rochedale South", "Eight Mile Plains"]
+    "catchment_suburbs": [
+      "Rochedale",
+      "Rochedale South",
+      "Eight Mile Plains"
+    ],
+    "lat": -27.592602,
+    "lng": 153.121311
   },
   {
     "name": "Rochedale State High School",
@@ -177,7 +278,13 @@
     "naplan_score": 480,
     "enrollment": 1371,
     "rating": 6.5,
-    "catchment_suburbs": ["Rochedale", "Rochedale South", "Underwood"]
+    "catchment_suburbs": [
+      "Rochedale",
+      "Rochedale South",
+      "Underwood"
+    ],
+    "lat": -27.585877,
+    "lng": 153.112689
   },
   {
     "name": "Redeemer Lutheran College",
@@ -187,7 +294,15 @@
     "naplan_score": 530,
     "enrollment": 1000,
     "rating": 8.5,
-    "catchment_suburbs": ["Rochedale", "Rochedale South", "Eight Mile Plains", "Underwood", "Springwood"]
+    "catchment_suburbs": [
+      "Rochedale",
+      "Rochedale South",
+      "Eight Mile Plains",
+      "Underwood",
+      "Springwood"
+    ],
+    "lat": -27.584573,
+    "lng": 153.123658
   },
   {
     "name": "Mansfield State School",
@@ -197,7 +312,12 @@
     "naplan_score": 505,
     "enrollment": 1196,
     "rating": 8.0,
-    "catchment_suburbs": ["Mansfield", "Wishart"]
+    "catchment_suburbs": [
+      "Mansfield",
+      "Wishart"
+    ],
+    "lat": -27.545242,
+    "lng": 153.105865
   },
   {
     "name": "Mansfield State High School",
@@ -207,7 +327,18 @@
     "naplan_score": 545,
     "enrollment": 3400,
     "rating": 8.5,
-    "catchment_suburbs": ["Mansfield", "Wishart", "Mackenzie", "Rochedale", "Burbank", "Upper Mount Gravatt", "Mount Gravatt East", "Carindale"]
+    "catchment_suburbs": [
+      "Mansfield",
+      "Wishart",
+      "Mackenzie",
+      "Rochedale",
+      "Burbank",
+      "Upper Mount Gravatt",
+      "Mount Gravatt East",
+      "Carindale"
+    ],
+    "lat": -27.545242,
+    "lng": 153.105865
   },
   {
     "name": "Brisbane Adventist College",
@@ -217,7 +348,14 @@
     "naplan_score": 505,
     "enrollment": 575,
     "rating": 7.0,
-    "catchment_suburbs": ["Mansfield", "Wishart", "Mount Gravatt", "Upper Mount Gravatt"]
+    "catchment_suburbs": [
+      "Mansfield",
+      "Wishart",
+      "Mount Gravatt",
+      "Upper Mount Gravatt"
+    ],
+    "lat": -27.544922,
+    "lng": 153.098113
   },
   {
     "name": "Citipointe Christian College",
@@ -227,7 +365,14 @@
     "naplan_score": 533,
     "enrollment": 1600,
     "rating": 9.0,
-    "catchment_suburbs": ["Carindale", "Mansfield", "Carina", "Camp Hill"]
+    "catchment_suburbs": [
+      "Carindale",
+      "Mansfield",
+      "Carina",
+      "Camp Hill"
+    ],
+    "lat": -27.534755,
+    "lng": 153.113089
   },
   {
     "name": "Ascot State School",
@@ -237,7 +382,13 @@
     "naplan_score": 500,
     "enrollment": 680,
     "rating": 7.5,
-    "catchment_suburbs": ["Ascot", "Hamilton", "Hendra"]
+    "catchment_suburbs": [
+      "Ascot",
+      "Hamilton",
+      "Hendra"
+    ],
+    "lat": -27.43308,
+    "lng": 153.055483
   },
   {
     "name": "St Margaret's Anglican Girls School",
@@ -247,7 +398,16 @@
     "naplan_score": 559,
     "enrollment": 1460,
     "rating": 9.0,
-    "catchment_suburbs": ["Ascot", "Hamilton", "Clayfield", "Hendra", "Nundah", "Wooloowin"]
+    "catchment_suburbs": [
+      "Ascot",
+      "Hamilton",
+      "Clayfield",
+      "Hendra",
+      "Nundah",
+      "Wooloowin"
+    ],
+    "lat": -27.43059,
+    "lng": 153.04963
   },
   {
     "name": "Eagle Junction State School",
@@ -257,7 +417,14 @@
     "naplan_score": 510,
     "enrollment": 938,
     "rating": 8.0,
-    "catchment_suburbs": ["Clayfield", "Ascot", "Hendra", "Wooloowin"]
+    "catchment_suburbs": [
+      "Clayfield",
+      "Ascot",
+      "Hendra",
+      "Wooloowin"
+    ],
+    "lat": -27.417792,
+    "lng": 153.050574
   },
   {
     "name": "St Agatha's Primary School",
@@ -267,7 +434,14 @@
     "naplan_score": 490,
     "enrollment": 338,
     "rating": 7.0,
-    "catchment_suburbs": ["Clayfield", "Ascot", "Hamilton", "Hendra"]
+    "catchment_suburbs": [
+      "Clayfield",
+      "Ascot",
+      "Hamilton",
+      "Hendra"
+    ],
+    "lat": -27.426367,
+    "lng": 153.0546
   },
   {
     "name": "Aviation High School",
@@ -277,7 +451,18 @@
     "naplan_score": 490,
     "enrollment": 670,
     "rating": 7.0,
-    "catchment_suburbs": ["Ascot", "Hamilton", "Hendra", "Clayfield", "Eagle Farm", "Pinkenba", "Nundah", "Brisbane Airport"]
+    "catchment_suburbs": [
+      "Ascot",
+      "Hamilton",
+      "Hendra",
+      "Clayfield",
+      "Eagle Farm",
+      "Pinkenba",
+      "Nundah",
+      "Brisbane Airport"
+    ],
+    "lat": -27.413811,
+    "lng": 153.063928
   },
   {
     "name": "Clayfield College",
@@ -287,7 +472,16 @@
     "naplan_score": 520,
     "enrollment": 800,
     "rating": 8.0,
-    "catchment_suburbs": ["Clayfield", "Ascot", "Hamilton", "Hendra", "Albion", "Eagle Junction"]
+    "catchment_suburbs": [
+      "Clayfield",
+      "Ascot",
+      "Hamilton",
+      "Hendra",
+      "Albion",
+      "Eagle Junction"
+    ],
+    "lat": -27.420222,
+    "lng": 153.052696
   },
   {
     "name": "St Rita's College",
@@ -297,7 +491,16 @@
     "naplan_score": 525,
     "enrollment": 1203,
     "rating": 8.0,
-    "catchment_suburbs": ["Clayfield", "Ascot", "Hamilton", "Hendra", "Nundah", "Wooloowin"]
+    "catchment_suburbs": [
+      "Clayfield",
+      "Ascot",
+      "Hamilton",
+      "Hendra",
+      "Nundah",
+      "Wooloowin"
+    ],
+    "lat": -27.425604,
+    "lng": 153.055573
   },
   {
     "name": "Hamilton State School",
@@ -307,7 +510,12 @@
     "naplan_score": 475,
     "enrollment": 147,
     "rating": 6.5,
-    "catchment_suburbs": ["Hamilton", "Ascot"]
+    "catchment_suburbs": [
+      "Hamilton",
+      "Ascot"
+    ],
+    "lat": -27.432485,
+    "lng": 153.073982
   },
   {
     "name": "Hendra State School",
@@ -317,6 +525,14 @@
     "naplan_score": 440,
     "enrollment": 31,
     "rating": 5.0,
-    "catchment_suburbs": ["Hendra", "Hamilton", "Clayfield", "Nundah", "Ascot"]
+    "catchment_suburbs": [
+      "Hendra",
+      "Hamilton",
+      "Clayfield",
+      "Nundah",
+      "Ascot"
+    ],
+    "lat": -27.42152,
+    "lng": 153.074179
   }
 ]

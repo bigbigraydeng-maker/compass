@@ -2250,6 +2250,212 @@ def get_all_schools(suburb: Optional[str] = None, school_type: Optional[str] = N
         return {"schools": [], "total": 0}
 
 
+@app.get("/api/school/{school_name}/catchment-data")
+def get_school_catchment_data(school_name: str):
+    """
+    获取学校学区聚合数据：合并所有 catchment suburbs 的 sales/trends/crime/rental
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    CORE_SUBURBS = ['Sunnybank', 'Eight Mile Plains', 'Calamvale',
+                    'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+
+    # 1. 加载学校数据
+    try:
+        schools_path = os.path.join(os.path.dirname(__file__), "data/qld_schools.json")
+        with open(schools_path, "r", encoding="utf-8") as f:
+            all_schools = json.load(f)
+    except Exception:
+        raise HTTPException(status_code=500, detail="无法加载学校数据")
+
+    # 查找学校（URL decode 后匹配）
+    school = None
+    for s in all_schools:
+        if s['name'].lower() == school_name.lower():
+            school = s
+            break
+    if not school:
+        raise HTTPException(status_code=404, detail=f"未找到学校: {school_name}")
+
+    # 统一字段
+    if school.get('naplan_score') and not school.get('naplan_percentile'):
+        school['naplan_percentile'] = max(0, min(100, round((school['naplan_score'] - 300) / 4)))
+    if 'school_type' not in school and 'type' in school:
+        school['school_type'] = school['type']
+
+    catchment = school.get('catchment_suburbs', [])
+    data_suburbs = [s for s in catchment if s in CORE_SUBURBS]
+    no_data_suburbs = [s for s in catchment if s not in CORE_SUBURBS]
+
+    if not data_suburbs:
+        return {
+            "school": school,
+            "catchment_data": {
+                "suburbs_with_data": [],
+                "suburbs_without_data": no_data_suburbs,
+                "aggregated": None
+            }
+        }
+
+    # 2. 并行查询每个有数据的郊区
+    def query_suburb(suburb_name_inner):
+        result = {"suburb": suburb_name_inner}
+        try:
+            # 中位价 + 总销量
+            stats = execute_query(
+                "SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sale_price) as median_price, "
+                "COUNT(*) as total_sales FROM sales WHERE UPPER(suburb) = UPPER(%s)",
+                (suburb_name_inner,)
+            )
+            if stats and len(stats) > 0:
+                row = stats[0]
+                result["median_price"] = float(row.get('median_price', 0) or 0)
+                result["total_sales"] = int(row.get('total_sales', 0) or 0)
+            else:
+                result["median_price"] = 0
+                result["total_sales"] = 0
+
+            # 近期成交 (每个郊区取 5 条)
+            sales_rows = execute_query(
+                "SELECT full_address as address, sale_price as sold_price, "
+                "sale_date as sold_date, property_type, bedrooms, bathrooms, land_size, "
+                "INITCAP(suburb) as suburb FROM sales "
+                "WHERE UPPER(suburb) = UPPER(%s) ORDER BY sale_date DESC LIMIT 5",
+                (suburb_name_inner,)
+            )
+            result["recent_sales"] = []
+            for r in (sales_rows or []):
+                result["recent_sales"].append({
+                    "address": r.get("address", ""),
+                    "suburb": r.get("suburb", suburb_name_inner),
+                    "sold_price": int(r.get("sold_price", 0) or 0),
+                    "sold_date": str(r.get("sold_date", "")),
+                    "property_type": r.get("property_type", ""),
+                    "bedrooms": int(r.get("bedrooms", 0) or 0),
+                    "bathrooms": int(r.get("bathrooms", 0) or 0),
+                    "land_size": int(r.get("land_size", 0) or 0),
+                })
+
+            # 月度走势 (12 个月)
+            trend_rows = execute_query(
+                "SELECT TO_CHAR(DATE_TRUNC('month', sale_date), 'YYYY-MM') as month, "
+                "PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY sale_price) as median_price, "
+                "COUNT(*) as total_sales FROM sales "
+                "WHERE UPPER(suburb) = UPPER(%s) AND sale_date >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '12 months') "
+                "GROUP BY DATE_TRUNC('month', sale_date) ORDER BY month",
+                (suburb_name_inner,)
+            )
+            result["monthly_trends"] = [
+                {"month": r["month"], "median_price": float(r.get("median_price", 0) or 0),
+                 "total_sales": int(r.get("total_sales", 0))}
+                for r in (trend_rows or [])
+            ]
+
+            # 犯罪统计
+            crime_rows = execute_query(
+                "SELECT category, SUM(count) as total FROM crime_stats "
+                "WHERE LOWER(suburb) = LOWER(%s) AND month_year >= TO_CHAR(NOW() - INTERVAL '12 months', 'YYYY-MM') "
+                "GROUP BY category ORDER BY total DESC",
+                (suburb_name_inner,)
+            )
+            result["crime"] = {r['category']: int(r['total']) for r in (crime_rows or [])}
+
+        except Exception as e:
+            result["error"] = str(e)
+        return result
+
+    # 3. ThreadPoolExecutor 并行查询
+    suburb_results = {}
+    with ThreadPoolExecutor(max_workers=7) as pool:
+        futures = {pool.submit(query_suburb, s): s for s in data_suburbs}
+        for future in as_completed(futures):
+            suburb = futures[future]
+            try:
+                suburb_results[suburb] = future.result()
+            except Exception as e:
+                suburb_results[suburb] = {"suburb": suburb, "error": str(e)}
+
+    # 4. 聚合结果
+    all_sales = []
+    all_trends = {}
+    total_sales_sum = 0
+    weighted_price_sum = 0
+    crime_agg = {}
+
+    for suburb, data in suburb_results.items():
+        ts = data.get("total_sales", 0)
+        mp = data.get("median_price", 0)
+        total_sales_sum += ts
+        weighted_price_sum += mp * ts
+
+        all_sales.extend(data.get("recent_sales", []))
+
+        for trend in data.get("monthly_trends", []):
+            month = trend["month"]
+            if month not in all_trends:
+                all_trends[month] = []
+            all_trends[month].append(trend)
+
+        for cat, count in data.get("crime", {}).items():
+            crime_agg[cat] = crime_agg.get(cat, 0) + count
+
+    # 排序 + 截取近期成交
+    all_sales.sort(key=lambda x: x.get("sold_date", ""), reverse=True)
+    all_sales = all_sales[:10]
+
+    # 聚合月度走势
+    agg_trends = []
+    for month in sorted(all_trends.keys()):
+        entries = all_trends[month]
+        total_count = sum(e["total_sales"] for e in entries)
+        if total_count > 0:
+            weighted_median = sum(e["median_price"] * e["total_sales"] for e in entries) / total_count
+        else:
+            weighted_median = 0
+        agg_trends.append({
+            "month": month,
+            "median_price": round(weighted_median),
+            "total_sales": total_count
+        })
+
+    # 租赁数据 (从 JSON 文件平均)
+    rental_agg = {}
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(script_dir, "data", "suburb_rental_yields.json"), "r", encoding="utf-8") as f:
+            rental_all = json.load(f)
+        rental_entries = [rental_all[s] for s in data_suburbs if s in rental_all]
+        if rental_entries:
+            for key in ["median_house_rent_weekly", "median_unit_rent_weekly",
+                        "house_rental_yield_pct", "unit_rental_yield_pct", "vacancy_rate_pct",
+                        "days_on_market_house", "days_on_market_unit"]:
+                vals = [e.get(key, 0) for e in rental_entries if e.get(key)]
+                rental_agg[key] = round(sum(vals) / len(vals), 2) if vals else 0
+    except Exception:
+        pass
+
+    aggregated_median = round(weighted_price_sum / max(total_sales_sum, 1))
+
+    return {
+        "school": school,
+        "catchment_data": {
+            "suburbs_with_data": data_suburbs,
+            "suburbs_without_data": no_data_suburbs,
+            "aggregated": {
+                "median_price": aggregated_median,
+                "total_sales": total_sales_sum,
+                "recent_sales": all_sales,
+                "monthly_trends": agg_trends,
+                "rental": rental_agg,
+                "crime": {
+                    "total_crimes": sum(crime_agg.values()),
+                    "categories": crime_agg
+                }
+            }
+        }
+    }
+
+
 @app.post("/api/chat")
 def chat_with_advisor(
     message: str = Body(...),
