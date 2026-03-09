@@ -1,4 +1,4 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8888';
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE || 'https://compass-r58x.onrender.com';
 
 // === 内存缓存：相同数据5分钟内不重复请求 ===
 const cache = new Map<string, { data: any; timestamp: number }>();

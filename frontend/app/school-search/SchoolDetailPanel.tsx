@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
 interface Sale {
   address: string;

@@ -7,8 +7,8 @@ import SchoolDetailPanel from './SchoolDetailPanel';
 import SchoolCard from './SchoolCard';
 import { ALL_SUBURBS } from '../lib/suburbs';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
-const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
+const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || 'AIzaSyAT1zfCy7Qr1_5oEeiLxaMyIwQfowyM0pI';
 
 const CORE_SUBURBS = [...ALL_SUBURBS];
 

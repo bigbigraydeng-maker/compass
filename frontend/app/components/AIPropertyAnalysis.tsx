@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
 export default function AIPropertyAnalysis() {
   const [address, setAddress] = useState('');
