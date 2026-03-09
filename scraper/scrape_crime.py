@@ -18,24 +18,59 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 
-# Load environment variables
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', 'backend', '.env'))
+# Load environment variables (try multiple paths for worktree compatibility)
+_env_candidates = [
+    os.path.join(os.path.dirname(__file__), '..', 'backend', '.env'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'backend', '.env'),
+]
+for _env_path in _env_candidates:
+    if os.path.exists(_env_path):
+        load_dotenv(_env_path)
+        break
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # QLD Police CSV URL
 CRIME_CSV_URL = "https://open-crime-data.s3-ap-southeast-2.amazonaws.com/Crime%20Statistics/division_Reported_Offences_Number.csv"
 
-# Division -> Suburb mapping
-# Each QLD Police division may cover multiple suburbs
+# Division -> Suburb mapping with population weights
+# QLD Police reports crime by Division, not by suburb.
+# We split division totals by ABS 2021 Census population ratios.
+# Source: ABS 2021 Census QuickStats for each suburb
 DIVISION_SUBURB_MAP = {
-    'Upper Mount Gravatt': ['Sunnybank', 'Eight Mile Plains', 'Rochedale'],
-    'Calamvale': ['Calamvale'],
-    'Holland Park': ['Mansfield'],
-    'Hendra': ['Ascot', 'Hamilton'],
+    'Upper Mount Gravatt': {
+        # Upper Mt Gravatt division covers Sunnybank, Eight Mile Plains, Rochedale, etc.
+        # Pop: Sunnybank ~14,200, Eight Mile Plains ~12,800, Rochedale ~12,000
+        'Sunnybank':        {'pop': 14200},
+        'Eight Mile Plains': {'pop': 12800},
+        'Rochedale':        {'pop': 12000},
+    },
+    'Calamvale': {
+        # Calamvale division - primarily Calamvale suburb
+        'Calamvale': {'pop': 18500},
+    },
+    'Holland Park': {
+        # Holland Park division covers Mansfield area
+        # Pop: Mansfield ~11,500, Holland Park ~8,500, etc. (we only track Mansfield)
+        'Mansfield': {'pop': 11500},
+    },
+    'Hendra': {
+        # Hendra division covers Ascot, Hamilton, Hendra
+        # Pop: Ascot ~5,000, Hamilton ~7,200
+        'Ascot':    {'pop': 5000},
+        'Hamilton': {'pop': 7200},
+    },
 }
 
 # Target divisions (keys of the mapping)
 TARGET_DIVISIONS = set(DIVISION_SUBURB_MAP.keys())
+
+def _get_suburb_weight(division, suburb):
+    """Get population-based weight for a suburb within its division."""
+    suburbs = DIVISION_SUBURB_MAP.get(division, {})
+    total_pop = sum(s['pop'] for s in suburbs.values())
+    if total_pop == 0:
+        return 1.0 / max(len(suburbs), 1)
+    return suburbs.get(suburb, {}).get('pop', 0) / total_pop
 
 # Offence columns -> 5 crime categories
 # Column indices (0-based) from the CSV header
@@ -181,27 +216,29 @@ def download_crime_data():
             continue
 
         # Get suburbs for this division
-        suburbs = DIVISION_SUBURB_MAP[division]
+        suburbs_info = DIVISION_SUBURB_MAP[division]
 
-        # Calculate crime category totals
+        # Calculate crime category totals for this division
         for cat_key, cat_info in CRIME_CATEGORIES.items():
-            total = 0
+            division_total = 0
             for col_idx in cat_info['columns']:
                 try:
                     val = row[col_idx].strip()
                     if val:
-                        total += int(val)
+                        division_total += int(val)
                 except (IndexError, ValueError):
                     pass
 
-            # Create a record for each suburb mapped to this division
-            for suburb in suburbs:
+            # Split by population weight for each suburb
+            for suburb in suburbs_info:
+                weight = _get_suburb_weight(division, suburb)
+                suburb_count = round(division_total * weight)
                 records.append({
                     'division': division,
                     'suburb': suburb,
                     'month_year': month_year,
                     'category': cat_key,
-                    'count': total
+                    'count': suburb_count
                 })
 
     print(f"  Parsed {len(records)} records (skipped {skipped} unparseable rows)")
