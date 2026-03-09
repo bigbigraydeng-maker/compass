@@ -593,23 +593,29 @@ def get_suburb_score(suburb_name: str):
     # 2. 学区质量 (25分)
     # 取对口学校最高 NAPLAN percentile
     school_score = 12  # 默认中等
-    
+
     try:
         schools_path = os.path.join(os.path.dirname(__file__), "data/qld_schools.json")
         if os.path.exists(schools_path):
             with open(schools_path) as f:
                 schools_data = json.load(f)
-            
+
             top_naplan = 0
             for school in schools_data:
                 catchments = school.get("catchment_suburbs", [])
                 if isinstance(catchments, str):
                     catchments = [catchments]
                 if suburb_name.upper() in [c.upper() for c in catchments]:
+                    # 支持 naplan_score (绝对分 300-700) 和 naplan_percentile (百分位 0-100)
                     naplan = school.get("naplan_percentile", 0) or 0
+                    naplan_abs = school.get("naplan_score", 0) or 0
+                    if naplan_abs > 0 and naplan == 0:
+                        # 将绝对分转换为百分位: 300=0%, 500=50%, 600=80%, 700=100%
+                        naplan = max(0, min(100, round((naplan_abs - 300) / 4)))
                     top_naplan = max(top_naplan, naplan)
-            
-            school_score = round((top_naplan / 100) * 25)
+
+            if top_naplan > 0:
+                school_score = max(1, round((top_naplan / 100) * 25))
     except Exception as e:
         pass
     
@@ -864,9 +870,12 @@ def get_rankings():
                     catchments = [catchments]
                 if suburb.upper() in [c.upper() for c in catchments]:
                     naplan = school.get("naplan_percentile", 0) or 0
+                    naplan_abs = school.get("naplan_score", 0) or 0
+                    if naplan_abs > 0 and naplan == 0:
+                        naplan = max(0, min(100, round((naplan_abs - 300) / 4)))
                     top_naplan = max(top_naplan, naplan)
             if top_naplan > 0:
-                school_score = round((top_naplan / 100) * 25)
+                school_score = max(1, round((top_naplan / 100) * 25))
 
             # 3. 土地价值 (20分)
             zm = zoning_map.get(suburb, {"MDR": 10, "HDR": 0})
@@ -1376,10 +1385,15 @@ def _get_suburb_full_profile(suburb_name: str) -> dict:
                 if isinstance(catchments, str):
                     catchments = [catchments]
                 if suburb_name.upper() in [c.upper() for c in catchments]:
+                    naplan_pct = school.get("naplan_percentile", 0) or 0
+                    naplan_abs = school.get("naplan_score", 0) or 0
+                    if naplan_abs > 0 and naplan_pct == 0:
+                        naplan_pct = max(0, min(100, round((naplan_abs - 300) / 4)))
                     suburb_schools.append({
                         "name": school.get("name", ""),
-                        "type": school.get("school_type", ""),
-                        "naplan_percentile": school.get("naplan_percentile", 0),
+                        "type": school.get("school_type", school.get("type", "")),
+                        "naplan_percentile": naplan_pct,
+                        "naplan_score": naplan_abs,
                     })
             profile["schools"] = suburb_schools
 
