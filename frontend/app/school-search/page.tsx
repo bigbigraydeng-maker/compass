@@ -5,11 +5,12 @@ import Header from '../components/Header';
 import SchoolMap from './SchoolMap';
 import SchoolDetailPanel from './SchoolDetailPanel';
 import SchoolCard from './SchoolCard';
+import { ALL_SUBURBS } from '../lib/suburbs';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8888';
 const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '';
 
-const CORE_SUBURBS = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
+const CORE_SUBURBS = [...ALL_SUBURBS];
 
 interface School {
   name: string;
@@ -106,7 +107,7 @@ export default function SchoolSearchPage() {
     return true;
   }), [schools, filterSuburb, filterType, filterSector]);
 
-  const suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
+  const suburbs = [...ALL_SUBURBS];
 
   // Filter Bar Component
   const FilterBar = () => (

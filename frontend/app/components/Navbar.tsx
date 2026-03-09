@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { ALL_SUBURBS } from '../lib/suburbs';
 
 interface NavbarProps {
   activePage?: string;
@@ -10,9 +11,9 @@ interface NavbarProps {
 export default function Navbar({ activePage = 'home' }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [suburbMenuOpen, setSuburbMenuOpen] = useState(false);
-  
+
   // 郊区列表
-  const suburbList = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
+  const suburbList = [...ALL_SUBURBS];
 
   return (
     <>

@@ -1,15 +1,8 @@
 import SuburbContent from './SuburbContent';
+import { ALL_SUBURBS } from '../../lib/suburbs';
 
 export async function generateStaticParams() {
-  return [
-    { suburb: 'Sunnybank' },
-    { suburb: 'Eight Mile Plains' },
-    { suburb: 'Calamvale' },
-    { suburb: 'Rochedale' },
-    { suburb: 'Mansfield' },
-    { suburb: 'Ascot' },
-    { suburb: 'Hamilton' },
-  ];
+  return ALL_SUBURBS.map(suburb => ({ suburb }));
 }
 
 export default function SuburbPage({ params }: { params: { suburb: string } }) {

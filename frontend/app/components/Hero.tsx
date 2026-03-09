@@ -170,7 +170,7 @@ export default function Hero() {
           </div>
 
           {/* 桌面端支持提示 */}
-          <p className="hidden md:block text-gray-300 text-sm mb-10">支持 7 个郊区：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton</p>
+          <p className="hidden md:block text-gray-300 text-sm mb-10">支持 17 个郊区：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton, Runcorn, Wishart 等</p>
 
           {/* AI 分析入口 */}
           <form onSubmit={handleAiAnalysis} className="max-w-3xl mx-auto">

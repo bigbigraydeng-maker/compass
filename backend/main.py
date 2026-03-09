@@ -18,7 +18,10 @@ from dotenv import load_dotenv
 # 加载 .env 文件
 load_dotenv()
 
-print("Compass API v1.2.0 - Multi-dimensional AI Engine + Security Hardening")
+print("Compass API v1.3.0 - 17 Suburbs + Security + Amanda")
+
+# 集中化区域配置
+from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG
 
 # ====== Rate Limiter ======
 limiter = Limiter(key_func=get_remote_address)
@@ -120,7 +123,7 @@ def get_home_data():
         latest_sales = execute_query(latest_sales_query)
         
         # 获取3个郊区的统计信息
-        suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+        suburbs = ALL_SUBURB_NAMES
         suburb_stats = []
         
         for suburb in suburbs:
@@ -822,7 +825,7 @@ def get_rankings():
         import json as json_mod
         from database import get_db_connection, get_db_cursor
 
-        suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+        suburbs = ALL_SUBURB_NAMES
 
         # 读取配置（1次文件读取）
         config_path = os.path.join(os.path.dirname(__file__), "suburb_scores_config.json")
@@ -1025,7 +1028,7 @@ def get_market_pulse():
                             highest_growth_suburb = row.get('suburb')
                 
                 # 3. 性价比最高（使用 Compass Score 与中位价的比值）
-                suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+                suburbs = ALL_SUBURB_NAMES
                 best_value_suburb = 'Eight Mile Plains'
                 best_value_ratio = 0
                 
@@ -1830,8 +1833,7 @@ def analyze_property(request: Request, address: str = Body(...), url: str = Body
         suburb = "Sunnybank"  # 默认郊区
         if address:
             # 尝试匹配已知郊区
-            known_suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale',
-                             'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+            known_suburbs = ALL_SUBURB_NAMES
             address_lower = address.lower()
             for s in known_suburbs:
                 if s.lower() in address_lower:
@@ -2304,8 +2306,7 @@ def get_school_catchment_data(school_name: str):
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    CORE_SUBURBS = ['Sunnybank', 'Eight Mile Plains', 'Calamvale',
-                    'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+    CORE_SUBURBS = ALL_SUBURB_NAMES
 
     # 1. 加载学校数据
     try:
