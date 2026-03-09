@@ -1,15 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import dynamic from 'next/dynamic';
+
+// 动态导入 Recharts，仅在图表可见时加载
+const SchoolPriceChart = dynamic(
+  () => import('recharts').then((mod) => {
+    const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = mod;
+    const Chart = ({ data, formatMonth, formatPriceShort, CustomTooltip }: any) => (
+      <ResponsiveContainer width="100%" height={200}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <XAxis dataKey="month" tickFormatter={formatMonth} tick={{ fontSize: 11 }} />
+          <YAxis tickFormatter={(v: number) => formatPriceShort(v)} tick={{ fontSize: 11 }} width={55} />
+          <Tooltip content={<CustomTooltip />} />
+          <Line type="monotone" dataKey="median_price" stroke="#3B82F6" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+    Chart.displayName = 'SchoolPriceChart';
+    return Chart;
+  }),
+  { ssr: false, loading: () => <div className="h-[200px] flex items-center justify-center text-gray-300"><div className="w-5 h-5 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" /></div> }
+);
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
@@ -322,30 +335,7 @@ export default function SchoolDetailPanel({
           <p className="text-xs text-gray-400 mb-3">
             学区中位价: {formatPrice(agg.median_price)} | 总成交: {agg.total_sales} 套
           </p>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={agg.monthly_trends}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis
-                dataKey="month"
-                tickFormatter={formatMonth}
-                tick={{ fontSize: 11 }}
-              />
-              <YAxis
-                tickFormatter={(v) => formatPriceShort(v)}
-                tick={{ fontSize: 11 }}
-                width={55}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
-                dataKey="median_price"
-                stroke="#3B82F6"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <SchoolPriceChart data={agg.monthly_trends} formatMonth={formatMonth} formatPriceShort={formatPriceShort} CustomTooltip={CustomTooltip} />
         </div>
       )}
 

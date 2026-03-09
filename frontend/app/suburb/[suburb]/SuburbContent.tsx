@@ -2,16 +2,35 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import Navbar from '../../components/Navbar';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+
+// 动态导入 Recharts（~372KB），仅在图表可见时加载
+const RechartsChart = dynamic(
+  () => import('recharts').then((mod) => {
+    const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = mod;
+    // 返回一个包装组件
+    const Chart = ({ data, formatMonth, CustomTooltip }: any) => (
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <XAxis dataKey="month" tickFormatter={formatMonth} stroke="#6b7280" fontSize={12} />
+          <YAxis
+            domain={[(dataMin: number) => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']}
+            tickFormatter={(value: number) => `$${(value / 1000000).toFixed(1)}M`}
+            stroke="#6b7280"
+            fontSize={12}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Line type="monotone" dataKey="median_price" stroke="#2563eb" strokeWidth={2} dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }} activeDot={{ r: 6, fill: '#1d4ed8' }} />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+    Chart.displayName = 'PriceChart';
+    return Chart;
+  }),
+  { ssr: false, loading: () => <div className="h-[300px] flex items-center justify-center text-gray-300"><div className="w-6 h-6 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" /></div> }
+);
 
 interface Sale {
   id: number;
@@ -709,15 +728,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
               <h2 className="text-lg font-semibold text-gray-800">价格走势（过去12个月）</h2>
             </div>
             <div className="p-6">
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={trends}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="month" tickFormatter={formatMonth} stroke="#6b7280" fontSize={12} />
-                  <YAxis domain={[(dataMin: number) => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']} tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`} stroke="#6b7280" fontSize={12} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="median_price" stroke="#2563eb" strokeWidth={2} dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }} activeDot={{ r: 6, fill: '#1d4ed8' }} />
-                </LineChart>
-              </ResponsiveContainer>
+              <RechartsChart data={trends} formatMonth={formatMonth} CustomTooltip={CustomTooltip} />
             </div>
           </div>
         )}

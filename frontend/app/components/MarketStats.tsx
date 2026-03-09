@@ -25,13 +25,24 @@ interface NewsItem {
   tagColor: string;
 }
 
-export default function MarketStats() {
+interface MarketStatsProps {
+  homeData?: any; // 从父组件传入，避免重复调用 /api/home
+}
+
+export default function MarketStats({ homeData: parentHomeData }: MarketStatsProps) {
   const router = useRouter();
   const [recentSales, setRecentSales] = useState<SaleItem[]>([]);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [amandaCommentary, setAmandaCommentary] = useState('');
   const [commentaryDate, setCommentaryDate] = useState('');
   const [activeTab, setActiveTab] = useState<'news' | 'sold'>('news');
+
+  // 父组件传入 homeData 时直接使用，不重复请求
+  useEffect(() => {
+    if (parentHomeData?.latest_sales) {
+      setRecentSales(parentHomeData.latest_sales.slice(0, 8));
+    }
+  }, [parentHomeData]);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,15 +54,16 @@ export default function MarketStats() {
 
     const loadData = async () => {
       try {
-        const [homeData, newsData] = await Promise.all([
-          fetcher('/api/home').catch(() => null),
+        // 仅在父组件未提供 homeData 时才请求
+        const [homeRes, newsData] = await Promise.all([
+          parentHomeData ? Promise.resolve(null) : fetcher('/api/home').catch(() => null),
           loadNews(),
         ]);
 
         if (cancelled) return;
 
-        if (homeData?.latest_sales) {
-          setRecentSales(homeData.latest_sales.slice(0, 8));
+        if (homeRes?.latest_sales) {
+          setRecentSales(homeRes.latest_sales.slice(0, 8));
         }
 
         if (newsData?.news && newsData.news.length > 0) {
@@ -62,7 +74,6 @@ export default function MarketStats() {
           setAmandaCommentary(newsData.amanda_commentary);
           setCommentaryDate(newsData.commentary_date || '');
         } else if (newsData?.news && newsData.news.length > 0) {
-          // Amanda 点评还在后台生成，8 秒后重试一次
           retryTimer = setTimeout(async () => {
             if (cancelled) return;
             const retry = await loadNews();
@@ -79,7 +90,7 @@ export default function MarketStats() {
 
     loadData();
     return () => { cancelled = true; clearTimeout(retryTimer); };
-  }, []);
+  }, [parentHomeData]);
 
   const formatPrice = (price: number) => {
     if (!price) return '-';
