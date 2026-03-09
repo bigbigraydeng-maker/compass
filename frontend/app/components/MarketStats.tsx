@@ -35,12 +35,17 @@ export default function MarketStats() {
 
   useEffect(() => {
     let cancelled = false;
+    let retryTimer: ReturnType<typeof setTimeout>;
+
+    const loadNews = async (): Promise<any> => {
+      return fetcher('/api/news').catch(() => null);
+    };
 
     const loadData = async () => {
       try {
         const [homeData, newsData] = await Promise.all([
           fetcher('/api/home').catch(() => null),
-          fetcher('/api/news').catch(() => null),
+          loadNews(),
         ]);
 
         if (cancelled) return;
@@ -56,6 +61,16 @@ export default function MarketStats() {
         if (newsData?.amanda_commentary) {
           setAmandaCommentary(newsData.amanda_commentary);
           setCommentaryDate(newsData.commentary_date || '');
+        } else if (newsData?.news && newsData.news.length > 0) {
+          // Amanda 点评还在后台生成，8 秒后重试一次
+          retryTimer = setTimeout(async () => {
+            if (cancelled) return;
+            const retry = await loadNews();
+            if (retry?.amanda_commentary && !cancelled) {
+              setAmandaCommentary(retry.amanda_commentary);
+              setCommentaryDate(retry.commentary_date || '');
+            }
+          }, 8000);
         }
       } catch (e) {
         console.error('Failed to load market data:', e);
@@ -63,7 +78,7 @@ export default function MarketStats() {
     };
 
     loadData();
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(retryTimer); };
   }, []);
 
   const formatPrice = (price: number) => {

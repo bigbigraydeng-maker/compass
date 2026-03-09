@@ -2137,22 +2137,56 @@ def _generate_amanda_commentary(news_items: list) -> str:
 
     except Exception as e:
         print(f"[WARN] Amanda commentary generation failed: {e}")
+        import traceback
+        traceback.print_exc()
         return ""
+
+
+# 后台线程生成 Amanda 点评（不阻塞 API 响应）
+import threading
+_amanda_lock = threading.Lock()
+_amanda_generating = False
+
+def _trigger_amanda_background(news_items: list):
+    """在后台线程中生成 Amanda 点评。"""
+    global _amanda_generating
+    with _amanda_lock:
+        if _amanda_generating:
+            return  # 已有线程在生成
+        _amanda_generating = True
+
+    def _run():
+        global _amanda_generating
+        try:
+            _generate_amanda_commentary(news_items)
+        finally:
+            with _amanda_lock:
+                _amanda_generating = False
+
+    t = threading.Thread(target=_run, daemon=True)
+    t.start()
 
 
 @app.get("/api/news")
 def get_news():
     """获取布里斯班房产新闻 + Amanda 每日综合点评"""
     items = _fetch_rss_news()
+
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # 检查是否有今日缓存的点评
     commentary = ""
-    if items:
-        commentary = _generate_amanda_commentary(items)
+    if _commentary_cache["text"] and _commentary_cache["date"] == today:
+        commentary = _commentary_cache["text"]
+    elif items:
+        # 没有今日点评，后台异步生成（不阻塞本次请求）
+        _trigger_amanda_background(items)
 
     return {
         "news": items or [],
         "source": "google_news_rss",
         "amanda_commentary": commentary,
-        "commentary_date": datetime.now().strftime("%Y-%m-%d"),
+        "commentary_date": today,
     }
 
 
