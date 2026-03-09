@@ -2,19 +2,19 @@
   {
     "name": "Sunnybank Hills State School",
     "type": "primary",
-    "suburb": "Sunnybank",
+    "suburb": "Sunnybank Hills",
     "sector": "Government",
     "naplan_score": 533,
     "enrollment": 1689,
     "rating": 9.5,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn"]
+    "catchment_suburbs": ["Sunnybank Hills", "Sunnybank"]
   },
   {
     "name": "Sunnybank State School",
     "type": "primary",
     "suburb": "Sunnybank",
     "sector": "Government",
-    "naplan_score": 480,
+    "naplan_score": 460,
     "enrollment": 324,
     "rating": 6.5,
     "catchment_suburbs": ["Sunnybank"]
@@ -24,19 +24,19 @@
     "type": "primary",
     "suburb": "Sunnybank",
     "sector": "Catholic",
-    "naplan_score": 495,
+    "naplan_score": 490,
     "enrollment": 534,
-    "rating": 7.0,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Robertson"]
+    "rating": 7.5,
+    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn", "Parkinson", "Underwood"]
   },
   {
     "name": "Runcorn State School",
     "type": "primary",
-    "suburb": "Sunnybank",
+    "suburb": "Runcorn",
     "sector": "Government",
-    "naplan_score": 470,
+    "naplan_score": 480,
     "enrollment": 555,
-    "rating": 6.0,
+    "rating": 7.0,
     "catchment_suburbs": ["Runcorn", "Sunnybank"]
   },
   {
@@ -44,29 +44,29 @@
     "type": "secondary",
     "suburb": "Sunnybank",
     "sector": "Government",
-    "naplan_score": 520,
+    "naplan_score": 470,
     "enrollment": 666,
-    "rating": 6.5,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn", "Robertson"]
+    "rating": 5.5,
+    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Robertson", "Runcorn"]
   },
   {
     "name": "St Thomas More College",
     "type": "secondary",
     "suburb": "Sunnybank",
     "sector": "Catholic",
-    "naplan_score": 540,
+    "naplan_score": 500,
     "enrollment": 1100,
-    "rating": 7.5,
-    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn", "Robertson", "Calamvale"]
+    "rating": 6.5,
+    "catchment_suburbs": ["Sunnybank", "Sunnybank Hills", "Runcorn", "Parkinson", "Algester", "Calamvale"]
   },
   {
     "name": "Eight Mile Plains State School",
     "type": "primary",
     "suburb": "Eight Mile Plains",
     "sector": "Government",
-    "naplan_score": 475,
+    "naplan_score": 430,
     "enrollment": 336,
-    "rating": 6.0,
+    "rating": 5.5,
     "catchment_suburbs": ["Eight Mile Plains"]
   },
   {
@@ -74,37 +74,37 @@
     "type": "primary",
     "suburb": "Eight Mile Plains",
     "sector": "Government",
-    "naplan_score": 510,
+    "naplan_score": 500,
     "enrollment": 1303,
     "rating": 7.5,
-    "catchment_suburbs": ["Eight Mile Plains", "Runcorn", "Underwood"]
+    "catchment_suburbs": ["Eight Mile Plains", "Runcorn"]
   },
   {
     "name": "Runcorn State High School",
     "type": "secondary",
-    "suburb": "Eight Mile Plains",
+    "suburb": "Runcorn",
     "sector": "Government",
-    "naplan_score": 505,
+    "naplan_score": 440,
     "enrollment": 843,
-    "rating": 6.5,
-    "catchment_suburbs": ["Eight Mile Plains", "Runcorn", "Sunnybank"]
+    "rating": 4.5,
+    "catchment_suburbs": ["Runcorn", "Eight Mile Plains", "Sunnybank"]
   },
   {
     "name": "MacGregor State High School",
     "type": "secondary",
-    "suburb": "Eight Mile Plains",
+    "suburb": "Macgregor",
     "sector": "Government",
-    "naplan_score": 515,
+    "naplan_score": 475,
     "enrollment": 1207,
-    "rating": 7.0,
-    "catchment_suburbs": ["Eight Mile Plains", "MacGregor", "Upper Mount Gravatt"]
+    "rating": 6.0,
+    "catchment_suburbs": ["Macgregor", "Eight Mile Plains", "Robertson", "Sunnybank"]
   },
   {
     "name": "Calamvale Community College",
     "type": "combined",
     "suburb": "Calamvale",
     "sector": "Government",
-    "naplan_score": 500,
+    "naplan_score": 485,
     "enrollment": 2520,
     "rating": 7.0,
     "catchment_suburbs": ["Calamvale", "Stretton", "Drewvale"]
@@ -112,132 +112,132 @@
   {
     "name": "Stretton State College",
     "type": "combined",
-    "suburb": "Calamvale",
+    "suburb": "Stretton",
     "sector": "Government",
-    "naplan_score": 510,
+    "naplan_score": 490,
     "enrollment": 3491,
     "rating": 7.5,
-    "catchment_suburbs": ["Calamvale", "Stretton", "Karawatha"]
+    "catchment_suburbs": ["Stretton", "Calamvale", "Parkinson"]
   },
   {
     "name": "Wisdom College",
     "type": "combined",
     "suburb": "Calamvale",
     "sector": "Independent",
-    "naplan_score": 465,
+    "naplan_score": 445,
     "enrollment": 282,
-    "rating": 5.5,
-    "catchment_suburbs": ["Calamvale", "Algester", "Parkinson"]
+    "rating": 5.0,
+    "catchment_suburbs": ["Calamvale", "Algester", "Parkinson", "Stretton"]
   },
   {
-    "name": "St Stephen's School Algester",
+    "name": "St Stephen's School",
     "type": "primary",
-    "suburb": "Calamvale",
+    "suburb": "Algester",
     "sector": "Catholic",
     "naplan_score": 485,
     "enrollment": 516,
-    "rating": 6.5,
-    "catchment_suburbs": ["Calamvale", "Algester", "Parkinson"]
+    "rating": 7.0,
+    "catchment_suburbs": ["Algester", "Calamvale", "Parkinson"]
   },
   {
     "name": "Rochedale State School",
     "type": "primary",
     "suburb": "Rochedale",
     "sector": "Government",
-    "naplan_score": 520,
+    "naplan_score": 495,
     "enrollment": 1043,
-    "rating": 8.0,
+    "rating": 7.5,
     "catchment_suburbs": ["Rochedale", "Rochedale South"]
   },
   {
     "name": "Rochedale South State School",
     "type": "primary",
-    "suburb": "Rochedale",
+    "suburb": "Rochedale South",
     "sector": "Government",
-    "naplan_score": 480,
+    "naplan_score": 465,
     "enrollment": 475,
-    "rating": 6.5,
-    "catchment_suburbs": ["Rochedale", "Rochedale South", "Priestdale"]
+    "rating": 6.0,
+    "catchment_suburbs": ["Rochedale South", "Rochedale"]
   },
   {
     "name": "St Peter's Catholic Primary School",
     "type": "primary",
     "suburb": "Rochedale",
     "sector": "Catholic",
-    "naplan_score": 500,
+    "naplan_score": 490,
     "enrollment": 501,
     "rating": 7.0,
-    "catchment_suburbs": ["Rochedale", "Rochedale South", "Springwood"]
+    "catchment_suburbs": ["Rochedale", "Rochedale South", "Eight Mile Plains"]
   },
   {
     "name": "Rochedale State High School",
     "type": "secondary",
     "suburb": "Rochedale",
     "sector": "Government",
-    "naplan_score": 530,
+    "naplan_score": 480,
     "enrollment": 1371,
-    "rating": 7.5,
-    "catchment_suburbs": ["Rochedale", "Rochedale South", "Priestdale"]
+    "rating": 6.5,
+    "catchment_suburbs": ["Rochedale", "Rochedale South", "Underwood"]
   },
   {
     "name": "Redeemer Lutheran College",
     "type": "combined",
     "suburb": "Rochedale",
     "sector": "Independent",
-    "naplan_score": 555,
+    "naplan_score": 530,
     "enrollment": 1000,
     "rating": 8.5,
-    "catchment_suburbs": ["Rochedale", "Daisy Hill", "Springwood", "Underwood"]
+    "catchment_suburbs": ["Rochedale", "Rochedale South", "Eight Mile Plains", "Underwood", "Springwood"]
   },
   {
     "name": "Mansfield State School",
     "type": "primary",
     "suburb": "Mansfield",
     "sector": "Government",
-    "naplan_score": 525,
+    "naplan_score": 505,
     "enrollment": 1196,
     "rating": 8.0,
-    "catchment_suburbs": ["Mansfield", "Wishart", "Mount Gravatt East"]
+    "catchment_suburbs": ["Mansfield", "Wishart"]
   },
   {
     "name": "Mansfield State High School",
     "type": "secondary",
     "suburb": "Mansfield",
     "sector": "Government",
-    "naplan_score": 602,
+    "naplan_score": 545,
     "enrollment": 3400,
-    "rating": 9.0,
-    "catchment_suburbs": ["Mansfield", "Wishart", "Mount Gravatt East", "Upper Mount Gravatt", "Mackenzie"]
+    "rating": 8.5,
+    "catchment_suburbs": ["Mansfield", "Wishart", "Mackenzie", "Rochedale", "Burbank", "Upper Mount Gravatt", "Mount Gravatt East", "Carindale"]
   },
   {
     "name": "Brisbane Adventist College",
     "type": "combined",
     "suburb": "Mansfield",
     "sector": "Independent",
-    "naplan_score": 485,
+    "naplan_score": 505,
     "enrollment": 575,
-    "rating": 6.5,
-    "catchment_suburbs": ["Mansfield", "Wishart", "Mount Gravatt"]
+    "rating": 7.0,
+    "catchment_suburbs": ["Mansfield", "Wishart", "Mount Gravatt", "Upper Mount Gravatt"]
   },
   {
     "name": "Citipointe Christian College",
     "type": "combined",
-    "suburb": "Mansfield",
+    "suburb": "Carindale",
     "sector": "Independent",
     "naplan_score": 533,
     "enrollment": 1600,
-    "rating": 8.0,
-    "catchment_suburbs": ["Mansfield", "Carindale", "Carina", "Mount Gravatt"]
+    "rating": 9.0,
+    "catchment_suburbs": ["Carindale", "Mansfield", "Carina", "Camp Hill"]
   },
   {
     "name": "Ascot State School",
     "type": "primary",
     "suburb": "Ascot",
     "sector": "Government",
-    "naplan_score": 515,
+    "naplan_score": 500,
     "enrollment": 680,
     "rating": 7.5,
-    "catchment_suburbs": ["Ascot", "Hamilton"]
+    "catchment_suburbs": ["Ascot", "Hamilton", "Hendra"]
   },
   {
     "name": "St Margaret's Anglican Girls School",
@@ -246,77 +246,77 @@
     "sector": "Independent",
     "naplan_score": 559,
     "enrollment": 1460,
-    "rating": 9.5,
-    "catchment_suburbs": ["Ascot", "Hamilton", "Clayfield", "Hendra", "Eagle Farm"]
+    "rating": 9.0,
+    "catchment_suburbs": ["Ascot", "Hamilton", "Clayfield", "Hendra", "Nundah", "Wooloowin"]
   },
   {
     "name": "Eagle Junction State School",
     "type": "primary",
-    "suburb": "Ascot",
+    "suburb": "Clayfield",
     "sector": "Government",
-    "naplan_score": 505,
+    "naplan_score": 510,
     "enrollment": 938,
-    "rating": 7.0,
-    "catchment_suburbs": ["Ascot", "Clayfield", "Wooloowin"]
+    "rating": 8.0,
+    "catchment_suburbs": ["Clayfield", "Ascot", "Hendra", "Wooloowin"]
   },
   {
     "name": "St Agatha's Primary School",
     "type": "primary",
-    "suburb": "Ascot",
+    "suburb": "Clayfield",
     "sector": "Catholic",
-    "naplan_score": 495,
+    "naplan_score": 490,
     "enrollment": 338,
     "rating": 7.0,
-    "catchment_suburbs": ["Ascot", "Clayfield", "Hamilton"]
+    "catchment_suburbs": ["Clayfield", "Ascot", "Hamilton", "Hendra"]
   },
   {
     "name": "Aviation High School",
     "type": "secondary",
-    "suburb": "Ascot",
+    "suburb": "Hendra",
     "sector": "Government",
-    "naplan_score": 510,
+    "naplan_score": 490,
     "enrollment": 670,
     "rating": 7.0,
-    "catchment_suburbs": ["Ascot", "Hendra", "Hamilton", "Eagle Farm"]
+    "catchment_suburbs": ["Ascot", "Hamilton", "Hendra", "Clayfield", "Eagle Farm", "Pinkenba", "Nundah", "Brisbane Airport"]
   },
   {
     "name": "Clayfield College",
     "type": "combined",
-    "suburb": "Hamilton",
+    "suburb": "Clayfield",
     "sector": "Independent",
-    "naplan_score": 530,
+    "naplan_score": 520,
     "enrollment": 800,
     "rating": 8.0,
-    "catchment_suburbs": ["Hamilton", "Clayfield", "Ascot", "Hendra"]
+    "catchment_suburbs": ["Clayfield", "Ascot", "Hamilton", "Hendra", "Albion", "Eagle Junction"]
   },
   {
     "name": "St Rita's College",
     "type": "secondary",
-    "suburb": "Hamilton",
+    "suburb": "Clayfield",
     "sector": "Catholic",
-    "naplan_score": 545,
+    "naplan_score": 525,
     "enrollment": 1203,
-    "rating": 8.5,
-    "catchment_suburbs": ["Hamilton", "Clayfield", "Ascot", "Albion"]
+    "rating": 8.0,
+    "catchment_suburbs": ["Clayfield", "Ascot", "Hamilton", "Hendra", "Nundah", "Wooloowin"]
   },
   {
     "name": "Hamilton State School",
     "type": "primary",
     "suburb": "Hamilton",
     "sector": "Government",
-    "naplan_score": 470,
+    "naplan_score": 475,
     "enrollment": 147,
-    "rating": 6.0,
-    "catchment_suburbs": ["Hamilton"]
+    "rating": 6.5,
+    "catchment_suburbs": ["Hamilton", "Ascot"]
   },
   {
     "name": "Hendra State School",
     "type": "primary",
-    "suburb": "Hamilton",
+    "suburb": "Hendra",
     "sector": "Government",
-    "naplan_score": 460,
+    "naplan_score": 440,
     "enrollment": 31,
-    "rating": 5.5,
-    "catchment_suburbs": ["Hamilton", "Hendra"]
+    "rating": 5.0,
+    "catchment_suburbs": ["Hendra", "Hamilton", "Clayfield", "Nundah", "Ascot"]
   }
 ]
