@@ -21,15 +21,11 @@ from playwright.sync_api import sync_playwright
 import pandas as pd
 import os
 
-SUBURBS = [
-    {"name": "Sunnybank", "slug": "sunnybank-qld-4109"},
-    {"name": "Eight Mile Plains", "slug": "eight-mile-plains-qld-4113"},
-    {"name": "Calamvale", "slug": "calamvale-qld-4116"},
-    {"name": "Rochedale", "slug": "rochedale-qld-4123"},
-    {"name": "Mansfield", "slug": "mansfield-qld-4122"},
-    {"name": "Ascot", "slug": "ascot-qld-4007"},
-    {"name": "Hamilton", "slug": "hamilton-qld-4007"},
-]
+# 从集中配置加载
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from suburbs_config import SUBURBS as _SC
+SUBURBS = [{"name": n, "slug": i["domain_slug"]} for n, i in _SC.items()]
 
 MAX_PAGES = 3
 

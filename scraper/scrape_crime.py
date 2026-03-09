@@ -36,29 +36,14 @@ CRIME_CSV_URL = "https://open-crime-data.s3-ap-southeast-2.amazonaws.com/Crime%2
 # QLD Police reports crime by Division, not by suburb.
 # We split division totals by ABS 2021 Census population ratios.
 # Source: ABS 2021 Census QuickStats for each suburb
+# 从集中配置加载（按警区分组，含人口权重）
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from suburbs_config import get_police_division_map as _get_pdm
+_pdm = _get_pdm()
 DIVISION_SUBURB_MAP = {
-    'Upper Mount Gravatt': {
-        # Upper Mt Gravatt division covers Sunnybank, Eight Mile Plains, Rochedale, etc.
-        # Pop: Sunnybank ~14,200, Eight Mile Plains ~12,800, Rochedale ~12,000
-        'Sunnybank':        {'pop': 14200},
-        'Eight Mile Plains': {'pop': 12800},
-        'Rochedale':        {'pop': 12000},
-    },
-    'Calamvale': {
-        # Calamvale division - primarily Calamvale suburb
-        'Calamvale': {'pop': 18500},
-    },
-    'Holland Park': {
-        # Holland Park division covers Mansfield area
-        # Pop: Mansfield ~11,500, Holland Park ~8,500, etc. (we only track Mansfield)
-        'Mansfield': {'pop': 11500},
-    },
-    'Hendra': {
-        # Hendra division covers Ascot, Hamilton, Hendra
-        # Pop: Ascot ~5,000, Hamilton ~7,200
-        'Ascot':    {'pop': 5000},
-        'Hamilton': {'pop': 7200},
-    },
+    div: {s['suburb']: {'pop': s['population']} for s in subs}
+    for div, subs in _pdm.items()
 }
 
 # Target divisions (keys of the mapping)

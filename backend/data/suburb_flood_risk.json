@@ -68,5 +68,105 @@
     "notes": "Kingsford Smith Drive divides hilly residential (lower risk) from flat former-wharf areas (high risk). Northshore Hamilton PDA has extensive flood management infrastructure. Over 1,000 homes in Breakfast Creek area submerged historically.",
     "notes_cn": "Kingsford Smith Drive 将山丘住宅区（低风险）与平坦的前码头区域（高风险）分隔。Northshore Hamilton 优先开发区已建设完善的防洪基础设施。Breakfast Creek 区域历史上超过1,000栋房屋被淹。选择山丘一侧的物业风险更低。",
     "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Runcorn": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 6,
+    "last_major_flood": "Feb 2022 - minor localised flooding near Bulimba Creek tributaries",
+    "last_major_flood_cn": "2022年2月 - Bulimba Creek 支流附近轻微局部积水",
+    "notes": "Within Bulimba Creek catchment. Mostly elevated residential areas with low flood risk. Some low-lying pockets near creek corridors.",
+    "notes_cn": "位于 Bulimba Creek 流域内。大部分住宅区地势较高，洪水风险低。仅溪流走廊附近低洼区域有轻微风险。整体适合居住。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Wishart": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 5,
+    "last_major_flood": "Feb 2022 - minimal impact, elevated terrain provided natural protection",
+    "last_major_flood_cn": "2022年2月 - 影响极小，地势较高提供天然保护",
+    "notes": "Located within Bulimba Creek upper catchment. Generally elevated terrain with good drainage. Very low flood risk for most properties.",
+    "notes_cn": "位于 Bulimba Creek 上游流域。地势普遍较高，排水良好。绝大多数物业洪水风险极低。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Upper Mount Gravatt": {
+    "risk_level": "low",
+    "flood_types": ["overland_flow"],
+    "affected_percentage": 4,
+    "last_major_flood": "Feb 2022 - largely unaffected due to elevated terrain around Mount Gravatt",
+    "last_major_flood_cn": "2022年2月 - 因 Mount Gravatt 周围地势较高基本未受影响",
+    "notes": "Elevated terrain surrounding Mount Gravatt provides excellent natural drainage. One of the lowest flood risk suburbs in southern Brisbane.",
+    "notes_cn": "Mount Gravatt 周围的高地势提供优良的自然排水。是布里斯班南区洪水风险最低的郊区之一。购房时无需过多担心洪水问题。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Macgregor": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 7,
+    "last_major_flood": "Feb 2022 - localised flooding near Stable Swamp Creek corridor",
+    "last_major_flood_cn": "2022年2月 - Stable Swamp Creek 走廊附近局部积水",
+    "notes": "Within Stable Swamp Creek catchment. Most residential areas are on moderate elevation. Low-lying areas near creek have some overland flow risk.",
+    "notes_cn": "位于 Stable Swamp Creek 流域内。大部分住宅区地势适中。溪流附近低洼区域有一定地表径流风险。购房时避开溪边低洼地段。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Robertson": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 6,
+    "last_major_flood": "Feb 2022 - minor creek flooding near Stable Swamp Creek",
+    "last_major_flood_cn": "2022年2月 - Stable Swamp Creek 附近轻微溪流积水",
+    "notes": "Located within Stable Swamp Creek catchment. Generally low flood risk with good stormwater management. Some overland flow risk in low-lying pockets.",
+    "notes_cn": "位于 Stable Swamp Creek 流域内。整体洪水风险较低，雨水管理完善。仅低洼区域有一定地表径流风险。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Stretton": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 8,
+    "last_major_flood": "Feb 2022 - some localised flooding near Oxley Creek tributaries",
+    "last_major_flood_cn": "2022年2月 - Oxley Creek 支流附近部分局部积水",
+    "notes": "Within Oxley Creek catchment. Newer development with modern stormwater infrastructure. Some areas near creek tributaries have moderate overland flow risk.",
+    "notes_cn": "位于 Oxley Creek 流域内。较新的开发区配备现代雨水基础设施。溪流支流附近部分区域有一定地表径流风险。整体风险可控。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Kuraby": {
+    "risk_level": "low-medium",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 10,
+    "last_major_flood": "Feb 2022 - creek flooding from Bulimba Creek affected low-lying areas",
+    "last_major_flood_cn": "2022年2月 - Bulimba Creek 溪流洪水影响低洼区域",
+    "notes": "Bulimba Creek flows through the suburb. Properties near creek corridors have moderate flood risk. Elevated areas away from creek are low risk.",
+    "notes_cn": "Bulimba Creek 穿越该区。溪流走廊附近的物业有中等洪水风险。远离溪流的高地区域风险较低。购房前建议查阅洪水覆盖图。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Coopers Plains": {
+    "risk_level": "low-medium",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 12,
+    "last_major_flood": "Feb 2022 - flooding from Stable Swamp Creek and Oxley Creek tributaries",
+    "last_major_flood_cn": "2022年2月 - Stable Swamp Creek 和 Oxley Creek 支流引发洪水",
+    "notes": "Within Stable Swamp Creek and Oxley Creek catchments. Industrial areas and low-lying residential pockets have higher flood risk. BCC flood overlay should be checked.",
+    "notes_cn": "位于 Stable Swamp Creek 和 Oxley Creek 流域内。工业区和低洼住宅区洪水风险较高。购房前务必查阅布里斯班市政府洪水覆盖图。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Algester": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 7,
+    "last_major_flood": "Feb 2022 - localised flooding near Oxley Creek tributaries",
+    "last_major_flood_cn": "2022年2月 - Oxley Creek 支流附近局部积水",
+    "notes": "Within Oxley Creek catchment. Mostly elevated residential terrain with low flood risk. Some overland flow risk near creek tributaries.",
+    "notes_cn": "位于 Oxley Creek 流域内。大部分住宅地势较高，洪水风险低。溪流支流附近有一定地表径流风险。整体适合居住。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
+  },
+  "Parkinson": {
+    "risk_level": "low",
+    "flood_types": ["creek", "overland_flow"],
+    "affected_percentage": 6,
+    "last_major_flood": "Feb 2022 - minimal impact, well-drained newer development areas",
+    "last_major_flood_cn": "2022年2月 - 影响极小，较新开发区域排水良好",
+    "notes": "Within Oxley Creek catchment. Relatively new suburb with modern stormwater infrastructure. Low flood risk for most properties.",
+    "notes_cn": "位于 Oxley Creek 流域内。较新的郊区，配备现代雨水基础设施。绝大多数物业洪水风险低。",
+    "map_url": "https://fam.brisbane.qld.gov.au/?page=Map---Standard"
   }
 }

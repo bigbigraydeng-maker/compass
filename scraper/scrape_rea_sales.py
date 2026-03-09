@@ -20,16 +20,11 @@ from playwright.sync_api import sync_playwright
 import pandas as pd
 import os
 
-# 目标 Suburbs 配置
-SUBURBS = [
-    ("sunnybank", "4109"),
-    ("eight-mile-plains", "4113"),
-    ("calamvale", "4116"),
-    ("rochedale", "4123"),
-    ("mansfield", "4122"),
-    ("ascot", "4007"),
-    ("hamilton", "4007"),
-]
+# 从集中配置加载
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from suburbs_config import SUBURBS as _SC
+SUBURBS = [(i["domain_slug"].split("-qld-")[0], i["postcode"]) for n, i in _SC.items()]
 
 # 最大抓取页数
 MAX_PAGES = 2

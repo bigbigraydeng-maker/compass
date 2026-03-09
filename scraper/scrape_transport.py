@@ -18,16 +18,11 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', 'backend', '.env'))
 DATABASE_URL = os.getenv('DATABASE_URL')
 API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
 
-# 7 suburbs with center coordinates
-SUBURBS = {
-    'Sunnybank': {'lat': -27.5788, 'lng': 153.0588},
-    'Eight Mile Plains': {'lat': -27.5808, 'lng': 153.0968},
-    'Calamvale': {'lat': -27.6169, 'lng': 153.0467},
-    'Rochedale': {'lat': -27.5710, 'lng': 153.1260},
-    'Mansfield': {'lat': -27.5327, 'lng': 153.1009},
-    'Ascot': {'lat': -27.4325, 'lng': 153.0622},
-    'Hamilton': {'lat': -27.4375, 'lng': 153.0597},
-}
+# 从集中配置加载坐标
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from suburbs_config import get_suburb_coords
+SUBURBS = get_suburb_coords()
 
 # Transport types to search
 TRANSPORT_TYPES = [

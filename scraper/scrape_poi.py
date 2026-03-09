@@ -19,16 +19,11 @@ API_KEY = os.getenv('GOOGLE_MAPS_API_KEY', 'YOUR_API_KEY_HERE')
 # 数据库连接信息
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-# 7个郊区的中心坐标
-SUBURBS = {
-    'Sunnybank': {'lat': -27.5916, 'lng': 153.0622},
-    'Eight Mile Plains': {'lat': -27.5808, 'lng': 153.0968},
-    'Calamvale': {'lat': -27.6169, 'lng': 153.0467},
-    'Rochedale': {'lat': -27.5710, 'lng': 153.1260},
-    'Mansfield': {'lat': -27.5327, 'lng': 153.1009},
-    'Ascot': {'lat': -27.4325, 'lng': 153.0622},
-    'Hamilton': {'lat': -27.4375, 'lng': 153.0597}
-}
+# 从集中配置加载坐标
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from suburbs_config import get_suburb_coords
+SUBURBS = get_suburb_coords()
 
 # POI类别和关键词
 POI_CATEGORIES = [

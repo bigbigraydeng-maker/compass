@@ -301,5 +301,321 @@
       "2032奥运会 - Northshore 用地改造为住宅/混合用途"
     ],
     "council_priority": "high"
+  },
+  "Runcorn": {
+    "zoning_summary": "Low Density Residential dominant with neighbourhood centre along Warrigal Road. Community facilities and open space along Bulimba Creek corridor.",
+    "zoning_summary_cn": "以低密度住宅区为主，Warrigal Road 沿线设有邻里中心。Bulimba Creek 走廊沿线有社区设施和开放空间。成熟的华人聚居区域。",
+    "key_projects": [
+      {
+        "name": "Runcorn Heights Townhouse Development",
+        "name_cn": "Runcorn Heights 联排别墅开发",
+        "description": "30-lot townhouse infill development on former community land, 3-bedroom designs",
+        "description_cn": "在前社区用地上建设30套联排别墅，3卧室设计，适合首次置业和小家庭。",
+        "status": "under_construction",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Warrigal Road Streetscape Upgrade",
+        "name_cn": "Warrigal Road 街景改善工程",
+        "description": "Footpath widening, lighting and landscaping improvements along Warrigal Road commercial strip",
+        "description_cn": "Warrigal Road 商业街人行道拓宽、照明和绿化改善工程，提升社区商业环境。",
+        "status": "approved",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Runcorn train station on Beenleigh/Gold Coast line",
+      "Bulimba Creek bikeway and greenway corridor",
+      "Brisbane City Plan 2014 local plan area"
+    ],
+    "infrastructure_cn": [
+      "Runcorn 火车站位于 Beenleigh/黄金海岸线",
+      "Bulimba Creek 自行车道和绿道走廊",
+      "布里斯班城市规划2014 本地规划区域"
+    ],
+    "council_priority": "low"
+  },
+  "Wishart": {
+    "zoning_summary": "Predominantly Low Density Residential with some Character Residential. Small neighbourhood centre at Mt Gravatt-Capalaba Road. Well-established suburb with limited new development.",
+    "zoning_summary_cn": "以低密度住宅区为主，部分特色住宅区。Mt Gravatt-Capalaba Road 设有小型邻里中心。成熟郊区，新开发项目有限。",
+    "key_projects": [
+      {
+        "name": "Wishart Road Residential Infill",
+        "name_cn": "Wishart Road 住宅填充开发",
+        "description": "Small-scale townhouse and duplex developments along Wishart Road corridor",
+        "description_cn": "沿 Wishart Road 走廊的小型联排和双拼住宅开发，增加该区域住宅多样性。",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      }
+    ],
+    "infrastructure": [
+      "Proximity to Garden City Shopping Centre (Upper Mount Gravatt)",
+      "Mt Gravatt-Capalaba Road bus corridor",
+      "Well-established school catchments (Wishart State School)"
+    ],
+    "infrastructure_cn": [
+      "毗邻 Garden City 购物中心（Upper Mount Gravatt）",
+      "Mt Gravatt-Capalaba Road 公交走廊",
+      "成熟学区（Wishart State School）"
+    ],
+    "council_priority": "low"
+  },
+  "Upper Mount Gravatt": {
+    "zoning_summary": "Mixed zoning including Low Density Residential, Low-Medium Density, Neighbourhood Centre, and Mixed Use around Garden City. Major commercial hub with Westfield Garden City.",
+    "zoning_summary_cn": "混合区划，包括低密度住宅区、低中密度住宅区、邻里中心和 Garden City 周边混合用途区。Westfield Garden City 是该区域核心商业中心。",
+    "key_projects": [
+      {
+        "name": "Garden City Shopping Centre Expansion",
+        "name_cn": "Garden City 购物中心扩建",
+        "description": "Westfield Garden City ongoing upgrades including new dining precinct and retail tenancies",
+        "description_cn": "Westfield Garden City 持续升级，包括新餐饮区和零售商铺。作为南区最大购物中心，吸引大量华人顾客。",
+        "status": "under_construction",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Logan Road Mixed-Use Precinct",
+        "name_cn": "Logan Road 混合用途区",
+        "description": "Medium-density residential and retail development along Logan Road near Garden City",
+        "description_cn": "Logan Road 靠近 Garden City 的中密度住宅和零售开发，提升区域商业活力。",
+        "status": "approved",
+        "estimated_completion": "2027"
+      }
+    ],
+    "infrastructure": [
+      "Westfield Garden City major shopping centre",
+      "Eight Mile Plains busway station accessible",
+      "Logan Road and Kessels Road major arterial corridors",
+      "Griffith University Mt Gravatt campus nearby"
+    ],
+    "infrastructure_cn": [
+      "Westfield Garden City 大型购物中心",
+      "可接驳八英里平原公交站",
+      "Logan Road 和 Kessels Road 主干道走廊",
+      "格里菲斯大学 Mt Gravatt 校区毗邻"
+    ],
+    "council_priority": "medium"
+  },
+  "Macgregor": {
+    "zoning_summary": "Low Density Residential with neighbourhood centre along Kessels Road. Community facilities around Macgregor State High School. Close proximity to Garden City.",
+    "zoning_summary_cn": "以低密度住宅区为主，Kessels Road 沿线设有邻里中心。Macgregor State High School 周边有社区设施。紧邻 Garden City 购物中心，华人家庭集中区域。",
+    "key_projects": [
+      {
+        "name": "Kessels Road Townhouse Development",
+        "name_cn": "Kessels Road 联排别墅开发",
+        "description": "40-unit townhouse development with community green space on Kessels Road",
+        "description_cn": "Kessels Road 40套联排别墅开发，配有社区绿地。适合家庭居住，靠近学校和购物中心。",
+        "status": "approved",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Macgregor State High School Upgrade",
+        "name_cn": "Macgregor 州立中学升级",
+        "description": "Facility expansion and modernisation for growing student population",
+        "description_cn": "为应对学生人口增长进行的设施扩建和现代化改造。该校学术表现优异，是华人家庭选择该区的重要因素。",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      }
+    ],
+    "infrastructure": [
+      "Proximity to Westfield Garden City",
+      "Kessels Road arterial corridor",
+      "Macgregor State High School (top-rated)",
+      "Brisbane Metro accessible via Eight Mile Plains station"
+    ],
+    "infrastructure_cn": [
+      "紧邻 Westfield Garden City",
+      "Kessels Road 主干道走廊",
+      "Macgregor 州立中学（评分优异）",
+      "可通过八英里平原站接驳布里斯班 Metro"
+    ],
+    "council_priority": "medium"
+  },
+  "Robertson": {
+    "zoning_summary": "Low Density Residential with Low-Medium Density along main roads. Open space corridors along Stable Swamp Creek. Quiet residential suburb.",
+    "zoning_summary_cn": "以低密度住宅区为主，主干道沿线为低中密度住宅区。Stable Swamp Creek 沿线有开放空间走廊。安静的住宅郊区。",
+    "key_projects": [
+      {
+        "name": "Robertson Residential Infill",
+        "name_cn": "Robertson 住宅填充开发",
+        "description": "Small-scale duplex and townhouse developments on larger residential lots",
+        "description_cn": "在较大住宅地块上的小型双拼和联排别墅开发，增加区域住宅密度。",
+        "status": "under_construction",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Proximity to Sunnybank Hills Shopping Centre",
+      "Stable Swamp Creek green corridor",
+      "Beaudesert Road and Illaweena Street corridors"
+    ],
+    "infrastructure_cn": [
+      "毗邻 Sunnybank Hills 购物中心",
+      "Stable Swamp Creek 绿色走廊",
+      "Beaudesert Road 和 Illaweena Street 走廊"
+    ],
+    "council_priority": "low"
+  },
+  "Stretton": {
+    "zoning_summary": "Low Density Residential dominant with generous open space allocations. Newer suburb with modern estate planning. Limited commercial zoning.",
+    "zoning_summary_cn": "以低密度住宅区为主，开放空间分配充裕。较新的郊区，采用现代小区规划。商业区划有限。华人家庭青睐的优质居住区。",
+    "key_projects": [
+      {
+        "name": "Stretton State College Expansion",
+        "name_cn": "Stretton 州立学院扩建",
+        "description": "New teaching facilities and sports complex for growing school community",
+        "description_cn": "为不断增长的学校社区新建教学设施和体育综合体。Stretton State College 是广受华人家庭欢迎的学校之一。",
+        "status": "under_construction",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Illaweena Street Residential Estate",
+        "name_cn": "Illaweena Street 住宅小区",
+        "description": "Premium residential lots with parkland frontage in established area",
+        "description_cn": "位于成熟区域的优质住宅地块，紧邻公园绿地。",
+        "status": "approved",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Stretton State College (P-12)",
+      "Karawatha Forest Discovery Centre nearby",
+      "Bus routes connecting to Eight Mile Plains busway",
+      "Beaudesert Road corridor access"
+    ],
+    "infrastructure_cn": [
+      "Stretton 州立学院（小学至12年级一贯制）",
+      "Karawatha Forest 探索中心毗邻",
+      "公交线路连接八英里平原公交站",
+      "Beaudesert Road 走廊通达"
+    ],
+    "council_priority": "low"
+  },
+  "Kuraby": {
+    "zoning_summary": "Low Density Residential with open space along Bulimba Creek. Some industrial zoning near railway corridor. Kuraby train station provides rail access.",
+    "zoning_summary_cn": "以低密度住宅区为主，Bulimba Creek 沿线有开放空间。铁路走廊附近有部分工业区划。Kuraby 火车站提供铁路通达。",
+    "key_projects": [
+      {
+        "name": "Kuraby Station Precinct Upgrade",
+        "name_cn": "Kuraby 车站区域升级",
+        "description": "Station accessibility improvements and surrounding streetscape upgrades",
+        "description_cn": "车站无障碍改善及周边街景升级工程，提升公共交通便利性。",
+        "status": "approved",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Bulimba Creek Greenway Extension",
+        "name_cn": "Bulimba Creek 绿道延伸",
+        "description": "Extension of shared pathway along Bulimba Creek corridor through Kuraby",
+        "description_cn": "Bulimba Creek 走廊共享步道延伸穿越 Kuraby，改善居民休闲和通勤选择。",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      }
+    ],
+    "infrastructure": [
+      "Kuraby train station on Beenleigh/Gold Coast line",
+      "Bulimba Creek bikeway corridor",
+      "Proximity to Underwood industrial and retail area"
+    ],
+    "infrastructure_cn": [
+      "Kuraby 火车站位于 Beenleigh/黄金海岸线",
+      "Bulimba Creek 自行车道走廊",
+      "毗邻 Underwood 工业和零售区"
+    ],
+    "council_priority": "low"
+  },
+  "Coopers Plains": {
+    "zoning_summary": "Mixed zoning with Low Density Residential, significant Industry zone, and Mixed Use areas. Railway corridor divides residential and industrial areas. Coopers Plains train station.",
+    "zoning_summary_cn": "混合区划，包含低密度住宅区、大面积工业区和混合用途区。铁路走廊将住宅区和工业区分隔。设有 Coopers Plains 火车站。",
+    "key_projects": [
+      {
+        "name": "Coopers Plains Industrial Precinct Renewal",
+        "name_cn": "Coopers Plains 工业区更新",
+        "description": "Rezoning and renewal of underutilised industrial land for mixed commercial use",
+        "description_cn": "将低效工业用地重新规划为混合商业用途，提升区域经济活力和就业机会。",
+        "status": "proposed",
+        "estimated_completion": "2028"
+      },
+      {
+        "name": "Boundary Road Streetscape Improvement",
+        "name_cn": "Boundary Road 街景改善",
+        "description": "Streetscape and drainage improvements along Boundary Road corridor",
+        "description_cn": "Boundary Road 走廊街景和排水改善工程。",
+        "status": "approved",
+        "estimated_completion": "2026"
+      }
+    ],
+    "infrastructure": [
+      "Coopers Plains train station on Beenleigh/Gold Coast line",
+      "QEII Hospital and Health Precinct nearby",
+      "Boundary Road and Beaudesert Road arterials",
+      "Logan and Gold Coast Faster Rail ($5.75B) - improved rail by 2031"
+    ],
+    "infrastructure_cn": [
+      "Coopers Plains 火车站位于 Beenleigh/黄金海岸线",
+      "QEII 医院和健康区毗邻",
+      "Boundary Road 和 Beaudesert Road 主干道",
+      "Logan 和黄金海岸快速铁路（57.5亿澳元）- 2031年前改善铁路"
+    ],
+    "council_priority": "medium"
+  },
+  "Algester": {
+    "zoning_summary": "Low Density Residential dominant with Low-Medium Density along Algester Road. Open space and parklands well distributed. Quiet family-oriented suburb.",
+    "zoning_summary_cn": "以低密度住宅区为主，Algester Road 沿线为低中密度住宅区。公园绿地分布均匀。安静的家庭导向型郊区。",
+    "key_projects": [
+      {
+        "name": "Algester Road Duplex Developments",
+        "name_cn": "Algester Road 双拼住宅开发",
+        "description": "Multiple small-scale duplex developments along Algester Road for increased housing density",
+        "description_cn": "Algester Road 沿线多个小型双拼住宅开发项目，适度增加住宅密度。",
+        "status": "under_construction",
+        "estimated_completion": "2025"
+      }
+    ],
+    "infrastructure": [
+      "Algester Road bus corridor",
+      "Proximity to Calamvale and Sunnybank Hills shopping",
+      "Algester State School catchment"
+    ],
+    "infrastructure_cn": [
+      "Algester Road 公交走廊",
+      "毗邻 Calamvale 和 Sunnybank Hills 购物区",
+      "Algester State School 学区"
+    ],
+    "council_priority": "low"
+  },
+  "Parkinson": {
+    "zoning_summary": "Low Density and Low-Medium Density Residential with generous open space. Newer suburb with modern infrastructure. Parkland corridors well integrated.",
+    "zoning_summary_cn": "低密度和低中密度住宅区为主，开放空间充裕。较新的郊区，基础设施现代化。公园绿地走廊融合良好。",
+    "key_projects": [
+      {
+        "name": "Parkinson Aquatic Centre Upgrade",
+        "name_cn": "Parkinson 水上活动中心升级",
+        "description": "Facility improvements to community aquatic centre including new amenities",
+        "description_cn": "社区水上活动中心设施改善，包括新增配套设施，提升居民休闲体验。",
+        "status": "approved",
+        "estimated_completion": "2026"
+      },
+      {
+        "name": "Beaudesert Road Corridor Widening",
+        "name_cn": "Beaudesert Road 走廊拓宽",
+        "description": "Road widening and intersection upgrades along Beaudesert Road to improve traffic flow",
+        "description_cn": "Beaudesert Road 道路拓宽和路口升级，改善交通流量。",
+        "status": "proposed",
+        "estimated_completion": "2027"
+      }
+    ],
+    "infrastructure": [
+      "Beaudesert Road arterial corridor",
+      "Proximity to Calamvale District Park",
+      "Bus routes connecting to Eight Mile Plains busway",
+      "Parkinson aquatic and recreation facilities"
+    ],
+    "infrastructure_cn": [
+      "Beaudesert Road 主干道走廊",
+      "毗邻 Calamvale 区级公园",
+      "公交线路连接八英里平原公交站",
+      "Parkinson 水上运动和休闲设施"
+    ],
+    "council_priority": "low"
   }
 }

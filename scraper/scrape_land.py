@@ -35,15 +35,11 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 }
 
-SUBURBS = {
-    "Sunnybank": "sunnybank-qld-4109",
-    "Eight Mile Plains": "eight-mile-plains-qld-4113",
-    "Calamvale": "calamvale-qld-4116",
-    "Rochedale": "rochedale-qld-4123",
-    "Mansfield": "mansfield-qld-4122",
-    "Ascot": "ascot-qld-4007",
-    "Hamilton": "hamilton-qld-4007"
-}
+# 从集中配置加载
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
+from suburbs_config import get_domain_slugs
+SUBURBS = get_domain_slugs()
 
 all_land = []
 
