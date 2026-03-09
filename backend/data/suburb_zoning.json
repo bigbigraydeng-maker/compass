@@ -1,0 +1,60 @@
+{
+  "Sunnybank": [
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 52},
+    {"zone_code": "LMDR", "zone_name": "Low-Medium Density Residential", "percentage": 13},
+    {"zone_code": "NC", "zone_name": "Neighbourhood Centre", "percentage": 10},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 12},
+    {"zone_code": "OS", "zone_name": "Open Space", "percentage": 8},
+    {"zone_code": "CR", "zone_name": "Character Residential", "percentage": 5}
+  ],
+  "Eight Mile Plains": [
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 38},
+    {"zone_code": "LMDR", "zone_name": "Low-Medium Density Residential", "percentage": 15},
+    {"zone_code": "EC", "zone_name": "Emerging Community", "percentage": 12},
+    {"zone_code": "SR", "zone_name": "Sport and Recreation", "percentage": 14},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 10},
+    {"zone_code": "PC", "zone_name": "Principal Centre", "percentage": 6},
+    {"zone_code": "MU", "zone_name": "Mixed Use", "percentage": 5}
+  ],
+  "Calamvale": [
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 48},
+    {"zone_code": "LMDR", "zone_name": "Low-Medium Density Residential", "percentage": 22},
+    {"zone_code": "OS", "zone_name": "Open Space", "percentage": 14},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 10},
+    {"zone_code": "NC", "zone_name": "Neighbourhood Centre", "percentage": 6}
+  ],
+  "Rochedale": [
+    {"zone_code": "EC", "zone_name": "Emerging Community", "percentage": 32},
+    {"zone_code": "LMDR", "zone_name": "Low-Medium Density Residential", "percentage": 23},
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 13},
+    {"zone_code": "SR", "zone_name": "Sport and Recreation", "percentage": 12},
+    {"zone_code": "MU", "zone_name": "Mixed Use", "percentage": 10},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 6},
+    {"zone_code": "OS", "zone_name": "Open Space", "percentage": 4}
+  ],
+  "Mansfield": [
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 53},
+    {"zone_code": "OS", "zone_name": "Open Space", "percentage": 24},
+    {"zone_code": "CR", "zone_name": "Character Residential", "percentage": 10},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 8},
+    {"zone_code": "NC", "zone_name": "Neighbourhood Centre", "percentage": 3},
+    {"zone_code": "LMDR", "zone_name": "Low-Medium Density Residential", "percentage": 2}
+  ],
+  "Ascot": [
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 30},
+    {"zone_code": "SR", "zone_name": "Sport and Recreation", "percentage": 25},
+    {"zone_code": "CR", "zone_name": "Character Residential", "percentage": 20},
+    {"zone_code": "DC", "zone_name": "District Centre", "percentage": 8},
+    {"zone_code": "LMDR", "zone_name": "Low-Medium Density Residential", "percentage": 10},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 7}
+  ],
+  "Hamilton": [
+    {"zone_code": "PDA", "zone_name": "Priority Development Area", "percentage": 42},
+    {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 15},
+    {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 12},
+    {"zone_code": "DC", "zone_name": "District Centre", "percentage": 10},
+    {"zone_code": "SR", "zone_name": "Sport and Recreation", "percentage": 8},
+    {"zone_code": "MU", "zone_name": "Mixed Use", "percentage": 8},
+    {"zone_code": "CF", "zone_name": "Community Facilities", "percentage": 5}
+  ]
+}

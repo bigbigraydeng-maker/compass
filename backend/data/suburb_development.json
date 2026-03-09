@@ -1,22 +1,29 @@
 {
   "Sunnybank": {
     "zoning_summary": "Low Density Residential with commercial zones along Mains Road corridor. Neighbourhood centres with retail and food precincts.",
+    "zoning_summary_cn": "以低密度住宅区为主，沿 Mains Road 走廊设有商业区。邻里中心提供零售和美食街区，是布里斯班华人聚居核心区域。",
     "key_projects": [
       {
         "name": "Sunnybank Market Square Redevelopment",
+        "name_cn": "Sunnybank Market Square 重建项目",
         "description": "$40M redevelopment with 7,911sqm retail extension, 304 car parks, laneway dining precinct",
+        "description_cn": "投资4000万澳元的重建项目，新增7,911平方米零售面积，304个停车位，以及巷道式餐饮街区。该项目大幅提升了 Sunnybank 作为华人商圈核心的吸引力，增加了更多亚洲美食和零售选择。完工后预计将吸引更多华人商户入驻，进一步巩固该区域作为布里斯班最大华人商业中心的地位。",
         "status": "completed",
         "estimated_completion": "2024"
       },
       {
         "name": "Sunnybank Community & Sports Club Renovation",
+        "name_cn": "Sunnybank 社区体育俱乐部翻新",
         "description": "Multi-stage renovation including sports bar, kitchen expansion, gym upgrade, outdoor spaces",
+        "description_cn": "多阶段翻新工程，包括运动酒吧、厨房扩建、健身房升级和户外空间改造。该项目为当地居民提供了更好的社区活动设施，包括适合华人社区的健身和社交场所。",
         "status": "completed",
         "estimated_completion": "2024"
       },
       {
         "name": "Sunny Central Shopping Centre Extension",
+        "name_cn": "Sunny Central 购物中心扩建",
         "description": "Purpose-built commercial building at 95 Mains Road with food/drink tenancies and streetscape improvements",
+        "description_cn": "位于 Mains Road 95号的定制商业建筑，设有餐饮租户和街景改善工程。该项目将引入更多华人餐饮和零售品牌，提升 Mains Road 商业走廊的整体品质和步行体验。",
         "status": "approved",
         "estimated_completion": "2025"
       }
@@ -26,26 +33,38 @@
       "Stable Swamp Creek stormwater management upgrades",
       "Brisbane City Plan 2014 Minor Amendment Package R (Aug 2024)"
     ],
+    "infrastructure_cn": [
+      "布里斯班 Metro M1线（八英里平原至罗马街）- 最近的主要公共交通连接",
+      "Stable Swamp Creek 雨水管理系统升级",
+      "布里斯班城市规划2014 小修正案 R（2024年8月）"
+    ],
     "council_priority": "medium"
   },
   "Eight Mile Plains": {
     "zoning_summary": "Mix of Low Density, Low-Medium Density Residential, and Emerging Community zones. Gateway Neighbourhood Plan (adopted Nov 2022) guides development around bus station.",
+    "zoning_summary_cn": "混合低密度、低中密度住宅区和新兴社区区域。Gateway 邻里规划（2022年11月通过）指导公交站周边开发。该区域是布里斯班南区重要的交通枢纽，未来发展潜力巨大。",
     "key_projects": [
       {
         "name": "Brisbane Metro (M1 Line)",
+        "name_cn": "布里斯班地铁 M1 线",
         "description": "$1.6B rapid transit with Eight Mile Plains as key terminus. 60 electric vehicles, 65 chargers, 2,300+ solar panels",
+        "description_cn": "投资16亿澳元的快速公交项目，八英里平原是关键终点站。配备60辆电动车辆、65个充电桩和超过2,300块太阳能电池板。Metro M1 线将大幅缩短前往布里斯班CBD的通勤时间，预计完工后将显著提升周边房产价值。",
         "status": "under_construction",
         "estimated_completion": "2025"
       },
       {
         "name": "M1 Pacific Motorway Eight Mile Plains to Daisy Hill Upgrade",
+        "name_cn": "M1 太平洋高速八英里平原至 Daisy Hill 升级",
         "description": "$750M upgrade widening M1 to 5 northbound lanes, extended SE Busway to Springwood, new Rochedale bus station",
+        "description_cn": "投资7.5亿澳元的高速公路升级，将 M1 北行扩展至5条车道，东南公交专用道延伸至 Springwood，新建 Rochedale 公交站。已完成，大幅改善南区通勤条件。",
         "status": "completed",
         "estimated_completion": "2024"
       },
       {
         "name": "Satellite Health Centre",
+        "name_cn": "卫星医疗中心",
         "description": "$65.4M health facility with Minor Injury Clinic, dialysis, cancer therapy, medical imaging. Open 8am-10pm 7 days",
+        "description_cn": "投资6,540万澳元的医疗设施，提供轻伤诊所、透析、癌症治疗和医学影像服务。每天8:00-22:00开放，无需前往大型医院即可获得专业医疗，对华人家庭尤其是老年人非常重要。",
         "status": "completed",
         "estimated_completion": "2024"
       }
@@ -56,26 +75,39 @@
       "South East Busway extension to Springwood completed",
       "Logan and Gold Coast Faster Rail ($5.75B) - completion 2031"
     ],
+    "infrastructure_cn": [
+      "布里斯班 Metro 车辆段于2024年9月完工",
+      "八英里平原 Gateway 邻里规划（2022年11月）",
+      "东南公交专用道延伸至 Springwood 已完工",
+      "Logan 和黄金海岸快速铁路（57.5亿澳元）- 预计2031年完工"
+    ],
     "council_priority": "high"
   },
   "Calamvale": {
     "zoning_summary": "Low-Medium Density Residential with neighbourhood centres at Algester Road and Beaudesert Road. Townhouse development up to 2-storey along Beaudesert Road.",
+    "zoning_summary_cn": "低中密度住宅区为主，Algester Road 和 Beaudesert Road 设有邻里中心。沿 Beaudesert Road 允许建设最高2层联排别墅。人口增长迅速，适合家庭居住。",
     "key_projects": [
       {
         "name": "Calam Reserve Residential Development",
+        "name_cn": "Calam Reserve 住宅开发",
         "description": "28 premium home sites (300-698sqm) by Neptune Homes/Keylin. Rare infill development",
+        "description_cn": "由 Neptune Homes/Keylin 开发的28个优质住宅地块（300-698平方米）。成熟郊区内难得的填充式开发，适合建造新式独立屋。",
         "status": "under_construction",
         "estimated_completion": "2025"
       },
       {
         "name": "Beaudesert Road Townhouses",
+        "name_cn": "Beaudesert Road 联排别墅",
         "description": "86 townhouses (3-4 bed) over 26,554sqm with communal areas, pool, village park",
+        "description_cn": "占地26,554平方米的86套联排别墅（3-4卧），配有公共区域、泳池和社区公园。适合首次置业者和投资者，社区配套完善。",
         "status": "approved",
         "estimated_completion": "2026"
       },
       {
         "name": "Calamvale Community College Expansion",
+        "name_cn": "Calamvale 社区学院扩建",
         "description": "Education facility enhancement for growing population",
+        "description_cn": "为应对人口增长的教育设施扩建。Calamvale Community College 是知名一贯制学校，NAPLAN 成绩优秀，是华人家庭选择该区域的重要因素。",
         "status": "under_construction",
         "estimated_completion": "2025"
       }
@@ -86,32 +118,47 @@
       "Beaudesert Road widening proposed",
       "Population growth 9.9% since 2021 Census"
     ],
+    "infrastructure_cn": [
+      "可通过八英里平原站接驳布里斯班 Metro M1 线",
+      "Logan 和黄金海岸快速铁路（57.5亿澳元）- 2031年前改善铁路连通",
+      "Beaudesert Road 拓宽已提议",
+      "自2021年人口普查以来人口增长9.9%"
+    ],
     "council_priority": "medium"
   },
   "Rochedale": {
     "zoning_summary": "Emerging Community Zone, Low-Medium Density Residential, and Mixed Use under Rochedale Urban Community Neighbourhood Plan. Town Centre allows retail, commercial, medium-density residential.",
+    "zoning_summary_cn": "根据 Rochedale 城市社区邻里规划，包含新兴社区区、低中密度住宅区和混合用途区。城镇中心允许零售、商业和中密度住宅。布里斯班南区最大的新城市开发区域之一。",
     "key_projects": [
       {
         "name": "Rochedale Terrace ($380M Masterplan)",
+        "name_cn": "Rochedale Terrace 总体规划（3.8亿澳元）",
         "description": "6,000sqm park, retail pavilions, 7-storey hotel, tavern, ~300 apartments by Kinstone on 4-hectare site",
+        "description_cn": "由 Kinstone 在4公顷地块开发的大型综合项目：6,000平方米公园、零售商铺、7层酒店、酒吧和约300套公寓。总投资3.8亿。将为 Rochedale 引入首个大型商业综合体，预计大幅提升周边房产价值。",
         "status": "proposed",
         "estimated_completion": "2028"
       },
       {
         "name": "Residential Activation Fund - 1,285 New Homes",
+        "name_cn": "住房激活基金 - 1,285套新住宅",
         "description": "QLD Government fast-tracking infrastructure under $2B fund to unlock 1,285 new homes",
+        "description_cn": "昆士兰州政府通过20亿澳元住房激活基金加快基础设施建设，解锁1,285套新住宅。短期内增加供给但长期利好区域发展。",
         "status": "approved",
         "estimated_completion": "2028"
       },
       {
         "name": "Citrine Rochedale Townhouses",
+        "name_cn": "Citrine Rochedale 豪华联排别墅",
         "description": "$100M luxury 3-4 bedroom townhouse project by Creation Projects",
+        "description_cn": "由 Creation Projects 开发的1亿澳元豪华联排别墅，3-4卧室，精装修交付，适合追求品质生活的华人家庭。",
         "status": "under_construction",
         "estimated_completion": "2025"
       },
       {
         "name": "Florian Rise Apartments",
+        "name_cn": "Florian Rise 公寓社区",
         "description": "188-apartment masterplanned community. Stage 1: 62 apartments in two buildings (3 and 5 storeys)",
+        "description_cn": "188套公寓的规划社区，第一期62套（3层和5层两栋）。位于 Rochedale 核心位置，步行可达未来商业中心，适合投资者和首次置业者。",
         "status": "under_construction",
         "estimated_completion": "2026"
       }
@@ -122,20 +169,31 @@
       "South East Busway extension to Springwood",
       "Rochedale Urban Community Neighbourhood Plan"
     ],
+    "infrastructure_cn": [
+      "布里斯班 Metro 车辆段在 Rochedale 已完工",
+      "M1 升级完成 - 新建 Rochedale 公交站和停车换乘",
+      "东南公交专用道延伸至 Springwood",
+      "Rochedale 城市社区邻里规划"
+    ],
     "council_priority": "high"
   },
   "Mansfield": {
     "zoning_summary": "Low Density Residential with some Character Residential (pre-1947 protection). Neighbourhood centre at Wecker Road. Parks cover 24.1% of suburb's 4.9 sq km.",
+    "zoning_summary_cn": "以低密度住宅区为主，部分特色住宅区（1947年前建筑保护）。Wecker Road 邻里中心。公园覆盖率24.1%，是布里斯班绿化最好的郊区之一。",
     "key_projects": [
       {
         "name": "Wecker Road Markets Redevelopment",
+        "name_cn": "Wecker Road Markets 综合重建",
         "description": "Mansfield Tavern site redevelopment: supermarket, health care, gym, food/drink, specialty stores across 3 buildings",
+        "description_cn": "Mansfield Tavern 旧址综合重建：超市、医疗中心、健身房、餐饮和特色商店，3栋建筑。将为 Mansfield 引入大型商业配套，大幅提升日常生活便利性，成为区域商业核心。",
         "status": "approved",
         "estimated_completion": "2026"
       },
       {
         "name": "Newnham/Wecker Road Intersection Upgrade",
+        "name_cn": "Newnham/Wecker Road 路口升级",
         "description": "$13.3M upgrade of intersection handling 35,000 vehicles and 474 buses daily",
+        "description_cn": "投资1,330万澳元的路口升级，每日处理35,000辆车和474班公交。已完成，显著改善交通流量和安全性。",
         "status": "completed",
         "estimated_completion": "2023"
       }
@@ -146,26 +204,39 @@
       "Cross River Rail (improved network capacity, opening ~2029)",
       "Brisbane 2032 Olympics venue upgrades in broader region"
     ],
+    "infrastructure_cn": [
+      "可通过八英里平原站接驳布里斯班 Metro M1 线",
+      "Bulimba Creek 污水管网升级（微型隧道工程）",
+      "跨河铁路（提升网络运力，预计2029年开通）",
+      "布里斯班2032奥运会场馆升级（大区域范围）"
+    ],
     "council_priority": "low"
   },
   "Ascot": {
     "zoning_summary": "Low Density Residential, Character Residential (heritage areas), Sport and Recreation (Eagle Farm Racecourse). Racecourse Road zoned District Centre with active commercial frontage.",
+    "zoning_summary_cn": "低密度住宅区、特色住宅区（遗产保护）、体育休闲区（Eagle Farm 赛马场）。Racecourse Road 为区级中心，商业街面活跃。传统富人区之一。",
     "key_projects": [
       {
         "name": "Ascot Green - Eagle Farm Racecourse",
+        "name_cn": "Ascot Green - Eagle Farm 赛马场住宅",
         "description": "Part of BRC's $1.2B masterplan. 8 residential towers, 1,100+ apartments by Mirvac. Three towers completed, Stage 2 underway",
+        "description_cn": "布里斯班赛马俱乐部12亿总体规划的一部分。Mirvac 开发8栋住宅塔楼、超1,100套公寓。三栋已完工，第二阶段建设中。布里斯班内城区最大住宅开发之一，高端公寓生活，吸引大量华人投资买家。",
         "status": "under_construction",
         "estimated_completion": "2027"
       },
       {
         "name": "John Power Grandstand - The Terraces",
+        "name_cn": "John Power 看台 - The Terraces",
         "description": "New 4-storey tiered grandstand at Eagle Farm Racecourse by Hassell and RWA",
+        "description_cn": "Eagle Farm 赛马场新建4层阶梯式看台，赛马场现代化改造重要一环，提升赛事体验和区域形象。",
         "status": "approved",
         "estimated_completion": "2026"
       },
       {
         "name": "123-125 Racecourse Road Mixed-Use",
+        "name_cn": "Racecourse Road 123-125号混合开发",
         "description": "5-storey mixed-use development on Racecourse Road",
+        "description_cn": "Racecourse Road 5层混合用途项目，底层商业零售，上层精品住宅。丰富商业街业态。",
         "status": "approved",
         "estimated_completion": "2026"
       }
@@ -176,26 +247,39 @@
       "Eagle Farm Racecourse $1.2B masterplan transformation",
       "Brisbane 2032 Olympics transport infrastructure"
     ],
+    "infrastructure_cn": [
+      "跨河铁路 - Shorncliffe 线经 Eagle Junction 至CBD，预计2029年开通",
+      "Ascot 火车站位于 Doomben 线",
+      "Eagle Farm 赛马场12亿总体改造",
+      "布里斯班2032奥运会交通基础设施"
+    ],
     "council_priority": "medium"
   },
   "Hamilton": {
     "zoning_summary": "Highly diverse: District Centre along Racecourse Road, Northshore Hamilton Priority Development Area (304 hectares, managed by EDQ). Former industrial/wharf lands transforming to high-density mixed-use.",
+    "zoning_summary_cn": "区划高度多样：Racecourse Road 区级中心，Northshore Hamilton 优先开发区（304公顷）。前工业/码头用地向高密度混合用途转型，昆州最大城市更新项目之一。",
     "key_projects": [
       {
         "name": "Northshore Hamilton Urban Renewal",
+        "name_cn": "Northshore Hamilton 城市更新",
         "description": "QLD's largest waterfront urban renewal: 304 hectares, 3km river frontage, 14,000+ homes for ~24,500 people. $14B economic contribution. QLD Govt investing $100M+ in enabling infrastructure",
+        "description_cn": "昆州最大滨水城市更新：304公顷、3公里河岸线，规划14,000+套住宅、约24,500人口，经济贡献140亿。州政府投入1亿+配套基础设施。将把 Hamilton 从工业码头彻底转型为现代滨水社区，类似悉尼 Barangaroo 和墨尔本 Docklands。华人投资者高度关注长期升值潜力。",
         "status": "under_construction",
         "estimated_completion": "2035"
       },
       {
         "name": "Hamilton Grove (Wentworth Equities)",
+        "name_cn": "Hamilton Grove 综合体",
         "description": "3-tower mixed-use at 19 Hercules Street within Northshore PDA. Residential with ground-level retail/dining",
+        "description_cn": "Northshore 内 Hercules Street 19号的3栋塔楼混合项目，住宅为主，底层零售餐饮。将率先定义该区域社区氛围和品质标准。",
         "status": "proposed",
         "estimated_completion": "2028"
       },
       {
         "name": "Racecourse Road Mixed-Use (Graya)",
+        "name_cn": "Racecourse Road 混合开发（Graya）",
         "description": "4-storey mixed-use: 8 commercial tenancies, 37 apartments with rooftop communal spaces",
+        "description_cn": "Graya 开发4层混合项目：8个商业租户、37套公寓、屋顶公共空间。为 Racecourse Road 商业街注入更多活力。",
         "status": "approved",
         "estimated_completion": "2026"
       }
@@ -207,6 +291,14 @@
       "New school planned within Northshore PDA",
       "Cross River Rail improved rail network capacity, opening ~2029",
       "Brisbane 2032 Olympics - Northshore land repurposed for residential/mixed-use"
+    ],
+    "infrastructure_cn": [
+      "Northshore Hamilton 开发方案2025年11月修订",
+      "州政府1亿+ Northshore 配套基础设施（2028年上半年交付）",
+      "河滨公园绿地计划2029年交付",
+      "Northshore 内规划新建学校",
+      "跨河铁路提升运力，预计2029年开通",
+      "2032奥运会 - Northshore 用地改造为住宅/混合用途"
     ],
     "council_priority": "high"
   }

@@ -81,6 +81,40 @@ function CustomTooltip({ active, payload, label }: any) {
   return null;
 }
 
+// 华人宜居指数计算
+function calcLivabilityScores(poi: any, crime: any, transport: any) {
+  // POI score: 0=0, 1-10=30, 10-30=50, 30-60=70, 60-100=85, 100+=100
+  let poiTotal = 0;
+  if (poi) for (const v of Object.values(poi.category_counts || {})) poiTotal += (v as number);
+  const poiScore = poiTotal === 0 ? 0 : poiTotal < 10 ? 30 : poiTotal < 30 ? 50 : poiTotal < 60 ? 70 : poiTotal < 100 ? 85 : 100;
+
+  // Safety score: inverse of crime. <200=95, 200-500=80, 500-1000=65, 1000-2000=45, 2000+=25
+  const crimeTotal = crime?.total_crimes || 0;
+  const safetyScore = crimeTotal === 0 ? 50 : crimeTotal < 200 ? 95 : crimeTotal < 500 ? 80 : crimeTotal < 1000 ? 65 : crimeTotal < 2000 ? 45 : 25;
+
+  // Transport score: 0=0, 1-10=30, 10-30=50, 30-60=70, 60-100=85, 100+=100
+  const transTotal = transport?.total_stations || 0;
+  const transScore = transTotal === 0 ? 0 : transTotal < 10 ? 30 : transTotal < 30 ? 50 : transTotal < 60 ? 70 : transTotal < 100 ? 85 : 100;
+
+  const overall = Math.round((poiScore + safetyScore + transScore) / 3);
+  return { overall, poiScore, safetyScore, transScore, poiTotal, crimeTotal, transTotal };
+}
+
+function getScoreColor(score: number) {
+  if (score >= 80) return 'text-green-600';
+  if (score >= 60) return 'text-blue-600';
+  if (score >= 40) return 'text-yellow-600';
+  return 'text-red-500';
+}
+
+function getScoreLabel(score: number) {
+  if (score >= 80) return '优秀';
+  if (score >= 60) return '良好';
+  if (score >= 40) return '一般';
+  if (score > 0) return '较弱';
+  return '暂无';
+}
+
 export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [data, setData] = useState<SuburbData | null>(null);
   const [trends, setTrends] = useState<MonthlyTrend[]>([]);
@@ -99,13 +133,14 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [aiReport, setAiReport] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiAddress, setAiAddress] = useState('');
+  const [expandedProject, setExpandedProject] = useState<number | null>(null);
+  const [showLivabilityDetail, setShowLivabilityDetail] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
       const encodedName = encodeURIComponent(suburbName);
 
-      // 安全 fetch 封装：失败不抛异常
       const safeFetch = async (url: string) => {
         try {
           const res = await fetch(url);
@@ -117,13 +152,12 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
       };
 
       try {
-        // === 单一聚合请求：13 个 API → 1 个 /all 端点 ===
         const allData = await safeFetch(`${apiUrl}/api/suburb/${encodedName}/all`);
 
         if (allData) {
-          // 详情 + 成交
+          // Detail + sales
           const recentSales = (allData.recent_sales_list || []).map((r: any) => ({
-            address: r.address || '',
+            address: r.address || r.full_address || '',
             property_type: r.property_type || '',
             bedrooms: r.bedrooms || 0,
             bathrooms: r.bathrooms || 0,
@@ -133,27 +167,25 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           }));
           setData({
             suburb: allData.suburb || suburbName,
-            median_price: allData.median_price || allData.price?.median || 0,
-            total_sales: allData.total_sales || allData.price?.total_sales || 0,
+            median_price: allData.median_price || 0,
+            total_sales: allData.total_sales || 0,
             recent_sales: recentSales,
           });
 
-          // 趋势
-          setTrends(allData.monthly_trends || allData.price_trends?.map((t: any) => ({
-            month: t.month, median_price: t.median || t.median_price, total_sales: t.count || t.total_sales
-          })) || []);
+          // Trends
+          setTrends(allData.monthly_trends || []);
 
-          // 学校（优先 schools_full 完整数据）
+          // Schools
           setSchools(allData.schools_full || allData.schools || []);
 
-          // 分区
+          // Zoning
           if (allData.zoning?.zones) {
             setZoning({ suburb: suburbName, zones: allData.zoning.zones.map((z: any) => ({
               zone_code: z.code || z.zone_code, zone_name: z.name || z.zone_name, percentage: z.pct || z.percentage
             }))});
           }
 
-          // 在售土地
+          // Land listings
           setLandListings(allData.land_listings || []);
 
           // Compass Score
@@ -165,22 +197,37 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             });
           }
 
-          // POI
+          // === FIX: POI data mapping ===
           if (allData.poi && Object.keys(allData.poi).length > 0) {
-            setPoiData({ suburb: suburbName, categories: allData.poi });
+            const categoryCounts: Record<string, number> = {};
+            let totalPoi = 0;
+            for (const [cat, info] of Object.entries(allData.poi as Record<string, any>)) {
+              const count = typeof info === 'object' ? (info.count || 0) : (typeof info === 'number' ? info : 0);
+              categoryCounts[cat] = count;
+              totalPoi += count;
+            }
+            setPoiData({ suburb: suburbName, total_poi: totalPoi, category_counts: categoryCounts, raw: allData.poi });
           }
 
-          // 犯罪
+          // === FIX: Crime data mapping ===
           if (allData.crime && Object.keys(allData.crime).length > 0) {
-            setCrimeData({ suburb: suburbName, summary: allData.crime });
+            let totalCrimes = 0;
+            for (const v of Object.values(allData.crime as Record<string, number>)) {
+              totalCrimes += typeof v === 'number' ? v : 0;
+            }
+            setCrimeData({ suburb: suburbName, total_crimes: totalCrimes, categories: allData.crime });
           }
 
-          // 交通
+          // === FIX: Transport data mapping ===
           if (allData.transport && Object.keys(allData.transport).length > 0) {
-            setTransportData({ suburb: suburbName, summary: allData.transport });
+            let totalStations = 0;
+            for (const v of Object.values(allData.transport as Record<string, number>)) {
+              totalStations += typeof v === 'number' ? v : 0;
+            }
+            setTransportData({ suburb: suburbName, total_stations: totalStations, by_type: allData.transport });
           }
 
-          // 新三维度
+          // New dimensions
           if (allData.rental) setRentalData({ suburb: suburbName, ...allData.rental });
           if (allData.flood) setFloodData({ suburb: suburbName, ...allData.flood });
           if (allData.development) setDevelopmentData({ suburb: suburbName, ...allData.development });
@@ -190,10 +237,6 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
-        setTrends([]);
-        setSchools([]);
-        setZoning(null);
-        setLandListings([]);
       } finally {
         setLoading(false);
       }
@@ -247,9 +290,10 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
     );
   }
 
+  const livability = calcLivabilityScores(poiData, crimeData, transportData);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 导航栏 */}
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -264,7 +308,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           <p className="text-blue-100">布里斯班华人热门区域</p>
         </div>
 
-        {/* Compass Score 卡片 */}
+        {/* ===== 1. Compass Score ===== */}
         {score && (
           <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
             <div className="flex justify-between items-center mb-6">
@@ -283,8 +327,6 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 </span>
               </div>
             </div>
-            
-            {/* 维度进度条 */}
             <div className="space-y-4 mb-6">
               {Object.entries(score.breakdown).map(([key, item]) => {
                 const breakdownItem = item as { score: number; max: number; label: string };
@@ -295,16 +337,12 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                       <span className="text-sm text-gray-500">{breakdownItem.score}/{breakdownItem.max}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(breakdownItem.score / breakdownItem.max) * 100}%` }}
-                      />
+                      <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${(breakdownItem.score / breakdownItem.max) * 100}%` }} />
                     </div>
                   </div>
                 );
               })}
             </div>
-            
             <div className="flex justify-between items-center pt-4 border-t">
               <p className="text-xs text-gray-500">数据来源：QLD Gov / NAPLAN / ABS</p>
               <p className="text-sm font-semibold text-blue-600">Compass</p>
@@ -312,132 +350,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           </div>
         )}
 
-        {/* POI / Crime / Transport 三栏数据 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* 华人生活配套 */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-              <span className="text-2xl">🏪</span> 华人生活配套
-            </h3>
-            {poiData && poiData.total_poi > 0 ? (
-              <>
-                <p className="text-3xl font-bold text-orange-500 mb-3">{poiData.total_poi} <span className="text-base font-normal text-gray-500">家商户</span></p>
-                <div className="space-y-2">
-                  {Object.entries(poiData.category_counts || {}).sort(([,a]: any, [,b]: any) => b - a).map(([cat, count]: any) => {
-                    const labelMap: Record<string, string> = {
-                      chinese_restaurant: '中餐厅', asian_grocery: '亚洲超市',
-                      chinese_hair_salon: '华人理发', chinese_church: '华人教会',
-                      chinese_clinic: '华人诊所', chinese_school: '中文学校',
-                    };
-                    const iconMap: Record<string, string> = {
-                      chinese_restaurant: '🍜', asian_grocery: '🛒',
-                      chinese_hair_salon: '💇', chinese_church: '⛪',
-                      chinese_clinic: '🏥', chinese_school: '📚',
-                    };
-                    return (
-                      <div key={cat} className="flex justify-between items-center text-sm">
-                        <span className="text-gray-600">{iconMap[cat] || '📍'} {labelMap[cat] || cat}</span>
-                        <span className="font-semibold text-gray-800">{count}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-400 text-sm">暂无数据</p>
-            )}
-          </div>
-
-          {/* 治安数据 */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-              <span className="text-2xl">🛡️</span> 治安数据
-            </h3>
-            {crimeData && crimeData.total_crimes > 0 ? (
-              <>
-                <p className="text-3xl font-bold text-red-500 mb-1">{crimeData.total_crimes.toLocaleString()} <span className="text-base font-normal text-gray-500">起</span></p>
-                <p className="text-xs text-gray-400 mb-3">近12个月犯罪记录</p>
-                <div className="space-y-2">
-                  {Object.entries(crimeData.categories || {}).sort(([,a]: any, [,b]: any) => b - a).map(([cat, count]: any) => {
-                    const labelMap: Record<string, string> = {
-                      violent_crime: '暴力犯罪', property_crime: '入室盗窃',
-                      theft_fraud: '盗窃诈骗', drug_offences: '毒品犯罪',
-                      public_order: '公共秩序',
-                    };
-                    const colorMap: Record<string, string> = {
-                      violent_crime: 'bg-red-100 text-red-700',
-                      property_crime: 'bg-orange-100 text-orange-700',
-                      theft_fraud: 'bg-yellow-100 text-yellow-700',
-                      drug_offences: 'bg-purple-100 text-purple-700',
-                      public_order: 'bg-gray-100 text-gray-700',
-                    };
-                    const pct = crimeData.total_crimes > 0 ? Math.round(count / crimeData.total_crimes * 100) : 0;
-                    return (
-                      <div key={cat}>
-                        <div className="flex justify-between items-center text-sm mb-1">
-                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${colorMap[cat] || 'bg-gray-100 text-gray-700'}`}>
-                            {labelMap[cat] || cat}
-                          </span>
-                          <span className="text-gray-600">{count.toLocaleString()} ({pct}%)</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-1.5">
-                          <div className="bg-red-400 h-1.5 rounded-full" style={{ width: `${pct}%` }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-400 text-sm">暂无数据</p>
-            )}
-          </div>
-
-          {/* 公共交通 */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-              <span className="text-2xl">🚉</span> 公共交通
-            </h3>
-            {transportData && transportData.total_stations > 0 ? (
-              <>
-                <p className="text-3xl font-bold text-green-500 mb-1">{transportData.total_stations} <span className="text-base font-normal text-gray-500">个站点</span></p>
-                <p className="text-xs text-gray-400 mb-3">5公里范围内</p>
-                <div className="space-y-2">
-                  {Object.entries(transportData.by_type || {}).sort(([,a]: any, [,b]: any) => b - a).map(([type, count]: any) => {
-                    const labelMap: Record<string, string> = {
-                      train_station: '火车站', bus_station: '公交站',
-                      transit_station: '交通枢纽', light_rail_station: '轻轨站',
-                    };
-                    const iconMap: Record<string, string> = {
-                      train_station: '🚂', bus_station: '🚌',
-                      transit_station: '🚏', light_rail_station: '🚊',
-                    };
-                    return (
-                      <div key={type} className="flex justify-between items-center text-sm">
-                        <span className="text-gray-600">{iconMap[type] || '🚉'} {labelMap[type] || type}</span>
-                        <span className="font-semibold text-gray-800">{count} 个</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                {/* 显示部分站点名称 */}
-                {transportData.stations_by_type?.train_station && (
-                  <div className="mt-3 pt-3 border-t">
-                    <p className="text-xs text-gray-400 mb-1">附近火车站：</p>
-                    <p className="text-xs text-gray-500">
-                      {transportData.stations_by_type.train_station.slice(0, 3).map((s: any) => s.name).join('、')}
-                      {transportData.stations_by_type.train_station.length > 3 && '...'}
-                    </p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="text-gray-400 text-sm">暂无数据</p>
-            )}
-          </div>
-        </div>
-
-        {/* AI Investment Analysis Section */}
+        {/* ===== 2. AI Investment Analysis (moved up) ===== */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-xl p-6 mb-8 text-white">
           <div className="mb-4">
             <h3 className="text-xl font-bold mb-1">AI 投资分析</h3>
@@ -446,7 +359,6 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             </p>
           </div>
 
-          {/* 地址输入 + 分析按钮 */}
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <div className="flex-1 relative">
               <input
@@ -458,12 +370,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' && !aiLoading) handleAiAnalysis(); }}
               />
               {aiAddress && (
-                <button
-                  onClick={() => setAiAddress('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-white"
-                >
-                  x
-                </button>
+                <button onClick={() => setAiAddress('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-white">x</button>
               )}
             </div>
             <button
@@ -473,15 +380,10 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             >
               {aiLoading ? (
                 <>
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                   分析中...
                 </>
-              ) : (
-                'AI 分析'
-              )}
+              ) : 'AI 分析'}
             </button>
           </div>
           <p className="text-blue-300 text-xs mb-2">
@@ -491,31 +393,20 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           {aiLoading && (
             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-3">
-                <svg className="animate-spin h-5 w-5 text-blue-200" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+                <svg className="animate-spin h-5 w-5 text-blue-200" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                 <span className="text-blue-100">正在聚合多维数据并生成 AI 分析报告...</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
-                  { name: '价格走势', icon: '📈' },
-                  { name: '华人配套', icon: '🏪' },
-                  { name: '治安数据', icon: '🛡️' },
-                  { name: '公共交通', icon: '🚉' },
-                  { name: '学区质量', icon: '🏫' },
-                  { name: '土地分区', icon: '🏘️' },
-                  { name: '市场活跃度', icon: '📊' },
-                  { name: 'AI 推理', icon: '🤖' },
+                  { name: '价格走势', icon: '📈' }, { name: '华人配套', icon: '🏪' },
+                  { name: '治安数据', icon: '🛡️' }, { name: '公共交通', icon: '🚉' },
+                  { name: '学区质量', icon: '🏫' }, { name: '土地分区', icon: '🏘️' },
+                  { name: '市场活跃度', icon: '📊' }, { name: 'AI 推理', icon: '🤖' },
                 ].map((dim, i) => (
                   <div key={dim.name} className="flex items-center gap-2 bg-white/5 rounded px-2 py-1">
                     <span>{dim.icon}</span>
                     <span className="text-xs text-blue-200">{dim.name}</span>
-                    {i < 6 ? (
-                      <span className="text-green-400 text-xs ml-auto">OK</span>
-                    ) : (
-                      <span className="text-blue-300 text-xs ml-auto animate-pulse">...</span>
-                    )}
+                    {i < 6 ? <span className="text-green-400 text-xs ml-auto">OK</span> : <span className="text-blue-300 text-xs ml-auto animate-pulse">...</span>}
                   </div>
                 ))}
               </div>
@@ -532,38 +423,22 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             <div className="bg-white rounded-xl p-6 mt-4 text-gray-800 max-h-[700px] overflow-y-auto">
               <div className="prose prose-sm max-w-none">
                 {aiReport.split('\n').map((line, i) => {
-                  if (line.startsWith('## ')) {
-                    return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace(/^##\s*/, '').replace(/\*\*/g, '')}</h3>;
-                  }
-                  if (line.startsWith('### ')) {
-                    return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace(/^###\s*/, '').replace(/\*\*/g, '')}</h4>;
-                  }
+                  if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace(/^##\s*/, '').replace(/\*\*/g, '')}</h3>;
+                  if (line.startsWith('### ')) return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace(/^###\s*/, '').replace(/\*\*/g, '')}</h4>;
                   if (line.match(/^[-•]\s/)) {
                     const content = line.replace(/^[-•]\s*/, '');
-                    // 处理加粗文本
                     const parts = content.split(/(\*\*[^*]+\*\*)/g);
                     return (
                       <li key={i} className="ml-4 text-gray-700 mb-1">
-                        {parts.map((part, j) =>
-                          part.startsWith('**') && part.endsWith('**')
-                            ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong>
-                            : <span key={j}>{part}</span>
-                        )}
+                        {parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong> : <span key={j}>{part}</span>)}
                       </li>
                     );
                   }
-                  if (line.trim() === '') {
-                    return <div key={i} className="h-2" />;
-                  }
-                  // 处理行内加粗
+                  if (line.trim() === '') return <div key={i} className="h-2" />;
                   const parts = line.split(/(\*\*[^*]+\*\*)/g);
                   return (
                     <p key={i} className="text-gray-700 mb-1">
-                      {parts.map((part, j) =>
-                        part.startsWith('**') && part.endsWith('**')
-                          ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong>
-                          : <span key={j}>{part}</span>
-                      )}
+                      {parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong> : <span key={j}>{part}</span>)}
                     </p>
                   );
                 })}
@@ -576,190 +451,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">中位价</h3>
-            <p className="text-4xl font-bold text-blue-600">
-              {formatPrice(data.median_price)}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">成交数量</h3>
-            <p className="text-4xl font-bold text-blue-600">
-              {data.total_sales} 套
-            </p>
-          </div>
-        </div>
-
-        {/* 价格走势图 */}
-        {trends.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm border mb-8">
-            <div className="px-6 py-4 border-b">
-              <h2 className="text-lg font-semibold text-gray-800">价格走势（过去12个月）</h2>
-            </div>
-            <div className="p-6">
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={trends}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis
-                    dataKey="month"
-                    tickFormatter={formatMonth}
-                    stroke="#6b7280"
-                    fontSize={12}
-                  />
-                  <YAxis
-                    domain={[dataMin => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']}
-                    tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
-                    stroke="#6b7280"
-                    fontSize={12}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line
-                    type="monotone"
-                    dataKey="median_price"
-                    stroke="#2563eb"
-                    strokeWidth={2}
-                    dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, fill: '#1d4ed8' }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        )}
-
-        <div className="bg-white rounded-xl shadow-sm border">
-          <div className="px-6 py-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">最近成交</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">地址</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卧室</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卫浴</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">土地面积</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成交价</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成交日期</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {data.recent_sales.map((sale: any) => (
-                  <tr key={sale.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.address}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.property_type}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bedrooms}🛏</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bathrooms}🚿</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.land_size > 0 ? `${sale.land_size}㎡` : '-'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{formatPrice(sale.sold_price)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.sold_date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* 学校信息 */}
-        {schools.length > 0 && (
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">🏫 对口学校</h2>
-            <div className="space-y-3">
-              {['primary', 'combined', 'secondary'].map(stype => {
-                const typeSchools = schools.filter((s: any) => (s.type || s.school_type) === stype);
-                if (typeSchools.length === 0) return null;
-                const typeLabel = stype === 'primary' ? '小学' : stype === 'secondary' ? '中学' : '一贯制';
-                return (
-                  <div key={stype}>
-                    <p className="text-sm text-gray-500 mb-2">{typeLabel}</p>
-                    {typeSchools.map((school: any) => {
-                      const sectorMap: Record<string, string> = { Government: '公立', Catholic: '天主教', Independent: '私立' };
-                      const sectorLabel = sectorMap[school.sector] || school.sector || '公立';
-                      return (
-                        <div key={school.name} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                          <div>
-                            <span className="font-medium text-gray-800">{school.name}</span>
-                            <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${school.sector === 'Government' ? 'bg-green-100 text-green-700' : school.sector === 'Catholic' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{sectorLabel}</span>
-                            {school.enrollment && <span className="ml-2 text-xs text-gray-400">{school.enrollment}人</span>}
-                          </div>
-                          <div className="text-right">
-                            {(school.naplan_score || school.naplan_percentile) && (
-                              <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_score || school.naplan_percentile}</span>
-                            )}
-                            {school.rating && (
-                              <p className="text-xs text-gray-500">评分: {school.rating}/10</p>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* 在售土地 */}
-        {landListings.length > 0 && (
-          <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
-            <h3 className="text-lg font-semibold mb-4">🌍 在售土地 ({landListings.length} 块)</h3>
-            <div className="space-y-3">
-              {landListings.slice(0, 5).map((land, i) => (
-                <div key={i} className="flex justify-between items-center border-b pb-2">
-                  <div>
-                    <p className="font-medium text-sm">{land.address}</p>
-                    <p className="text-gray-500 text-xs">{land.land_size ? `${land.land_size}㎡` : "面积待询"}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-blue-600 text-sm">
-                      {land.price ? `$${(land.price/10000).toFixed(0)}万` : land.price_text}
-                    </p>
-                    <a href={land.link} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-blue-500">
-                      查看详情 →
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {landListings.length > 5 && (
-              <p className="text-center text-sm text-gray-400 mt-3">
-                还有 {landListings.length - 5} 块土地，前往在售房源页面查看
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* 土地分区 */}
-        {zoning && (
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">🏘️ 土地分区</h2>
-            <div className="space-y-2">
-              {zoning.zones.map((zone, index) => {
-                const zoneNameMap: Record<string, string> = {
-                  'Low Density Residential': '低密度住宅区',
-                  'Medium Density Residential': '中密度住宅区',
-                  'High Density Residential': '高密度住宅区',
-                  'Mixed Use': '混合用途区',
-                  'Other': '其他'
-                };
-                const zoneNameCN = zoneNameMap[zone.zone_name] || zone.zone_name;
-                return (
-                  <div key={index} className="flex justify-between items-center">
-                    <span className="text-gray-700">{zone.percentage}% {zoneNameCN} ({zone.zone_code})</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* 📊 租赁回报 */}
+        {/* ===== 3. Rental Yields (moved right after AI) ===== */}
         {rentalData && (
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
             <h2 className="text-lg font-bold text-gray-800 mb-4">📊 租赁回报</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -820,7 +514,320 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           </div>
         )}
 
-        {/* 🌊 洪水风险 */}
+        {/* ===== 4. 华人宜居指数 (Integrated POI + Crime + Transport) ===== */}
+        {(poiData || crimeData || transportData) && (
+          <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold text-gray-800">华人宜居指数</h2>
+              <div className="flex items-center gap-2">
+                <span className={`text-3xl font-bold ${getScoreColor(livability.overall)}`}>{livability.overall}</span>
+                <span className={`text-sm font-medium ${getScoreColor(livability.overall)}`}>{getScoreLabel(livability.overall)}</span>
+              </div>
+            </div>
+
+            {/* 3 sub-scores */}
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="text-center p-3 bg-orange-50 rounded-lg">
+                <p className="text-2xl mb-1">🏪</p>
+                <p className={`text-xl font-bold ${getScoreColor(livability.poiScore)}`}>{livability.poiScore}</p>
+                <p className="text-xs text-gray-500 mt-1">华人配套</p>
+                <p className="text-xs text-gray-400">{livability.poiTotal} 家商户</p>
+              </div>
+              <div className="text-center p-3 bg-blue-50 rounded-lg">
+                <p className="text-2xl mb-1">🛡️</p>
+                <p className={`text-xl font-bold ${getScoreColor(livability.safetyScore)}`}>{livability.safetyScore}</p>
+                <p className="text-xs text-gray-500 mt-1">社区安全</p>
+                <p className="text-xs text-gray-400">{livability.crimeTotal > 0 ? `${livability.crimeTotal.toLocaleString()} 起/年` : '暂无数据'}</p>
+              </div>
+              <div className="text-center p-3 bg-green-50 rounded-lg">
+                <p className="text-2xl mb-1">🚉</p>
+                <p className={`text-xl font-bold ${getScoreColor(livability.transScore)}`}>{livability.transScore}</p>
+                <p className="text-xs text-gray-500 mt-1">交通便利</p>
+                <p className="text-xs text-gray-400">{livability.transTotal} 个站点</p>
+              </div>
+            </div>
+
+            {/* Progress bars */}
+            <div className="space-y-2 mb-4">
+              {[
+                { label: '华人配套', score: livability.poiScore, color: 'bg-orange-500' },
+                { label: '社区安全', score: livability.safetyScore, color: 'bg-blue-500' },
+                { label: '交通便利', score: livability.transScore, color: 'bg-green-500' },
+              ].map(item => (
+                <div key={item.label}>
+                  <div className="flex justify-between text-xs text-gray-500 mb-0.5">
+                    <span>{item.label}</span>
+                    <span>{item.score}/100</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className={`${item.color} h-2 rounded-full transition-all duration-500`} style={{ width: `${item.score}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Toggle detail */}
+            <button
+              onClick={() => setShowLivabilityDetail(!showLivabilityDetail)}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              {showLivabilityDetail ? '收起详情 ▲' : '查看详细数据 ▼'}
+            </button>
+
+            {showLivabilityDetail && (
+              <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* POI detail */}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">🏪 华人配套明细</h4>
+                  {poiData && poiData.total_poi > 0 ? (
+                    <div className="space-y-1.5">
+                      {Object.entries(poiData.category_counts || {}).sort(([,a]: any, [,b]: any) => b - a).map(([cat, count]: any) => {
+                        const labelMap: Record<string, string> = {
+                          chinese_restaurant: '🍜 中餐厅', asian_grocery: '🛒 亚洲超市',
+                          chinese_hair_salon: '💇 华人理发', chinese_church: '⛪ 华人教会',
+                          chinese_clinic: '🏥 华人诊所', chinese_school: '📚 中文学校',
+                        };
+                        return (
+                          <div key={cat} className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">{labelMap[cat] || `📍 ${cat}`}</span>
+                            <span className="font-semibold text-gray-800">{count}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : <p className="text-gray-400 text-xs">暂无数据</p>}
+                </div>
+
+                {/* Crime detail */}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">🛡️ 治安明细（近12月）</h4>
+                  {crimeData && crimeData.total_crimes > 0 ? (
+                    <div className="space-y-1.5">
+                      {Object.entries(crimeData.categories || {}).sort(([,a]: any, [,b]: any) => b - a).map(([cat, count]: any) => {
+                        const labelMap: Record<string, string> = {
+                          violent_crime: '暴力犯罪', property_crime: '入室盗窃',
+                          theft_fraud: '盗窃诈骗', drug_offences: '毒品犯罪',
+                          public_order: '公共秩序',
+                        };
+                        const pct = Math.round(count / crimeData.total_crimes * 100);
+                        return (
+                          <div key={cat}>
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-gray-600">{labelMap[cat] || cat}</span>
+                              <span className="text-gray-600">{count.toLocaleString()} ({pct}%)</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-1 mt-0.5">
+                              <div className="bg-red-400 h-1 rounded-full" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : <p className="text-gray-400 text-xs">暂无数据</p>}
+                </div>
+
+                {/* Transport detail */}
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-2">🚉 交通站点明细</h4>
+                  {transportData && transportData.total_stations > 0 ? (
+                    <div className="space-y-1.5">
+                      {Object.entries(transportData.by_type || {}).sort(([,a]: any, [,b]: any) => b - a).map(([type, count]: any) => {
+                        const labelMap: Record<string, string> = {
+                          train_station: '🚂 火车站', bus_station: '🚌 公交站',
+                          transit_station: '🚏 交通枢纽', light_rail_station: '🚊 轻轨站',
+                        };
+                        return (
+                          <div key={type} className="flex justify-between items-center text-sm">
+                            <span className="text-gray-600">{labelMap[type] || `🚉 ${type}`}</span>
+                            <span className="font-semibold text-gray-800">{count} 个</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : <p className="text-gray-400 text-xs">暂无数据</p>}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ===== 5. Price Overview ===== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">中位价</h3>
+            <p className="text-4xl font-bold text-blue-600">{formatPrice(data.median_price)}</p>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">成交数量</h3>
+            <p className="text-4xl font-bold text-blue-600">{data.total_sales} 套</p>
+          </div>
+        </div>
+
+        {/* ===== 6. Price Trend Chart ===== */}
+        {trends.length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm border mb-8">
+            <div className="px-6 py-4 border-b">
+              <h2 className="text-lg font-semibold text-gray-800">价格走势（过去12个月）</h2>
+            </div>
+            <div className="p-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={trends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" tickFormatter={formatMonth} stroke="#6b7280" fontSize={12} />
+                  <YAxis domain={[(dataMin: number) => Math.floor(dataMin * 0.9 / 100000) * 100000, 'auto']} tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`} stroke="#6b7280" fontSize={12} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line type="monotone" dataKey="median_price" stroke="#2563eb" strokeWidth={2} dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }} activeDot={{ r: 6, fill: '#1d4ed8' }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        {/* ===== 7. Recent Sales ===== */}
+        {data.recent_sales.length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm border mb-8">
+            <div className="px-6 py-4 border-b">
+              <h2 className="text-lg font-semibold text-gray-800">最近成交</h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">地址</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卧室</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卫浴</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">土地面积</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成交价</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成交日期</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {data.recent_sales.map((sale: any, idx: number) => (
+                    <tr key={idx} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sale.address}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.property_type}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bedrooms}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.bathrooms}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.land_size > 0 ? `${sale.land_size}㎡` : '-'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{formatPrice(sale.sold_price)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{sale.sold_date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ===== 8. Schools ===== */}
+        {schools.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">🏫 对口学校</h2>
+            <div className="space-y-3">
+              {['primary', 'combined', 'secondary'].map(stype => {
+                const typeSchools = schools.filter((s: any) => (s.type || s.school_type) === stype);
+                if (typeSchools.length === 0) return null;
+                const typeLabel = stype === 'primary' ? '小学' : stype === 'secondary' ? '中学' : '一贯制';
+                return (
+                  <div key={stype}>
+                    <p className="text-sm text-gray-500 mb-2">{typeLabel}</p>
+                    {typeSchools.map((school: any) => {
+                      const sectorMap: Record<string, string> = { Government: '公立', Catholic: '天主教', Independent: '私立' };
+                      const sectorLabel = sectorMap[school.sector] || school.sector || '公立';
+                      return (
+                        <div key={school.name} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                          <div>
+                            <span className="font-medium text-gray-800">{school.name}</span>
+                            <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${school.sector === 'Government' ? 'bg-green-100 text-green-700' : school.sector === 'Catholic' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{sectorLabel}</span>
+                            {school.enrollment && <span className="ml-2 text-xs text-gray-400">{school.enrollment}人</span>}
+                          </div>
+                          <div className="text-right">
+                            {(school.naplan_score || school.naplan_percentile) && (
+                              <span className="text-blue-600 font-bold text-sm">NAPLAN {school.naplan_score || school.naplan_percentile}</span>
+                            )}
+                            {school.rating && (
+                              <p className="text-xs text-gray-500">评分: {school.rating}/10</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ===== 9. Land Listings ===== */}
+        {landListings.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-4">🌍 在售土地 ({landListings.length} 块)</h3>
+            <div className="space-y-3">
+              {landListings.slice(0, 5).map((land, i) => (
+                <div key={i} className="flex justify-between items-center border-b pb-2">
+                  <div>
+                    <p className="font-medium text-sm">{land.address}</p>
+                    <p className="text-gray-500 text-xs">{land.land_size ? `${land.land_size}㎡` : "面积待询"}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-blue-600 text-sm">
+                      {land.price ? `$${(land.price/10000).toFixed(0)}万` : land.price_text}
+                    </p>
+                    <a href={land.link} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-blue-500">查看详情 →</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {landListings.length > 5 && (
+              <p className="text-center text-sm text-gray-400 mt-3">还有 {landListings.length - 5} 块土地</p>
+            )}
+          </div>
+        )}
+
+        {/* ===== 10. Land Zoning ===== */}
+        {zoning && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">🏘️ 土地分区</h2>
+            <div className="space-y-2">
+              {zoning.zones.map((zone, index) => {
+                const zoneNameMap: Record<string, string> = {
+                  'Low Density Residential': '低密度住宅区',
+                  'Low-Medium Density Residential': '低中密度住宅区',
+                  'Medium Density Residential': '中密度住宅区',
+                  'High Density Residential': '高密度住宅区',
+                  'Mixed Use': '混合用途区',
+                  'Emerging Community': '新兴社区区',
+                  'Neighbourhood Centre': '邻里中心',
+                  'District Centre': '区级中心',
+                  'Principal Centre': '主要中心',
+                  'Priority Development Area': '优先开发区',
+                  'Character Residential': '特色住宅区',
+                  'Community Facilities': '社区设施',
+                  'Sport and Recreation': '体育休闲',
+                  'Open Space': '开放空间',
+                  'Other': '其他'
+                };
+                const zoneNameCN = zoneNameMap[zone.zone_name] || zone.zone_name;
+                const barColors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500', 'bg-teal-500'];
+                return (
+                  <div key={index}>
+                    <div className="flex justify-between text-sm mb-0.5">
+                      <span className="text-gray-700">{zoneNameCN} ({zone.zone_code})</span>
+                      <span className="text-gray-500 font-medium">{zone.percentage}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2">
+                      <div className={`${barColors[index % barColors.length]} h-2 rounded-full`} style={{ width: `${zone.percentage}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ===== 11. Flood Risk (Chinese) ===== */}
         {floodData && (
           <div className="bg-white rounded-lg shadow p-6 mb-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">🌊 洪水风险评估</h2>
@@ -853,9 +860,14 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
               })}
             </div>
             <p className="text-sm text-gray-600 mb-2">
-              <span className="font-medium">最近重大洪水:</span> {floodData.last_major_flood}
+              <span className="font-medium">最近重大洪水:</span> {floodData.last_major_flood_cn || floodData.last_major_flood}
             </p>
-            <p className="text-xs text-gray-500 mb-3">{floodData.notes}</p>
+            <p className="text-sm text-gray-600 mb-3">{floodData.notes_cn || floodData.notes}</p>
+            {floodData.risk_level === 'high' && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
+                <p className="text-sm text-red-700 font-medium">⚠️ 购房提示：该区域洪水风险较高，建议购房前务必查阅洪水覆盖图，选择高地段物业，并了解洪水保险费用。</p>
+              </div>
+            )}
             <a
               href={floodData.map_url}
               target="_blank"
@@ -867,7 +879,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           </div>
         )}
 
-        {/* 🏗️ 政府发展规划 */}
+        {/* ===== 12. Government Development (Chinese, expandable) ===== */}
         {developmentData && (
           <div className="bg-white rounded-lg shadow p-6 mb-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">🏗️ 政府发展规划</h2>
@@ -882,7 +894,8 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                  developmentData.council_priority === 'medium' ? '⚡ 中优先' : '📋 低优先'}
               </span>
             </div>
-            <p className="text-sm text-gray-600 mb-4">{developmentData.zoning_summary}</p>
+            <p className="text-sm text-gray-600 mb-4">{developmentData.zoning_summary_cn || developmentData.zoning_summary}</p>
+
             {developmentData.key_projects?.length > 0 && (
               <div className="mb-4">
                 <h3 className="text-sm font-semibold text-gray-700 mb-2">重点项目</h3>
@@ -895,17 +908,34 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                       proposed: { label: '规划中', color: 'bg-gray-100 text-gray-600' },
                     };
                     const status = statusMap[proj.status] || { label: proj.status, color: 'bg-gray-100 text-gray-600' };
+                    const isExpanded = expandedProject === i;
                     return (
-                      <div key={i} className="border border-gray-100 rounded-lg p-3">
-                        <div className="flex items-start justify-between mb-1">
-                          <span className="font-medium text-gray-800 text-sm">{proj.name}</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ml-2 ${status.color}`}>
-                            {status.label}
-                          </span>
+                      <div key={i} className="border border-gray-100 rounded-lg p-3 hover:border-blue-200 transition-colors">
+                        <div
+                          className="flex items-start justify-between mb-1 cursor-pointer"
+                          onClick={() => setExpandedProject(isExpanded ? null : i)}
+                        >
+                          <div className="flex-1">
+                            <span className="font-medium text-gray-800 text-sm">{proj.name_cn || proj.name}</span>
+                            {proj.name_cn && <p className="text-xs text-gray-400 mt-0.5">{proj.name}</p>}
+                          </div>
+                          <div className="flex items-center gap-2 ml-2">
+                            <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${status.color}`}>
+                              {status.label}
+                            </span>
+                            <span className="text-gray-400 text-xs">{isExpanded ? '▲' : '▼'}</span>
+                          </div>
                         </div>
-                        <p className="text-xs text-gray-500">{proj.description}</p>
-                        {proj.estimated_completion && proj.estimated_completion !== 'TBD' && (
-                          <p className="text-xs text-gray-400 mt-1">预计完成: {proj.estimated_completion}</p>
+                        {!isExpanded && (
+                          <p className="text-xs text-gray-500 line-clamp-2">{proj.description_cn ? proj.description_cn.slice(0, 60) + '...' : proj.description}</p>
+                        )}
+                        {isExpanded && (
+                          <div className="mt-2 pt-2 border-t border-gray-100">
+                            <p className="text-sm text-gray-700 leading-relaxed">{proj.description_cn || proj.description}</p>
+                            {proj.estimated_completion && proj.estimated_completion !== 'TBD' && (
+                              <p className="text-xs text-gray-400 mt-2">预计完成: {proj.estimated_completion}</p>
+                            )}
+                          </div>
                         )}
                       </div>
                     );
@@ -913,11 +943,12 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 </div>
               </div>
             )}
-            {developmentData.infrastructure?.length > 0 && (
+
+            {(developmentData.infrastructure_cn || developmentData.infrastructure)?.length > 0 && (
               <div>
                 <h3 className="text-sm font-semibold text-gray-700 mb-2">基础设施</h3>
                 <ul className="space-y-1">
-                  {developmentData.infrastructure.map((item: string, i: number) => (
+                  {(developmentData.infrastructure_cn || developmentData.infrastructure).map((item: string, i: number) => (
                     <li key={i} className="text-xs text-gray-600 flex items-start gap-2">
                       <span className="text-green-500 mt-0.5">✓</span>
                       {item}

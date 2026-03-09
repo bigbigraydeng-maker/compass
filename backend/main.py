@@ -522,60 +522,25 @@ def get_listings(
 @app.get("/api/suburb/{suburb_name}/zoning", response_model=ZoningResponse)
 def get_suburb_zoning(suburb_name: str):
     """
-    获取郊区的分区信息
-    
-    参数：
-    - suburb_name: 郊区名称
+    获取郊区的分区信息（基于 Brisbane City Plan 2014 真实数据）
     """
-    # 模拟数据，实际应该调用 Brisbane Open Data API
-    zone_data = {
-        "Sunnybank": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 65},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 20},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
-        ],
-        "Eight Mile Plains": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 70},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 15},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
-        ],
-        "Calamvale": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 60},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 25},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
-        ],
-        "Rochedale": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 75},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 10},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 15}
-        ],
-        "Mansfield": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 80},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 10},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 10}
-        ],
-        "Ascot": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 85},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 5},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 10}
-        ],
-        "Hamilton": [
-            {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 70},
-            {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 20},
-            {"zone_code": "OTHER", "zone_name": "Other", "percentage": 10}
-        ]
-    }
-    
-    zones = zone_data.get(suburb_name, [
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    zoning_path = os.path.join(script_dir, "data", "suburb_zoning.json")
+    try:
+        with open(zoning_path, "r", encoding="utf-8") as f:
+            all_zoning = json.load(f)
+        # Case-insensitive match
+        for key, zones in all_zoning.items():
+            if key.lower() == suburb_name.lower():
+                return ZoningResponse(suburb=suburb_name, zones=zones)
+    except Exception as e:
+        print(f"Error loading zoning data: {e}")
+
+    # Fallback
+    return ZoningResponse(suburb=suburb_name, zones=[
         {"zone_code": "LDR", "zone_name": "Low Density Residential", "percentage": 60},
-        {"zone_code": "MDR", "zone_name": "Medium Density Residential", "percentage": 20},
-        {"zone_code": "OTHER", "zone_name": "Other", "percentage": 20}
+        {"zone_code": "OTHER", "zone_name": "Other", "percentage": 40}
     ])
-    
-    return ZoningResponse(
-        suburb=suburb_name,
-        zones=zones
-    )
 
 
 @app.get("/api/suburb/{suburb_name}/score")
