@@ -168,7 +168,7 @@ export default function SchoolSearchPage() {
       {/* ===== PC 布局 (lg+) ===== */}
       <div className="hidden lg:flex" style={{ height: 'calc(100vh - 64px)' }}>
         {/* Left: Map */}
-        <div className="w-[55%] xl:w-[60%] relative">
+        <div className="w-[55%] xl:w-[60%] relative" style={{ height: '100%' }}>
           <SchoolMap
             schools={filteredSchools}
             selectedSchool={selectedSchool}
@@ -178,7 +178,7 @@ export default function SchoolSearchPage() {
             apiKey={MAPS_KEY}
           />
           {/* Map Legend */}
-          <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2 text-xs">
+          <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2 text-xs z-10">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">
                 <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> NAPLAN 优秀
@@ -194,7 +194,7 @@ export default function SchoolSearchPage() {
         </div>
 
         {/* Right: Detail Panel or School List */}
-        <div className="w-[45%] xl:w-[40%] overflow-y-auto border-l border-gray-200 bg-gray-50">
+        <div className="w-[45%] xl:w-[40%] overflow-y-auto border-l border-gray-200 bg-gray-50" style={{ height: '100%' }}>
           {selectedSchool ? (
             <SchoolDetailPanel
               school={selectedSchool}
