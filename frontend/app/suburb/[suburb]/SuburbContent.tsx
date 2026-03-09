@@ -117,46 +117,76 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
       };
 
       try {
-        // === 所有 9 个请求并行执行（原来串行 ~900ms → 并行 ~100-150ms） ===
-        const [
-          detailData, salesData, trendsData, schoolsData,
-          zoningData, landData, scoreData, poiResult, crimeResult, transportResult,
-          rentalResult, floodResult, developmentResult
-        ] = await Promise.all([
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}`),
-          safeFetch(`${apiUrl}/api/sales?suburb=${encodedName}&page_size=10`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/trends`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/schools`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/zoning`),
-          safeFetch(`${apiUrl}/api/listings?suburb=${encodedName}&property_type=vacant_land&page_size=20`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/score`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/poi`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/crime`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/transport`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/rental`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/flood`),
-          safeFetch(`${apiUrl}/api/suburb/${encodedName}/development`),
-        ]);
+        // === 单一聚合请求：13 个 API → 1 个 /all 端点 ===
+        const allData = await safeFetch(`${apiUrl}/api/suburb/${encodedName}/all`);
 
-        // 合并详情 + 成交记录
-        if (detailData) {
-          detailData.recent_sales = salesData?.sales || [];
-          setData(detailData);
+        if (allData) {
+          // 详情 + 成交
+          const recentSales = (allData.recent_sales_list || []).map((r: any) => ({
+            address: r.address || '',
+            property_type: r.property_type || '',
+            bedrooms: r.bedrooms || 0,
+            bathrooms: r.bathrooms || 0,
+            land_size: r.land_size || 0,
+            sold_price: parseFloat(r.sold_price || r.sale_price || 0),
+            sold_date: r.sold_date || r.sale_date || '',
+          }));
+          setData({
+            suburb: allData.suburb || suburbName,
+            median_price: allData.median_price || allData.price?.median || 0,
+            total_sales: allData.total_sales || allData.price?.total_sales || 0,
+            recent_sales: recentSales,
+          });
+
+          // 趋势
+          setTrends(allData.monthly_trends || allData.price_trends?.map((t: any) => ({
+            month: t.month, median_price: t.median || t.median_price, total_sales: t.count || t.total_sales
+          })) || []);
+
+          // 学校（优先 schools_full 完整数据）
+          setSchools(allData.schools_full || allData.schools || []);
+
+          // 分区
+          if (allData.zoning?.zones) {
+            setZoning({ suburb: suburbName, zones: allData.zoning.zones.map((z: any) => ({
+              zone_code: z.code || z.zone_code, zone_name: z.name || z.zone_name, percentage: z.pct || z.percentage
+            }))});
+          }
+
+          // 在售土地
+          setLandListings(allData.land_listings || []);
+
+          // Compass Score
+          if (allData.compass_score) {
+            setScore({
+              total_score: allData.compass_score.total,
+              grade: allData.compass_score.grade,
+              breakdown: allData.compass_score.breakdown,
+            });
+          }
+
+          // POI
+          if (allData.poi && Object.keys(allData.poi).length > 0) {
+            setPoiData({ suburb: suburbName, categories: allData.poi });
+          }
+
+          // 犯罪
+          if (allData.crime && Object.keys(allData.crime).length > 0) {
+            setCrimeData({ suburb: suburbName, summary: allData.crime });
+          }
+
+          // 交通
+          if (allData.transport && Object.keys(allData.transport).length > 0) {
+            setTransportData({ suburb: suburbName, summary: allData.transport });
+          }
+
+          // 新三维度
+          if (allData.rental) setRentalData({ suburb: suburbName, ...allData.rental });
+          if (allData.flood) setFloodData({ suburb: suburbName, ...allData.flood });
+          if (allData.development) setDevelopmentData({ suburb: suburbName, ...allData.development });
         } else {
           setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
         }
-
-        setTrends(trendsData?.monthly_trends || []);
-        setSchools(schoolsData?.schools || []);
-        setZoning(zoningData || null);
-        setLandListings(landData?.listings || []);
-        setScore(scoreData || null);
-        if (poiResult) setPoiData(poiResult);
-        if (crimeResult) setCrimeData(crimeResult);
-        if (transportResult) setTransportData(transportResult);
-        if (rentalResult && !rentalResult.error) setRentalData(rentalResult);
-        if (floodResult && !floodResult.error) setFloodData(floodResult);
-        if (developmentResult && !developmentResult.error) setDevelopmentData(developmentResult);
       } catch (error) {
         console.error('Error fetching data:', error);
         setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });

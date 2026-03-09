@@ -15,7 +15,7 @@ import time
 CONNECT_TIMEOUT = 10       # 连接超时（秒）
 MAX_RETRIES = 5            # 最大重试次数
 RETRY_BASE_DELAY = 2       # 重试基础延迟（秒），指数退避
-POOL_MIN_CONN = 2          # 连接池最小连接数
+POOL_MIN_CONN = 10         # 连接池最小连接数（预建全部连接，避免并行查询时临时建连）
 POOL_MAX_CONN = 10         # 连接池最大连接数
 
 # 全局连接池
