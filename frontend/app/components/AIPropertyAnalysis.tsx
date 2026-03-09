@@ -23,7 +23,7 @@ export default function AIPropertyAnalysis() {
     setDataDimensions(null);
 
     try {
-      const response = await fetch(`${API_BASE}/api/analyze`, {
+      const response = await fetch(`${API_BASE}/api/analyze/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address }),
@@ -34,9 +34,39 @@ export default function AIPropertyAnalysis() {
         throw new Error(errData.detail || '分析失败，请重试');
       }
 
-      const data = await response.json();
-      setAnalysis(data.analysis);
-      setDataDimensions(data.data_dimensions || null);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('Stream not supported');
+
+      const decoder = new TextDecoder();
+      let accumulated = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const payload = JSON.parse(line.slice(6));
+            if (payload.type === 'meta') {
+              setDataDimensions(payload.data_dimensions || null);
+            } else if (payload.type === 'content') {
+              accumulated += payload.text;
+              setAnalysis(accumulated);
+            } else if (payload.type === 'error') {
+              throw new Error(payload.message);
+            }
+          } catch (e) {
+            if (e instanceof SyntaxError) continue;
+            throw e;
+          }
+        }
+      }
+
+      if (!accumulated) throw new Error('AI 未返回任何内容');
     } catch (err) {
       setError(err instanceof Error ? err.message : '分析失败，请重试');
     } finally {
@@ -151,7 +181,7 @@ export default function AIPropertyAnalysis() {
               </form>
 
               {/* 加载中状态 */}
-              {loading && (
+              {loading && !analysis && (
                 <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
                   <p className="text-sm text-blue-800 mb-2 font-medium">正在加载多维数据...</p>
                   <div className="grid grid-cols-2 gap-2">
@@ -190,6 +220,12 @@ export default function AIPropertyAnalysis() {
               {/* AI 报告 */}
               {analysis && (
                 <div className="mt-6 p-4 md:p-6 bg-gray-50 rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
+                  {loading && (
+                    <div className="flex items-center gap-2 mb-3 text-blue-600">
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                      <span className="text-sm">AI 正在生成中...</span>
+                    </div>
+                  )}
                   <div className="prose prose-sm max-w-none">
                     {analysis.split('\n').map((line, i) => {
                       if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace('## ', '')}</h3>;
