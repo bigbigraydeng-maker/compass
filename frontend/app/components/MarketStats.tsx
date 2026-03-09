@@ -23,20 +23,7 @@ interface NewsItem {
   summary: string;
   tag: string;
   tagColor: string;
-  link?: string;
 }
-
-// 备用新闻（API 不可用时显示）
-const fallbackNews: NewsItem[] = [
-  {
-    title: 'Brisbane property market continues steady growth in 2026',
-    source: 'Domain',
-    date: new Date().toISOString().slice(0, 10),
-    summary: 'Brisbane southern suburbs remain popular among Chinese-Australian investors with strong demand across Sunnybank, Calamvale and surrounding areas.',
-    tag: '市场动态',
-    tagColor: 'bg-blue-100 text-blue-700',
-  },
-];
 
 export default function MarketStats() {
   const router = useRouter();
@@ -64,8 +51,6 @@ export default function MarketStats() {
 
         if (newsData?.news && newsData.news.length > 0) {
           setNewsItems(newsData.news);
-        } else {
-          setNewsItems(fallbackNews);
         }
 
         if (newsData?.amanda_commentary) {
@@ -74,7 +59,6 @@ export default function MarketStats() {
         }
       } catch (e) {
         console.error('Failed to load market data:', e);
-        setNewsItems(fallbackNews);
       }
     };
 
@@ -113,7 +97,7 @@ export default function MarketStats() {
               市场动态
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              布里斯班房产新闻 · 近期成交
+              Amanda 每日解读 · 近期成交
             </p>
           </div>
           <div className="flex bg-gray-100 rounded-lg p-1 mt-3 md:mt-0">
@@ -123,7 +107,7 @@ export default function MarketStats() {
               }`}
               onClick={() => setActiveTab('news')}
             >
-              📰 新闻资讯
+              📰 今日解读
             </button>
             <button
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -137,101 +121,77 @@ export default function MarketStats() {
         </div>
 
         {/* ===== 新闻 Tab ===== */}
-        {activeTab === 'news' && newsItems.length > 0 && (
+        {activeTab === 'news' && (
           <div>
-            {/* Amanda 每日综合点评 */}
-            {amandaCommentary && (
-              <div className="mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 p-5 md:p-6">
-                <div className="flex items-start gap-3 md:gap-4">
+            {/* Amanda 每日综合解读 */}
+            {amandaCommentary ? (
+              <div className="mb-6 bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-xl border border-indigo-100 p-5 md:p-8">
+                <div className="flex items-start gap-3 md:gap-5">
                   {/* Amanda 头像 */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-md">
+                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-xl md:text-2xl shadow-lg">
                       A
                     </div>
                   </div>
                   {/* 点评内容 */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-bold text-gray-900 text-sm md:text-base">Amanda</span>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="font-bold text-gray-900 text-base md:text-lg">Amanda</span>
                       <span className="text-[10px] md:text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">Compass 首席分析师</span>
+                      <span className="text-[10px] md:text-xs text-gray-400 ml-auto">{commentaryDate}</span>
                     </div>
-                    <p className="text-gray-700 text-sm md:text-[15px] leading-relaxed">{amandaCommentary}</p>
-                    <p className="text-xs text-gray-400 mt-2">{commentaryDate} · 基于今日新闻 AI 生成</p>
+                    <div className="text-gray-700 text-sm md:text-[15px] leading-relaxed whitespace-pre-line">
+                      {amandaCommentary}
+                    </div>
                   </div>
+                </div>
+              </div>
+            ) : (
+              <div className="mb-6 bg-gray-50 rounded-xl border border-gray-100 p-6 text-center">
+                <div className="flex items-center justify-center gap-2 text-gray-400">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  <span className="text-sm">Amanda 正在阅读今日新闻，稍后为您解读...</span>
                 </div>
               </div>
             )}
 
-            {/* 手机端：卡片列表 */}
-            <div className="md:hidden space-y-3">
-              {newsItems.slice(0, 4).map((news, idx) => (
-                <a
-                  key={idx}
-                  href={news.link || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block bg-gray-50 rounded-xl p-4 border border-gray-100 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${news.tagColor}`}>
-                      {news.tag}
-                    </span>
-                    <span className="text-[10px] text-gray-400">{news.source} · {news.date}</span>
-                  </div>
-                  <h3 className="font-bold text-sm text-gray-900 mb-1 leading-snug line-clamp-2">{news.title}</h3>
-                  <p className="text-xs text-gray-500 line-clamp-2">{news.summary}</p>
-                </a>
-              ))}
-            </div>
-
-            {/* 桌面端：左大右小布局 */}
-            <div className="hidden md:grid grid-cols-2 gap-6">
-              {/* 头条新闻 */}
-              <a
-                href={newsItems[0].link || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8 border border-blue-200 flex flex-col justify-between hover:shadow-lg transition-shadow"
-              >
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${newsItems[0].tagColor}`}>
-                      {newsItems[0].tag}
-                    </span>
-                    <span className="text-xs text-gray-500">{newsItems[0].source} · {newsItems[0].date}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight">{newsItems[0].title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-4">{newsItems[0].summary}</p>
-                </div>
-                <p className="text-xs text-gray-400 mt-6">来源: {newsItems[0].source}</p>
-              </a>
-
-              {/* 其他新闻列表 */}
-              <div className="space-y-4">
-                {newsItems.slice(1, 4).map((news, idx) => (
-                  <a
-                    key={idx}
-                    href={news.link || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block bg-gray-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${news.tagColor}`}>
-                        {news.tag}
-                      </span>
-                      <span className="text-xs text-gray-400">{news.source} · {news.date}</span>
+            {/* 今日新闻来源列表 */}
+            {newsItems.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">今日新闻来源</h3>
+                {/* 手机端 */}
+                <div className="md:hidden space-y-2">
+                  {newsItems.slice(0, 6).map((news, idx) => (
+                    <div key={idx} className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${news.tagColor}`}>
+                          {news.tag}
+                        </span>
+                        <span className="text-[10px] text-gray-400">{news.source} · {news.date}</span>
+                      </div>
+                      <p className="text-sm text-gray-800 leading-snug">{news.title}</p>
                     </div>
-                    <h3 className="font-bold text-gray-900 mb-1 line-clamp-2">{news.title}</h3>
-                    <p className="text-sm text-gray-500 line-clamp-2">{news.summary}</p>
-                  </a>
-                ))}
+                  ))}
+                </div>
+                {/* 桌面端：紧凑两列 */}
+                <div className="hidden md:grid grid-cols-2 gap-3">
+                  {newsItems.slice(0, 8).map((news, idx) => (
+                    <div key={idx} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${news.tagColor}`}>
+                          {news.tag}
+                        </span>
+                        <span className="text-xs text-gray-400">{news.source} · {news.date}</span>
+                      </div>
+                      <p className="text-sm text-gray-800 leading-snug line-clamp-2">{news.title}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-center text-xs text-gray-400 mt-4">
+                  以上新闻由 Google News 自动聚合 · Amanda 基于新闻内容生成综合解读
+                </p>
               </div>
-            </div>
-
-            <p className="text-center text-xs text-gray-400 mt-6">
-              新闻来源: Google News 聚合 (Domain / REA / ABC) | 每小时自动更新
-            </p>
+            )}
           </div>
         )}
 
