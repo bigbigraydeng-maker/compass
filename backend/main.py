@@ -1957,6 +1957,10 @@ import html as _html
 _news_cache: dict = {"items": [], "ts": 0}
 _NEWS_TTL = 3600  # 1 小时缓存
 
+# Amanda 每日综合点评缓存
+_commentary_cache: dict = {"text": "", "date": "", "ts": 0}
+_COMMENTARY_TTL = 14400  # 4 小时缓存
+
 _RSS_SOURCES = [
     {
         "url": "https://news.google.com/rss/search?q=brisbane+property+real+estate&hl=en-AU&gl=AU&ceid=AU:en",
@@ -2058,17 +2062,93 @@ def _fetch_rss_news() -> list:
     return items
 
 
+def _generate_amanda_commentary(news_items: list) -> str:
+    """让 Amanda 基于当日新闻生成综合点评。"""
+    now = _time.time()
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # 缓存命中
+    if (_commentary_cache["text"]
+            and _commentary_cache["date"] == today
+            and (now - _commentary_cache["ts"]) < _COMMENTARY_TTL):
+        return _commentary_cache["text"]
+
+    if not news_items:
+        return ""
+
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+    if not moonshot_key:
+        return ""
+
+    # 构建新闻摘要给 AI
+    news_digest = "\n".join(
+        f"- [{item['source']}] {item['title']}"
+        for item in news_items[:8]
+    )
+
+    system_prompt = (
+        "你是 Amanda，Compass 平台的首席房产分析师。"
+        "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
+        "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚市场动态。"
+        "你会用数据说话，偶尔加入个人观点和实战经验。"
+        "始终使用中文回复。"
+    )
+
+    user_prompt = (
+        f"今天是 {today}，以下是今日布里斯班房产相关新闻：\n\n"
+        f"{news_digest}\n\n"
+        "请你作为 Amanda 写一段今日市场综合点评（150-250字），要求：\n"
+        "1. 用聊天口吻，像在和朋友分享今天看到的市场信息\n"
+        "2. 提炼 1-2 个最值得关注的信号\n"
+        "3. 对华人投资者给出简短建议\n"
+        "4. 不要列清单，写成连贯的一段话\n"
+        "5. 开头不要用'大家好'之类的问候语，直接切入正题"
+    )
+
+    try:
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=moonshot_key,
+            base_url="https://api.moonshot.cn/v1"
+        )
+
+        response = client.chat.completions.create(
+            model="kimi-k2.5",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            max_tokens=512,
+            temperature=0.8,
+        )
+
+        commentary = response.choices[0].message.content.strip()
+
+        # 更新缓存
+        _commentary_cache["text"] = commentary
+        _commentary_cache["date"] = today
+        _commentary_cache["ts"] = now
+
+        return commentary
+
+    except Exception as e:
+        print(f"[WARN] Amanda commentary generation failed: {e}")
+        return ""
+
+
 @app.get("/api/news")
 def get_news():
-    """获取布里斯班房产新闻（来源：Google News RSS 聚合）"""
+    """获取布里斯班房产新闻 + Amanda 每日综合点评"""
     items = _fetch_rss_news()
-    if not items:
-        # 返回空列表，前端可以 fallback 到硬编码
-        return {"news": [], "source": "rss", "cached": False}
+    commentary = ""
+    if items:
+        commentary = _generate_amanda_commentary(items)
+
     return {
-        "news": items,
+        "news": items or [],
         "source": "google_news_rss",
-        "cached": (_time.time() - _news_cache["ts"]) < 1,
+        "amanda_commentary": commentary,
+        "commentary_date": datetime.now().strftime("%Y-%m-%d"),
     }
 
 

@@ -42,6 +42,8 @@ export default function MarketStats() {
   const router = useRouter();
   const [recentSales, setRecentSales] = useState<SaleItem[]>([]);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [amandaCommentary, setAmandaCommentary] = useState('');
+  const [commentaryDate, setCommentaryDate] = useState('');
   const [activeTab, setActiveTab] = useState<'news' | 'sold'>('news');
 
   useEffect(() => {
@@ -64,6 +66,11 @@ export default function MarketStats() {
           setNewsItems(newsData.news);
         } else {
           setNewsItems(fallbackNews);
+        }
+
+        if (newsData?.amanda_commentary) {
+          setAmandaCommentary(newsData.amanda_commentary);
+          setCommentaryDate(newsData.commentary_date || '');
         }
       } catch (e) {
         console.error('Failed to load market data:', e);
@@ -132,6 +139,29 @@ export default function MarketStats() {
         {/* ===== 新闻 Tab ===== */}
         {activeTab === 'news' && newsItems.length > 0 && (
           <div>
+            {/* Amanda 每日综合点评 */}
+            {amandaCommentary && (
+              <div className="mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 p-5 md:p-6">
+                <div className="flex items-start gap-3 md:gap-4">
+                  {/* Amanda 头像 */}
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-md">
+                      A
+                    </div>
+                  </div>
+                  {/* 点评内容 */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-bold text-gray-900 text-sm md:text-base">Amanda</span>
+                      <span className="text-[10px] md:text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">Compass 首席分析师</span>
+                    </div>
+                    <p className="text-gray-700 text-sm md:text-[15px] leading-relaxed">{amandaCommentary}</p>
+                    <p className="text-xs text-gray-400 mt-2">{commentaryDate} · 基于今日新闻 AI 生成</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* 手机端：卡片列表 */}
             <div className="md:hidden space-y-3">
               {newsItems.slice(0, 4).map((news, idx) => (
