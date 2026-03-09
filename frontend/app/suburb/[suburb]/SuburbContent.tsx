@@ -254,7 +254,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
     try {
-      const res = await fetch(`${apiUrl}/api/analyze`, {
+      const res = await fetch(`${apiUrl}/api/analyze/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address: addressToAnalyze }),
@@ -265,8 +265,41 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
         throw new Error(err.detail || 'AI analysis request failed');
       }
 
-      const result = await res.json();
-      setAiReport(result.analysis);
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Stream not supported');
+
+      const decoder = new TextDecoder();
+      let accumulated = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const payload = JSON.parse(line.slice(6));
+            if (payload.type === 'content') {
+              accumulated += payload.text;
+              setAiReport(accumulated);
+            } else if (payload.type === 'error') {
+              throw new Error(payload.message);
+            } else if (payload.type === 'done') {
+              // 流式完成
+            }
+          } catch (e) {
+            if (e instanceof SyntaxError) continue; // 忽略不完整的 JSON
+            throw e;
+          }
+        }
+      }
+
+      if (!accumulated) {
+        throw new Error('AI 未返回任何内容');
+      }
     } catch (err) {
       setAiError(err instanceof Error ? err.message : 'AI analysis failed');
     } finally {
@@ -390,7 +423,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             不输入地址则分析整个 {suburbName} 区 | 数据维度：价格走势 + 房型分类 + 华人配套 + 治安 + 交通 + 学区 + 分区
           </p>
 
-          {aiLoading && (
+          {aiLoading && !aiReport && (
             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-3">
                 <svg className="animate-spin h-5 w-5 text-blue-200" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -421,6 +454,12 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
 
           {aiReport && (
             <div className="bg-white rounded-xl p-6 mt-4 text-gray-800 max-h-[700px] overflow-y-auto">
+              {aiLoading && (
+                <div className="flex items-center gap-2 mb-3 text-blue-600">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  <span className="text-sm">AI 正在生成中...</span>
+                </div>
+              )}
               <div className="prose prose-sm max-w-none">
                 {aiReport.split('\n').map((line, i) => {
                   if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace(/^##\s*/, '').replace(/\*\*/g, '')}</h3>;

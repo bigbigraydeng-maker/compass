@@ -3,6 +3,7 @@ Compass MVP FastAPI 主应用
 v1.1.1 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5) + DB Connection Resilience
 """
 from fastapi import FastAPI, HTTPException, Body
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from datetime import date, timedelta
@@ -1844,6 +1845,105 @@ def analyze_property(address: str = Body(...), url: str = Body(None), mode: str 
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
+
+
+@app.post("/api/analyze/stream")
+def analyze_property_stream(address: str = Body(...), url: str = Body(None), mode: str = Body("general")):
+    """
+    AI 流式分析接口 - SSE (Server-Sent Events)
+    逐字输出分析结果，前端实时渲染。
+    """
+    # 从地址中提取郊区
+    suburb = "Sunnybank"
+    if address:
+        known_suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale',
+                         'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+        address_lower = address.lower()
+        for s in known_suburbs:
+            if s.lower() in address_lower:
+                suburb = s
+                break
+        else:
+            parts = address.split(',')
+            if len(parts) > 1:
+                candidate = parts[-1].strip()
+                for s in known_suburbs:
+                    if s.lower() in candidate.lower():
+                        suburb = s
+                        break
+
+    # 聚合数据 + 构建 prompt
+    profile = _get_suburb_full_profile(suburb)
+    prompt = _build_ai_prompt(address, suburb, profile)
+    extra = _get_mode_extra_instructions(mode)
+    if extra:
+        prompt += extra
+
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+    if not moonshot_key:
+        raise HTTPException(status_code=500, detail="MOONSHOT_API_KEY not configured")
+
+    system_prompt = _get_mode_system_prompt(mode)
+
+    # 构建数据维度信息（先发送给前端）
+    dimensions = {
+        "price": bool(profile.get("price")),
+        "price_by_type": bool(profile.get("price_by_type")),
+        "price_trends": bool(profile.get("price_trends")),
+        "recent_sales": bool(profile.get("recent_sales")),
+        "poi": bool(profile.get("poi")),
+        "crime": bool(profile.get("crime")),
+        "transport": bool(profile.get("transport")),
+        "compass_score": bool(profile.get("compass_score")),
+        "zoning": bool(profile.get("zoning")),
+    }
+
+    def event_generator():
+        import json as _json
+        try:
+            # 先发送元数据
+            meta = _json.dumps({"type": "meta", "suburb": suburb, "mode": mode, "data_dimensions": dimensions})
+            yield f"data: {meta}\n\n"
+
+            from openai import OpenAI
+            client = OpenAI(
+                api_key=moonshot_key,
+                base_url="https://api.moonshot.cn/v1"
+            )
+
+            stream = client.chat.completions.create(
+                model="kimi-k2.5",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=4096,
+                temperature=1.0,
+                stream=True,
+            )
+
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    text = chunk.choices[0].delta.content
+                    data = _json.dumps({"type": "content", "text": text})
+                    yield f"data: {data}\n\n"
+
+            # 发送完成信号
+            yield f"data: {_json.dumps({'type': 'done'})}\n\n"
+
+        except Exception as e:
+            error_data = _json.dumps({"type": "error", "message": str(e)})
+            yield f"data: {error_data}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        }
+    )
 
 
 @app.get("/api/schools")
