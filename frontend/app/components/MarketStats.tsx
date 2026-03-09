@@ -16,67 +16,62 @@ interface SaleItem {
   sold_date: string;
 }
 
-// 预置新闻数据（后续可接入 Domain/REA 新闻 API）
-const newsItems = [
+interface NewsItem {
+  title: string;
+  source: string;
+  date: string;
+  summary: string;
+  tag: string;
+  tagColor: string;
+  link?: string;
+}
+
+// 备用新闻（API 不可用时显示）
+const fallbackNews: NewsItem[] = [
   {
-    id: 1,
-    title: '布里斯班房价连续12个月上涨，南区华人区涨幅领先',
+    title: 'Brisbane property market continues steady growth in 2026',
     source: 'Domain',
-    date: '2026-03-08',
-    summary: '最新数据显示布里斯班南区多个华人聚集区房价持续走强，Sunnybank、Calamvale等郊区中位价同比上涨超过8%。',
+    date: new Date().toISOString().slice(0, 10),
+    summary: 'Brisbane southern suburbs remain popular among Chinese-Australian investors with strong demand across Sunnybank, Calamvale and surrounding areas.',
     tag: '市场动态',
     tagColor: 'bg-blue-100 text-blue-700',
-  },
-  {
-    id: 2,
-    title: '昆士兰政府宣布新基建计划，东南区交通升级提速',
-    source: 'REA',
-    date: '2026-03-06',
-    summary: 'Cross River Rail 项目进展顺利，Eight Mile Plains 至市中心通勤时间将缩短至20分钟，周边房价预计受益。',
-    tag: '政策利好',
-    tagColor: 'bg-green-100 text-green-700',
-  },
-  {
-    id: 3,
-    title: '布里斯班拍卖清空率达72%，买家信心强劲',
-    source: 'Domain',
-    date: '2026-03-05',
-    summary: '上周末布里斯班举行超过200场拍卖会，清空率达到72%，高于上月的68%，显示市场需求旺盛。',
-    tag: '拍卖数据',
-    tagColor: 'bg-orange-100 text-orange-700',
-  },
-  {
-    id: 4,
-    title: '海外买家关注度上升，华人投资者占比创新高',
-    source: 'REA',
-    date: '2026-03-03',
-    summary: 'REA 数据显示来自中国、新加坡、香港的房产搜索量同比增长35%，布里斯班成为最受关注的投资目的地之一。',
-    tag: '投资趋势',
-    tagColor: 'bg-purple-100 text-purple-700',
   },
 ];
 
 export default function MarketStats() {
   const router = useRouter();
   const [recentSales, setRecentSales] = useState<SaleItem[]>([]);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [activeTab, setActiveTab] = useState<'news' | 'sold'>('news');
 
   useEffect(() => {
     let cancelled = false;
 
-    const loadSales = async () => {
+    const loadData = async () => {
       try {
-        const data = await fetcher('/api/home');
+        const [homeData, newsData] = await Promise.all([
+          fetcher('/api/home').catch(() => null),
+          fetcher('/api/news').catch(() => null),
+        ]);
+
         if (cancelled) return;
-        if (data?.latest_sales) {
-          setRecentSales(data.latest_sales.slice(0, 8));
+
+        if (homeData?.latest_sales) {
+          setRecentSales(homeData.latest_sales.slice(0, 8));
+        }
+
+        if (newsData?.news && newsData.news.length > 0) {
+          setNewsItems(newsData.news);
+        } else {
+          setNewsItems(fallbackNews);
         }
       } catch (e) {
-        console.error('Failed to load sales:', e);
+        console.error('Failed to load market data:', e);
+        setNewsItems(fallbackNews);
       }
     };
 
-    loadSales();
+    loadData();
     return () => { cancelled = true; };
   }, []);
 
@@ -135,28 +130,39 @@ export default function MarketStats() {
         </div>
 
         {/* ===== 新闻 Tab ===== */}
-        {activeTab === 'news' && (
+        {activeTab === 'news' && newsItems.length > 0 && (
           <div>
             {/* 手机端：卡片列表 */}
             <div className="md:hidden space-y-3">
-              {newsItems.map((news) => (
-                <div key={news.id} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+              {newsItems.slice(0, 4).map((news, idx) => (
+                <a
+                  key={idx}
+                  href={news.link || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block bg-gray-50 rounded-xl p-4 border border-gray-100 hover:shadow-md transition-shadow"
+                >
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${news.tagColor}`}>
                       {news.tag}
                     </span>
                     <span className="text-[10px] text-gray-400">{news.source} · {news.date}</span>
                   </div>
-                  <h3 className="font-bold text-sm text-gray-900 mb-1 leading-snug">{news.title}</h3>
+                  <h3 className="font-bold text-sm text-gray-900 mb-1 leading-snug line-clamp-2">{news.title}</h3>
                   <p className="text-xs text-gray-500 line-clamp-2">{news.summary}</p>
-                </div>
+                </a>
               ))}
             </div>
 
             {/* 桌面端：左大右小布局 */}
             <div className="hidden md:grid grid-cols-2 gap-6">
               {/* 头条新闻 */}
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8 border border-blue-200 flex flex-col justify-between">
+              <a
+                href={newsItems[0].link || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8 border border-blue-200 flex flex-col justify-between hover:shadow-lg transition-shadow"
+              >
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${newsItems[0].tagColor}`}>
@@ -165,30 +171,36 @@ export default function MarketStats() {
                     <span className="text-xs text-gray-500">{newsItems[0].source} · {newsItems[0].date}</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight">{newsItems[0].title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{newsItems[0].summary}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-4">{newsItems[0].summary}</p>
                 </div>
-                <p className="text-xs text-gray-400 mt-6">来源: {newsItems[0].source} | 由 Compass AI 翻译整理</p>
-              </div>
+                <p className="text-xs text-gray-400 mt-6">来源: {newsItems[0].source}</p>
+              </a>
 
               {/* 其他新闻列表 */}
               <div className="space-y-4">
-                {newsItems.slice(1).map((news) => (
-                  <div key={news.id} className="bg-gray-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
+                {newsItems.slice(1, 4).map((news, idx) => (
+                  <a
+                    key={idx}
+                    href={news.link || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block bg-gray-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${news.tagColor}`}>
                         {news.tag}
                       </span>
                       <span className="text-xs text-gray-400">{news.source} · {news.date}</span>
                     </div>
-                    <h3 className="font-bold text-gray-900 mb-1">{news.title}</h3>
+                    <h3 className="font-bold text-gray-900 mb-1 line-clamp-2">{news.title}</h3>
                     <p className="text-sm text-gray-500 line-clamp-2">{news.summary}</p>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
 
             <p className="text-center text-xs text-gray-400 mt-6">
-              新闻来源: Domain.com.au / RealEstate.com.au | 由 Compass AI 翻译整理为中文
+              新闻来源: Google News 聚合 (Domain / REA / ABC) | 每小时自动更新
             </p>
           </div>
         )}

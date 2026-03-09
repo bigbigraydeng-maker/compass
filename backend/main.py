@@ -1946,6 +1946,132 @@ def analyze_property_stream(address: str = Body(...), url: str = Body(None), mod
     )
 
 
+# ========== 新闻 RSS 聚合 ==========
+import urllib.request
+import xml.etree.ElementTree as ET
+from datetime import datetime
+import time as _time
+import re as _re
+import html as _html
+
+_news_cache: dict = {"items": [], "ts": 0}
+_NEWS_TTL = 3600  # 1 小时缓存
+
+_RSS_SOURCES = [
+    {
+        "url": "https://news.google.com/rss/search?q=brisbane+property+real+estate&hl=en-AU&gl=AU&ceid=AU:en",
+        "name": "Google News",
+    },
+]
+
+# 新闻分类关键词
+_TAG_RULES = [
+    (["auction", "clearance", "bidding", "sold"], "拍卖数据", "bg-orange-100 text-orange-700"),
+    (["government", "infrastructure", "rail", "transport", "plan", "policy", "budget"], "政策利好", "bg-green-100 text-green-700"),
+    (["investor", "overseas", "chinese", "foreign", "immigration"], "投资趋势", "bg-purple-100 text-purple-700"),
+    (["rent", "rental", "vacancy", "tenant", "yield"], "租赁市场", "bg-teal-100 text-teal-700"),
+    (["price", "median", "growth", "surge", "rise", "fall", "drop", "market"], "市场动态", "bg-blue-100 text-blue-700"),
+]
+
+def _classify_news(title: str, summary: str) -> tuple:
+    text = (title + " " + summary).lower()
+    for keywords, tag, color in _TAG_RULES:
+        if any(kw in text for kw in keywords):
+            return tag, color
+    return "市场动态", "bg-blue-100 text-blue-700"
+
+
+def _extract_source(title: str) -> str:
+    """Extract source from Google News title format 'Headline - Source'."""
+    if " - " in title:
+        return title.rsplit(" - ", 1)[-1].strip()
+    return "News"
+
+
+def _clean_headline(title: str) -> str:
+    """Remove source suffix from Google News title."""
+    if " - " in title:
+        return title.rsplit(" - ", 1)[0].strip()
+    return title
+
+
+def _fetch_rss_news() -> list:
+    """Fetch and parse RSS feeds, return news items."""
+    now = _time.time()
+    if _news_cache["items"] and (now - _news_cache["ts"]) < _NEWS_TTL:
+        return _news_cache["items"]
+
+    items = []
+    for src in _RSS_SOURCES:
+        try:
+            req = urllib.request.Request(
+                src["url"],
+                headers={"User-Agent": "Compass/1.0 (Brisbane Property Platform)"}
+            )
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                xml_data = resp.read()
+
+            root = ET.fromstring(xml_data)
+            # RSS 2.0 format: channel > item
+            for item in root.findall(".//item"):
+                raw_title = item.findtext("title", "")
+                source = _extract_source(raw_title)
+                headline = _clean_headline(raw_title)
+
+                desc_raw = item.findtext("description", "")
+                # Strip HTML tags from description
+                summary = _re.sub(r'<[^>]+>', '', _html.unescape(desc_raw)).strip()[:200]
+
+                pub_date = item.findtext("pubDate", "")
+                # Parse RSS date: "Sat, 08 Mar 2026 04:30:00 GMT"
+                date_str = ""
+                if pub_date:
+                    try:
+                        dt = datetime.strptime(pub_date[:25].strip(), "%a, %d %b %Y %H:%M:%S")
+                        date_str = dt.strftime("%Y-%m-%d")
+                    except Exception:
+                        date_str = pub_date[:10]
+
+                link = item.findtext("link", "")
+
+                tag, tagColor = _classify_news(headline, summary)
+
+                items.append({
+                    "title": headline,
+                    "source": source,
+                    "date": date_str,
+                    "summary": summary if summary else headline,
+                    "tag": tag,
+                    "tagColor": tagColor,
+                    "link": link,
+                })
+
+        except Exception as e:
+            print(f"[WARN] RSS fetch failed for {src['name']}: {e}")
+
+    # Sort by date descending, keep top 10
+    items.sort(key=lambda x: x.get("date", ""), reverse=True)
+    items = items[:10]
+
+    _news_cache["items"] = items
+    _news_cache["ts"] = now
+    return items
+
+
+@app.get("/api/news")
+def get_news():
+    """获取布里斯班房产新闻（来源：Google News RSS 聚合）"""
+    items = _fetch_rss_news()
+    if not items:
+        # 返回空列表，前端可以 fallback 到硬编码
+        return {"news": [], "source": "rss", "cached": False}
+    return {
+        "news": items,
+        "source": "google_news_rss",
+        "cached": (_time.time() - _news_cache["ts"]) < 1,
+    }
+
+
 @app.get("/api/schools")
 def get_all_schools(suburb: Optional[str] = None, school_type: Optional[str] = None):
     """
