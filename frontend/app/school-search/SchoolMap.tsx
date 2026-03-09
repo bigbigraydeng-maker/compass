@@ -21,9 +21,39 @@ interface SchoolMapProps {
   schools: School[];
   selectedSchool: School | null;
   onSchoolSelect: (school: School) => void;
-  suburbBoundaries: any | null; // GeoJSON FeatureCollection
+  suburbBoundaries: any | null;
   dataSuburbs: string[];
   apiKey: string;
+}
+
+// Create SVG marker icon as data URL
+function createMarkerIcon(color: string, label: string, isSelected: boolean) {
+  const size = isSelected ? 36 : 28;
+  const strokeColor = isSelected ? '#1d4ed8' : '#ffffff';
+  const strokeWidth = isSelected ? 3 : 2;
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size + 8}" viewBox="0 0 ${size} ${size + 8}">
+      <path d="${size === 36
+        ? 'M18 2 C9.2 2 2 9.2 2 18 C2 28 18 42 18 42 C18 42 34 28 34 18 C34 9.2 26.8 2 18 2Z'
+        : 'M14 2 C7.4 2 2 7.4 2 14 C2 22 14 34 14 34 C14 34 26 22 26 14 C26 7.4 20.6 2 14 2Z'
+      }" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>
+      <text x="${size / 2}" y="${size * 0.52}" text-anchor="middle" dominant-baseline="middle"
+        fill="white" font-size="${isSelected ? 14 : 11}" font-weight="bold" font-family="Arial">${label}</text>
+    </svg>
+  `;
+  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg.trim());
+}
+
+function getMarkerColor(percentile: number) {
+  if (percentile >= 80) return '#22c55e';
+  if (percentile >= 60) return '#eab308';
+  return '#ef4444';
+}
+
+function getTypeLabel(type: string) {
+  if (type === 'primary') return 'P';
+  if (type === 'secondary') return 'S';
+  return 'C';
 }
 
 export default function SchoolMap({
@@ -35,161 +65,146 @@ export default function SchoolMap({
   apiKey,
 }: SchoolMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const googleMapRef = useRef<google.maps.Map | null>(null);
-  const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
-  const dataLayerRef = useRef<google.maps.Data | null>(null);
+  const googleMapRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
+  const dataLayerRef = useRef<any>(null);
   const scriptLoadedRef = useRef(false);
-
-  // Get marker color based on NAPLAN percentile
-  const getMarkerColor = (percentile: number) => {
-    if (percentile >= 80) return '#22c55e'; // green
-    if (percentile >= 60) return '#eab308'; // yellow
-    return '#ef4444'; // red
-  };
-
-  // Create pin SVG element
-  const createPinElement = useCallback((school: School, isSelected: boolean) => {
-    const color = getMarkerColor(school.naplan_percentile || 0);
-    const size = isSelected ? 40 : 30;
-    const borderWidth = isSelected ? 3 : 2;
-
-    const div = document.createElement('div');
-    div.innerHTML = `
-      <div style="
-        width: ${size}px; height: ${size}px;
-        background: ${color};
-        border: ${borderWidth}px solid ${isSelected ? '#1d4ed8' : 'white'};
-        border-radius: 50% 50% 50% 0;
-        transform: rotate(-45deg);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
-      ">
-        <span style="
-          transform: rotate(45deg);
-          color: white;
-          font-size: ${isSelected ? 14 : 11}px;
-          font-weight: bold;
-        ">${school.type === 'primary' ? 'P' : school.type === 'secondary' ? 'S' : 'C'}</span>
-      </div>
-    `;
-    return div;
-  }, []);
+  const infoWindowRef = useRef<any>(null);
 
   // Initialize map
   const initMap = useCallback(() => {
-    if (!mapRef.current || !window.google) return;
+    try {
+      if (!mapRef.current || !window.google?.maps) return;
 
-    const map = new google.maps.Map(mapRef.current, {
-      center: { lat: -27.53, lng: 153.06 },
-      zoom: 11,
-      mapId: 'compass-school-map',
-      disableDefaultUI: false,
-      zoomControl: true,
-      mapTypeControl: false,
-      streetViewControl: false,
-      fullscreenControl: false,
-      styles: [
-        {
-          featureType: 'poi',
-          elementType: 'labels',
-          stylers: [{ visibility: 'off' }],
-        },
-      ],
-    });
+      const map = new google.maps.Map(mapRef.current, {
+        center: { lat: -27.53, lng: 153.06 },
+        zoom: 11,
+        disableDefaultUI: false,
+        zoomControl: true,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+      });
 
-    googleMapRef.current = map;
+      googleMapRef.current = map;
+    } catch (e) {
+      console.error('Failed to init map:', e);
+    }
   }, []);
 
   // Load Google Maps script
   useEffect(() => {
     if (scriptLoadedRef.current || !apiKey) return;
 
-    // Check if already loaded
-    if (window.google?.maps) {
-      scriptLoadedRef.current = true;
-      initMap();
-      return;
+    try {
+      if (window.google?.maps) {
+        scriptLoadedRef.current = true;
+        initMap();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        scriptLoadedRef.current = true;
+        initMap();
+      };
+      script.onerror = () => {
+        console.error('Failed to load Google Maps script');
+      };
+      document.head.appendChild(script);
+    } catch (e) {
+      console.error('Error loading Google Maps:', e);
     }
-
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=marker&v=weekly`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      scriptLoadedRef.current = true;
-      initMap();
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      // Don't remove script on cleanup since it's a global resource
-    };
   }, [apiKey, initMap]);
 
-  // Update markers when schools change
+  // Update markers when schools or selection changes
   useEffect(() => {
-    const map = googleMapRef.current;
-    if (!map || !window.google?.maps?.marker) return;
+    try {
+      const map = googleMapRef.current;
+      if (!map || !window.google?.maps) return;
 
-    // Clear existing markers
-    markersRef.current.forEach(m => (m.map = null));
-    markersRef.current = [];
-
-    schools.forEach(school => {
-      if (!school.lat || !school.lng) return;
-
-      const isSelected = selectedSchool?.name === school.name;
-      const content = createPinElement(school, isSelected);
-
-      const marker = new google.maps.marker.AdvancedMarkerElement({
-        map,
-        position: { lat: school.lat, lng: school.lng },
-        content,
-        title: school.name,
-        zIndex: isSelected ? 100 : 1,
+      // Clear existing markers
+      markersRef.current.forEach(m => {
+        try { m.setMap(null); } catch {}
       });
+      markersRef.current = [];
 
-      marker.addListener('click', () => onSchoolSelect(school));
-      markersRef.current.push(marker);
-    });
-  }, [schools, selectedSchool, onSchoolSelect, createPinElement]);
+      // Close info window
+      if (infoWindowRef.current) {
+        try { infoWindowRef.current.close(); } catch {}
+      }
+
+      schools.forEach(school => {
+        if (!school.lat || !school.lng) return;
+
+        const isSelected = selectedSchool?.name === school.name;
+        const color = getMarkerColor(school.naplan_percentile || 0);
+        const label = getTypeLabel(school.type || '');
+        const iconUrl = createMarkerIcon(color, label, isSelected);
+
+        const marker = new google.maps.Marker({
+          map,
+          position: { lat: school.lat, lng: school.lng },
+          title: school.name,
+          icon: {
+            url: iconUrl,
+            scaledSize: new google.maps.Size(isSelected ? 36 : 28, isSelected ? 44 : 36),
+            anchor: new google.maps.Point(isSelected ? 18 : 14, isSelected ? 44 : 36),
+          },
+          zIndex: isSelected ? 100 : 1,
+        });
+
+        marker.addListener('click', () => {
+          onSchoolSelect(school);
+        });
+
+        markersRef.current.push(marker);
+      });
+    } catch (e) {
+      console.error('Error updating markers:', e);
+    }
+  }, [schools, selectedSchool, onSchoolSelect]);
 
   // Update polygon overlays when selected school changes
   useEffect(() => {
-    const map = googleMapRef.current;
-    if (!map || !window.google) return;
+    try {
+      const map = googleMapRef.current;
+      if (!map || !window.google?.maps) return;
 
-    // Clear previous data layer
-    if (dataLayerRef.current) {
-      dataLayerRef.current.setMap(null);
-      dataLayerRef.current = null;
-    }
+      // Clear previous data layer
+      if (dataLayerRef.current) {
+        try { dataLayerRef.current.setMap(null); } catch {}
+        dataLayerRef.current = null;
+      }
 
-    if (!selectedSchool || !suburbBoundaries) return;
+      if (!selectedSchool || !suburbBoundaries) return;
 
-    const catchmentLower = selectedSchool.catchment_suburbs.map(s => s.toLowerCase());
-    const dataSuburbsLower = dataSuburbs.map(s => s.toLowerCase());
+      const catchmentLower = selectedSchool.catchment_suburbs.map(s => s.toLowerCase());
+      const dataSuburbsLower = dataSuburbs.map(s => s.toLowerCase());
 
-    // Create data layer
-    const dataLayer = new google.maps.Data();
+      const dataLayer = new google.maps.Data();
 
-    // Filter GeoJSON to only catchment suburbs
-    const filteredGeoJSON = {
-      type: 'FeatureCollection' as const,
-      features: suburbBoundaries.features.filter((f: any) => {
+      // Filter GeoJSON to only catchment suburbs
+      const filteredFeatures = (suburbBoundaries.features || []).filter((f: any) => {
         const name = (f.properties?.suburb || '').toLowerCase();
         return catchmentLower.includes(name);
-      }),
-    };
+      });
 
-    if (filteredGeoJSON.features.length > 0) {
+      if (filteredFeatures.length === 0) return;
+
+      const filteredGeoJSON = {
+        type: 'FeatureCollection',
+        features: filteredFeatures,
+      };
+
       dataLayer.addGeoJson(filteredGeoJSON);
 
       // Style polygons
-      dataLayer.setStyle((feature) => {
-        const name = (feature.getProperty('suburb') as string || '').toLowerCase();
+      dataLayer.setStyle((feature: any) => {
+        const name = (feature.getProperty('suburb') || '').toLowerCase();
         const hasData = dataSuburbsLower.includes(name);
         return {
           fillColor: hasData ? '#3B82F6' : '#9CA3AF',
@@ -205,25 +220,41 @@ export default function SchoolMap({
 
       // Fit bounds to show all catchment polygons
       const bounds = new google.maps.LatLngBounds();
-      dataLayer.forEach(feature => {
+      let hasPoints = false;
+      dataLayer.forEach((feature: any) => {
         const geom = feature.getGeometry();
         if (geom) {
-          geom.forEachLatLng(latlng => bounds.extend(latlng));
+          geom.forEachLatLng((latlng: any) => {
+            bounds.extend(latlng);
+            hasPoints = true;
+          });
         }
       });
-      // Also include the school itself
+
       if (selectedSchool.lat && selectedSchool.lng) {
         bounds.extend({ lat: selectedSchool.lat, lng: selectedSchool.lng });
+        hasPoints = true;
       }
-      map.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
+
+      if (hasPoints) {
+        map.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
+      }
+    } catch (e) {
+      console.error('Error updating polygons:', e);
     }
   }, [selectedSchool, suburbBoundaries, dataSuburbs]);
 
   return (
-    <div ref={mapRef} className="w-full h-full min-h-[300px]">
+    <div ref={mapRef} className="w-full h-full min-h-[300px] bg-gray-100">
       {!apiKey && (
         <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500">
-          <p>Google Maps API Key is not configured</p>
+          <div className="text-center p-6">
+            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            <p className="text-sm">Google Maps API Key is not configured</p>
+            <p className="text-xs text-gray-400 mt-1">Please set NEXT_PUBLIC_GOOGLE_MAPS_KEY</p>
+          </div>
         </div>
       )}
     </div>
