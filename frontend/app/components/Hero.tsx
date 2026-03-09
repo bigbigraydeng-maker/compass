@@ -177,7 +177,7 @@ export default function Hero() {
             <div className="flex flex-col md:flex-row gap-3 md:gap-4">
               <input
                 type="text"
-                placeholder="输入地址或郊区名进行 AI 投资分析"
+                placeholder="输入地址或郊区名，Amanda 为你分析"
                 value={aiInput}
                 onChange={(e) => setAiInput(e.target.value)}
                 className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-lg focus:outline-none text-gray-800 text-base md:text-lg shadow-lg"
@@ -194,9 +194,9 @@ export default function Hero() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    AI 分析中...
+                    Amanda 分析中...
                   </>
-                ) : '🤖 AI 分析'}
+                ) : '🤖 Amanda 分析'}
               </button>
             </div>
             <p className="text-gray-300 text-xs md:text-sm mt-2 md:mt-3">例如：10 Main St, Sunnybank 或 Sunnybank</p>
@@ -207,7 +207,7 @@ export default function Hero() {
             <div className="max-w-3xl mx-auto mt-8">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 text-left">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold">🤖 AI 投资分析报告</h3>
+                  <h3 className="text-lg font-bold">🤖 Amanda 投资分析报告</h3>
                   {aiReport && (
                     <button
                       onClick={() => { setAiReport(null); setAiError(null); }}

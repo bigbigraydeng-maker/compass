@@ -399,7 +399,7 @@ export default function TodayDeals() {
                           </svg>
                           分析中...
                         </>
-                      ) : '🤖 AI 分析'}
+                      ) : '🤖 Amanda 分析'}
                     </button>
                     <button
                       className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-5 rounded-lg font-medium transition-colors"
@@ -413,7 +413,7 @@ export default function TodayDeals() {
                   {(report || error) && (
                     <div className={`rounded-lg p-4 mt-2 ${error ? 'bg-red-50 border border-red-100' : 'bg-blue-50 border border-blue-100'}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold text-gray-700">🤖 AI 投资分析</span>
+                        <span className="text-xs font-bold text-gray-700">🤖 Amanda 投资分析</span>
                         <button
                           onClick={() => {
                             setAiReport(prev => { const n = { ...prev }; delete n[deal.id]; return n; });

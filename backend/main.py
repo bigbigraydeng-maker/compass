@@ -1,12 +1,16 @@
 """
 Compass MVP FastAPI 主应用
-v1.1.1 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5) + DB Connection Resilience
+v1.2.0 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5) + 安全加固
 """
-from fastapi import FastAPI, HTTPException, Body
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, HTTPException, Body, Request
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from typing import List, Optional
 from datetime import date, timedelta
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 import json
 from dotenv import load_dotenv
@@ -14,7 +18,22 @@ from dotenv import load_dotenv
 # 加载 .env 文件
 load_dotenv()
 
-print("Compass API v1.1.0 - Multi-dimensional AI Engine")
+print("Compass API v1.2.0 - Multi-dimensional AI Engine + Security Hardening")
+
+# ====== Rate Limiter ======
+limiter = Limiter(key_func=get_remote_address)
+
+
+# ====== Security Headers Middleware ======
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        return response
 
 from models import HomeData, SuburbStats, SalesResponse, Sale, SuburbDetail, SuburbTrends, MonthlyTrend, Listing, ListingsResponse, Zone, ZoningResponse
 
@@ -50,13 +69,22 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# 配置 CORS
+# ====== 安全中间件 ======
+# Rate Limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Security Headers
+app.add_middleware(SecurityHeadersMiddleware)
+
+# CORS — 仅允许 Compass 域名
+ALLOWED_ORIGINS = os.getenv("CORS_ORIGINS", "https://aucompass.com.au,https://www.aucompass.com.au,https://compass-1-kvdb.onrender.com").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境请修改为具体域名
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 
@@ -125,7 +153,8 @@ def get_home_data():
             suburb_stats=suburb_stats
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取首页数据失败: {str(e)}")
+        print(f"[ERROR] 获取首页数据失败: {e}")
+        raise HTTPException(status_code=500, detail="获取首页数据失败，请稍后重试")
 
 
 @app.get("/api/sales", response_model=SalesResponse)
@@ -230,7 +259,8 @@ def get_sales(
             page_size=page_size
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取成交列表失败: {str(e)}")
+        print(f"[ERROR] 获取成交列表失败: {e}")
+        raise HTTPException(status_code=500, detail="获取成交列表失败，请稍后重试")
 
 
 @app.get("/api/suburb/{suburb_name}", response_model=SuburbDetail)
@@ -282,7 +312,8 @@ def get_suburb_detail(suburb_name: str):
             recent_sales=[Sale(**sale) for sale in recent_sales]
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取郊区详情失败: {str(e)}")
+        print(f"[ERROR] 获取郊区详情失败: {e}")
+        raise HTTPException(status_code=500, detail="获取郊区详情失败，请稍后重试")
 
 
 @app.get("/api/suburb/{suburb_name}/trends", response_model=SuburbTrends)
@@ -335,7 +366,8 @@ def get_suburb_trends(suburb_name: str):
             monthly_trends=monthly_trends
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取价格走势失败: {str(e)}")
+        print(f"[ERROR] 获取价格走势失败: {e}")
+        raise HTTPException(status_code=500, detail="获取价格走势失败，请稍后重试")
 
 
 @app.get("/api/suburb/{suburb_name}/schools")
@@ -517,7 +549,8 @@ def get_listings(
             page_size=page_size
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取在售房源列表失败: {str(e)}")
+        print(f"[ERROR] 获取在售房源列表失败: {e}")
+        raise HTTPException(status_code=500, detail="获取在售房源列表失败，请稍后重试")
 
 
 @app.get("/api/suburb/{suburb_name}/zoning", response_model=ZoningResponse)
@@ -773,7 +806,8 @@ def get_deals():
             "total": len(deals)
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取捡漏数据失败: {str(e)}")
+        print(f"[ERROR] 获取捡漏数据失败: {e}")
+        raise HTTPException(status_code=500, detail="获取捡漏数据失败，请稍后重试")
 
 
 @app.get("/api/rankings")
@@ -918,7 +952,8 @@ def get_rankings():
 
         return {"rankings": rankings, "updated_at": "2026-03"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"获取排名数据失败: {str(e)}")
+        print(f"[ERROR] 获取排名数据失败: {e}")
+        raise HTTPException(status_code=500, detail="获取排名数据失败，请稍后重试")
 
 
 @app.get("/api/market-pulse")
@@ -1729,13 +1764,23 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
 
 
 def _get_mode_system_prompt(mode: str) -> str:
-    """根据分析模式返回不同的系统提示"""
-    prompts = {
-        "school": "你是一位专注布里斯班学区房投资的资深顾问，精通NAPLAN排名、学区划分、家庭友好度评估。请重点分析学区质量对房产投资价值的影响。全中文回复。",
-        "first_home": "你是一位帮助首次置业者的布里斯班房产顾问，精通昆士兰州首次置业补贴(FHOG $30,000)、印花税减免、首置担保计划(5%首付)。请重点分析适合首次购房者的入门机会。全中文回复。",
-        "overseas": "你是一位专注服务海外投资者的布里斯班房产顾问，精通FIRB审批流程、额外8%印花税(AFAD)、非居民CGT预扣12.5%、海外人士只能购买新房限制。请重点分析适合海外投资者的投资机会和合规要求。全中文回复。",
+    """根据分析模式返回不同的系统提示 — 统一 Amanda 人格"""
+    amanda_base = (
+        "你是 Amanda，Compass 平台的首席房产分析师。"
+        "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
+        "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚问题。"
+        "你会用数据说话，结合实战经验给出有深度的见解。"
+        "你特别关注布里斯班南区华人聚集区（Sunnybank、Calamvale、Eight Mile Plains、Rochedale、Mansfield）"
+        "以及北区优质区（Ascot、Hamilton）的市场变化。"
+        "始终使用中文回复。"
+    )
+    mode_extras = {
+        "school": "你同时也是学区房投资专家，精通NAPLAN排名、学区划分、家庭友好度评估。请重点分析学区质量对房产投资价值的影响。",
+        "first_home": "你同时也是首次置业指导专家，精通昆士兰州首次置业补贴(FHOG $30,000)、印花税减免、首置担保计划(5%首付)。请重点分析适合首次购房者的入门机会。",
+        "overseas": "你同时也是海外投资者服务专家，精通FIRB审批流程、额外8%印花税(AFAD)、非居民CGT预扣12.5%、海外人士只能购买新房限制。请重点分析适合海外投资者的投资机会和合规要求。",
     }
-    return prompts.get(mode, "You are a senior Brisbane real estate investment analyst. Respond in Chinese.")
+    extra = mode_extras.get(mode, "")
+    return amanda_base + extra
 
 
 def _get_mode_extra_instructions(mode: str) -> str:
@@ -1770,7 +1815,8 @@ def _get_mode_extra_instructions(mode: str) -> str:
 
 
 @app.post("/api/analyze")
-def analyze_property(address: str = Body(...), url: str = Body(None), mode: str = Body("general")):
+@limiter.limit("10/minute")
+def analyze_property(request: Request, address: str = Body(...), url: str = Body(None), mode: str = Body("general")):
     """
     AI 多维度投资分析接口
 
@@ -1858,11 +1904,12 @@ def analyze_property(address: str = Body(...), url: str = Body(None), mode: str 
         print(f"AI Analysis error: {e}")
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="AI 分析服务暂时不可用，请稍后重试")
 
 
 @app.post("/api/analyze/stream")
-def analyze_property_stream(address: str = Body(...), url: str = Body(None), mode: str = Body("general")):
+@limiter.limit("10/minute")
+def analyze_property_stream(request: Request, address: str = Body(...), url: str = Body(None), mode: str = Body("general")):
     """
     AI 流式分析接口 - SSE (Server-Sent Events)
     逐字输出分析结果，前端实时渲染。
@@ -2457,7 +2504,9 @@ def get_school_catchment_data(school_name: str):
 
 
 @app.post("/api/chat")
+@limiter.limit("20/minute")
 def chat_with_advisor(
+    request: Request,
     message: str = Body(...),
     context: str = Body("general"),
     history: list = Body([])
@@ -2481,25 +2530,29 @@ def chat_with_advisor(
             base_url="https://api.moonshot.cn/v1"
         )
 
-        system_prompts = {
-            "first_home": """你是 Compass AI 首次置业顾问，专注帮助在布里斯班首次购房的华人买家。你精通：
+        amanda_chat_base = (
+            "你是 Amanda，Compass 平台的首席房产分析师，也是用户的专属 AI 顾问。"
+            "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
+            "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚问题。"
+            "请用中文回答，每次回答控制在200字以内。\n\n"
+        )
+        context_extras = {
+            "first_home": """你当前正在帮助首次置业者，你精通：
 - 昆士兰首次置业补贴 (FHOG $30,000，仅限新房，房价≤$750,000)
 - 印花税减免政策（首置新房≤$500,000全免）
 - 首置担保计划（5%首付，免LMI）
 - 布里斯班各郊区适合首次购房的入门区域
-- 贷款预批、验房、交割流程
-请用通俗易懂的中文回答，给出实用建议。每次回答控制在200字以内。""",
-            "overseas": """你是 Compass AI 海外投资顾问，专注帮助海外华人投资者在布里斯班购房。你精通：
+- 贷款预批、验房、交割流程""",
+            "overseas": """你当前正在帮助海外投资者，你精通：
 - FIRB 审批流程和费用（<$75万约$14,100）
 - AFAD 额外印花税 8%（昆士兰附加费）
 - 海外人士只能购买全新住宅或空地
 - CGT 预扣税 12.5%
 - 非居民租金收入税务处理
-- 布里斯班新楼盘和开发区推荐
-请用专业但通俗的中文回答，给出实用建议。每次回答控制在200字以内。""",
+- 布里斯班新楼盘和开发区推荐""",
         }
 
-        system_content = system_prompts.get(context, "你是 Compass AI 布里斯班房产投资顾问，帮助华人投资者做出明智的房产投资决策。用中文回答，每次回答控制在200字以内。")
+        system_content = amanda_chat_base + context_extras.get(context, "你帮助华人投资者做出明智的房产投资决策。")
 
         # 构建消息列表
         messages = [{"role": "system", "content": system_content}]
@@ -2548,8 +2601,8 @@ def chat_with_advisor(
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Chat error: {e}")
-        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
+        print(f"[ERROR] Chat failed: {e}")
+        raise HTTPException(status_code=500, detail="AI 聊天服务暂时不可用，请稍后重试")
 
 
 if __name__ == "__main__":

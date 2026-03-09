@@ -386,7 +386,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
         {/* ===== 2. AI Investment Analysis (moved up) ===== */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-xl p-6 mb-8 text-white">
           <div className="mb-4">
-            <h3 className="text-xl font-bold mb-1">AI 投资分析</h3>
+            <h3 className="text-xl font-bold mb-1">Amanda 投资分析</h3>
             <p className="text-blue-200 text-sm">
               基于 POI、治安、交通、学区、分区等多维数据，AI 生成专业投资建议
             </p>
@@ -416,7 +416,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                   分析中...
                 </>
-              ) : 'AI 分析'}
+              ) : 'Amanda 分析'}
             </button>
           </div>
           <p className="text-blue-300 text-xs mb-2">
@@ -427,7 +427,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-3">
                 <svg className="animate-spin h-5 w-5 text-blue-200" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                <span className="text-blue-100">正在聚合多维数据并生成 AI 分析报告...</span>
+                <span className="text-blue-100">Amanda 正在聚合多维数据生成分析报告...</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[

@@ -211,7 +211,7 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
     sendMessage(input);
   };
 
-  const defaultTitle = context === 'first_home' ? '首次置业 AI 顾问' : context === 'overseas' ? '海外购房 AI 顾问' : 'AI 房产顾问';
+  const defaultTitle = context === 'first_home' ? 'Amanda · 首次置业顾问' : context === 'overseas' ? 'Amanda · 海外购房顾问' : 'Amanda · 房产分析师';
   const defaultPlaceholder = context === 'first_home' ? '问问首次置业相关问题...' : context === 'overseas' ? '问问海外购房相关问题...' : '输入您的问题...';
 
   return (

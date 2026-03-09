@@ -223,7 +223,7 @@ export default function OverseasBuyerPage() {
         {/* Section 4: AI 顾问 */}
         <section className="mb-10 md:mb-16">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
-            🤖 海外购房 AI 顾问
+            🤖 Amanda · 海外购房顾问
           </h2>
           <div className="max-w-2xl mx-auto">
             <ChatInterface context="overseas" />

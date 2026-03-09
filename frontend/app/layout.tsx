@@ -15,6 +15,11 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <link rel="dns-prefetch" href="https://compass-api-o8gw.onrender.com" />
+        <link rel="preconnect" href="https://compass-api-o8gw.onrender.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://maps.googleapis.com" crossOrigin="anonymous" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-4MNG89LCNX"
           strategy="afterInteractive"
