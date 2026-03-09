@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 
 interface School {
   name: string;
@@ -26,7 +26,76 @@ interface SchoolMapProps {
   apiKey: string;
 }
 
-// Create SVG marker icon as data URL
+// ====== Global Google Maps Script Loader (singleton) ======
+let googleMapsPromise: Promise<void> | null = null;
+let googleMapsLoaded = false;
+let googleMapsError = false;
+
+function loadGoogleMapsScript(apiKey: string): Promise<void> {
+  // Already loaded
+  if (googleMapsLoaded && window.google?.maps) {
+    return Promise.resolve();
+  }
+
+  // Already loading
+  if (googleMapsPromise) {
+    return googleMapsPromise;
+  }
+
+  // Already in DOM (e.g. from a previous navigation)
+  if (window.google?.maps) {
+    googleMapsLoaded = true;
+    return Promise.resolve();
+  }
+
+  googleMapsPromise = new Promise<void>((resolve, reject) => {
+    // Check if script tag already exists
+    const existing = document.querySelector('script[src*="maps.googleapis.com"]');
+    if (existing) {
+      // Wait for it to load
+      const checkLoaded = () => {
+        if (window.google?.maps) {
+          googleMapsLoaded = true;
+          resolve();
+        } else {
+          setTimeout(checkLoaded, 100);
+        }
+      };
+      checkLoaded();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly&loading=async`;
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+      // Google Maps script loaded but API might not be ready yet
+      const waitForApi = () => {
+        if (window.google?.maps) {
+          googleMapsLoaded = true;
+          resolve();
+        } else {
+          setTimeout(waitForApi, 50);
+        }
+      };
+      waitForApi();
+    };
+
+    script.onerror = () => {
+      googleMapsError = true;
+      googleMapsPromise = null; // Allow retry
+      reject(new Error('Failed to load Google Maps script'));
+    };
+
+    document.head.appendChild(script);
+  });
+
+  return googleMapsPromise;
+}
+
+// ====== SVG Marker Helpers ======
 function createMarkerIcon(color: string, label: string, isSelected: boolean) {
   const size = isSelected ? 36 : 28;
   const strokeColor = isSelected ? '#1d4ed8' : '#ffffff';
@@ -56,6 +125,7 @@ function getTypeLabel(type: string) {
   return 'C';
 }
 
+// ====== Component ======
 export default function SchoolMap({
   schools,
   selectedSchool,
@@ -68,74 +138,77 @@ export default function SchoolMap({
   const googleMapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const dataLayerRef = useRef<any>(null);
-  const scriptLoadedRef = useRef(false);
-  const infoWindowRef = useRef<any>(null);
+  const [mapReady, setMapReady] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
 
-  // Initialize map
-  const initMap = useCallback(() => {
-    try {
-      if (!mapRef.current || !window.google?.maps) return;
-
-      const map = new google.maps.Map(mapRef.current, {
-        center: { lat: -27.53, lng: 153.06 },
-        zoom: 11,
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
-      });
-
-      googleMapRef.current = map;
-    } catch (e) {
-      console.error('Failed to init map:', e);
-    }
+  // Cleanup on unmount
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
-  // Load Google Maps script
+  // Load script and init map (only once)
   useEffect(() => {
-    if (scriptLoadedRef.current || !apiKey) return;
+    if (!apiKey || !mapRef.current) return;
 
-    try {
-      if (window.google?.maps) {
-        scriptLoadedRef.current = true;
-        initMap();
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        scriptLoadedRef.current = true;
-        initMap();
-      };
-      script.onerror = () => {
-        console.error('Failed to load Google Maps script');
-      };
-      document.head.appendChild(script);
-    } catch (e) {
-      console.error('Error loading Google Maps:', e);
+    // If map already initialized on this element, skip
+    if (googleMapRef.current) {
+      setMapReady(true);
+      return;
     }
-  }, [apiKey, initMap]);
+
+    let cancelled = false;
+
+    const init = async () => {
+      try {
+        setLoadError(null);
+        await loadGoogleMapsScript(apiKey);
+
+        if (cancelled || !mountedRef.current || !mapRef.current) return;
+
+        const map = new google.maps.Map(mapRef.current, {
+          center: { lat: -27.53, lng: 153.06 },
+          zoom: 11,
+          disableDefaultUI: false,
+          zoomControl: true,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          gestureHandling: 'cooperative', // Better mobile UX
+        });
+
+        googleMapRef.current = map;
+        setMapReady(true);
+      } catch (e: any) {
+        console.error('Google Maps init error:', e);
+        if (!cancelled && mountedRef.current) {
+          setLoadError(e?.message || 'Google Maps 加载失败');
+        }
+      }
+    };
+
+    init();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [apiKey]);
 
   // Update markers when schools or selection changes
   useEffect(() => {
-    try {
-      const map = googleMapRef.current;
-      if (!map || !window.google?.maps) return;
+    if (!mapReady) return;
+    const map = googleMapRef.current;
+    if (!map || !window.google?.maps) return;
 
+    try {
       // Clear existing markers
       markersRef.current.forEach(m => {
         try { m.setMap(null); } catch {}
       });
       markersRef.current = [];
-
-      // Close info window
-      if (infoWindowRef.current) {
-        try { infoWindowRef.current.close(); } catch {}
-      }
 
       schools.forEach(school => {
         if (!school.lat || !school.lng) return;
@@ -155,6 +228,7 @@ export default function SchoolMap({
             anchor: new google.maps.Point(isSelected ? 18 : 14, isSelected ? 44 : 36),
           },
           zIndex: isSelected ? 100 : 1,
+          optimized: true,
         });
 
         marker.addListener('click', () => {
@@ -166,14 +240,15 @@ export default function SchoolMap({
     } catch (e) {
       console.error('Error updating markers:', e);
     }
-  }, [schools, selectedSchool, onSchoolSelect]);
+  }, [mapReady, schools, selectedSchool, onSchoolSelect]);
 
   // Update polygon overlays when selected school changes
   useEffect(() => {
-    try {
-      const map = googleMapRef.current;
-      if (!map || !window.google?.maps) return;
+    if (!mapReady) return;
+    const map = googleMapRef.current;
+    if (!map || !window.google?.maps) return;
 
+    try {
       // Clear previous data layer
       if (dataLayerRef.current) {
         try { dataLayerRef.current.setMap(null); } catch {}
@@ -242,9 +317,9 @@ export default function SchoolMap({
     } catch (e) {
       console.error('Error updating polygons:', e);
     }
-  }, [selectedSchool, suburbBoundaries, dataSuburbs]);
+  }, [mapReady, selectedSchool, suburbBoundaries, dataSuburbs]);
 
-  // If no API key, don't use ref (so Google Maps doesn't try to init)
+  // No API key
   if (!apiKey) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500" style={{ minHeight: 400 }}>
@@ -252,8 +327,44 @@ export default function SchoolMap({
           <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
           </svg>
-          <p className="text-sm font-medium">Google Maps is loading...</p>
-          <p className="text-xs text-gray-400 mt-1">NEXT_PUBLIC_GOOGLE_MAPS_KEY not configured</p>
+          <p className="text-sm font-medium">地图密钥未配置</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading error with retry
+  if (loadError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500" style={{ minHeight: 400 }}>
+        <div className="text-center p-6">
+          <svg className="w-10 h-10 mx-auto mb-3 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <p className="text-sm font-medium text-gray-700 mb-2">地图加载失败</p>
+          <p className="text-xs text-gray-400 mb-3">{loadError}</p>
+          <button
+            onClick={() => {
+              googleMapsPromise = null;
+              googleMapsError = false;
+              setLoadError(null);
+            }}
+            className="px-4 py-1.5 bg-emerald-600 text-white text-xs rounded-lg hover:bg-emerald-700 transition"
+          >
+            重新加载
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (!mapReady) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-100" style={{ minHeight: 400 }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-3"></div>
+          <p className="text-xs text-gray-500">加载地图中...</p>
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Header from '../components/Header';
 import SchoolMap from './SchoolMap';
 import SchoolDetailPanel from './SchoolDetailPanel';
@@ -95,7 +95,7 @@ export default function SchoolSearchPage() {
   }, []);
 
   // Filtered schools
-  const filteredSchools = schools.filter(s => {
+  const filteredSchools = useMemo(() => schools.filter(s => {
     if (filterSuburb) {
       const subMatch = s.suburb.toLowerCase() === filterSuburb.toLowerCase();
       const catchMatch = s.catchment_suburbs.some(c => c.toLowerCase() === filterSuburb.toLowerCase());
@@ -104,7 +104,7 @@ export default function SchoolSearchPage() {
     if (filterType && (s.type || s.school_type || '').toLowerCase() !== filterType.toLowerCase()) return false;
     if (filterSector && s.sector.toLowerCase() !== filterSector.toLowerCase()) return false;
     return true;
-  });
+  }), [schools, filterSuburb, filterType, filterSector]);
 
   const suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale', 'Rochedale', 'Mansfield', 'Ascot', 'Hamilton'];
 
@@ -147,6 +147,35 @@ export default function SchoolSearchPage() {
     </div>
   );
 
+  // Shared map component (rendered once, placed via CSS)
+  const mapComponent = (
+    <SchoolMap
+      schools={filteredSchools}
+      selectedSchool={selectedSchool}
+      onSchoolSelect={handleSchoolSelect}
+      suburbBoundaries={suburbGeoJSON}
+      dataSuburbs={CORE_SUBURBS}
+      apiKey={MAPS_KEY}
+    />
+  );
+
+  // Map legend overlay
+  const mapLegend = (
+    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2 text-xs z-10">
+      <div className="flex items-center gap-3">
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> NAPLAN 优秀
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span> 良好
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span> 一般
+        </span>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -169,28 +198,8 @@ export default function SchoolSearchPage() {
       <div className="hidden lg:flex" style={{ height: 'calc(100vh - 64px)' }}>
         {/* Left: Map */}
         <div className="w-[55%] xl:w-[60%] relative" style={{ height: '100%' }}>
-          <SchoolMap
-            schools={filteredSchools}
-            selectedSchool={selectedSchool}
-            onSchoolSelect={handleSchoolSelect}
-            suburbBoundaries={suburbGeoJSON}
-            dataSuburbs={CORE_SUBURBS}
-            apiKey={MAPS_KEY}
-          />
-          {/* Map Legend */}
-          <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2 text-xs z-10">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> NAPLAN 优秀
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span> 良好
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span> 一般
-              </span>
-            </div>
-          </div>
+          {mapComponent}
+          {mapLegend}
         </div>
 
         {/* Right: Detail Panel or School List */}
@@ -245,6 +254,8 @@ export default function SchoolSearchPage() {
             mapCollapsed ? 'h-32' : 'h-56'
           }`}
         >
+          {/* On mobile, we reuse the same map via CSS visibility.
+              The map component is only rendered once in whichever layout is active. */}
           <SchoolMap
             schools={filteredSchools}
             selectedSchool={selectedSchool}
