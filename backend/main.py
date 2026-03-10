@@ -2340,12 +2340,13 @@ def _translate_article(text: str) -> str:
             model="kimi-k2.5",
             messages=[
                 {"role": "system", "content": (
-                    "你是一位专业的英中翻译。请将以下英文房产新闻翻译成中文。"
+                    "你是一位专业的英中翻译。请将以下英文房产新闻完整翻译成中文。"
                     "要求：保持专业但通俗易懂，适合华人投资者阅读。"
                     "保留原文的段落结构。不要添加任何额外评论。"
-                    "不要使用 markdown 格式符号（如 ** 或 *）。"
+                    "必须全部使用中文输出，不要保留任何英文。"
+                    "不要使用 markdown 格式符号（如 ** 或 *）。用纯文本。"
                 )},
-                {"role": "user", "content": f"请翻译以下新闻文章：\n\n{text}"}
+                {"role": "user", "content": f"请将以下英文新闻文章翻译成中文：\n\n{text}"}
             ],
             max_tokens=4096,
             temperature=0.3,
@@ -2371,11 +2372,12 @@ def _ai_expand_summary(title: str, summary: str) -> str:
             messages=[
                 {"role": "system", "content": (
                     "你是 Olivia，Compass 平台的市场经济学家。"
-                    "根据新闻标题和摘要，用中文为华人投资者撰写一段详细解读（200-400字）。"
-                    "分析这条新闻对布里斯班房产市场的影响。"
-                    "不要使用任何 markdown 格式符号。用纯文本。"
+                    "你的任务是根据英文新闻标题和摘要，撰写一段中文详细解读（200-400字）。"
+                    "分析这条新闻对布里斯班房产市场和华人投资者的影响。"
+                    "你必须始终使用中文回复，即使新闻原文是英文。"
+                    "不要使用任何 markdown 格式符号（如 ** 或 *）。用纯文本，用换行分段。"
                 )},
-                {"role": "user", "content": f"新闻标题：{title}\n\n摘要：{summary}\n\n请撰写详细的中文解读。"}
+                {"role": "user", "content": f"以下是一条英文房产新闻，请用中文撰写详细解读：\n\n标题：{title}\n\n摘要：{summary}\n\n请用中文撰写 Olivia 的专业解读。"}
             ],
             max_tokens=2048,
             temperature=0.7,
