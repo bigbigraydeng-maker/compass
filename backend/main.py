@@ -2125,7 +2125,7 @@ def _fetch_rss_news() -> list:
 
 
 def _generate_amanda_commentary(news_items: list) -> str:
-    """让 Amanda 基于当日新闻生成综合点评。"""
+    """让 Olivia 基于当日新闻生成综合点评。"""
     now = _time.time()
     today = datetime.now().strftime("%Y-%m-%d")
 
@@ -2149,10 +2149,10 @@ def _generate_amanda_commentary(news_items: list) -> str:
     )
 
     system_prompt = (
-        "你是 Amanda，Compass 平台的首席房产分析师。"
-        "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
+        "你是 Olivia，Compass 平台的市场经济学家。"
+        "你从宏观经济视角解读布里斯班房产市场，擅长分析利率政策、移民趋势、基建规划和供需数据。"
         "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚市场动态。"
-        "你会用数据说话，结合实战经验给出有深度的见解。"
+        "你会用数据说话，结合宏观经济分析给出有深度的见解。"
         "你特别关注布里斯班南区华人聚集区（Sunnybank、Calamvale、Eight Mile Plains、Rochedale、Mansfield）"
         "以及北区优质区（Ascot、Hamilton）的市场变化。"
         "始终使用中文回复。"
@@ -2161,11 +2161,11 @@ def _generate_amanda_commentary(news_items: list) -> str:
     user_prompt = (
         f"今天是 {today}，以下是今日布里斯班房产相关新闻标题：\n\n"
         f"{news_digest}\n\n"
-        "请你作为 Amanda 写一篇今日市场综合解读（300-500字），要求：\n"
+        "请你作为 Olivia 写一篇今日市场综合解读（300-500字），要求：\n"
         "1. 先用一句话概括今天的市场信号（加粗）\n"
         "2. 挑出 2-3 条最重要的新闻，用你的专业视角解读它们对布里斯班房产市场意味着什么\n"
         "3. 分析这些新闻对华人投资者的具体影响（买房时机、区域选择、资产配置等）\n"
-        "4. 最后给出 Amanda 的今日建议（1-2 句话）\n"
+        "4. 最后给出 Olivia 的今日建议（1-2 句话）\n"
         "5. 用自然的聊天口吻，但要有专业深度，不要泛泛而谈\n"
         "6. 开头直接切入正题，不要问候语\n"
         "7. 适当使用换行分段，让阅读更舒适"
@@ -2198,19 +2198,19 @@ def _generate_amanda_commentary(news_items: list) -> str:
         return commentary
 
     except Exception as e:
-        print(f"[WARN] Amanda commentary generation failed: {e}")
+        print(f"[WARN] Olivia commentary generation failed: {e}")
         import traceback
         traceback.print_exc()
         return ""
 
 
-# 后台线程生成 Amanda 点评（不阻塞 API 响应）
+# 后台线程生成 Olivia 点评（不阻塞 API 响应）
 import threading
 _amanda_lock = threading.Lock()
 _amanda_generating = False
 
 def _trigger_amanda_background(news_items: list):
-    """在后台线程中生成 Amanda 点评。"""
+    """在后台线程中生成 Olivia 点评。"""
     global _amanda_generating
     with _amanda_lock:
         if _amanda_generating:
@@ -2231,7 +2231,7 @@ def _trigger_amanda_background(news_items: list):
 
 @app.get("/api/news")
 def get_news():
-    """获取布里斯班房产新闻 + Amanda 每日综合点评"""
+    """获取布里斯班房产新闻 + Olivia 每日综合点评"""
     items = _fetch_rss_news()
 
     today = datetime.now().strftime("%Y-%m-%d")

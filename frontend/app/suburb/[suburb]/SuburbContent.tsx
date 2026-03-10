@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '../../components/Navbar';
+import { PersonaAvatar, PersonaButton, PersonaMarkdown } from '../../components/persona';
 
 // 动态导入 Recharts（~372KB），仅在图表可见时加载
 const RechartsChart = dynamic(
@@ -397,18 +398,22 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             </div>
             <div className="flex justify-between items-center pt-4 border-t">
               <p className="text-xs text-gray-500">数据来源：QLD Gov / NAPLAN / ABS</p>
-              <p className="text-sm font-semibold text-blue-600">Compass</p>
+              <div className="flex items-center gap-1.5">
+                <PersonaAvatar persona="ethan" size="sm" />
+                <span className="text-xs text-emerald-600 font-medium">Powered by Ethan · 数据科学家</span>
+              </div>
             </div>
           </div>
         )}
 
         {/* ===== 2. AI Investment Analysis (moved up) ===== */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-xl p-6 mb-8 text-white">
-          <div className="mb-4">
-            <h3 className="text-xl font-bold mb-1">Amanda 投资分析</h3>
-            <p className="text-blue-200 text-sm">
-              基于 POI、治安、交通、学区、分区等多维数据，AI 生成专业投资建议
-            </p>
+          <div className="mb-4 flex items-center gap-3">
+            <PersonaAvatar persona="amanda" size="md" className="ring-2 ring-white/30" />
+            <div>
+              <h3 className="text-xl font-bold">Amanda 投资分析</h3>
+              <p className="text-blue-200 text-sm">基于 POI、治安、交通、学区、分区等多维数据，AI 生成专业投资建议</p>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -425,18 +430,12 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 <button onClick={() => setAiAddress('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-white">x</button>
               )}
             </div>
-            <button
+            <PersonaButton
+              persona="amanda"
+              loading={aiLoading}
               onClick={handleAiAnalysis}
-              disabled={aiLoading}
-              className="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
-            >
-              {aiLoading ? (
-                <>
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                  分析中...
-                </>
-              ) : 'Amanda 分析'}
-            </button>
+              className="px-8 py-3 whitespace-nowrap"
+            />
           </div>
           <p className="text-blue-300 text-xs mb-2">
             不输入地址则分析整个 {suburbName} 区 | 数据维度：价格走势 + 房型分类 + 华人配套 + 治安 + 交通 + 学区 + 分区
@@ -479,28 +478,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                   <span className="text-sm">AI 正在生成中...</span>
                 </div>
               )}
-              <div className="prose prose-sm max-w-none">
-                {aiReport.split('\n').map((line, i) => {
-                  if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace(/^##\s*/, '').replace(/\*\*/g, '')}</h3>;
-                  if (line.startsWith('### ')) return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace(/^###\s*/, '').replace(/\*\*/g, '')}</h4>;
-                  if (line.match(/^[-•]\s/)) {
-                    const content = line.replace(/^[-•]\s*/, '');
-                    const parts = content.split(/(\*\*[^*]+\*\*)/g);
-                    return (
-                      <li key={i} className="ml-4 text-gray-700 mb-1">
-                        {parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong> : <span key={j}>{part}</span>)}
-                      </li>
-                    );
-                  }
-                  if (line.trim() === '') return <div key={i} className="h-2" />;
-                  const parts = line.split(/(\*\*[^*]+\*\*)/g);
-                  return (
-                    <p key={i} className="text-gray-700 mb-1">
-                      {parts.map((part, j) => part.startsWith('**') && part.endsWith('**') ? <strong key={j} className="text-gray-900">{part.replace(/\*\*/g, '')}</strong> : <span key={j}>{part}</span>)}
-                    </p>
-                  );
-                })}
-              </div>
+              <PersonaMarkdown content={aiReport} variant="light" />
               <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
                 <span className="text-xs text-gray-400">Powered by Compass AI + Kimi K2.5</span>
                 <span className="text-xs text-gray-400">{new Date().toLocaleString('zh-CN')}</span>

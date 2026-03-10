@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import { PersonaButton, PersonaMarkdown } from '../components/persona';
 
 // 动态导入 Recharts，仅在图表可见时加载
 const SchoolPriceChart = dynamic(
@@ -446,48 +447,30 @@ export default function SchoolDetailPanel({
       {/* 6. AI Analysis */}
       <div className="bg-white rounded-xl shadow-sm border p-5">
         <h3 className="text-sm font-semibold text-gray-900 mb-3">
-          AI 学区投资分析
+          Amanda 学区投资分析
         </h3>
         {!aiReport && (
-          <button
+          <PersonaButton
+            persona="amanda"
+            loading={aiLoading}
             onClick={handleAiAnalysis}
-            disabled={aiLoading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {aiLoading ? (
-              <>
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Amanda 分析中...
-              </>
-            ) : (
-              '🤖 生成学区投资报告'
-            )}
-          </button>
+            label="生成学区投资报告"
+            fullWidth
+            size="sm"
+          />
         )}
         {aiReport && (
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 max-h-[400px] overflow-y-auto">
             {aiLoading && (
-              <div className="flex items-center gap-2 mb-3 text-emerald-600">
+              <div className="flex items-center gap-2 mb-3 text-blue-600">
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                <span className="text-sm">AI 正在生成中...</span>
+                <span className="text-sm">Amanda 正在生成中...</span>
               </div>
             )}
-            <div className="prose prose-sm max-w-none">
-              {aiReport.split('\n').map((line, i) => {
-                if (line.startsWith('## ')) return <h4 key={i} className="text-sm font-bold text-emerald-800 mt-3 mb-1">{line.replace('## ', '')}</h4>;
-                if (line.startsWith('### ')) return <h5 key={i} className="text-sm font-semibold text-emerald-700 mt-2 mb-1">{line.replace('### ', '')}</h5>;
-                if (line.startsWith('- ')) return <li key={i} className="ml-4 text-gray-700 text-xs mb-0.5">{line.replace('- ', '')}</li>;
-                if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-semibold text-gray-900 mt-2 text-xs">{line.replace(/\*\*/g, '')}</p>;
-                if (line.trim() === '') return <br key={i} />;
-                return <p key={i} className="text-gray-700 text-xs mb-0.5">{line}</p>;
-              })}
-            </div>
+            <PersonaMarkdown content={aiReport} variant="compact" />
           </div>
         )}
       </div>

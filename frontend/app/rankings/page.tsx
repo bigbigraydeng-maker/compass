@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/Navbar';
+import { PersonaAvatar } from '../components/persona';
 import { fetcher } from '../lib/api';
 
 interface ScoreBreakdown {
@@ -74,7 +75,13 @@ export default function RankingsPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Compass 投资排名</h1>
+          <div className="flex items-center gap-3 mb-3">
+            <PersonaAvatar persona="ethan" size="lg" />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Compass 投资排名</h1>
+              <p className="text-sm text-emerald-600 font-medium">Ethan 的多维评分模型</p>
+            </div>
+          </div>
           <p className="text-lg text-gray-600">
             基于 5 维度评分体系（房价增长、学区质量、土地价值、市场活跃度、华人友好度）
           </p>

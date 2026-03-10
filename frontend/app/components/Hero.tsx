@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { PersonaButton, PersonaMarkdown } from './persona';
 
 export default function Hero() {
   const router = useRouter();
@@ -47,18 +48,6 @@ export default function Hero() {
     } finally {
       setIsAnalyzing(false);
     }
-  };
-
-  // 简单 markdown 渲染
-  const renderMarkdown = (text: string) => {
-    return text
-      .split('\n')
-      .map((line, i) => {
-        if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold mt-4 mb-2 text-white">{line.replace('## ', '')}</h3>;
-        if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-bold text-white mt-2">{line.replace(/\*\*/g, '')}</p>;
-        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return <p key={i} className="text-gray-200 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />;
-      });
   };
 
   // 快捷郊区按钮
@@ -183,21 +172,11 @@ export default function Hero() {
                 className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-lg focus:outline-none text-gray-800 text-base md:text-lg shadow-lg"
                 required
               />
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 px-6 md:px-8 py-3 md:py-4 rounded-lg font-medium transition-colors text-base md:text-lg whitespace-nowrap flex items-center justify-center gap-2 shadow-lg"
-                disabled={isAnalyzing}
-              >
-                {isAnalyzing ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Amanda 分析中...
-                  </>
-                ) : '🤖 Amanda 分析'}
-              </button>
+              <PersonaButton
+                persona="amanda"
+                loading={isAnalyzing}
+                className="px-6 md:px-8 py-3 md:py-4 text-base md:text-lg shadow-lg whitespace-nowrap"
+              />
             </div>
             <p className="text-gray-300 text-xs md:text-sm mt-2 md:mt-3">例如：10 Main St, Sunnybank 或 Sunnybank</p>
           </form>
@@ -207,7 +186,7 @@ export default function Hero() {
             <div className="max-w-3xl mx-auto mt-8">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 text-left">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold">🤖 Amanda 投资分析报告</h3>
+                  <h3 className="text-lg font-bold">Amanda 投资分析报告</h3>
                   {aiReport && (
                     <button
                       onClick={() => { setAiReport(null); setAiError(null); }}
@@ -236,7 +215,7 @@ export default function Hero() {
 
                 {aiReport && (
                   <div className="max-h-96 overflow-y-auto pr-2 custom-scrollbar">
-                    {renderMarkdown(aiReport)}
+                    <PersonaMarkdown content={aiReport} variant="dark" />
                   </div>
                 )}
               </div>

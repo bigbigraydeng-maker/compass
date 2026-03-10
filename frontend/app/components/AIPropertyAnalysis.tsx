@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PersonaButton, PersonaMarkdown, PersonaBadge } from './persona';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
@@ -161,23 +162,14 @@ export default function AIPropertyAnalysis() {
                     支持: Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton
                   </p>
                 </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-medium transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Amanda 分析中 (8维度)...
-                    </>
-                  ) : (
-                    '🤖 Amanda 分析'
-                  )}
-                </button>
+                <PersonaButton
+                  persona="amanda"
+                  loading={loading}
+                  label="Amanda 分析 (8维度)"
+                  loadingLabel="Amanda 分析中..."
+                  fullWidth
+                  className="py-4 text-lg"
+                />
               </form>
 
               {/* 加载中状态 */}
@@ -226,16 +218,7 @@ export default function AIPropertyAnalysis() {
                       <span className="text-sm">AI 正在生成中...</span>
                     </div>
                   )}
-                  <div className="prose prose-sm max-w-none">
-                    {analysis.split('\n').map((line, i) => {
-                      if (line.startsWith('## ')) return <h3 key={i} className="text-lg font-bold text-blue-900 mt-4 mb-2 border-b border-blue-100 pb-1">{line.replace('## ', '')}</h3>;
-                      if (line.startsWith('### ')) return <h4 key={i} className="text-base font-semibold text-blue-800 mt-3 mb-1">{line.replace('### ', '')}</h4>;
-                      if (line.startsWith('- ')) return <li key={i} className="ml-4 text-gray-700 mb-1 text-sm">{line.replace('- ', '')}</li>;
-                      if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-semibold text-gray-900 mt-2 text-sm">{line.replace(/\*\*/g, '')}</p>;
-                      if (line.trim() === '') return <br key={i} />;
-                      return <p key={i} className="text-gray-700 mb-1 text-sm">{line}</p>;
-                    })}
-                  </div>
+                  <PersonaMarkdown content={analysis} variant="light" />
                   <div className="mt-4 pt-3 border-t border-gray-200 text-center">
                     <span className="text-xs text-gray-400">Powered by Compass AI 引擎 | {new Date().toLocaleString('zh-CN')}</span>
                   </div>

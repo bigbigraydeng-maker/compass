@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetcher } from '../lib/api';
+import { PersonaButton, PersonaMarkdown } from './persona';
 
 // ✅ 匹配 API /api/deals 实际返回的字段
 interface DealData {
@@ -114,18 +115,6 @@ export default function TodayDeals() {
   };
 
   // 简单 markdown 渲染
-  const renderMarkdown = (text: string) => {
-    return text
-      .split('\n')
-      .filter(line => line.trim())
-      .map((line, i) => {
-        if (line.startsWith('## ')) return <h4 key={i} className="text-sm font-bold mt-3 mb-1 text-gray-900">{line.replace('## ', '')}</h4>;
-        if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="font-bold text-gray-800 text-xs mt-1">{line.replace(/\*\*/g, '')}</p>;
-        const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return <p key={i} className="text-gray-600 text-xs leading-relaxed" dangerouslySetInnerHTML={{ __html: formatted }} />;
-      });
-  };
-
   // 截断地址（手机端用短地址）
   const shortAddress = (addr: string) => {
     if (addr.length <= 25) return addr;
@@ -261,13 +250,15 @@ export default function TodayDeals() {
 
                     {/* 按钮 */}
                     <div className="flex gap-2">
-                      <button
-                        className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-medium disabled:opacity-50 flex items-center justify-center gap-1"
+                      <PersonaButton
+                        persona="leo"
+                        loading={isAnalyzing}
                         onClick={() => handleAnalyze(deal)}
-                        disabled={isAnalyzing}
-                      >
-                        {isAnalyzing ? '分析中...' : '🤖 AI分析'}
-                      </button>
+                        label="Leo 分析"
+                        loadingLabel="分析中..."
+                        size="sm"
+                        className="flex-1"
+                      />
                       <button
                         className="bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-xs font-medium"
                         onClick={() => router.push(`/suburb/${encodeURIComponent(deal.suburb)}`)}
@@ -280,7 +271,7 @@ export default function TodayDeals() {
                     {(report || error) && (
                       <div className={`rounded-lg p-3 mt-2 ${error ? 'bg-red-50' : 'bg-blue-50'}`}>
                         <div className="flex justify-between items-center mb-1">
-                          <span className="text-[10px] font-bold text-gray-600">🤖 AI分析</span>
+                          <span className="text-[10px] font-bold text-orange-600">Leo 捡漏分析</span>
                           <button
                             onClick={() => {
                               setAiReport(prev => { const n = { ...prev }; delete n[deal.id]; return n; });
@@ -293,7 +284,7 @@ export default function TodayDeals() {
                           <p className="text-red-600 text-[10px]">失败：{error}</p>
                         ) : (
                           <div className="max-h-32 overflow-y-auto">
-                            {renderMarkdown(report)}
+                            <PersonaMarkdown content={report} variant="compact" />
                           </div>
                         )}
                       </div>
@@ -386,21 +377,12 @@ export default function TodayDeals() {
 
                   {/* 操作按钮 */}
                   <div className="flex gap-3 mb-3">
-                    <button
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                    <PersonaButton
+                      persona="leo"
+                      loading={isAnalyzing}
                       onClick={() => handleAnalyze(deal)}
-                      disabled={isAnalyzing}
-                    >
-                      {isAnalyzing ? (
-                        <>
-                          <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          分析中...
-                        </>
-                      ) : '🤖 Amanda 分析'}
-                    </button>
+                      className="flex-1 py-3"
+                    />
                     <button
                       className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-5 rounded-lg font-medium transition-colors"
                       onClick={() => router.push(`/suburb/${encodeURIComponent(deal.suburb)}`)}
@@ -413,7 +395,7 @@ export default function TodayDeals() {
                   {(report || error) && (
                     <div className={`rounded-lg p-4 mt-2 ${error ? 'bg-red-50 border border-red-100' : 'bg-blue-50 border border-blue-100'}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold text-gray-700">🤖 Amanda 投资分析</span>
+                        <span className="text-xs font-bold text-orange-600">Leo 捡漏分析</span>
                         <button
                           onClick={() => {
                             setAiReport(prev => { const n = { ...prev }; delete n[deal.id]; return n; });
@@ -428,7 +410,7 @@ export default function TodayDeals() {
                         <p className="text-red-600 text-xs">分析失败：{error}</p>
                       ) : (
                         <div className="max-h-48 overflow-y-auto">
-                          {renderMarkdown(report)}
+                          <PersonaMarkdown content={report} variant="compact" />
                         </div>
                       )}
                     </div>

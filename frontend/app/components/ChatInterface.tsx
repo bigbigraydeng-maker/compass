@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { PersonaAvatar } from './persona';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
 
@@ -8,6 +9,8 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   isError?: boolean;
+  timestamp?: number;
+  displayContent?: string; // For typewriter effect
 }
 
 interface ChatInterfaceProps {
@@ -110,7 +113,7 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
 
-    const userMessage: Message = { role: 'user', content: text.trim() };
+    const userMessage: Message = { role: 'user', content: text.trim(), timestamp: Date.now() };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setLoading(true);
@@ -123,7 +126,7 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
         await new Promise(r => setTimeout(r, 500));
         setMessages(prev => [
           ...prev,
-          { role: 'assistant', content: localAnswer },
+          { role: 'assistant', content: localAnswer, timestamp: Date.now() },
         ]);
         setLoading(false);
         return;
@@ -155,11 +158,29 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
 
       const data = await res.json();
       setApiStatus('online');
+      const reply = data.reply || '抱歉，暂时无法回答';
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.reply || '抱歉，暂时无法回答',
+        content: reply,
+        timestamp: Date.now(),
+        displayContent: '', // Start typewriter empty
       };
       setMessages(prev => [...prev, assistantMessage]);
+      // Typewriter effect
+      let charIndex = 0;
+      const typeInterval = setInterval(() => {
+        charIndex += 2; // 2 chars at a time for speed
+        if (charIndex >= reply.length) {
+          clearInterval(typeInterval);
+          setMessages(prev => prev.map((m, idx) =>
+            idx === prev.length - 1 ? { ...m, displayContent: undefined } : m
+          ));
+        } else {
+          setMessages(prev => prev.map((m, idx) =>
+            idx === prev.length - 1 ? { ...m, displayContent: reply.slice(0, charIndex) } : m
+          ));
+        }
+      }, 15);
       if (data.suggestions) {
         setSuggestions(data.suggestions);
       }
@@ -169,7 +190,7 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
       if (localAnswer) {
         setMessages(prev => [
           ...prev,
-          { role: 'assistant', content: localAnswer },
+          { role: 'assistant', content: localAnswer, timestamp: Date.now() },
         ]);
         setApiStatus('offline');
       } else {
@@ -178,7 +199,7 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
           : '暂时无法连接 AI 服务。您可以点击下方的常见问题快速获取答案，或稍后重试。';
         setMessages(prev => [
           ...prev,
-          { role: 'assistant', content: errorMsg, isError: true },
+          { role: 'assistant', content: errorMsg, isError: true, timestamp: Date.now() },
         ]);
         setApiStatus('offline');
 
@@ -217,15 +238,13 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       {/* 头部 */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 md:px-6 py-3 md:py-4">
+      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <span className="text-lg md:text-xl">🤖</span>
-            </div>
+            <PersonaAvatar persona="amanda" size="md" className="ring-2 ring-white/30" />
             <div>
               <h3 className="text-white font-semibold text-sm md:text-base">{title || defaultTitle}</h3>
-              <p className="text-blue-100 text-[10px] md:text-xs">基于 Compass AI · 7×24小时在线</p>
+              <p className="text-blue-100 text-[10px] md:text-xs">Compass AI · 7×24小时在线</p>
             </div>
           </div>
           {/* API 状态指示 */}
@@ -257,27 +276,43 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
           </div>
         )}
 
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+        {messages.map((msg, i) => {
+          const displayText = msg.displayContent !== undefined ? msg.displayContent : msg.content;
+          return (
             <div
-              className={`max-w-[85%] rounded-xl px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm ${
-                msg.role === 'user'
-                  ? 'bg-blue-600 text-white rounded-br-sm'
-                  : msg.isError
-                    ? 'bg-orange-50 text-orange-700 border border-orange-200 rounded-bl-sm'
-                    : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm'
-              }`}
+              key={i}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} gap-2`}
             >
-              {msg.content.split('\n').map((line, j) => {
-                if (line.trim() === '') return <br key={j} />;
-                return <p key={j} className={j > 0 ? 'mt-1' : ''}>{line}</p>;
-              })}
+              {msg.role === 'assistant' && (
+                <PersonaAvatar persona="amanda" size="sm" className="mt-1 flex-shrink-0" />
+              )}
+              <div className="flex flex-col">
+                <div
+                  className={`max-w-[85%] rounded-xl px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm ${
+                    msg.role === 'user'
+                      ? 'bg-blue-600 text-white rounded-br-sm'
+                      : msg.isError
+                        ? 'bg-orange-50 text-orange-700 border border-orange-200 rounded-bl-sm'
+                        : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm'
+                  }`}
+                >
+                  {displayText.split('\n').map((line, j) => {
+                    if (line.trim() === '') return <br key={j} />;
+                    return <p key={j} className={j > 0 ? 'mt-1' : ''}>{line}</p>;
+                  })}
+                  {msg.displayContent !== undefined && (
+                    <span className="inline-block w-0.5 h-3.5 bg-blue-500 animate-pulse ml-0.5" />
+                  )}
+                </div>
+                {msg.timestamp && (
+                  <span className={`text-[9px] text-gray-300 mt-0.5 ${msg.role === 'user' ? 'text-right' : ''}`}>
+                    {new Date(msg.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {loading && (
           <div className="flex justify-start">
@@ -310,7 +345,7 @@ export default function ChatInterface({ context, title, placeholder }: ChatInter
               <button
                 key={i}
                 onClick={() => sendMessage(s)}
-                className="text-[10px] md:text-xs bg-blue-50 text-blue-600 px-2 md:px-3 py-1 md:py-1.5 rounded-full hover:bg-blue-100 transition-colors border border-blue-100 active:scale-95"
+                className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 md:py-2 rounded-full hover:bg-blue-100 transition-colors border border-blue-100 active:scale-95"
               >
                 {s}
               </button>

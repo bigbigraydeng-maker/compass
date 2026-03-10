@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetcher } from '../lib/api';
+import { PersonaAvatar } from './persona';
 
 interface SaleItem {
   id: string;
@@ -123,7 +124,7 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
               市场动态
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              Amanda 每日解读 · 近期成交
+              Olivia 每日解读 · 近期成交
             </p>
           </div>
           <div className="flex bg-gray-100 rounded-lg p-1 mt-3 md:mt-0">
@@ -149,21 +150,17 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
         {/* ===== 新闻 Tab ===== */}
         {activeTab === 'news' && (
           <div>
-            {/* Amanda 每日综合解读 */}
+            {/* Olivia 每日综合解读 */}
             {amandaCommentary ? (
-              <div className="mb-6 bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-xl border border-indigo-100 p-5 md:p-8">
+              <div className="mb-6 bg-gradient-to-br from-purple-50 via-white to-pink-50 rounded-xl border border-purple-100 p-5 md:p-8">
                 <div className="flex items-start gap-3 md:gap-5">
-                  {/* Amanda 头像 */}
                   <div className="flex-shrink-0">
-                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold text-xl md:text-2xl shadow-lg">
-                      A
-                    </div>
+                    <PersonaAvatar persona="olivia" size="lg" />
                   </div>
-                  {/* 点评内容 */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="font-bold text-gray-900 text-base md:text-lg">Amanda</span>
-                      <span className="text-[10px] md:text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">Compass 首席分析师</span>
+                      <span className="font-bold text-gray-900 text-base md:text-lg">Olivia</span>
+                      <span className="text-[10px] md:text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">Compass 市场经济学家</span>
                       <span className="text-[10px] md:text-xs text-gray-400 ml-auto">{commentaryDate}</span>
                     </div>
                     <div className="text-gray-700 text-sm md:text-[15px] leading-relaxed whitespace-pre-line">
@@ -176,7 +173,7 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
               <div className="mb-6 bg-gray-50 rounded-xl border border-gray-100 p-6 text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-400">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                  <span className="text-sm">Amanda 正在阅读今日新闻，稍后为您解读...</span>
+                  <span className="text-sm">Olivia 正在阅读今日新闻，稍后为您解读...</span>
                 </div>
               </div>
             )}
@@ -214,7 +211,7 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
                   ))}
                 </div>
                 <p className="text-center text-xs text-gray-400 mt-4">
-                  以上新闻由 Google News 自动聚合 · Amanda 基于新闻内容生成综合解读
+                  以上新闻由 Google News 自动聚合 · Olivia 基于新闻内容生成综合解读
                 </p>
               </div>
             )}

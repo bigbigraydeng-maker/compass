@@ -1,0 +1,138 @@
+'use client';
+
+import Link from 'next/link';
+import Navbar from '../components/Navbar';
+import { PersonaAvatar } from '../components/persona';
+import { PERSONAS, type PersonaKey } from '../components/persona/constants';
+
+const TEAM_ORDER: PersonaKey[] = ['amanda', 'leo', 'olivia', 'ethan'];
+
+const AREA_LABELS: Record<string, { label: string; href: string }[]> = {
+  amanda: [
+    { label: 'AI 聊天', href: '/' },
+    { label: '投资分析', href: '/' },
+    { label: '学区分析', href: '/school-search' },
+    { label: '首次置业', href: '/first-home' },
+    { label: '海外购房', href: '/overseas-buyer' },
+  ],
+  leo: [
+    { label: '今日捡漏', href: '/' },
+    { label: '折扣房源', href: '/' },
+    { label: '投资回报', href: '/' },
+  ],
+  olivia: [
+    { label: '每日新闻解读', href: '/' },
+    { label: '市场动态', href: '/' },
+    { label: '宏观经济分析', href: '/' },
+  ],
+  ethan: [
+    { label: '郊区排名', href: '/rankings' },
+    { label: 'Compass Score', href: '/' },
+    { label: '多维数据分析', href: '/' },
+  ],
+};
+
+export default function AboutPage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+
+      {/* Hero Banner */}
+      <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            Compass AI Team
+          </h1>
+          <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
+            4 位 AI 数字人专家，各司其职，全方位守护您的布里斯班房产投资之旅
+          </p>
+        </div>
+      </div>
+
+      {/* Team Cards */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {TEAM_ORDER.map((key) => {
+            const persona = PERSONAS[key];
+            const areas = AREA_LABELS[key] || [];
+            return (
+              <div
+                key={key}
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                {/* Card Header with gradient */}
+                <div className={`bg-gradient-to-r ${persona.gradient} p-6 flex items-center gap-5`}>
+                  <PersonaAvatar persona={key} size="xl" className="ring-4 ring-white/30" />
+                  <div className="text-white">
+                    <h2 className="text-2xl font-bold">{persona.name}</h2>
+                    <p className="text-white/90 font-medium">{persona.title}</p>
+                    <p className="text-white/70 text-sm">{persona.titleEn}</p>
+                  </div>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-6">
+                  {/* Bio */}
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                    {persona.bio}
+                  </p>
+
+                  {/* Expertise Tags */}
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                      Expertise
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {persona.expertise.map((tag) => (
+                        <span
+                          key={tag}
+                          className={`${persona.bgColor} ${persona.textColor} text-xs font-medium px-3 py-1 rounded-full`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Responsible Areas */}
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                      Areas
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {areas.map((area) => (
+                        <Link
+                          key={area.label}
+                          href={area.href}
+                          className="text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 px-3 py-1 rounded-full transition-colors"
+                        >
+                          {area.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-12 space-y-3">
+          <p className="text-gray-500 text-sm">
+            Powered by <span className="font-semibold text-blue-600">Compass AI</span> + <span className="font-semibold">Kimi K2.5</span>
+          </p>
+          <p className="text-gray-400 text-xs">
+            AI 生成内容仅供参考，不构成投资建议。请在做出投资决定前咨询专业顾问。
+          </p>
+          <Link
+            href="/"
+            className="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors"
+          >
+            返回首页
+          </Link>
+        </div>
+      </main>
+    </div>
+  );
+}
