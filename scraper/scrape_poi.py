@@ -59,69 +59,55 @@ POI_CATEGORIES = [
     }
 ]
 
-def get_place_details(place_id):
-    """获取地点详细信息"""
-    url = f"https://maps.googleapis.com/maps/api/place/details/json"
-    params = {
-        'place_id': place_id,
-        'key': API_KEY
-    }
-    response = requests.get(url, params=params)
-    return response.json()
+import time
+
+def _parse_results(results, suburb, category):
+    """从 Nearby Search 结果中提取 POI 数据（无需额外 Details 调用）"""
+    places = []
+    for result in results:
+        geo = result.get('geometry', {}).get('location', {})
+        place = {
+            'suburb': suburb,
+            'category': category,
+            'name': result.get('name', ''),
+            'address': result.get('vicinity', ''),
+            'rating': result.get('rating', 0),
+            'lat': geo.get('lat', 0),
+            'lng': geo.get('lng', 0),
+        }
+        places.append(place)
+    return places
 
 def search_places(suburb, lat, lng, category, types, keywords):
-    """搜索POI"""
+    """搜索 POI（仅使用 Nearby Search，不调用 Place Details）"""
     places = []
-    
+
     for keyword in keywords:
-        url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         params = {
             'location': f"{lat},{lng}",
-            'radius': 5000,  # 5公里半径
+            'radius': 5000,
             'type': types[0],
             'keyword': keyword,
-            'key': API_KEY
+            'key': API_KEY,
         }
-        
+
         response = requests.get(url, params=params)
         data = response.json()
-        
-        if 'results' in data:
-            for result in data['results']:
-                # 获取详细信息
-                details = get_place_details(result['place_id'])
-                if 'result' in details:
-                    place = {
-                        'suburb': suburb,
-                        'category': category,
-                        'name': result.get('name', ''),
-                        'address': details['result'].get('formatted_address', ''),
-                        'rating': result.get('rating', 0),
-                        'lat': result['geometry']['location']['lat'],
-                        'lng': result['geometry']['location']['lng']
-                    }
-                    places.append(place)
-        
-        # 处理分页
+
+        if data.get('status') not in ('OK', 'ZERO_RESULTS'):
+            print(f"    API {data.get('status')}: {data.get('error_message', '')}", flush=True)
+
+        places.extend(_parse_results(data.get('results', []), suburb, category))
+
+        # 处理分页（Google 要求等 2 秒后 token 才有效）
         while 'next_page_token' in data:
+            time.sleep(2)
             params['pagetoken'] = data['next_page_token']
             response = requests.get(url, params=params)
             data = response.json()
-            if 'results' in data:
-                for result in data['results']:
-                    details = get_place_details(result['place_id'])
-                    if 'result' in details:
-                        place = {
-                            'suburb': suburb,
-                            'category': category,
-                            'name': result.get('name', ''),
-                            'address': details['result'].get('formatted_address', ''),
-                            'rating': result.get('rating', 0),
-                            'lat': result['geometry']['location']['lat'],
-                            'lng': result['geometry']['location']['lng']
-                        }
-                        places.append(place)
-    
+            places.extend(_parse_results(data.get('results', []), suburb, category))
+
     # 去重
     unique_places = []
     seen = set()
@@ -130,7 +116,7 @@ def search_places(suburb, lat, lng, category, types, keywords):
         if key not in seen:
             seen.add(key)
             unique_places.append(place)
-    
+
     return unique_places
 
 def save_to_database(places):
@@ -175,19 +161,19 @@ def main():
     all_places = []
     
     for suburb, coords in SUBURBS.items():
-        print(f"正在抓取 {suburb} 的POI数据...")
-        
+        print(f"正在抓取 {suburb} 的POI数据...", flush=True)
+
         for category_info in POI_CATEGORIES:
             category = category_info['category']
             types = category_info['types']
             keywords = category_info['keywords']
-            
-            print(f"  - 抓取 {category} 数据...")
+
+            print(f"  - 抓取 {category} 数据...", flush=True)
             places = search_places(suburb, coords['lat'], coords['lng'], category, types, keywords)
             all_places.extend(places)
-            print(f"    找到 {len(places)} 个地点")
-    
-    print(f"\n总共找到 {len(all_places)} 个POI")
+            print(f"    找到 {len(places)} 个地点", flush=True)
+
+    print(f"\n总共找到 {len(all_places)} 个POI", flush=True)
     save_to_database(all_places)
 
 if __name__ == "__main__":
