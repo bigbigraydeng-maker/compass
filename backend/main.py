@@ -2655,7 +2655,7 @@ import math as _math
 import urllib.request as _urllib_req
 import urllib.parse as _urllib_parse
 
-_GMAPS_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
+_GMAPS_KEY = os.getenv("GOOGLE_MAPS_API_KEY") or os.getenv("NEXT_PUBLIC_GOOGLE_MAPS_KEY", "")
 
 # Simple in-memory cache for feng shui results (address → {data, ts})
 _fengshui_cache: dict = {}
