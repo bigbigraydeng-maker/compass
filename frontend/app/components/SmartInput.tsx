@@ -36,6 +36,9 @@ export default function SmartInput() {
   const [mode, setMode] = useState('general');
   const [inputType, setInputType] = useState<InputType>('freeform');
 
+  // 输入校验
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   // 分析状态
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -96,10 +99,35 @@ export default function SmartInput() {
     setError(null);
   };
 
+  // 输入校验
+  const validateInput = (text: string, hasImages: boolean): string | null => {
+    if (hasImages) return null; // 有图片就可以分析
+    if (!text.trim()) return '请输入地址或粘贴链接';
+    const t = text.trim();
+    // URL直接通过
+    if (t.toLowerCase().includes('domain.com.au') || t.toLowerCase().includes('realestate.com.au')) return null;
+    // 地址格式通过
+    if (/\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place|cr|crescent|way|lane|ln|tce|terrace|pde|parade|cct|circuit|cl|close)/i.test(t)) return null;
+    // 看起来像地名（纯英文，1-3词，3+字符）
+    if (/^[a-zA-Z\s]+$/.test(t) && t.split(/\s+/).length <= 3 && t.length >= 3) return null;
+    // 包含数字+文字的组合也可能是地址
+    if (/\d+/.test(t) && /[a-zA-Z]/.test(t) && t.length >= 5) return null;
+    return '请输入有效的房产地址（如: 10 Smith St, Sunnybank）、Domain/REA链接、或区域名称';
+  };
+
   // 提交分析
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!textInput.trim() && images.length === 0) return;
+
+    // 输入校验
+    const error = validateInput(textInput, images.length > 0);
+    if (error) {
+      setValidationError(error);
+      setTimeout(() => setValidationError(null), 4000);
+      return;
+    }
+    setValidationError(null);
 
     // 中断之前的请求
     abortRef.current?.abort();
@@ -273,6 +301,13 @@ export default function SmartInput() {
                   style={{ minHeight: '52px' }}
                 />
               </div>
+
+              {/* 输入校验错误 */}
+              {validationError && (
+                <div className="mx-4 md:mx-5 mb-2 px-3 py-2 bg-red-500/20 border border-red-400/40 rounded-lg text-red-200 text-sm">
+                  ⚠️ {validationError}
+                </div>
+              )}
 
               {/* 图片预览 */}
               {imagePreviews.length > 0 && (

@@ -2107,7 +2107,7 @@ def _classify_input(text: str) -> tuple:
     """
     分类用户输入类型。
     返回 (type, value)
-    type: 'domain_url' | 'rea_url' | 'address' | 'freeform'
+    type: 'domain_url' | 'rea_url' | 'address' | 'suburb' | 'freeform'
     """
     if not text:
         return ('freeform', '')
@@ -2116,21 +2116,28 @@ def _classify_input(text: str) -> tuple:
         return ('domain_url', text)
     if 'realestate.com.au' in text.lower():
         return ('rea_url', text)
-    # 检查是否包含已知suburb名 → 地址输入
     text_lower = text.lower()
+    # 检查是否是纯suburb名
+    for s in ALL_SUBURB_NAMES:
+        if text_lower.strip() == s.lower():
+            return ('suburb', text)
+    # 检查是否包含已知suburb名 + 有其他地址信息
     for s in ALL_SUBURB_NAMES:
         if s.lower() in text_lower:
             return ('address', text)
     # 检查是否匹配地址模式 (数字 + 街道)
-    if _re_early.search(r'\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place|cr|crescent|way|blvd|lane|ln)', text_lower):
+    if _re_early.search(r'\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place|cr|crescent|way|blvd|lane|ln|tce|terrace|pde|parade|cct|circuit|cl|close)', text_lower):
         return ('address', text)
+    # 检查是否可能是suburb名（英文词，首字母大写格式或全小写）
+    if _re_early.match(r'^[A-Za-z\s]+$', text.strip()) and len(text.strip().split()) <= 3:
+        return ('suburb_candidate', text)
     return ('freeform', text)
 
 
 def _extract_suburb_from_input(text: str) -> str:
     """从文本中提取已知的 suburb 名称"""
     if not text:
-        return "Sunnybank"
+        return ""
     text_lower = text.lower()
     for s in ALL_SUBURB_NAMES:
         if s.lower() in text_lower:
@@ -2142,7 +2149,149 @@ def _extract_suburb_from_input(text: str) -> str:
         for s in ALL_SUBURB_NAMES:
             if s.lower() in candidate.lower():
                 return s
-    return "Sunnybank"
+    return ""
+
+
+def _geocode_for_multimodal(address: str) -> dict:
+    """
+    用 Google Geocoding 解析地址，返回 suburb + 格式化地址。
+    复用风水模块的 _geocode_address 逻辑，但不依赖其函数（避免循环/顺序问题）。
+    """
+    gmaps_key = os.getenv("GOOGLE_MAPS_API_KEY") or os.getenv("NEXT_PUBLIC_GOOGLE_MAPS_KEY", "")
+    if not gmaps_key:
+        return {"error": "GOOGLE_MAPS_API_KEY not configured"}
+    try:
+        import urllib.request as _ur
+        import urllib.parse as _up
+        params = _up.urlencode({
+            "address": f"{address}, QLD, Australia",
+            "key": gmaps_key,
+            "region": "au",
+            "components": "country:AU",
+        })
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?{params}"
+        req = _ur.Request(url)
+        with _ur.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        if data.get("status") != "OK" or not data.get("results"):
+            return {"error": f"地址无法识别: {data.get('status', 'NO_RESULTS')}"}
+        result = data["results"][0]
+        loc = result["geometry"]["location"]
+        suburb = ""
+        state = ""
+        postcode = ""
+        street_number = ""
+        route = ""
+        for comp in result.get("address_components", []):
+            types = comp.get("types", [])
+            if "locality" in types:
+                suburb = comp["long_name"]
+            if "administrative_area_level_1" in types:
+                state = comp["short_name"]
+            if "postal_code" in types:
+                postcode = comp["long_name"]
+            if "street_number" in types:
+                street_number = comp["long_name"]
+            if "route" in types:
+                route = comp["long_name"]
+        # 验证是否在 Queensland
+        if state and state.upper() not in ("QLD", "QUEENSLAND"):
+            return {"error": f"该地址不在Queensland范围内 ({state})"}
+        return {
+            "lat": loc["lat"],
+            "lng": loc["lng"],
+            "formatted_address": result.get("formatted_address", address),
+            "suburb": suburb,
+            "postcode": postcode,
+            "street_number": street_number,
+            "route": route,
+            "full_street": f"{street_number} {route}".strip() if street_number or route else "",
+        }
+    except Exception as e:
+        return {"error": f"地址解析失败: {str(e)}"}
+
+
+def _search_address_sales(address: str, suburb: str = None) -> list:
+    """
+    在 sales 数据库中搜索该地址的历史成交记录。
+    支持精确匹配 + 模糊匹配（同一条街道）。
+    """
+    results = {"exact": [], "same_street": []}
+    try:
+        # 精确地址匹配
+        exact_query = """
+            SELECT s.full_address, s.sale_price, s.sale_date, s.property_type,
+                   s.bedrooms, s.bathrooms, s.land_size, INITCAP(s.suburb) as suburb,
+                   CASE WHEN s.land_size > 0 THEN s.sale_price / s.land_size ELSE 0 END AS price_per_sqm
+            FROM sales s
+            WHERE LOWER(s.full_address) LIKE %s
+            ORDER BY s.sale_date DESC
+            LIMIT 10
+        """
+        addr_lower = address.lower().strip()
+        exact_rows = execute_query(exact_query, (f"%{addr_lower}%",))
+        for row in (exact_rows or []):
+            results["exact"].append({
+                "address": row.get("full_address", ""),
+                "price": int(float(row.get("sale_price", 0) or 0)),
+                "date": str(row.get("sale_date", "")),
+                "type": row.get("property_type", ""),
+                "beds": row.get("bedrooms", 0),
+                "baths": row.get("bathrooms", 0),
+                "land_sqm": int(float(row.get("land_size", 0) or 0)),
+                "price_per_sqm": int(float(row.get("price_per_sqm", 0) or 0)),
+                "suburb": row.get("suburb", ""),
+            })
+
+        # 同街道匹配（提取街道名）
+        street_match = _re_early.search(
+            r'\d+[A-Za-z]?\s+(.+?)(?:,|\s+(?:' + '|'.join(s.lower() for s in ALL_SUBURB_NAMES) + r'))',
+            addr_lower
+        )
+        if not street_match and suburb:
+            street_match = _re_early.search(
+                r'\d+[A-Za-z]?\s+(.+?)(?:,|\s+' + suburb.lower() + r')',
+                addr_lower
+            )
+        # 更宽松的街道提取
+        if not street_match:
+            street_match = _re_early.search(r'\d+[A-Za-z]?\s+(.+?\s+(?:st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place|cr|crescent|way|lane|ln|tce|terrace|pde|parade))', addr_lower)
+
+        if street_match:
+            street_name = street_match.group(1).strip()
+            street_query = """
+                SELECT s.full_address, s.sale_price, s.sale_date, s.property_type,
+                       s.bedrooms, s.bathrooms, s.land_size, INITCAP(s.suburb) as suburb,
+                       CASE WHEN s.land_size > 0 THEN s.sale_price / s.land_size ELSE 0 END AS price_per_sqm
+                FROM sales s
+                WHERE LOWER(s.full_address) LIKE %s
+            """
+            street_params = [f"%{street_name}%"]
+            if suburb:
+                street_query += " AND UPPER(s.suburb) = UPPER(%s)"
+                street_params.append(suburb)
+            street_query += " ORDER BY s.sale_date DESC LIMIT 15"
+            street_rows = execute_query(street_query, tuple(street_params))
+            # 排除已经在 exact 中的
+            exact_addrs = {r["address"].lower() for r in results["exact"]}
+            for row in (street_rows or []):
+                fa = row.get("full_address", "")
+                if fa.lower() not in exact_addrs:
+                    results["same_street"].append({
+                        "address": fa,
+                        "price": int(float(row.get("sale_price", 0) or 0)),
+                        "date": str(row.get("sale_date", "")),
+                        "type": row.get("property_type", ""),
+                        "beds": row.get("bedrooms", 0),
+                        "baths": row.get("bathrooms", 0),
+                        "land_sqm": int(float(row.get("land_size", 0) or 0)),
+                        "price_per_sqm": int(float(row.get("price_per_sqm", 0) or 0)),
+                        "suburb": row.get("suburb", ""),
+                    })
+    except Exception as e:
+        print(f"Address sales search error: {e}")
+
+    return results
 
 
 def _get_nearby_suburbs(suburb: str) -> list:
@@ -2348,10 +2497,12 @@ def _build_multimodal_prompt(
     profile: dict,
     mode: str,
     comparables: dict = None,
+    geocode_info: dict = None,
+    address_sales: dict = None,
 ) -> str:
     """
     构建多模态分析的 prompt。复用 _build_ai_prompt 的数据段落逻辑，
-    增加房产具体信息 + 可比成交 + Leo 判断指令。
+    增加房产具体信息 + 可比成交 + 地址专属数据 + Leo 判断指令。
     """
     # 复用已有的 9 段数据
     base_prompt = _build_ai_prompt(text_input or suburb, suburb, profile)
@@ -2388,8 +2539,84 @@ def _build_multimodal_prompt(
 - 描述: {desc}
 """
 
-    # 增强的分析要求
-    analysis_instructions = """
+    # 地址专属数据段（用户输入地址但未提供URL时）
+    address_specific_section = ""
+    if geocode_info and not geocode_info.get("error"):
+        formatted = geocode_info.get("formatted_address", "")
+        geo_suburb = geocode_info.get("suburb", "")
+        postcode = geocode_info.get("postcode", "")
+        full_street = geocode_info.get("full_street", "")
+        address_specific_section = f"""
+
+## 目标地址信息（Google Geocoding 解析）
+- 输入地址: {text_input}
+- 标准化地址: {formatted}
+- 所属区域: {geo_suburb} {postcode}
+"""
+        if full_street:
+            address_specific_section += f"- 街道: {full_street}\n"
+
+    # 地址历史成交段
+    address_history_section = ""
+    if address_sales:
+        exact = address_sales.get("exact", [])
+        same_street = address_sales.get("same_street", [])
+        if exact or same_street:
+            lines = ["\n## 该地址 / 同街道历史成交"]
+            if exact:
+                lines.append(f"\n**该地址历史成交 ({len(exact)} 条):**")
+                for i, s in enumerate(exact[:5]):
+                    lines.append(f"  {i+1}. {s['address']} | ${s['price']:,} | {s['date']} | {s['type']} {s.get('beds',0)}房{s.get('baths',0)}卫 | {s.get('land_sqm',0)}sqm")
+            if same_street:
+                lines.append(f"\n**同街道近期成交 ({len(same_street)} 条):**")
+                for i, s in enumerate(same_street[:8]):
+                    sqm_str = f" | ${s['price_per_sqm']:,}/sqm" if s.get('price_per_sqm') else ""
+                    lines.append(f"  {i+1}. {s['address']} | ${s['price']:,} | {s['date']} | {s['type']} {s.get('beds',0)}房{s.get('baths',0)}卫{sqm_str}")
+            address_history_section = "\n".join(lines)
+
+    # 增强的分析要求 — 根据是否有具体房产信息调整
+    has_specific_property = bool(property_data and not property_data.get("error"))
+    has_address_info = bool(geocode_info and not geocode_info.get("error"))
+
+    if has_specific_property or has_address_info:
+        target_desc = "该具体房产" if has_specific_property else f"该地址 ({text_input})"
+        analysis_instructions = f"""
+---
+
+请基于以上**全部真实数据**，针对 **{target_desc}** 输出投资分析报告：
+
+## 1. 投资评级 (X/10)
+给出评级并用2-3句话解释。必须引用具体数据支撑评分。
+**重要：必须针对这套具体房产/地址分析，而不是泛泛地分析整个区域。**
+
+## 2. 核心优势 (3-4条)
+每条必须引用具体数字，优先引用该地址/同街道的历史成交数据。
+
+## 3. 风险警示 (2-3条)
+必须引用具体数据。
+
+## 4. 价格评估
+- 对比该地址历史成交价（若有）和同街道成交价
+- 对比同区中位价和近期可比成交
+- 合理估价区间
+
+## 5. 投资建议
+- 推荐操作：买入 / 观望 / 不建议
+- 议价策略（必须给出具体价格区间）
+- 持有策略：短期/长期
+
+**输出要求：**
+- 全中文回复
+- 每个数据引用必须来自上面提供的数据，禁止编造
+- 必须提及该地址的具体特征（位置、街道、历史成交等），不能只做区域泛论
+- 控制在1500字以内
+- 语言风格：专业、直接、实用
+
+**最后一行必须输出（隐藏标记，用户不可见）：**
+<!-- LEO_VERDICT: {{"verdict":"值得买/观望/不建议","confidence":"高/中/低","fair_price_range":"XX-XX万","reason":"一句话理由"}} -->
+"""
+    else:
+        analysis_instructions = """
 ---
 
 请基于以上**全部真实数据**（含可比成交和目标房产信息），输出投资分析报告：
@@ -2430,7 +2657,7 @@ def _build_multimodal_prompt(
         idx = base_prompt.index("---\n\n请基于以上")
         base_prompt = base_prompt[:idx]
 
-    final_prompt = base_prompt + property_section + comparable_section + analysis_instructions
+    final_prompt = base_prompt + property_section + address_specific_section + address_history_section + comparable_section + analysis_instructions
 
     # 添加模式额外指引
     extra = _get_mode_extra_instructions(mode)
@@ -2475,6 +2702,14 @@ async def analyze_multimodal(
     # 分类输入
     input_type, input_value = _classify_input(text_input or "")
 
+    # Bug 1 修复: 输入校验 — freeform 文本在无图片时拒绝
+    if input_type == 'freeform' and not image_b64_list:
+        error_msg = "请输入有效的澳洲房产地址、Domain/REA链接，或上传房产图片。\n\n支持的格式：\n• 具体地址：如 10 Smith St, Sunnybank\n• Domain链接：domain.com.au/...\n• REA链接：realestate.com.au/...\n• 区域名称：如 Sunnybank, Calamvale\n• 上传房产截图进行分析"
+        async def _error_gen():
+            yield f"data: {_json.dumps({'type': 'error', 'message': error_msg})}\n\n"
+        return StreamingResponse(_error_gen(), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "Connection": "keep-alive", "X-Accel-Buffering": "no"})
+
     def event_generator():
         try:
             # 1. 处理 URL → 抓取房产数据
@@ -2487,26 +2722,79 @@ async def analyze_multimodal(
                     print(f"Scraper error: {e}")
                     property_data = {"error": str(e)}
 
-            # 2. 确定 suburb
-            suburb = "Sunnybank"
+            # 2. 确定 suburb — 使用 Google Geocoding 解析任意地址
+            suburb = ""
+            geocode_info = None
+            address_sales = None
+
             if property_data and not property_data.get("error"):
+                # URL 抓取成功 → 从 property_data 提取 suburb
                 suburb_from_data = property_data.get("suburb", "")
                 if suburb_from_data:
-                    # 匹配已知suburb
                     for s in ALL_SUBURB_NAMES:
                         if s.lower() == suburb_from_data.lower():
                             suburb = s
                             break
                     else:
-                        # 部分匹配
                         for s in ALL_SUBURB_NAMES:
                             if s.lower() in suburb_from_data.lower() or suburb_from_data.lower() in s.lower():
                                 suburb = s
                                 break
-                if suburb == "Sunnybank" and property_data.get("address"):
+                        if not suburb:
+                            suburb = suburb_from_data  # 使用原始suburb名
+                if not suburb and property_data.get("address"):
                     suburb = _extract_suburb_from_input(property_data["address"])
-            elif text_input:
+
+            elif text_input and input_type in ('address', 'suburb', 'suburb_candidate'):
+                # 先尝试从已知列表匹配
                 suburb = _extract_suburb_from_input(text_input)
+                suburb_from_text = suburb  # 记住文本匹配结果
+
+                # Bug 2 修复: 如果匹配不到已知suburb，用 Google Geocoding 解析
+                if not suburb:
+                    print(f"[Multimodal] Geocoding address (no known suburb): {text_input}")
+                    geocode_info = _geocode_for_multimodal(text_input)
+                    if geocode_info and not geocode_info.get("error"):
+                        geo_suburb = geocode_info.get("suburb", "")
+                        if geo_suburb:
+                            # 看是否匹配已知suburb
+                            for s in ALL_SUBURB_NAMES:
+                                if s.lower() == geo_suburb.lower():
+                                    suburb = s
+                                    break
+                            if not suburb:
+                                suburb = geo_suburb  # 使用geocoding返回的suburb
+                            print(f"[Multimodal] Geocoded suburb: {suburb}")
+                        else:
+                            # Geocoding 成功但没有找到具体suburb（太泛了，如 "Queensland"）
+                            if input_type == 'suburb_candidate':
+                                yield f"data: {_json.dumps({'type': 'error', 'message': '无法识别该区域名称。请输入完整的澳洲房产地址，例如: 10 Smith St, Sunnybank'})}\n\n"
+                                return
+                    elif geocode_info and geocode_info.get("error"):
+                        # geocoding失败
+                        if input_type == 'suburb_candidate':
+                            err_msg = geocode_info["error"]
+                            yield f"data: {_json.dumps({'type': 'error', 'message': f'无法识别该地址: {err_msg}。请输入更完整的地址。'})}\n\n"
+                            return
+                elif input_type == 'address':
+                    # 已知suburb匹配成功，但仍然geocode获取精确地址信息（用于报告）
+                    print(f"[Multimodal] Geocoding for address details: {text_input}")
+                    geocode_info = _geocode_for_multimodal(text_input)
+                    # 不用geocoding的suburb覆盖已知suburb
+                    if geocode_info and not geocode_info.get("error"):
+                        print(f"[Multimodal] Geocoded address: {geocode_info.get('formatted_address', '')}, keeping suburb: {suburb}")
+
+                # Bug 3 修复: 搜索该地址的历史成交
+                if text_input and input_type == 'address':
+                    address_sales = _search_address_sales(text_input, suburb)
+                    if address_sales:
+                        exact_count = len(address_sales.get("exact", []))
+                        street_count = len(address_sales.get("same_street", []))
+                        print(f"[Multimodal] Address sales: {exact_count} exact, {street_count} same street")
+
+            # 最终 fallback
+            if not suburb:
+                suburb = "Sunnybank"
 
             # 发送 meta 事件
             meta = _json.dumps({
@@ -2515,6 +2803,8 @@ async def analyze_multimodal(
                 "suburb": suburb,
                 "mode": mode,
                 "has_images": len(image_b64_list) > 0,
+                "geocoded": bool(geocode_info and not geocode_info.get("error")),
+                "formatted_address": geocode_info.get("formatted_address", "") if geocode_info else "",
             })
             yield f"data: {meta}\n\n"
 
@@ -2578,7 +2868,8 @@ async def analyze_multimodal(
                 user_content = []
                 img_prompt = f"请分析这些房产相关图片，提取你能识别的信息（地址、价格、户型、特征等），并结合以下{suburb}区的数据给出投资分析。\n\n"
                 prompt_text = _build_multimodal_prompt(
-                    input_type, text_input, property_data, suburb, profile, mode, comparables
+                    input_type, text_input, property_data, suburb, profile, mode, comparables,
+                    geocode_info=geocode_info, address_sales=address_sales,
                 )
                 user_content.append({"type": "text", "text": img_prompt + prompt_text})
                 for img_b64 in image_b64_list:
@@ -2593,7 +2884,8 @@ async def analyze_multimodal(
             else:
                 # 文本模式
                 prompt_text = _build_multimodal_prompt(
-                    input_type, text_input, property_data, suburb, profile, mode, comparables
+                    input_type, text_input, property_data, suburb, profile, mode, comparables,
+                    geocode_info=geocode_info, address_sales=address_sales,
                 )
                 messages = [
                     {"role": "system", "content": system_prompt},

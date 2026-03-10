@@ -68,6 +68,8 @@ export interface MetaData {
   suburb: string;
   mode: string;
   has_images: boolean;
+  geocoded?: boolean;
+  formatted_address?: string;
 }
 
 export interface StreamCallbacks {
@@ -175,8 +177,10 @@ export function detectInputType(text: string, hasImages: boolean): InputType {
   const t = text.trim().toLowerCase();
   if (t.includes('domain.com.au')) return 'domain_url';
   if (t.includes('realestate.com.au')) return 'rea_url';
-  // 简单地址检测
-  if (/\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place)/i.test(t)) return 'address';
+  // 地址检测（带街道类型后缀）
+  if (/\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place|cr|crescent|way|lane|ln|tce|terrace|pde|parade|cct|circuit|cl|close)/i.test(t)) return 'address';
+  // 已知suburb名或者看起来像地名（纯英文词，1-3个单词）
+  if (/^[a-z\s]+$/i.test(t.trim()) && t.trim().split(/\s+/).length <= 3 && t.trim().length >= 3) return 'address';
   return 'freeform';
 }
 
