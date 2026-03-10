@@ -21,7 +21,7 @@ load_dotenv()
 print("Compass API v1.3.0 - 17 Suburbs + Security + Amanda")
 
 # 集中化区域配置
-from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG
+from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG, get_zoning_scores
 
 # ====== Rate Limiter ======
 limiter = Limiter(key_func=get_remote_address)
@@ -660,15 +660,7 @@ def get_suburb_score(suburb_name: str):
     land_score = 10  # 默认中等
     
     try:
-        zoning_map = {
-            "Sunnybank": {"MDR": 20, "HDR": 0},
-            "Eight Mile Plains": {"MDR": 25, "HDR": 5},
-            "Calamvale": {"MDR": 15, "HDR": 0},
-            "Rochedale": {"MDR": 20, "HDR": 0},
-            "Mansfield": {"MDR": 15, "HDR": 0},
-            "Ascot": {"MDR": 10, "HDR": 5},
-            "Hamilton": {"MDR": 15, "HDR": 10},
-        }
+        zoning_map = get_zoning_scores()  # 从 suburbs_config 动态获取全部区
         zm = zoning_map.get(suburb_name, {"MDR": 10, "HDR": 0})
         mdr_hdr_pct = zm["MDR"] + zm["HDR"]
         
@@ -874,12 +866,7 @@ def get_rankings():
                 land_counts = {row['suburb']: row['cnt'] for row in cur.fetchall()}
 
         # === 内存计算所有评分 ===
-        zoning_map = {
-            "Sunnybank": {"MDR": 20, "HDR": 0}, "Eight Mile Plains": {"MDR": 25, "HDR": 5},
-            "Calamvale": {"MDR": 15, "HDR": 0}, "Rochedale": {"MDR": 20, "HDR": 0},
-            "Mansfield": {"MDR": 15, "HDR": 0}, "Ascot": {"MDR": 10, "HDR": 5},
-            "Hamilton": {"MDR": 15, "HDR": 10},
-        }
+        zoning_map = get_zoning_scores()  # 从 suburbs_config 动态获取全部区
 
         rankings = []
         for suburb in suburbs:
@@ -1915,11 +1902,10 @@ def analyze_property_stream(request: Request, address: str = Body(...), url: str
     AI 流式分析接口 - SSE (Server-Sent Events)
     逐字输出分析结果，前端实时渲染。
     """
-    # 从地址中提取郊区
+    # 从地址中提取郊区（自动覆盖 suburbs_config 中所有区域）
     suburb = "Sunnybank"
     if address:
-        known_suburbs = ['Sunnybank', 'Eight Mile Plains', 'Calamvale',
-                         'Rochedale', 'Mansfield', 'Ascot', 'Hamilton']
+        known_suburbs = ALL_SUBURB_NAMES  # 动态跟随 suburbs_config，无需手动维护
         address_lower = address.lower()
         for s in known_suburbs:
             if s.lower() in address_lower:
