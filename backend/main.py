@@ -118,6 +118,41 @@ else:
     print("[ERROR] Set DATABASE_URL environment variable in Render dashboard")
     raise SystemExit(1)
 
+# ====== 新闻系统数据库表 ======
+try:
+    execute_query("""
+        CREATE TABLE IF NOT EXISTS news_articles (
+            id SERIAL PRIMARY KEY,
+            url_hash VARCHAR(32) UNIQUE NOT NULL,
+            title TEXT NOT NULL,
+            source VARCHAR(200),
+            summary TEXT,
+            link TEXT NOT NULL,
+            category VARCHAR(50) DEFAULT '市场动态',
+            category_color VARCHAR(60),
+            pub_date DATE,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    execute_query("CREATE INDEX IF NOT EXISTS idx_news_articles_pub_date ON news_articles(pub_date DESC)")
+    execute_query("CREATE INDEX IF NOT EXISTS idx_news_articles_category ON news_articles(category)")
+
+    execute_query("""
+        CREATE TABLE IF NOT EXISTS news_commentaries (
+            id SERIAL PRIMARY KEY,
+            pub_date DATE NOT NULL,
+            period VARCHAR(10) NOT NULL,
+            content TEXT NOT NULL,
+            article_ids INTEGER[],
+            created_at TIMESTAMP DEFAULT NOW(),
+            UNIQUE(pub_date, period)
+        )
+    """)
+    execute_query("CREATE INDEX IF NOT EXISTS idx_news_commentaries_date ON news_commentaries(pub_date DESC)")
+    print("[OK] News tables ready")
+except Exception as e:
+    print(f"[WARN] News tables creation: {e}")
+
 # 创建 FastAPI 应用
 app = FastAPI(
     title="Compass MVP API",
@@ -3056,36 +3091,50 @@ async def fengshui_analyze(
     )
 
 
-# ========== 新闻 RSS 聚合 ==========
+# ========== 新闻 RSS 聚合 (Olivia 每日资讯系统) ==========
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime
 import time as _time
 import re as _re
 import html as _html
+import hashlib as _hashlib
+import threading
 
+# ---- 内存缓存层（快速读取，DB 为持久层）----
 _news_cache: dict = {"items": [], "ts": 0}
-_NEWS_TTL = 3600  # 1 小时缓存
+_NEWS_TTL = 3600  # 1 小时
 
-# Amanda 每日综合点评缓存
-_commentary_cache: dict = {"text": "", "date": "", "ts": 0}
-_COMMENTARY_TTL = 14400  # 4 小时缓存
+_commentary_cache: dict = {"text": "", "date": "", "period": "", "ts": 0}
+_COMMENTARY_TTL = 14400  # 4 小时
 
+# ---- 四大新闻源 ----
 _RSS_SOURCES = [
-    {
-        "url": "https://news.google.com/rss/search?q=brisbane+property+real+estate&hl=en-AU&gl=AU&ceid=AU:en",
-        "name": "Google News",
-    },
+    # REA (realestate.com.au) — 官方 RSS
+    {"url": "https://www.realestate.com.au/news/feed/", "name": "REA"},
+    # Google News — 多关键词组合
+    {"url": "https://news.google.com/rss/search?q=brisbane+property+market&hl=en-AU&gl=AU&ceid=AU:en", "name": "Google News"},
+    {"url": "https://news.google.com/rss/search?q=brisbane+auction+clearance+rate&hl=en-AU&gl=AU&ceid=AU:en", "name": "Google News"},
+    {"url": "https://news.google.com/rss/search?q=brisbane+rental+vacancy+yield&hl=en-AU&gl=AU&ceid=AU:en", "name": "Google News"},
+    {"url": "https://news.google.com/rss/search?q=brisbane+2032+olympics+infrastructure&hl=en-AU&gl=AU&ceid=AU:en", "name": "Google News"},
+    {"url": "https://news.google.com/rss/search?q=RBA+interest+rate+property+australia&hl=en-AU&gl=AU&ceid=AU:en", "name": "Google News"},
+    # Domain.com.au/news — 行业新闻（排除 listings），用 Google News site: 过滤 domain.com.au/news
+    {"url": "https://news.google.com/rss/search?q=site:domain.com.au/news+brisbane+property+market&hl=en-AU&gl=AU&ceid=AU:en", "name": "Domain"},
+    {"url": "https://news.google.com/rss/search?q=site:domain.com.au/news+auction+rental+investment&hl=en-AU&gl=AU&ceid=AU:en", "name": "Domain"},
+    # 后花园澳洲 — 无 RSS，用 Google News 中文搜索代替
+    {"url": "https://news.google.com/rss/search?q=%E6%BE%B3%E6%B4%B2+%E6%88%BF%E4%BA%A7+%E5%B8%83%E9%87%8C%E6%96%AF%E7%8F%AD&hl=zh-CN&gl=AU&ceid=AU:zh-Hans", "name": "后花园"},
+    {"url": "https://news.google.com/rss/search?q=%E6%BE%B3%E6%B4%B2+%E6%88%BF%E4%BB%B7+%E6%8A%95%E8%B5%84+%E7%A7%BB%E6%B0%91&hl=zh-CN&gl=AU&ceid=AU:zh-Hans", "name": "后花园"},
 ]
 
-# 新闻分类关键词
+# ---- 分类规则（5 类）----
 _TAG_RULES = [
-    (["auction", "clearance", "bidding", "sold"], "拍卖数据", "bg-orange-100 text-orange-700"),
-    (["government", "infrastructure", "rail", "transport", "plan", "policy", "budget"], "政策利好", "bg-green-100 text-green-700"),
-    (["investor", "overseas", "chinese", "foreign", "immigration"], "投资趋势", "bg-purple-100 text-purple-700"),
-    (["rent", "rental", "vacancy", "tenant", "yield"], "租赁市场", "bg-teal-100 text-teal-700"),
-    (["price", "median", "growth", "surge", "rise", "fall", "drop", "market"], "市场动态", "bg-blue-100 text-blue-700"),
+    (["auction", "clearance", "bidding", "sold", "拍卖", "清盘"], "拍卖数据", "bg-orange-100 text-orange-700"),
+    (["olympics", "2032", "infrastructure", "venue", "stadium", "奥运", "基建"], "奥运概念", "bg-red-100 text-red-700"),
+    (["investor", "overseas", "chinese", "foreign", "immigration", "投资", "海外", "移民"], "投资趋势", "bg-purple-100 text-purple-700"),
+    (["rent", "rental", "vacancy", "tenant", "yield", "租赁", "空置", "租金"], "租赁市场", "bg-teal-100 text-teal-700"),
+    (["price", "median", "growth", "surge", "rise", "fall", "drop", "market", "房价", "涨", "跌", "市场"], "市场动态", "bg-blue-100 text-blue-700"),
 ]
+
 
 def _classify_news(title: str, summary: str) -> tuple:
     text = (title + " " + summary).lower()
@@ -3095,49 +3144,56 @@ def _classify_news(title: str, summary: str) -> tuple:
     return "市场动态", "bg-blue-100 text-blue-700"
 
 
-def _extract_source(title: str) -> str:
-    """Extract source from Google News title format 'Headline - Source'."""
-    if " - " in title:
-        return title.rsplit(" - ", 1)[-1].strip()
-    return "News"
+def _extract_source(title: str, feed_name: str) -> str:
+    """Extract source. For Google News / Domain / 后花园: parse 'Headline - Source'."""
+    if feed_name in ("Google News", "Domain", "后花园"):
+        if " - " in title:
+            return title.rsplit(" - ", 1)[-1].strip()
+    return feed_name
 
 
-def _clean_headline(title: str) -> str:
-    """Remove source suffix from Google News title."""
-    if " - " in title:
-        return title.rsplit(" - ", 1)[0].strip()
+def _clean_headline(title: str, feed_name: str) -> str:
+    """Remove source suffix from Google News style titles."""
+    if feed_name in ("Google News", "Domain", "后花园"):
+        if " - " in title:
+            return title.rsplit(" - ", 1)[0].strip()
     return title
 
 
 def _fetch_rss_news() -> list:
-    """Fetch and parse RSS feeds, return news items."""
+    """Fetch and parse all RSS feeds, return news items. Uses in-memory cache + DB."""
     now = _time.time()
     if _news_cache["items"] and (now - _news_cache["ts"]) < _NEWS_TTL:
         return _news_cache["items"]
 
     items = []
+    seen_hashes = set()
+
     for src in _RSS_SOURCES:
         try:
             req = urllib.request.Request(
                 src["url"],
-                headers={"User-Agent": "Compass/1.0 (Brisbane Property Platform)"}
+                headers={"User-Agent": "Compass/2.0 (Brisbane Property Platform)"}
             )
             with urllib.request.urlopen(req, timeout=15) as resp:
                 xml_data = resp.read()
 
             root = ET.fromstring(xml_data)
-            # RSS 2.0 format: channel > item
-            for item in root.findall(".//item"):
-                raw_title = item.findtext("title", "")
-                source = _extract_source(raw_title)
-                headline = _clean_headline(raw_title)
+            for item_el in root.findall(".//item"):
+                raw_title = item_el.findtext("title", "")
+                source = _extract_source(raw_title, src["name"])
+                headline = _clean_headline(raw_title, src["name"])
 
-                desc_raw = item.findtext("description", "")
-                # Strip HTML tags from description
+                link = item_el.findtext("link", "")
+                url_hash = _hashlib.md5(link.encode()).hexdigest() if link else ""
+                if not url_hash or url_hash in seen_hashes:
+                    continue
+                seen_hashes.add(url_hash)
+
+                desc_raw = item_el.findtext("description", "")
                 summary = _re.sub(r'<[^>]+>', '', _html.unescape(desc_raw)).strip()[:200]
 
-                pub_date = item.findtext("pubDate", "")
-                # Parse RSS date: "Sat, 08 Mar 2026 04:30:00 GMT"
+                pub_date = item_el.findtext("pubDate", "")
                 date_str = ""
                 if pub_date:
                     try:
@@ -3145,8 +3201,6 @@ def _fetch_rss_news() -> list:
                         date_str = dt.strftime("%Y-%m-%d")
                     except Exception:
                         date_str = pub_date[:10]
-
-                link = item.findtext("link", "")
 
                 tag, tagColor = _classify_news(headline, summary)
 
@@ -3158,38 +3212,57 @@ def _fetch_rss_news() -> list:
                     "tag": tag,
                     "tagColor": tagColor,
                     "link": link,
+                    "url_hash": url_hash,
                 })
 
         except Exception as e:
-            print(f"[WARN] RSS fetch failed for {src['name']}: {e}")
+            print(f"[WARN] RSS fetch failed for {src['name']} ({src['url'][:60]}...): {e}")
 
-    # Sort by date descending, keep top 20
     items.sort(key=lambda x: x.get("date", ""), reverse=True)
-    items = items[:20]
+    items = items[:50]
 
     _news_cache["items"] = items
     _news_cache["ts"] = now
     return items
 
 
-def _generate_amanda_commentary(news_items: list) -> str:
+def _persist_news_to_db(items: list):
+    """Save fetched news items to DB (upsert, skip duplicates)."""
+    if not execute_query or not items:
+        return
+    for item in items:
+        try:
+            execute_query(
+                """INSERT INTO news_articles (url_hash, title, source, summary, link, category, category_color, pub_date)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                   ON CONFLICT (url_hash) DO NOTHING""",
+                (item.get("url_hash", ""), item["title"], item.get("source", ""),
+                 item.get("summary", ""), item.get("link", ""),
+                 item.get("tag", "市场动态"), item.get("tagColor", ""),
+                 item.get("date") or None)
+            )
+        except Exception as e:
+            print(f"[WARN] DB insert news failed: {e}")
+
+
+def _scheduled_fetch_news():
+    """Scheduled job: fetch RSS + persist to DB."""
+    print("[Scheduler] Fetching news from 4 sources...")
+    _news_cache["ts"] = 0  # force refresh
+    items = _fetch_rss_news()
+    _persist_news_to_db(items)
+    print(f"[Scheduler] Fetched {len(items)} news items")
+
+
+def _generate_olivia_commentary(news_items: list) -> str:
     """让 Olivia 基于当日新闻生成综合点评。"""
-    now = _time.time()
-    today = datetime.now().strftime("%Y-%m-%d")
-
-    # 缓存命中
-    if (_commentary_cache["text"]
-            and _commentary_cache["date"] == today
-            and (now - _commentary_cache["ts"]) < _COMMENTARY_TTL):
-        return _commentary_cache["text"]
-
     if not news_items:
         return ""
 
-    # 构建新闻摘要给 AI
+    today = datetime.now().strftime("%Y-%m-%d")
     news_digest = "\n".join(
-        f"- [{item['source']}] {item['title']}"
-        for item in news_items[:8]
+        f"- [{item.get('source', '')}] {item['title']}"
+        for item in news_items[:10]
     )
 
     system_prompt = (
@@ -3203,7 +3276,7 @@ def _generate_amanda_commentary(news_items: list) -> str:
     )
 
     user_prompt = (
-        f"今天是 {today}，以下是今日布里斯班房产相关新闻标题：\n\n"
+        f"今天是 {today}，以下是今日布里斯班房产相关新闻标题（来自 Google News、Domain、REA、后花园澳洲等源）：\n\n"
         f"{news_digest}\n\n"
         "请你作为 Olivia 写一篇今日市场综合解读（300-500字），要求：\n"
         "1. 先用一句话概括今天的市场信号\n"
@@ -3218,7 +3291,6 @@ def _generate_amanda_commentary(news_items: list) -> str:
 
     try:
         client, _model, _temp = _get_ai_client()
-
         response = client.chat.completions.create(
             model=_model,
             messages=[
@@ -3228,18 +3300,9 @@ def _generate_amanda_commentary(news_items: list) -> str:
             max_tokens=4096,
             temperature=_temp,
         )
-
         commentary = response.choices[0].message.content.strip()
-        # 清洗 markdown 符号（双保险）
         commentary = commentary.replace('**', '').replace('*', '')
-
-        # 更新缓存
-        _commentary_cache["text"] = commentary
-        _commentary_cache["date"] = today
-        _commentary_cache["ts"] = now
-
         return commentary
-
     except Exception as e:
         print(f"[WARN] Olivia commentary generation failed: {e}")
         import traceback
@@ -3247,37 +3310,116 @@ def _generate_amanda_commentary(news_items: list) -> str:
         return ""
 
 
-# 后台线程生成 Olivia 点评（不阻塞 API 响应）
-import threading
-_amanda_lock = threading.Lock()
-_amanda_generating = False
+def _scheduled_commentary(period: str):
+    """Scheduled job: generate Olivia commentary and persist to DB."""
+    print(f"[Scheduler] Generating Olivia {period} commentary...")
+    today = datetime.now().strftime("%Y-%m-%d")
 
-def _trigger_amanda_background(news_items: list):
+    # 检查 DB 中是否已有今日该时段点评
+    if execute_query:
+        existing = execute_query(
+            "SELECT id FROM news_commentaries WHERE pub_date = %s AND period = %s",
+            (today, period)
+        )
+        if existing:
+            print(f"[Scheduler] {period} commentary already exists for {today}, skipping")
+            return
+
+    # 获取今天的新闻
+    items = _fetch_rss_news()
+    if not items:
+        print("[Scheduler] No news items available for commentary")
+        return
+
+    commentary = _generate_olivia_commentary(items)
+    if not commentary:
+        print("[Scheduler] Commentary generation returned empty")
+        return
+
+    # 持久化到 DB
+    if execute_query:
+        try:
+            execute_query(
+                """INSERT INTO news_commentaries (pub_date, period, content, article_ids)
+                   VALUES (%s, %s, %s, %s)
+                   ON CONFLICT (pub_date, period) DO UPDATE SET content = EXCLUDED.content""",
+                (today, period, commentary, [])
+            )
+            print(f"[Scheduler] {period} commentary saved to DB")
+        except Exception as e:
+            print(f"[WARN] Failed to save commentary to DB: {e}")
+
+    # 更新内存缓存
+    _commentary_cache["text"] = commentary
+    _commentary_cache["date"] = today
+    _commentary_cache["period"] = period
+    _commentary_cache["ts"] = _time.time()
+
+
+# ---- 后台线程生成 Olivia 点评（不阻塞 API 响应）----
+_olivia_lock = threading.Lock()
+_olivia_generating = False
+
+def _trigger_olivia_background(news_items: list):
     """在后台线程中生成 Olivia 点评。"""
-    global _amanda_generating
-    with _amanda_lock:
-        if _amanda_generating:
-            return  # 已有线程在生成
-        _amanda_generating = True
+    global _olivia_generating
+    with _olivia_lock:
+        if _olivia_generating:
+            return
+        _olivia_generating = True
 
     def _run():
-        global _amanda_generating
+        global _olivia_generating
         try:
-            _generate_amanda_commentary(news_items)
+            today = datetime.now().strftime("%Y-%m-%d")
+            commentary = _generate_olivia_commentary(news_items)
+            if commentary:
+                _commentary_cache["text"] = commentary
+                _commentary_cache["date"] = today
+                _commentary_cache["period"] = "on_demand"
+                _commentary_cache["ts"] = _time.time()
+                # 也存 DB
+                if execute_query:
+                    try:
+                        execute_query(
+                            """INSERT INTO news_commentaries (pub_date, period, content)
+                               VALUES (%s, 'on_demand', %s)
+                               ON CONFLICT (pub_date, period) DO UPDATE SET content = EXCLUDED.content""",
+                            (today, commentary)
+                        )
+                    except Exception:
+                        pass
         finally:
-            with _amanda_lock:
-                _amanda_generating = False
+            with _olivia_lock:
+                _olivia_generating = False
 
     t = threading.Thread(target=_run, daemon=True)
     t.start()
 
 
+# ---- APScheduler 定时任务 ----
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    from apscheduler.triggers.cron import CronTrigger
+    import pytz
+
+    _AEST = pytz.timezone("Australia/Brisbane")
+    _scheduler = BackgroundScheduler(timezone=_AEST)
+
+    # 每小时 :05 抓取新闻
+    _scheduler.add_job(_scheduled_fetch_news, CronTrigger(minute=5), id="hourly_news", replace_existing=True)
+    # 每天 8:00 AM AEST 生成晨报
+    _scheduler.add_job(lambda: _scheduled_commentary("morning"), CronTrigger(hour=8, minute=0), id="morning_commentary", replace_existing=True)
+    # 每天 6:00 PM AEST 生成晚报
+    _scheduler.add_job(lambda: _scheduled_commentary("evening"), CronTrigger(hour=18, minute=0), id="evening_commentary", replace_existing=True)
+
+    _scheduler.start()
+    print("[OK] APScheduler started: hourly news + 8AM/6PM Olivia commentary")
+except Exception as e:
+    print(f"[WARN] APScheduler init failed: {e}. News will still work on-demand.")
+
+
 # ---- 新闻全文抓取 + 中文翻译 ----
-import hashlib as _hashlib
-
-_article_cache: dict = {}  # key: url md5 → { original, translated, ts }
-_ARTICLE_TTL = 86400  # 24 小时缓存
-
 
 def _fetch_article_content(url: str) -> str:
     """抓取新闻原文正文。支持 Google News 重定向 + 多种网站结构。"""
@@ -3287,36 +3429,33 @@ def _fetch_article_content(url: str) -> str:
         "Chrome/131.0.0.0 Safari/537.36"
     )
     try:
-        # Google News 链接需要跟随重定向获取真实 URL
         req = urllib.request.Request(url, headers={
             "User-Agent": _BROWSER_UA,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-AU,en;q=0.9",
+            "Accept-Language": "en-AU,en;q=0.9,zh-CN;q=0.8",
         })
         with urllib.request.urlopen(req, timeout=20) as resp:
             raw = resp.read()
             charset = resp.headers.get_content_charset() or "utf-8"
             html_text = raw.decode(charset, errors="replace")
-            final_url = resp.url  # 重定向后的真实 URL
+            final_url = resp.url
             print(f"[INFO] Article fetched from: {final_url} ({len(html_text)} chars)")
 
-        # ---- 多策略提取正文 ----
         clean_paras = []
 
-        # 策略1：提取 <article> 标签内的 <p>
+        # 策略1：<article> 标签
         article_match = _re.search(
             r"<article[^>]*>(.*?)</article>", html_text, _re.DOTALL | _re.IGNORECASE
         )
         if article_match:
-            article_html = article_match.group(1)
-            paras = _re.findall(r"<p[^>]*>(.*?)</p>", article_html, _re.DOTALL | _re.IGNORECASE)
+            paras = _re.findall(r"<p[^>]*>(.*?)</p>", article_match.group(1), _re.DOTALL | _re.IGNORECASE)
             for p in paras:
                 text = _re.sub(r"<[^>]+>", "", p).strip()
                 text = _html.unescape(text)
                 if len(text) > 20:
                     clean_paras.append(text)
 
-        # 策略2：如果 article 提取不足，尝试全页 <p>
+        # 策略2：全页 <p>
         if len(clean_paras) < 3:
             all_paras = _re.findall(r"<p[^>]*>(.*?)</p>", html_text, _re.DOTALL | _re.IGNORECASE)
             seen = set(clean_paras)
@@ -3324,7 +3463,6 @@ def _fetch_article_content(url: str) -> str:
                 text = _re.sub(r"<[^>]+>", "", p).strip()
                 text = _html.unescape(text)
                 if len(text) > 20 and text not in seen:
-                    # 过滤导航/广告/cookie 文本
                     lower = text.lower()
                     if any(skip in lower for skip in [
                         "cookie", "subscribe", "sign up", "log in", "copyright",
@@ -3335,7 +3473,7 @@ def _fetch_article_content(url: str) -> str:
                     clean_paras.append(text)
                     seen.add(text)
 
-        # 策略3：如果还是不够，尝试 <div> 内的长文本块
+        # 策略3：content/body div
         if len(clean_paras) < 3:
             div_texts = _re.findall(
                 r'<div[^>]*class="[^"]*(?:content|body|text|story|article)[^"]*"[^>]*>(.*?)</div>',
@@ -3357,8 +3495,6 @@ def _fetch_article_content(url: str) -> str:
 
     except Exception as e:
         print(f"[WARN] Article fetch failed for {url}: {e}")
-        import traceback
-        traceback.print_exc()
         return ""
 
 
@@ -3366,14 +3502,11 @@ def _translate_article(text: str) -> str:
     """调用 AI 将英文文章翻译为中文。"""
     if not text:
         return ""
-
-    # 截断过长文本（节省 token）
     if len(text) > 5000:
         text = text[:5000] + "\n\n[... 原文过长，已截断 ...]"
 
     try:
         client, _model, _temp = _get_ai_client()
-
         response = client.chat.completions.create(
             model=_model,
             messages=[
@@ -3390,8 +3523,7 @@ def _translate_article(text: str) -> str:
             temperature=0.3,
         )
         translated = response.choices[0].message.content.strip()
-        translated = translated.replace('**', '').replace('*', '')
-        return translated
+        return translated.replace('**', '').replace('*', '')
     except Exception as e:
         print(f"[WARN] Article translation failed: {e}")
         return ""
@@ -3406,12 +3538,12 @@ def _ai_expand_summary(title: str, summary: str) -> str:
             messages=[
                 {"role": "system", "content": (
                     "你是 Olivia，Compass 平台的市场经济学家。"
-                    "你的任务是根据英文新闻标题和摘要，撰写一段中文详细解读（200-400字）。"
+                    "你的任务是根据新闻标题和摘要，撰写一段中文详细解读（200-400字）。"
                     "分析这条新闻对布里斯班房产市场和华人投资者的影响。"
                     "你必须始终使用中文回复，即使新闻原文是英文。"
                     "不要使用任何 markdown 格式符号（如 ** 或 *）。用纯文本，用换行分段。"
                 )},
-                {"role": "user", "content": f"以下是一条英文房产新闻，请用中文撰写详细解读：\n\n标题：{title}\n\n摘要：{summary}\n\n请用中文撰写 Olivia 的专业解读。"}
+                {"role": "user", "content": f"以下是一条房产新闻，请用中文撰写详细解读：\n\n标题：{title}\n\n摘要：{summary}\n\n请用中文撰写 Olivia 的专业解读。"}
             ],
             max_tokens=2048,
             temperature=_temp,
@@ -3423,64 +3555,58 @@ def _ai_expand_summary(title: str, summary: str) -> str:
         return ""
 
 
+# ---- API 端点 ----
+
 @app.get("/api/news/detail")
 def get_news_detail(url: str, title: str = "", summary: str = ""):
-    """Olivia AI 解读（主要内容）+ 尝试抓取原文（可选增强）。"""
+    """Olivia AI 解读 + 尝试抓取原文。"""
     if not url:
         return {"error": "url parameter required"}
 
-    # 缓存 key
     url_hash = _hashlib.md5(url.encode()).hexdigest()
-    now = _time.time()
 
-    # 检查缓存
-    if url_hash in _article_cache:
-        cached = _article_cache[url_hash]
-        if (now - cached["ts"]) < _ARTICLE_TTL:
-            return {
-                "original_text": cached["original"],
-                "translated_text": cached["translated"],
-                "url": url,
-                "cached": True,
-            }
+    # 检查 DB 缓存（如果可用）
+    if execute_query:
+        try:
+            cached = execute_query(
+                "SELECT original_text, translated_text FROM news_article_details WHERE url_hash = %s",
+                (url_hash,)
+            )
+            if cached:
+                return {
+                    "original_text": cached[0].get("original_text", ""),
+                    "translated_text": cached[0].get("translated_text", ""),
+                    "url": url,
+                    "cached": True,
+                }
+        except Exception:
+            pass  # Table may not exist yet, fall through to in-memory
 
     original = ""
     translated = ""
 
-    # 步骤 1：尝试抓取原文（限时 10 秒，不阻塞主流程）
+    # 步骤 1：尝试抓取原文（限时 5 秒，缩短等待）
     try:
         import concurrent.futures
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future = executor.submit(_fetch_article_content, url)
             try:
-                original = future.result(timeout=10)
+                original = future.result(timeout=5)
             except concurrent.futures.TimeoutError:
-                print(f"[INFO] Article fetch timed out for: {url}")
                 original = ""
     except Exception:
         original = ""
 
-    # 步骤 2：生成中文内容
+    # 步骤 2：翻译
     if original:
-        # 成功抓取 → 翻译原文
         translated = _translate_article(original)
 
     if not translated and (title or summary):
-        # 没有翻译内容 → Olivia AI 基于标题+摘要生成深度解读（主要路径）
         translated = _ai_expand_summary(title, summary)
 
-    # 步骤 3：即使都失败，也返回有价值的内容
     if not original and not translated:
-        # 最终兜底：用简单的中文摘要
         if title:
             translated = f"新闻概要：{title}\n\n{summary}" if summary else f"新闻概要：{title}"
-
-    # 写入缓存（即使是空的也缓存，避免重复请求失败的 URL）
-    _article_cache[url_hash] = {
-        "original": original,
-        "translated": translated,
-        "ts": now if (original or translated) else now - _ARTICLE_TTL + 300,  # 失败的只缓存5分钟
-    }
 
     return {
         "original_text": original,
@@ -3492,25 +3618,139 @@ def get_news_detail(url: str, title: str = "", summary: str = ""):
 
 @app.get("/api/news")
 def get_news():
-    """获取布里斯班房产新闻 + Olivia 每日综合点评"""
+    """获取当日新闻 + Olivia 最新点评"""
     items = _fetch_rss_news()
+    # 持久化到 DB（异步不阻塞）
+    t = threading.Thread(target=_persist_news_to_db, args=(items,), daemon=True)
+    t.start()
 
     today = datetime.now().strftime("%Y-%m-%d")
 
-    # 检查是否有今日缓存的点评
+    # 1. 先查内存缓存
     commentary = ""
+    commentary_period = ""
     if _commentary_cache["text"] and _commentary_cache["date"] == today:
         commentary = _commentary_cache["text"]
-    elif items:
-        # 没有今日点评，后台异步生成（不阻塞本次请求）
-        _trigger_amanda_background(items)
+        commentary_period = _commentary_cache.get("period", "")
+
+    # 2. 再查 DB
+    if not commentary and execute_query:
+        try:
+            db_commentary = execute_query(
+                "SELECT content, period FROM news_commentaries WHERE pub_date = %s ORDER BY created_at DESC LIMIT 1",
+                (today,)
+            )
+            if db_commentary:
+                commentary = db_commentary[0]["content"]
+                commentary_period = db_commentary[0]["period"]
+                _commentary_cache["text"] = commentary
+                _commentary_cache["date"] = today
+                _commentary_cache["period"] = commentary_period
+                _commentary_cache["ts"] = _time.time()
+        except Exception:
+            pass
+
+    # 3. 无点评则后台生成
+    if not commentary and items:
+        _trigger_olivia_background(items)
 
     return {
         "news": items or [],
-        "source": "google_news_rss",
-        "amanda_commentary": commentary,
+        "olivia_commentary": commentary,
         "commentary_date": today,
+        "commentary_period": commentary_period,
     }
+
+
+@app.get("/api/news/commentaries")
+def get_news_commentaries(page: int = 1, page_size: int = 10):
+    """获取 Olivia 过往点评列表（分页）"""
+    if not execute_query:
+        return {"commentaries": [], "total": 0, "page": page, "page_size": page_size}
+
+    offset = (page - 1) * page_size
+
+    try:
+        total_result = execute_query("SELECT COUNT(*) as cnt FROM news_commentaries")
+        total = total_result[0]["cnt"] if total_result else 0
+
+        rows = execute_query(
+            """SELECT id, pub_date, period, content, created_at
+               FROM news_commentaries
+               ORDER BY pub_date DESC, created_at DESC
+               LIMIT %s OFFSET %s""",
+            (page_size, offset)
+        )
+
+        commentaries = []
+        for r in (rows or []):
+            commentaries.append({
+                "id": r["id"],
+                "pub_date": str(r["pub_date"]) if r.get("pub_date") else "",
+                "period": r.get("period", ""),
+                "content": r.get("content", ""),
+                "created_at": str(r["created_at"]) if r.get("created_at") else "",
+            })
+
+        return {
+            "commentaries": commentaries,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+        }
+    except Exception as e:
+        print(f"[WARN] Get commentaries failed: {e}")
+        return {"commentaries": [], "total": 0, "page": page, "page_size": page_size}
+
+
+@app.get("/api/news/by-date")
+def get_news_by_date(days: int = 7, category: Optional[str] = None):
+    """获取按日期分组的新闻"""
+    if not execute_query:
+        # Fallback: 用内存缓存的新闻按日期分组
+        items = _fetch_rss_news()
+        if category:
+            items = [i for i in items if i.get("tag") == category]
+        grouped: dict = {}
+        for item in items:
+            d = item.get("date", "未知")
+            if d not in grouped:
+                grouped[d] = []
+            grouped[d].append(item)
+        return {"dates": [{"date": k, "articles": v} for k, v in grouped.items()]}
+
+    try:
+        params: list = [days]
+        query = """SELECT id, title, source, summary, link, category, category_color, pub_date
+                   FROM news_articles
+                   WHERE pub_date >= CURRENT_DATE - INTERVAL '%s days'"""
+        if category:
+            query += " AND category = %s"
+            params.append(category)
+        query += " ORDER BY pub_date DESC, created_at DESC"
+
+        rows = execute_query(query, tuple(params))
+
+        grouped: dict = {}
+        for r in (rows or []):
+            d = str(r.get("pub_date", "未知"))
+            if d not in grouped:
+                grouped[d] = []
+            grouped[d].append({
+                "id": r.get("id"),
+                "title": r.get("title", ""),
+                "source": r.get("source", ""),
+                "summary": r.get("summary", ""),
+                "link": r.get("link", ""),
+                "tag": r.get("category", "市场动态"),
+                "tagColor": r.get("category_color", "bg-blue-100 text-blue-700"),
+                "date": d,
+            })
+
+        return {"dates": [{"date": k, "articles": v} for k, v in grouped.items()]}
+    except Exception as e:
+        print(f"[WARN] Get news by date failed: {e}")
+        return {"dates": []}
 
 
 @app.get("/api/schools")

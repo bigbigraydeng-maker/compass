@@ -18,15 +18,6 @@ interface SaleItem {
   sold_date: string;
 }
 
-interface NewsItem {
-  title: string;
-  source: string;
-  date: string;
-  summary: string;
-  tag: string;
-  tagColor: string;
-}
-
 interface MarketStatsProps {
   homeData?: any; // 从父组件传入，避免重复调用 /api/home
 }
@@ -34,8 +25,7 @@ interface MarketStatsProps {
 export default function MarketStats({ homeData: parentHomeData }: MarketStatsProps) {
   const router = useRouter();
   const [recentSales, setRecentSales] = useState<SaleItem[]>([]);
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const [amandaCommentary, setAmandaCommentary] = useState('');
+  const [oliviaCommentary, setOliviaCommentary] = useState('');
   const [commentaryDate, setCommentaryDate] = useState('');
   const [activeTab, setActiveTab] = useState<'news' | 'sold'>('news');
 
@@ -68,19 +58,15 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
           setRecentSales(homeRes.latest_sales.slice(0, 8));
         }
 
-        if (newsData?.news && newsData.news.length > 0) {
-          setNewsItems(newsData.news);
-        }
-
-        if (newsData?.amanda_commentary) {
-          setAmandaCommentary(newsData.amanda_commentary);
+        if (newsData?.olivia_commentary) {
+          setOliviaCommentary(newsData.olivia_commentary);
           setCommentaryDate(newsData.commentary_date || '');
         } else if (newsData?.news && newsData.news.length > 0) {
           retryTimer = setTimeout(async () => {
             if (cancelled) return;
             const retry = await loadNews();
-            if (retry?.amanda_commentary && !cancelled) {
-              setAmandaCommentary(retry.amanda_commentary);
+            if (retry?.olivia_commentary && !cancelled) {
+              setOliviaCommentary(retry.olivia_commentary);
               setCommentaryDate(retry.commentary_date || '');
             }
           }, 8000);
@@ -152,8 +138,8 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
         {activeTab === 'news' && (
           <div>
             {/* Olivia 每日综合解读 */}
-            {amandaCommentary ? (
-              <div className="mb-6 bg-gradient-to-br from-purple-50 via-white to-pink-50 rounded-xl border border-purple-100 p-5 md:p-8">
+            {oliviaCommentary ? (
+              <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 rounded-xl border border-purple-100 p-5 md:p-8">
                 <div className="flex items-start gap-3 md:gap-5">
                   <div className="flex-shrink-0">
                     <PersonaAvatar persona="olivia" size="lg" />
@@ -165,13 +151,13 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
                       <span className="text-[10px] md:text-xs text-gray-400 ml-auto">{commentaryDate}</span>
                     </div>
                     <div className="text-gray-700 text-sm md:text-[15px] leading-relaxed whitespace-pre-line">
-                      {amandaCommentary}
+                      {oliviaCommentary}
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="mb-6 bg-gray-50 rounded-xl border border-gray-100 p-6 text-center">
+              <div className="bg-gray-50 rounded-xl border border-gray-100 p-6 text-center">
                 <div className="flex items-center justify-center gap-2 text-gray-400">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                   <span className="text-sm">Olivia 正在阅读今日新闻，稍后为您解读...</span>
@@ -179,51 +165,15 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
               </div>
             )}
 
-            {/* 今日新闻来源列表 */}
-            {newsItems.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">今日新闻来源</h3>
-                {/* 手机端 */}
-                <div className="md:hidden space-y-2">
-                  {newsItems.slice(0, 6).map((news, idx) => (
-                    <div key={idx} className="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${news.tagColor}`}>
-                          {news.tag}
-                        </span>
-                        <span className="text-[10px] text-gray-400">{news.source} · {news.date}</span>
-                      </div>
-                      <p className="text-sm text-gray-800 leading-snug">{news.title}</p>
-                    </div>
-                  ))}
-                </div>
-                {/* 桌面端：紧凑两列 */}
-                <div className="hidden md:grid grid-cols-2 gap-3">
-                  {newsItems.slice(0, 8).map((news, idx) => (
-                    <div key={idx} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${news.tagColor}`}>
-                          {news.tag}
-                        </span>
-                        <span className="text-xs text-gray-400">{news.source} · {news.date}</span>
-                      </div>
-                      <p className="text-sm text-gray-800 leading-snug line-clamp-2">{news.title}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-col items-center gap-3 mt-5">
-                  <Link
-                    href="/news"
-                    className="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    查看全部新闻与翻译 →
-                  </Link>
-                  <p className="text-xs text-gray-400">
-                    以上新闻由 Google News 自动聚合 · Olivia 基于新闻内容生成综合解读
-                  </p>
-                </div>
-              </div>
-            )}
+            {/* 查看全部新闻链接 */}
+            <div className="text-center mt-5">
+              <Link
+                href="/news"
+                className="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                查看全部新闻与翻译 →
+              </Link>
+            </div>
           </div>
         )}
 

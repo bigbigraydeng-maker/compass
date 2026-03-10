@@ -7,3 +7,5 @@ pydantic-settings
 openai
 slowapi
 python-multipart
+apscheduler
+pytz
