@@ -1,14 +1,13 @@
 'use client';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
-import Hero from './components/Hero';
+import SmartInput from './components/SmartInput';
 import TodayDeals from './components/TodayDeals';
 import TopInvestmentSuburbs from './components/TopInvestmentSuburbs';
 import Footer from './components/Footer';
 import { fetcher } from './lib/api';
 
 // 懒加载首屏以下组件 — 减少初始 JS 加载量
-const AIPropertyAnalysis = lazy(() => import('./components/AIPropertyAnalysis'));
 const MarketStats = lazy(() => import('./components/MarketStats'));
 const Community = lazy(() => import('./components/Community'));
 
@@ -59,13 +58,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <Hero />
+      <SmartInput />
       <TodayDeals />
       <TopInvestmentSuburbs rankings={rankings} suburbStats={suburbStats} />
-
-      <Suspense fallback={<LazyFallback />}>
-        <AIPropertyAnalysis />
-      </Suspense>
 
       <Suspense fallback={<LazyFallback />}>
         <MarketStats homeData={homeData} />

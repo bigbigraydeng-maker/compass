@@ -2,7 +2,7 @@
 Compass MVP FastAPI 主应用
 v1.2.0 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5) + 安全加固
 """
-from fastapi import FastAPI, HTTPException, Body, Request
+from fastapi import FastAPI, HTTPException, Body, Request, Form, File, UploadFile
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -18,10 +18,10 @@ from dotenv import load_dotenv
 # 加载 .env 文件
 load_dotenv()
 
-print("Compass API v1.3.0 - 17 Suburbs + Security + Amanda")
+print("Compass API v1.4.0 - Multimodal Analysis + Comparable Sales")
 
 # 集中化区域配置
-from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG, get_zoning_scores
+from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG, get_zoning_scores, get_police_division_map
 
 # ====== Rate Limiter ======
 limiter = Limiter(key_func=get_remote_address)
@@ -1980,6 +1980,598 @@ def analyze_property_stream(request: Request, address: str = Body(...), url: str
             yield f"data: {_json.dumps({'type': 'done'})}\n\n"
 
         except Exception as e:
+            error_data = _json.dumps({"type": "error", "message": str(e)})
+            yield f"data: {error_data}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        }
+    )
+
+
+# ========== 多模态分析 (Multimodal Analysis) ==========
+
+import re as _re_early
+import base64 as _b64
+
+def _classify_input(text: str) -> tuple:
+    """
+    分类用户输入类型。
+    返回 (type, value)
+    type: 'domain_url' | 'rea_url' | 'address' | 'freeform'
+    """
+    if not text:
+        return ('freeform', '')
+    text = text.strip()
+    if 'domain.com.au' in text.lower():
+        return ('domain_url', text)
+    if 'realestate.com.au' in text.lower():
+        return ('rea_url', text)
+    # 检查是否包含已知suburb名 → 地址输入
+    text_lower = text.lower()
+    for s in ALL_SUBURB_NAMES:
+        if s.lower() in text_lower:
+            return ('address', text)
+    # 检查是否匹配地址模式 (数字 + 街道)
+    if _re_early.search(r'\d+\s+\w+\s+(st|street|rd|road|ave|avenue|dr|drive|ct|court|pl|place|cr|crescent|way|blvd|lane|ln)', text_lower):
+        return ('address', text)
+    return ('freeform', text)
+
+
+def _extract_suburb_from_input(text: str) -> str:
+    """从文本中提取已知的 suburb 名称"""
+    if not text:
+        return "Sunnybank"
+    text_lower = text.lower()
+    for s in ALL_SUBURB_NAMES:
+        if s.lower() in text_lower:
+            return s
+    # 逗号分割尝试
+    parts = text.split(',')
+    if len(parts) > 1:
+        candidate = parts[-1].strip()
+        for s in ALL_SUBURB_NAMES:
+            if s.lower() in candidate.lower():
+                return s
+    return "Sunnybank"
+
+
+def _get_nearby_suburbs(suburb: str) -> list:
+    """返回地理相邻的区域（同 police_division = 地理相邻）"""
+    target_info = SUBURB_CONFIG.get(suburb, {})
+    target_div = target_info.get('police_division', '')
+    if not target_div:
+        return []
+    return [s for s, info in SUBURB_CONFIG.items()
+            if info.get('police_division') == target_div and s != suburb]
+
+
+def _get_comparable_sales(
+    suburb: str,
+    property_type: str = None,
+    bedrooms: int = None,
+    months: int = 12,
+    include_nearby: bool = True,
+) -> dict:
+    """
+    查询可比销售数据：同区 + 周边区域的历史成交。
+    """
+    result = {
+        "same_suburb": [],
+        "nearby_suburbs": [],
+        "stats": {},
+    }
+
+    try:
+        # 构建同区查询
+        conditions = ["UPPER(s.suburb) = UPPER(%s)"]
+        params = [suburb]
+
+        if property_type:
+            conditions.append("LOWER(s.property_type) = LOWER(%s)")
+            params.append(property_type)
+
+        if bedrooms is not None and bedrooms > 0:
+            conditions.append("s.bedrooms BETWEEN %s AND %s")
+            params.extend([max(1, bedrooms - 1), bedrooms + 1])
+
+        conditions.append(f"s.sale_date >= NOW() - INTERVAL '{months} months'")
+
+        where_clause = " AND ".join(conditions)
+
+        same_query = f"""
+            SELECT s.full_address, s.sale_price, s.sale_date, s.property_type,
+                   s.bedrooms, s.bathrooms, s.land_size,
+                   CASE WHEN s.land_size > 0 THEN s.sale_price / s.land_size ELSE 0 END AS price_per_sqm
+            FROM sales s
+            WHERE {where_clause}
+            ORDER BY s.sale_date DESC
+            LIMIT 20
+        """
+        same_results = execute_query(same_query, tuple(params))
+        prices = []
+        for row in (same_results or []):
+            price = float(row.get('sale_price', 0) or 0)
+            prices.append(price)
+            result["same_suburb"].append({
+                "address": row.get('full_address', ''),
+                "price": int(price),
+                "date": str(row.get('sale_date', '')),
+                "type": row.get('property_type', ''),
+                "beds": row.get('bedrooms', 0),
+                "baths": row.get('bathrooms', 0),
+                "land_sqm": int(float(row.get('land_size', 0) or 0)),
+                "price_per_sqm": int(float(row.get('price_per_sqm', 0) or 0)),
+            })
+
+        # 统计摘要
+        if prices:
+            sorted_prices = sorted(prices)
+            mid = len(sorted_prices) // 2
+            median = sorted_prices[mid] if len(sorted_prices) % 2 else (sorted_prices[mid-1] + sorted_prices[mid]) / 2
+            result["stats"]["same_suburb_median"] = int(median)
+            result["stats"]["same_suburb_avg"] = int(sum(prices) / len(prices))
+            result["stats"]["same_suburb_min"] = int(min(prices))
+            result["stats"]["same_suburb_max"] = int(max(prices))
+            result["stats"]["same_suburb_count"] = len(prices)
+
+        # 近6个月趋势
+        try:
+            trend_query = """
+                SELECT
+                    AVG(CASE WHEN s.sale_date >= NOW() - INTERVAL '6 months' THEN s.sale_price END) as recent_avg,
+                    AVG(CASE WHEN s.sale_date < NOW() - INTERVAL '6 months'
+                         AND s.sale_date >= NOW() - INTERVAL '12 months' THEN s.sale_price END) as older_avg
+                FROM sales s
+                WHERE UPPER(s.suburb) = UPPER(%s)
+            """
+            trend_params = [suburb]
+            if property_type:
+                trend_query += " AND LOWER(s.property_type) = LOWER(%s)"
+                trend_params.append(property_type)
+            trend_query += f" AND s.sale_date >= NOW() - INTERVAL '12 months'"
+
+            trend_result = execute_query(trend_query, tuple(trend_params))
+            if trend_result and trend_result[0]:
+                recent = float(trend_result[0].get('recent_avg', 0) or 0)
+                older = float(trend_result[0].get('older_avg', 0) or 0)
+                if older > 0 and recent > 0:
+                    change = (recent - older) / older * 100
+                    result["stats"]["price_trend_6m"] = f"{'+' if change >= 0 else ''}{change:.1f}%"
+        except Exception as e:
+            print(f"Trend calc error: {e}")
+
+        # 周边区域可比
+        if include_nearby:
+            nearby = _get_nearby_suburbs(suburb)
+            if nearby:
+                nearby_conditions = ["UPPER(s.suburb) IN (" + ",".join(["%s"] * len(nearby)) + ")"]
+                nearby_params = list(nearby)
+                if property_type:
+                    nearby_conditions.append("LOWER(s.property_type) = LOWER(%s)")
+                    nearby_params.append(property_type)
+                if bedrooms is not None and bedrooms > 0:
+                    nearby_conditions.append("s.bedrooms BETWEEN %s AND %s")
+                    nearby_params.extend([max(1, bedrooms - 1), bedrooms + 1])
+                nearby_conditions.append(f"s.sale_date >= NOW() - INTERVAL '{months} months'")
+
+                nearby_where = " AND ".join(nearby_conditions)
+                nearby_query = f"""
+                    SELECT INITCAP(s.suburb) as suburb, s.full_address, s.sale_price, s.sale_date,
+                           s.property_type, s.bedrooms, s.bathrooms, s.land_size
+                    FROM sales s
+                    WHERE {nearby_where}
+                    ORDER BY s.sale_date DESC
+                    LIMIT 20
+                """
+                nearby_results = execute_query(nearby_query, tuple(nearby_params))
+                nearby_prices = []
+                for row in (nearby_results or []):
+                    price = float(row.get('sale_price', 0) or 0)
+                    nearby_prices.append(price)
+                    result["nearby_suburbs"].append({
+                        "suburb": row.get('suburb', ''),
+                        "address": row.get('full_address', ''),
+                        "price": int(price),
+                        "date": str(row.get('sale_date', '')),
+                        "type": row.get('property_type', ''),
+                        "beds": row.get('bedrooms', 0),
+                        "baths": row.get('bathrooms', 0),
+                        "land_sqm": int(float(row.get('land_size', 0) or 0)),
+                    })
+
+                if nearby_prices:
+                    sorted_np = sorted(nearby_prices)
+                    mid = len(sorted_np) // 2
+                    n_median = sorted_np[mid] if len(sorted_np) % 2 else (sorted_np[mid-1] + sorted_np[mid]) / 2
+                    result["stats"]["nearby_median"] = int(n_median)
+                    result["stats"]["nearby_count"] = len(nearby_prices)
+
+    except Exception as e:
+        print(f"Comparable sales error: {e}")
+        import traceback
+        traceback.print_exc()
+
+    return result
+
+
+def _build_comparable_section(comparables: dict, property_type: str = None, bedrooms: int = None) -> str:
+    """构建可比成交 prompt 段落"""
+    stats = comparables.get("stats", {})
+    same = comparables.get("same_suburb", [])
+    nearby = comparables.get("nearby_suburbs", [])
+
+    if not same and not nearby:
+        return "## 10. 可比成交分析\n- 暂无足够可比成交数据"
+
+    type_label = property_type or "所有类型"
+    beds_label = f"{bedrooms}房" if bedrooms else "所有户型"
+
+    lines = [f"## 10. 可比成交分析（近12个月，{type_label} {beds_label}）"]
+
+    if same:
+        lines.append(f"同区成交 {stats.get('same_suburb_count', len(same))} 套:")
+        lines.append(f"- 中位价: ${stats.get('same_suburb_median', 0):,} | 均价: ${stats.get('same_suburb_avg', 0):,}")
+        lines.append(f"- 区间: ${stats.get('same_suburb_min', 0):,} ~ ${stats.get('same_suburb_max', 0):,}")
+        trend = stats.get("price_trend_6m", "")
+        if trend:
+            lines.append(f"- 近6个月趋势: {trend}")
+        lines.append("- 最近成交:")
+        for i, s in enumerate(same[:5]):
+            sqm_str = f" | ${s['price_per_sqm']:,}/sqm" if s.get('price_per_sqm') else ""
+            lines.append(f"  {i+1}. {s['address']} | ${s['price']:,} | {s['date']} | {s['type']} {s.get('beds',0)}房{s.get('baths',0)}卫 | {s.get('land_sqm',0)}sqm{sqm_str}")
+
+    if nearby:
+        nearby_suburbs = list(set(n.get('suburb', '') for n in nearby))
+        lines.append(f"\n周边可比（{', '.join(nearby_suburbs[:3])}）成交 {stats.get('nearby_count', len(nearby))} 套:")
+        lines.append(f"- 中位价: ${stats.get('nearby_median', 0):,}")
+        for i, n in enumerate(nearby[:3]):
+            lines.append(f"  {i+1}. {n.get('suburb','')} {n['address']} | ${n['price']:,} | {n['date']}")
+
+    return "\n".join(lines)
+
+
+def _build_multimodal_prompt(
+    input_type: str,
+    text_input: str,
+    property_data: dict,
+    suburb: str,
+    profile: dict,
+    mode: str,
+    comparables: dict = None,
+) -> str:
+    """
+    构建多模态分析的 prompt。复用 _build_ai_prompt 的数据段落逻辑，
+    增加房产具体信息 + 可比成交 + Leo 判断指令。
+    """
+    # 复用已有的 9 段数据
+    base_prompt = _build_ai_prompt(text_input or suburb, suburb, profile)
+
+    # 在基础 prompt 末尾加入可比成交
+    comparable_section = ""
+    if comparables:
+        comparable_section = "\n\n" + _build_comparable_section(
+            comparables,
+            property_data.get("property_type") if property_data else None,
+            property_data.get("bedrooms") if property_data else None,
+        )
+
+    # 房产具体信息段（URL 抓取成功时）
+    property_section = ""
+    if property_data and not property_data.get("error"):
+        addr = property_data.get("address", "")
+        price = property_data.get("price", "")
+        beds = property_data.get("bedrooms", 0)
+        baths = property_data.get("bathrooms", 0)
+        parking = property_data.get("parking", 0)
+        land = property_data.get("land_size", 0)
+        ptype = property_data.get("property_type", "")
+        desc = property_data.get("description", "")[:500]
+
+        property_section = f"""
+
+## 目标房产详情
+- 地址: {addr}
+- 挂牌价: {price}
+- 户型: {beds}房{baths}卫{parking}车位
+- 土地面积: {land}sqm
+- 房型: {ptype}
+- 描述: {desc}
+"""
+
+    # 增强的分析要求
+    analysis_instructions = """
+---
+
+请基于以上**全部真实数据**（含可比成交和目标房产信息），输出投资分析报告：
+
+## 1. 投资评级 (X/10)
+给出评级并用2-3句话解释。必须引用具体数据支撑评分。
+
+## 2. 核心优势 (3-4条)
+每条必须引用具体数字。
+
+## 3. 风险警示 (2-3条)
+必须引用具体数据。
+
+## 4. 价格评估
+- 当前挂牌价是否合理（对比同区中位价和近期可比成交）
+- 合理估价区间
+
+## 5. 投资建议
+- 推荐操作：买入 / 观望 / 不建议
+- 议价策略
+- 持有策略：短期/长期
+
+**输出要求：**
+- 全中文回复
+- 每个数据引用必须来自上面提供的数据，禁止编造
+- 控制在1200字以内
+- 语言风格：专业、直接、实用
+
+**最后一行必须输出（隐藏标记，用户不可见）：**
+<!-- LEO_VERDICT: {"verdict":"值得买/观望/不建议","confidence":"高/中/低","fair_price_range":"XX-XX万","reason":"一句话理由"} -->
+"""
+
+    # 组合最终 prompt
+    # 替换基础 prompt 中的分析指引部分
+    # 找到 "---" 分隔线位置，用增强版替换
+    if "请基于以上**全部真实数据**" in base_prompt:
+        # 截断到数据段结束
+        idx = base_prompt.index("---\n\n请基于以上")
+        base_prompt = base_prompt[:idx]
+
+    final_prompt = base_prompt + property_section + comparable_section + analysis_instructions
+
+    # 添加模式额外指引
+    extra = _get_mode_extra_instructions(mode)
+    if extra:
+        final_prompt += extra
+
+    return final_prompt
+
+
+@app.post("/api/analyze/multimodal")
+@limiter.limit("10/minute")
+async def analyze_multimodal(
+    request: Request,
+    text_input: str = Form(None),
+    images: list[UploadFile] = File(None),
+    mode: str = Form("general"),
+):
+    """
+    多模态 AI 分析端点。
+    支持: Domain/REA 链接、地址、图片、自由文本。
+    返回 SSE 多事件流。
+    """
+    import json as _json
+
+    # 验证输入
+    if not text_input and not images:
+        raise HTTPException(status_code=400, detail="请提供文本输入或图片")
+
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+    if not moonshot_key:
+        raise HTTPException(status_code=500, detail="AI 服务未配置")
+
+    # 处理图片
+    image_b64_list = []
+    if images:
+        for img in images[:3]:
+            if img.size and img.size > 5 * 1024 * 1024:
+                continue
+            content_type = img.content_type or "image/jpeg"
+            if content_type not in ("image/jpeg", "image/png", "image/webp"):
+                continue
+            raw = await img.read()
+            b64 = _b64.b64encode(raw).decode("utf-8")
+            image_b64_list.append(f"data:{content_type};base64,{b64}")
+
+    # 分类输入
+    input_type, input_value = _classify_input(text_input or "")
+
+    def event_generator():
+        try:
+            # 1. 处理 URL → 抓取房产数据
+            property_data = None
+            if input_type in ('domain_url', 'rea_url'):
+                try:
+                    from property_scraper import scrape_property_listing
+                    property_data = scrape_property_listing(input_value)
+                except Exception as e:
+                    print(f"Scraper error: {e}")
+                    property_data = {"error": str(e)}
+
+            # 2. 确定 suburb
+            suburb = "Sunnybank"
+            if property_data and not property_data.get("error"):
+                suburb_from_data = property_data.get("suburb", "")
+                if suburb_from_data:
+                    # 匹配已知suburb
+                    for s in ALL_SUBURB_NAMES:
+                        if s.lower() == suburb_from_data.lower():
+                            suburb = s
+                            break
+                    else:
+                        # 部分匹配
+                        for s in ALL_SUBURB_NAMES:
+                            if s.lower() in suburb_from_data.lower() or suburb_from_data.lower() in s.lower():
+                                suburb = s
+                                break
+                if suburb == "Sunnybank" and property_data.get("address"):
+                    suburb = _extract_suburb_from_input(property_data["address"])
+            elif text_input:
+                suburb = _extract_suburb_from_input(text_input)
+
+            # 发送 meta 事件
+            meta = _json.dumps({
+                "type": "meta",
+                "input_type": input_type,
+                "suburb": suburb,
+                "mode": mode,
+                "has_images": len(image_b64_list) > 0,
+            })
+            yield f"data: {meta}\n\n"
+
+            # 发送 property_data 事件
+            if property_data and not property_data.get("error"):
+                pd_event = _json.dumps({
+                    "type": "property_data",
+                    "data": property_data,
+                })
+                yield f"data: {pd_event}\n\n"
+
+            # 3. 聚合 suburb 数据
+            profile = _get_suburb_full_profile(suburb)
+
+            # 4. Compass Score (Ethan)
+            try:
+                score_data = profile.get("compass_score", {})
+                ethan_event = _json.dumps({
+                    "type": "ethan_score",
+                    "data": score_data,
+                })
+                yield f"data: {ethan_event}\n\n"
+            except Exception as e:
+                print(f"Ethan score error: {e}")
+
+            # 5. 可比成交
+            comparables = {}
+            try:
+                comp_ptype = None
+                comp_beds = None
+                if property_data and not property_data.get("error"):
+                    comp_ptype = property_data.get("property_type")
+                    comp_beds = property_data.get("bedrooms")
+                    if isinstance(comp_beds, str):
+                        try:
+                            comp_beds = int(comp_beds)
+                        except (ValueError, TypeError):
+                            comp_beds = None
+
+                comparables = _get_comparable_sales(
+                    suburb=suburb,
+                    property_type=comp_ptype,
+                    bedrooms=comp_beds,
+                )
+                comp_event = _json.dumps({
+                    "type": "comparable_sales",
+                    "data": comparables,
+                })
+                yield f"data: {comp_event}\n\n"
+            except Exception as e:
+                print(f"Comparable sales error: {e}")
+
+            # 6. 构建 prompt + 流式 AI 分析
+            from openai import OpenAI
+            client = OpenAI(
+                api_key=moonshot_key,
+                base_url="https://api.moonshot.cn/v1"
+            )
+
+            system_prompt = _get_mode_system_prompt(mode)
+
+            # 构建 messages
+            if image_b64_list:
+                # 图片模式 → Vision
+                user_content = []
+                img_prompt = f"请分析这些房产相关图片，提取你能识别的信息（地址、价格、户型、特征等），并结合以下{suburb}区的数据给出投资分析。\n\n"
+                prompt_text = _build_multimodal_prompt(
+                    input_type, text_input, property_data, suburb, profile, mode, comparables
+                )
+                user_content.append({"type": "text", "text": img_prompt + prompt_text})
+                for img_b64 in image_b64_list:
+                    user_content.append({
+                        "type": "image_url",
+                        "image_url": {"url": img_b64}
+                    })
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_content}
+                ]
+            else:
+                # 文本模式
+                prompt_text = _build_multimodal_prompt(
+                    input_type, text_input, property_data, suburb, profile, mode, comparables
+                )
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt_text}
+                ]
+
+            # 流式输出
+            stream = client.chat.completions.create(
+                model="kimi-k2.5",
+                messages=messages,
+                max_tokens=4096,
+                temperature=1.0,
+                stream=True,
+            )
+
+            accumulated = ""
+            leo_extracted = False
+            for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    text = chunk.choices[0].delta.content
+                    accumulated += text
+
+                    # 检测并提取 Leo 判断标记
+                    if "<!-- LEO_VERDICT:" in accumulated and not leo_extracted:
+                        match = _re_early.search(
+                            r'<!-- LEO_VERDICT:\s*(\{.*?\})\s*-->',
+                            accumulated,
+                            _re_early.DOTALL,
+                        )
+                        if match:
+                            try:
+                                leo_data = _json.loads(match.group(1))
+                                leo_event = _json.dumps({
+                                    "type": "leo_verdict",
+                                    "data": leo_data,
+                                })
+                                yield f"data: {leo_event}\n\n"
+                                leo_extracted = True
+                                # 从输出中移除标记
+                                text = text.replace(match.group(0), "")
+                            except _json.JSONDecodeError:
+                                pass
+
+                    # 过滤 LEO 标记行再发送内容
+                    clean_text = text
+                    if "<!-- LEO" in clean_text or "LEO_VERDICT" in clean_text:
+                        clean_text = _re_early.sub(r'<!-- LEO_VERDICT:.*?-->', '', clean_text)
+                    if clean_text.strip():
+                        data = _json.dumps({"type": "amanda_content", "text": clean_text})
+                        yield f"data: {data}\n\n"
+
+            # 最后检查是否漏掉 Leo 标记
+            if not leo_extracted and "<!-- LEO_VERDICT:" in accumulated:
+                match = _re_early.search(
+                    r'<!-- LEO_VERDICT:\s*(\{.*?\})\s*-->',
+                    accumulated,
+                    _re_early.DOTALL,
+                )
+                if match:
+                    try:
+                        leo_data = _json.loads(match.group(1))
+                        leo_event = _json.dumps({
+                            "type": "leo_verdict",
+                            "data": leo_data,
+                        })
+                        yield f"data: {leo_event}\n\n"
+                    except _json.JSONDecodeError:
+                        pass
+
+            yield f"data: {_json.dumps({'type': 'done'})}\n\n"
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
             error_data = _json.dumps({"type": "error", "message": str(e)})
             yield f"data: {error_data}\n\n"
 
