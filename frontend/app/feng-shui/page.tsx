@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { fetcher } from '../lib/api';
 import {
   streamFengshuiAnalysis,
   type FengshuiMeta,
@@ -11,25 +12,42 @@ import {
 } from './streamFengshui';
 
 // ====== 方位顺序 ======
-const DIRECTION_ORDER = ['北', '东北', '东', '东南', '南', '西南', '西', '西北'];
+const DIRECTION_ORDER = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
 
 // ====== 犯罪分类英中映射 ======
 const CRIME_CATEGORY_ZH: Record<string, string> = {
-  theft_fraud: '盗窃诈骗',
-  property_crime: '财产犯罪',
+  theft_fraud: '盜竊詐騙',
+  property_crime: '財產犯罪',
   public_order: '公共秩序',
   violent_crime: '暴力犯罪',
   drug_offences: '毒品犯罪',
-  traffic: '交通违法',
+  traffic: '交通違法',
   other: '其他',
   sexual_offences: '性犯罪',
   weapons: '武器犯罪',
-  miscellaneous: '杂项',
+  miscellaneous: '雜項',
 };
 
 // ====== 本地缓存工具 ======
 const CACHE_KEY = 'fengshui_history';
 const MAX_CACHE = 5;
+
+interface FengshuiRecord {
+  id: number;
+  address: string;
+  suburb: string;
+  rating: string;
+  summary: string;
+  center_elevation: number | null;
+  has_backing: boolean;
+  backing_direction: string;
+  has_water: boolean;
+  negative_count: number;
+  positive_count: number;
+  total_crime: number;
+  has_floor_plan: boolean;
+  created_at: string;
+}
 
 interface CachedReport {
   address: string;
@@ -94,7 +112,29 @@ export default function FengShuiPage() {
   // 查看缓存报告
   const [viewingCached, setViewingCached] = useState<CachedReport | null>(null);
 
+  // 公開風水記錄
+  const [publicRecords, setPublicRecords] = useState<FengshuiRecord[]>([]);
+  const [recordStats, setRecordStats] = useState<Record<string, number>>({});
+  const [recordFilter, setRecordFilter] = useState('');
+
   const abortRef = useRef<AbortController | null>(null);
+
+  // 加載公開記錄
+  useEffect(() => {
+    loadPublicRecords();
+  }, [recordFilter]);
+
+  const loadPublicRecords = async () => {
+    try {
+      const params = new URLSearchParams({ limit: '20' });
+      if (recordFilter) params.set('rating', recordFilter);
+      const data = await fetcher(`/api/fengshui/records?${params}`);
+      if (data?.records) {
+        setPublicRecords(data.records);
+        setRecordStats(data.stats || {});
+      }
+    } catch { /* ignore */ }
+  };
 
   // 加载历史记录
   useEffect(() => {
@@ -106,11 +146,11 @@ export default function FengShuiPage() {
     if (!file) return;
     // 验证文件类型
     if (!file.type.startsWith('image/')) {
-      setError('请上传图片格式的平面图（JPG/PNG/WebP）');
+      setError('請上傳圖片格式的平面圖（JPG/PNG/WebP）');
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError('平面图文件大小不能超过5MB');
+      setError('平面圖檔案大小不能超過5MB');
       return;
     }
     // 基础图片有效性检测
@@ -118,7 +158,7 @@ export default function FengShuiPage() {
     const url = URL.createObjectURL(file);
     img.onload = () => {
       if (img.width < 100 || img.height < 100) {
-        setError('图片尺寸过小，请上传清晰的平面图');
+        setError('圖片尺寸過小，請上傳清晰的平面圖');
         URL.revokeObjectURL(url);
         return;
       }
@@ -128,7 +168,7 @@ export default function FengShuiPage() {
       setError(null);
     };
     img.onerror = () => {
-      setError('无法读取图片，请上传有效的平面图文件');
+      setError('無法讀取圖片，請上傳有效的平面圖檔案');
       URL.revokeObjectURL(url);
     };
     img.src = url;
@@ -159,7 +199,7 @@ export default function FengShuiPage() {
 
     // 基础地址格式验证
     if (trimmed.length < 5) {
-      setError('请输入完整的地址，例如: 10 Main St, Sunnybank QLD');
+      setError('請輸入完整的地址，例如: 10 Main St, Sunnybank QLD');
       return;
     }
 
@@ -190,6 +230,8 @@ export default function FengShuiPage() {
           },
           onDone: () => {
             setIsAnalyzing(false);
+            // 刷新公開記錄（後端已自動保存）
+            setTimeout(() => loadPublicRecords(), 1000);
             // 保存到本地缓存
             if (finalMeta && fullContent) {
               const report: CachedReport = {
@@ -210,9 +252,9 @@ export default function FengShuiPage() {
           onError: (msg) => {
             let friendlyMsg = msg;
             if (msg.includes('Geocoding failed') || msg.includes('ZERO_RESULTS')) {
-              friendlyMsg = '无法识别该地址，请确认输入了完整真实的澳洲地址。例如: 10 Main St, Sunnybank QLD';
+              friendlyMsg = '無法識別該地址，請確認輸入了完整真實的澳洲地址。例如: 10 Main St, Sunnybank QLD';
             } else if (msg.includes('Geocoding error')) {
-              friendlyMsg = '地址解析服务暂时不可用，请稍后重试';
+              friendlyMsg = '地址解析服務暫時不可用，請稍後重試';
             }
             setError(friendlyMsg);
             setIsAnalyzing(false);
@@ -223,9 +265,9 @@ export default function FengShuiPage() {
       );
     } catch (err: any) {
       if (err.name !== 'AbortError') {
-        let friendlyMsg = err.message || '分析失败，请重试';
+        let friendlyMsg = err.message || '分析失敗，請重試';
         if (friendlyMsg.includes('Geocoding')) {
-          friendlyMsg = '无法识别该地址。请输入完整的澳洲地址，如: 10 Main St, Sunnybank QLD';
+          friendlyMsg = '無法識別該地址。請輸入完整的澳洲地址，如: 10 Main St, Sunnybank QLD';
         }
         setError(friendlyMsg);
       }
@@ -244,7 +286,7 @@ export default function FengShuiPage() {
     const content = viewingCached?.masterHuContent || masterHuContent;
     const addr = viewingCached?.address || meta?.address || '';
     if (!content) return;
-    const text = `天機堂 · 風水堪輿報告\n地址: ${addr}\n${'─'.repeat(30)}\n${content}\n${'─'.repeat(30)}\n天機堂 × Compass | ${new Date().toLocaleString('zh-CN')}`;
+    const text = `天機堂 · 風水堪輿報告\n地址: ${addr}\n${'─'.repeat(30)}\n${content}\n${'─'.repeat(30)}\n天機堂 × Compass | ${new Date().toLocaleString('zh-TW')}`;
     navigator.clipboard.writeText(text).then(() => {
       setShareToast(true);
       setTimeout(() => setShareToast(false), 2000);
@@ -256,7 +298,7 @@ export default function FengShuiPage() {
     const content = viewingCached?.masterHuContent || masterHuContent;
     const addr = viewingCached?.address || meta?.address || '';
     if (!content) return;
-    const text = `天機堂 · 風水堪輿報告\n\n地址: ${addr}\n生成时间: ${new Date().toLocaleString('zh-CN')}\n${'═'.repeat(40)}\n\n${content}\n\n${'═'.repeat(40)}\n免責聲明：天機堂風水分析基於地形數據與傳統堪輿理論的 AI 綜合判讀，僅供參考。\n天機堂 × Compass`;
+    const text = `天機堂 · 風水堪輿報告\n\n地址: ${addr}\n生成時間: ${new Date().toLocaleString('zh-TW')}\n${'═'.repeat(40)}\n\n${content}\n\n${'═'.repeat(40)}\n免責聲明：天機堂風水分析基於地形數據與傳統堪輿理論的 AI 綜合判讀，僅供參考。\n天機堂 × Compass`;
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -342,7 +384,7 @@ export default function FengShuiPage() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="输入完整地址，如: 10 Main St, Sunnybank QLD..."
+                    placeholder="輸入完整地址，如: 10 Main St, Sunnybank QLD..."
                     className="w-full bg-transparent text-amber-100 placeholder-amber-800/50 text-base md:text-lg focus:outline-none"
                   />
                 </div>
@@ -350,7 +392,7 @@ export default function FengShuiPage() {
                 {floorPlanPreview && (
                   <div className="px-4 md:px-5 pb-3 flex items-center gap-3">
                     <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-amber-700/30">
-                      <img src={floorPlanPreview} alt="平面图" className="w-full h-full object-cover" />
+                      <img src={floorPlanPreview} alt="平面圖" className="w-full h-full object-cover" />
                       <button
                         onClick={removeFloorPlan}
                         className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full text-white text-xs flex items-center justify-center hover:bg-red-500"
@@ -358,7 +400,7 @@ export default function FengShuiPage() {
                         x
                       </button>
                     </div>
-                    <span className="text-amber-600/50 text-xs">已上传平面图，胡師傅将额外分析室内格局</span>
+                    <span className="text-amber-600/50 text-xs">已上傳平面圖，胡師傅將額外分析室內格局</span>
                   </div>
                 )}
 
@@ -370,7 +412,7 @@ export default function FengShuiPage() {
                       className="text-amber-700/50 hover:text-amber-500 text-sm flex items-center gap-1 transition-colors"
                     >
                       <span>📐</span>
-                      <span className="hidden md:inline text-xs">{floorPlan ? '已上传' : '上传平面图'}</span>
+                      <span className="hidden md:inline text-xs">{floorPlan ? '已上傳' : '上傳平面圖'}</span>
                     </button>
                     <input
                       ref={floorPlanRef}
@@ -419,7 +461,7 @@ export default function FengShuiPage() {
                   onClick={() => setShowHistory(!showHistory)}
                   className="text-amber-500/60 hover:text-amber-400 text-xs px-3 py-1.5 rounded-full border border-amber-700/30 hover:border-amber-500/40 transition-colors flex items-center gap-1"
                 >
-                  <span>📋</span> 历史记录 ({history.length})
+                  <span>📋</span> 歷史記錄 ({history.length})
                 </button>
               )}
             </div>
@@ -441,7 +483,7 @@ export default function FengShuiPage() {
             <div className="bg-neutral-900/80 rounded-xl border border-amber-800/20 p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-amber-200 text-sm flex items-center gap-2">
-                  <span>📋</span> 近期堪輿记录
+                  <span>📋</span> 近期堪輿記錄
                 </h3>
                 <button
                   onClick={() => setShowHistory(false)}
@@ -464,8 +506,8 @@ export default function FengShuiPage() {
                           <span className="text-amber-100 text-sm truncate">{r.address}</span>
                         </div>
                         <div className="text-amber-700/40 text-xs mt-1">
-                          {new Date(r.timestamp).toLocaleString('zh-CN')}
-                          {r.hasFloorPlan && <span className="ml-2">📐 含平面图</span>}
+                          {new Date(r.timestamp).toLocaleString('zh-TW')}
+                          {r.hasFloorPlan && <span className="ml-2">📐 含平面圖</span>}
                         </div>
                       </div>
                       <span className="text-amber-700/40 text-xs ml-2">查看 →</span>
@@ -487,10 +529,10 @@ export default function FengShuiPage() {
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-bold text-amber-100">堪輿報告</h2>
                 {(displaySuburb || displayAddress) && (
-                  <span className="text-sm text-amber-600/60">{displaySuburb}区 · {displayAddress}</span>
+                  <span className="text-sm text-amber-600/60">{displaySuburb}區 · {displayAddress}</span>
                 )}
                 {viewingCached && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-amber-900/30 text-amber-500/70">缓存</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-amber-900/30 text-amber-500/70">緩存</span>
                 )}
                 {isAnalyzing && (
                   <span className="flex items-center gap-1.5 text-amber-500 text-sm">
@@ -498,7 +540,7 @@ export default function FengShuiPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    分析中...
+                    分析中…
                   </span>
                 )}
               </div>
@@ -509,13 +551,13 @@ export default function FengShuiPage() {
                       onClick={handleShare}
                       className="text-amber-600/50 hover:text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-amber-800/20 hover:border-amber-600/40 transition-all flex items-center gap-1"
                     >
-                      <span>📋</span> 复制分享
+                      <span>📋</span> 複製分享
                     </button>
                     <button
                       onClick={handleDownload}
                       className="text-amber-600/50 hover:text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-amber-800/20 hover:border-amber-600/40 transition-all flex items-center gap-1"
                     >
-                      <span>📥</span> 下载报告
+                      <span>📥</span> 下載報告
                     </button>
                   </>
                 )}
@@ -523,7 +565,7 @@ export default function FengShuiPage() {
                   onClick={resetAnalysis}
                   className="text-amber-700/50 hover:text-amber-500 text-sm px-3 py-1 rounded hover:bg-amber-900/20 transition"
                 >
-                  关闭
+                  關閉
                 </button>
               </div>
             </div>
@@ -531,18 +573,18 @@ export default function FengShuiPage() {
             {/* 分享成功提示 */}
             {shareToast && (
               <div className="mb-4 p-3 bg-green-950/40 border border-green-700/30 rounded-lg text-green-400 text-sm text-center">
-                已复制报告到剪贴板，可直接粘贴分享
+                已複製報告到剪貼板，可直接貼上分享
               </div>
             )}
 
             {/* 错误 */}
             {error && (
               <div className="mb-6 p-4 bg-red-950/50 border border-red-800/50 rounded-lg text-red-400 text-sm">
-                <div className="font-medium mb-1">分析出错</div>
+                <div className="font-medium mb-1">分析出錯</div>
                 <div>{error}</div>
                 {error.includes('地址') && (
                   <div className="mt-2 text-red-500/60 text-xs">
-                    提示：请输入完整的澳洲地址，包括街道号码、街道名、郊区名和州名。
+                    提示：請輸入完整的澳洲地址，包括街道號碼、街道名、郊區名和州名。
                     例如: &quot;10 Main St, Sunnybank QLD&quot;
                   </div>
                 )}
@@ -584,8 +626,8 @@ export default function FengShuiPage() {
                     <div className="mt-4 pt-3 border-t border-amber-900/20 text-center">
                       <span className="text-xs text-amber-800/40">
                         天機堂 × Compass | {viewingCached
-                          ? new Date(viewingCached.timestamp).toLocaleString('zh-CN')
-                          : new Date().toLocaleString('zh-CN')}
+                          ? new Date(viewingCached.timestamp).toLocaleString('zh-TW')
+                          : new Date().toLocaleString('zh-TW')}
                       </span>
                     </div>
                   )}
@@ -612,7 +654,7 @@ export default function FengShuiPage() {
         </section>
       )}
 
-      {/* 底部说明 */}
+      {/* 功能介紹 */}
       {!showResults && !showHistory && (
         <section className="py-16 bg-neutral-950">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -629,8 +671,122 @@ export default function FengShuiPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      )}
 
-            <div className="mt-12 text-center">
+      {/* 近期堪輿排行 — 公開展示 */}
+      {!showResults && publicRecords.length > 0 && (
+        <section className="py-12 bg-neutral-950">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* 標題 + 統計 */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-amber-100 mb-2">📜 近期堪輿排行</h2>
+              <p className="text-amber-700/60 text-sm mb-4">
+                天機堂已為 {Object.values(recordStats).reduce((a, b) => a + b, 0)} 處物業完成風水堪輿
+              </p>
+              {/* 評級統計 pills */}
+              <div className="flex justify-center gap-2 flex-wrap">
+                {['A', 'B', 'C', 'D', 'E'].map(r => {
+                  const count = recordStats[r] || 0;
+                  if (count === 0) return null;
+                  const colors: Record<string, string> = {
+                    A: 'bg-green-900/40 text-green-400 border-green-700/30',
+                    B: 'bg-blue-900/40 text-blue-400 border-blue-700/30',
+                    C: 'bg-amber-900/40 text-amber-400 border-amber-700/30',
+                    D: 'bg-orange-900/40 text-orange-400 border-orange-700/30',
+                    E: 'bg-red-900/40 text-red-400 border-red-700/30',
+                  };
+                  return (
+                    <button
+                      key={r}
+                      onClick={() => setRecordFilter(recordFilter === r ? '' : r)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                        recordFilter === r
+                          ? colors[r].replace('/40', '/70').replace('/30', '/60') + ' ring-1 ring-current'
+                          : colors[r]
+                      }`}
+                    >
+                      {r} 級 · {count}
+                    </button>
+                  );
+                })}
+                {recordFilter && (
+                  <button
+                    onClick={() => setRecordFilter('')}
+                    className="px-3 py-1 rounded-full text-xs text-amber-600/50 border border-amber-800/20 hover:text-amber-400 transition-colors"
+                  >
+                    全部
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 記錄列表 */}
+            <div className="space-y-3">
+              {publicRecords.map((rec) => {
+                const ratingColors: Record<string, string> = {
+                  A: 'from-green-600 to-green-800',
+                  B: 'from-blue-600 to-blue-800',
+                  C: 'from-amber-600 to-amber-800',
+                  D: 'from-orange-600 to-orange-800',
+                  E: 'from-red-600 to-red-800',
+                };
+                const borderColors: Record<string, string> = {
+                  A: 'border-green-800/30 hover:border-green-700/50',
+                  B: 'border-blue-800/30 hover:border-blue-700/50',
+                  C: 'border-amber-800/30 hover:border-amber-700/50',
+                  D: 'border-orange-800/30 hover:border-orange-700/50',
+                  E: 'border-red-800/30 hover:border-red-700/50',
+                };
+                return (
+                  <div
+                    key={rec.id}
+                    className={`bg-neutral-900/80 rounded-xl border p-4 md:p-5 transition-all ${borderColors[rec.rating] || 'border-amber-800/20'}`}
+                  >
+                    <div className="flex items-start gap-3 md:gap-4">
+                      {/* 評級徽標 */}
+                      <div className={`flex-shrink-0 w-11 h-11 rounded-lg bg-gradient-to-br ${ratingColors[rec.rating] || 'from-neutral-600 to-neutral-800'} flex items-center justify-center`}>
+                        <span className="text-white text-lg font-bold">{rec.rating}</span>
+                      </div>
+                      {/* 內容 */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-amber-100 font-medium text-sm md:text-base truncate">{rec.address}</h3>
+                          {rec.has_floor_plan && <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/30 text-amber-500/70">📐 含平面圖</span>}
+                        </div>
+                        <div className="flex items-center gap-3 mt-1 text-xs text-amber-700/50 flex-wrap">
+                          <span>{rec.suburb}區</span>
+                          {rec.center_elevation && <span>海拔 {rec.center_elevation}m</span>}
+                          {rec.has_backing && <span className="text-green-500/60">✓ 有靠山（{rec.backing_direction}）</span>}
+                          {rec.has_water && <span className="text-blue-400/60">💧 近水</span>}
+                          {rec.positive_count > 0 && <span className="text-green-500/50">吉地×{rec.positive_count}</span>}
+                          {rec.negative_count > 0 && <span className="text-red-400/50">煞氣×{rec.negative_count}</span>}
+                        </div>
+                        {rec.summary && (
+                          <p className="text-amber-100/50 text-xs mt-2 line-clamp-2">{rec.summary}</p>
+                        )}
+                      </div>
+                      {/* 時間 */}
+                      <div className="flex-shrink-0 text-right hidden md:block">
+                        <span className="text-amber-800/40 text-[10px]">
+                          {rec.created_at ? new Date(rec.created_at).toLocaleDateString('zh-TW') : ''}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 免責聲明 */}
+      {!showResults && (
+        <section className="pb-16 bg-neutral-950">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
               <p className="text-amber-900/40 text-xs leading-relaxed max-w-lg mx-auto">
                 免責聲明：天機堂風水分析基於地形數據與傳統堪輿理論的 AI 綜合判讀，僅供參考，
                 不構成任何購房建議。實際購房決策請結合專業驗房報告與個人需求。
@@ -784,7 +940,7 @@ function PlacesSummaryCard({ data }: { data: PlacesData }) {
   return (
     <div className="bg-neutral-900/80 rounded-xl border border-amber-800/20 p-5">
       <h4 className="font-semibold text-amber-200 text-sm mb-3 flex items-center gap-2">
-        <span>🏛️</span> 周边环境
+        <span>🏛️</span> 周邊環境
       </h4>
 
       {/* 负面 */}
@@ -802,7 +958,7 @@ function PlacesSummaryCard({ data }: { data: PlacesData }) {
 
       {!hasNeg && (
         <div className="mb-3 p-2 bg-green-950/20 rounded-lg">
-          <span className="text-green-500/70 text-xs">✓ 500m内无负面设施</span>
+          <span className="text-green-500/70 text-xs">✓ 500m內無負面設施</span>
         </div>
       )}
 
@@ -845,13 +1001,13 @@ function CrimeCard({ data }: { data: CrimeData }) {
   return (
     <div className="bg-neutral-900/80 rounded-xl border border-amber-800/20 p-5">
       <h4 className="font-semibold text-amber-200 text-sm mb-3 flex items-center gap-2">
-        <span>🛡️</span> 治安数据
+        <span>🛡️</span> 治安數據
       </h4>
 
       <div className="text-center mb-3">
-        <span className="text-amber-100/60 text-xs">近12个月 · {data.suburb}区</span>
+        <span className="text-amber-100/60 text-xs">近12個月 · {data.suburb}區</span>
         <div className="text-xl font-bold text-amber-300 mt-1">{data.total_incidents.toLocaleString()}</div>
-        <span className="text-amber-700/50 text-xs">案件总数</span>
+        <span className="text-amber-700/50 text-xs">案件總數</span>
       </div>
 
       <div className="space-y-2">

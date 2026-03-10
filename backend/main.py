@@ -153,6 +153,33 @@ try:
 except Exception as e:
     print(f"[WARN] News tables creation: {e}")
 
+# ====== 風水記錄數據庫表 ======
+try:
+    execute_query("""
+        CREATE TABLE IF NOT EXISTS fengshui_records (
+            id SERIAL PRIMARY KEY,
+            address TEXT NOT NULL,
+            suburb VARCHAR(100),
+            rating VARCHAR(2) NOT NULL,
+            summary TEXT,
+            center_elevation REAL,
+            has_backing BOOLEAN DEFAULT FALSE,
+            backing_direction VARCHAR(10),
+            has_water BOOLEAN DEFAULT FALSE,
+            negative_count INTEGER DEFAULT 0,
+            positive_count INTEGER DEFAULT 0,
+            total_crime INTEGER DEFAULT 0,
+            has_floor_plan BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT NOW(),
+            address_hash VARCHAR(32) UNIQUE NOT NULL
+        )
+    """)
+    execute_query("CREATE INDEX IF NOT EXISTS idx_fengshui_rating ON fengshui_records(rating)")
+    execute_query("CREATE INDEX IF NOT EXISTS idx_fengshui_created ON fengshui_records(created_at DESC)")
+    print("[OK] Fengshui records table ready")
+except Exception as e:
+    print(f"[WARN] Fengshui records table creation: {e}")
+
 # 创建 FastAPI 应用
 app = FastAPI(
     title="Compass MVP API",
@@ -3069,10 +3096,61 @@ async def fengshui_analyze(
                 stream=True,
             )
 
+            full_content = ""
             for chunk in stream:
                 delta = chunk.choices[0].delta if chunk.choices else None
                 if delta and delta.content:
+                    full_content += delta.content
                     yield f"data: {_json.dumps({'type': 'master_hu_content', 'text': delta.content}, ensure_ascii=False)}\n\n"
+
+            # ---- 保存風水記錄到資料庫（在 done 之前，確保執行）----
+            try:
+                import re as _re_fs
+                import hashlib as _hl
+                rating_match = _re_fs.search(r'總體評級[^A-E]*([A-E])', full_content)
+                rating = rating_match.group(1) if rating_match else '?'
+                if rating != '?':
+                    # 提取摘要（取第一段非標題文字，最多150字）
+                    summary_lines = []
+                    for ln in full_content.split('\n'):
+                        ln = ln.strip()
+                        if ln and not ln.startswith('#') and not ln.startswith('##'):
+                            summary_lines.append(ln)
+                            if len(''.join(summary_lines)) > 150:
+                                break
+                    summary_text = ''.join(summary_lines)[:200]
+
+                    addr_hash = _hl.md5(geo['formatted_address'].lower().encode()).hexdigest()
+
+                    execute_query("""
+                        INSERT INTO fengshui_records
+                            (address, suburb, rating, summary, center_elevation, has_backing,
+                             backing_direction, has_water, negative_count, positive_count,
+                             total_crime, has_floor_plan, address_hash)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (address_hash) DO UPDATE SET
+                            rating = EXCLUDED.rating,
+                            summary = EXCLUDED.summary,
+                            has_floor_plan = EXCLUDED.has_floor_plan,
+                            created_at = NOW()
+                    """, (
+                        geo['formatted_address'],
+                        suburb,
+                        rating,
+                        summary_text,
+                        elevation.get('center_elevation') if not elevation.get('error') else None,
+                        elevation.get('has_backing', False) if not elevation.get('error') else False,
+                        elevation.get('backing_direction', '') if not elevation.get('error') else '',
+                        bool(places.get('water_features')) if not places.get('error') else False,
+                        len(places.get('negative', [])) if not places.get('error') else 0,
+                        len(places.get('positive', [])) if not places.get('error') else 0,
+                        crime.get('total_incidents', 0) if not crime.get('error') else 0,
+                        floor_plan_b64 is not None,
+                        addr_hash,
+                    ))
+                    print(f"[FengShui] Record saved: {geo['formatted_address']} -> {rating}")
+            except Exception as save_err:
+                print(f"[FengShui] Failed to save record: {save_err}")
 
             yield f"data: {_json.dumps({'type': 'done'})}\n\n"
 
@@ -3089,6 +3167,76 @@ async def fengshui_analyze(
             "X-Accel-Buffering": "no",
         }
     )
+
+
+@app.get("/api/fengshui/records")
+async def fengshui_records(
+    request: Request,
+    limit: int = 20,
+    rating: str = "",
+):
+    """
+    天機堂 · 風水記錄公開排行
+    返回近期分析記錄，按評級排序（A > B > C > D > E）
+    """
+    try:
+        where_clause = ""
+        params: list = []
+        if rating and rating in ('A', 'B', 'C', 'D', 'E'):
+            where_clause = "WHERE rating = %s"
+            params.append(rating)
+
+        safe_limit = min(max(limit, 1), 50)
+        params.append(safe_limit)
+
+        rows = execute_query(f"""
+            SELECT id, address, suburb, rating, summary, center_elevation,
+                   has_backing, backing_direction, has_water, negative_count,
+                   positive_count, total_crime, has_floor_plan, created_at
+            FROM fengshui_records
+            {where_clause}
+            ORDER BY
+                CASE rating
+                    WHEN 'A' THEN 1 WHEN 'B' THEN 2 WHEN 'C' THEN 3
+                    WHEN 'D' THEN 4 WHEN 'E' THEN 5 ELSE 6
+                END,
+                created_at DESC
+            LIMIT %s
+        """, tuple(params))
+
+        records = []
+        for r in (rows or []):
+            records.append({
+                "id": r["id"],
+                "address": r["address"],
+                "suburb": r["suburb"],
+                "rating": r["rating"],
+                "summary": r.get("summary", ""),
+                "center_elevation": r.get("center_elevation"),
+                "has_backing": r.get("has_backing", False),
+                "backing_direction": r.get("backing_direction", ""),
+                "has_water": r.get("has_water", False),
+                "negative_count": r.get("negative_count", 0),
+                "positive_count": r.get("positive_count", 0),
+                "total_crime": r.get("total_crime", 0),
+                "has_floor_plan": r.get("has_floor_plan", False),
+                "created_at": r["created_at"].isoformat() if r.get("created_at") else None,
+            })
+
+        # 統計各等級數量
+        count_rows = execute_query("""
+            SELECT rating, COUNT(*) as cnt FROM fengshui_records GROUP BY rating ORDER BY rating
+        """)
+        stats = {r["rating"]: r["cnt"] for r in (count_rows or [])}
+
+        return {
+            "records": records,
+            "total": sum(stats.values()),
+            "stats": stats,
+        }
+    except Exception as e:
+        print(f"[FengShui Records] Error: {e}")
+        return {"records": [], "total": 0, "stats": {}}
 
 
 # ========== 新闻 RSS 聚合 (Olivia 每日资讯系统) ==========
