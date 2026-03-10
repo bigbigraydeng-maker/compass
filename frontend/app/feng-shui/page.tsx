@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   streamFengshuiAnalysis,
@@ -12,6 +12,58 @@ import {
 
 // ====== 方位顺序 ======
 const DIRECTION_ORDER = ['北', '东北', '东', '东南', '南', '西南', '西', '西北'];
+
+// ====== 犯罪分类英中映射 ======
+const CRIME_CATEGORY_ZH: Record<string, string> = {
+  theft_fraud: '盗窃诈骗',
+  property_crime: '财产犯罪',
+  public_order: '公共秩序',
+  violent_crime: '暴力犯罪',
+  drug_offences: '毒品犯罪',
+  traffic: '交通违法',
+  other: '其他',
+  sexual_offences: '性犯罪',
+  weapons: '武器犯罪',
+  miscellaneous: '杂项',
+};
+
+// ====== 本地缓存工具 ======
+const CACHE_KEY = 'fengshui_history';
+const MAX_CACHE = 5;
+
+interface CachedReport {
+  address: string;
+  suburb: string;
+  rating: string;
+  timestamp: number;
+  masterHuContent: string;
+  elevation?: ElevationData;
+  places?: PlacesData;
+  crime?: CrimeData;
+  hasFloorPlan: boolean;
+}
+
+function loadCachedReports(): CachedReport[] {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveCachedReport(report: CachedReport) {
+  try {
+    const list = loadCachedReports();
+    const filtered = list.filter(r => r.address.toLowerCase() !== report.address.toLowerCase());
+    filtered.unshift(report);
+    localStorage.setItem(CACHE_KEY, JSON.stringify(filtered.slice(0, MAX_CACHE)));
+  } catch { /* ignore */ }
+}
+
+/** 从AI输出中提取评级 A-E */
+function extractRating(content: string): string {
+  const match = content.match(/總體評級[^A-E]*([A-E])/);
+  return match ? match[1] : '?';
+}
 
 // ====== 主页面 ======
 export default function FengShuiPage() {
@@ -32,15 +84,54 @@ export default function FengShuiPage() {
   const [masterHuContent, setMasterHuContent] = useState('');
   const [error, setError] = useState<string | null>(null);
 
+  // 分享/下载状态
+  const [shareToast, setShareToast] = useState(false);
+
+  // 历史记录
+  const [history, setHistory] = useState<CachedReport[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  // 查看缓存报告
+  const [viewingCached, setViewingCached] = useState<CachedReport | null>(null);
+
   const abortRef = useRef<AbortController | null>(null);
+
+  // 加载历史记录
+  useEffect(() => {
+    setHistory(loadCachedReports());
+  }, []);
 
   const handleFloorPlanSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024 || !file.type.startsWith('image/')) return;
-    if (floorPlanPreview) URL.revokeObjectURL(floorPlanPreview);
-    setFloorPlan(file);
-    setFloorPlanPreview(URL.createObjectURL(file));
+    // 验证文件类型
+    if (!file.type.startsWith('image/')) {
+      setError('请上传图片格式的平面图（JPG/PNG/WebP）');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('平面图文件大小不能超过5MB');
+      return;
+    }
+    // 基础图片有效性检测
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      if (img.width < 100 || img.height < 100) {
+        setError('图片尺寸过小，请上传清晰的平面图');
+        URL.revokeObjectURL(url);
+        return;
+      }
+      if (floorPlanPreview) URL.revokeObjectURL(floorPlanPreview);
+      setFloorPlan(file);
+      setFloorPlanPreview(url);
+      setError(null);
+    };
+    img.onerror = () => {
+      setError('无法读取图片，请上传有效的平面图文件');
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
     if (e.target) e.target.value = '';
   };
 
@@ -58,11 +149,19 @@ export default function FengShuiPage() {
     setCrime(null);
     setMasterHuContent('');
     setError(null);
+    setViewingCached(null);
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!address.trim()) return;
+    const trimmed = address.trim();
+    if (!trimmed) return;
+
+    // 基础地址格式验证
+    if (trimmed.length < 5) {
+      setError('请输入完整的地址，例如: 10 Main St, Sunnybank QLD');
+      return;
+    }
 
     abortRef.current?.abort();
     abortRef.current = new AbortController();
@@ -71,18 +170,51 @@ export default function FengShuiPage() {
     setIsAnalyzing(true);
     setShowResults(true);
 
+    let finalMeta: FengshuiMeta | null = null;
+    let finalElevation: ElevationData | null = null;
+    let finalPlaces: PlacesData | null = null;
+    let finalCrime: CrimeData | null = null;
+    let fullContent = '';
+
     try {
       await streamFengshuiAnalysis(
-        address.trim(),
+        trimmed,
         {
-          onMeta: (data) => setMeta(data),
-          onElevation: (data) => setElevation(data),
-          onPlaces: (data) => setPlaces(data),
-          onCrime: (data) => setCrime(data),
-          onMasterHuContent: (text) => setMasterHuContent(prev => prev + text),
-          onDone: () => setIsAnalyzing(false),
+          onMeta: (data) => { setMeta(data); finalMeta = data; },
+          onElevation: (data) => { setElevation(data); finalElevation = data; },
+          onPlaces: (data) => { setPlaces(data); finalPlaces = data; },
+          onCrime: (data) => { setCrime(data); finalCrime = data; },
+          onMasterHuContent: (text) => {
+            fullContent += text;
+            setMasterHuContent(prev => prev + text);
+          },
+          onDone: () => {
+            setIsAnalyzing(false);
+            // 保存到本地缓存
+            if (finalMeta && fullContent) {
+              const report: CachedReport = {
+                address: finalMeta.address,
+                suburb: finalMeta.suburb,
+                rating: extractRating(fullContent),
+                timestamp: Date.now(),
+                masterHuContent: fullContent,
+                elevation: finalElevation ?? undefined,
+                places: finalPlaces ?? undefined,
+                crime: finalCrime ?? undefined,
+                hasFloorPlan: finalMeta.has_floor_plan ?? false,
+              };
+              saveCachedReport(report);
+              setHistory(loadCachedReports());
+            }
+          },
           onError: (msg) => {
-            setError(msg);
+            let friendlyMsg = msg;
+            if (msg.includes('Geocoding failed') || msg.includes('ZERO_RESULTS')) {
+              friendlyMsg = '无法识别该地址，请确认输入了完整真实的澳洲地址。例如: 10 Main St, Sunnybank QLD';
+            } else if (msg.includes('Geocoding error')) {
+              friendlyMsg = '地址解析服务暂时不可用，请稍后重试';
+            }
+            setError(friendlyMsg);
             setIsAnalyzing(false);
           },
         },
@@ -91,7 +223,11 @@ export default function FengShuiPage() {
       );
     } catch (err: any) {
       if (err.name !== 'AbortError') {
-        setError(err.message || '分析失败，请重试');
+        let friendlyMsg = err.message || '分析失败，请重试';
+        if (friendlyMsg.includes('Geocoding')) {
+          friendlyMsg = '无法识别该地址。请输入完整的澳洲地址，如: 10 Main St, Sunnybank QLD';
+        }
+        setError(friendlyMsg);
       }
       setIsAnalyzing(false);
     }
@@ -103,6 +239,41 @@ export default function FengShuiPage() {
     }
   };
 
+  // 分享报告
+  const handleShare = useCallback(() => {
+    const content = viewingCached?.masterHuContent || masterHuContent;
+    const addr = viewingCached?.address || meta?.address || '';
+    if (!content) return;
+    const text = `天機堂 · 風水堪輿報告\n地址: ${addr}\n${'─'.repeat(30)}\n${content}\n${'─'.repeat(30)}\n天機堂 × Compass | ${new Date().toLocaleString('zh-CN')}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setShareToast(true);
+      setTimeout(() => setShareToast(false), 2000);
+    });
+  }, [masterHuContent, meta, viewingCached]);
+
+  // 下载报告
+  const handleDownload = useCallback(() => {
+    const content = viewingCached?.masterHuContent || masterHuContent;
+    const addr = viewingCached?.address || meta?.address || '';
+    if (!content) return;
+    const text = `天機堂 · 風水堪輿報告\n\n地址: ${addr}\n生成时间: ${new Date().toLocaleString('zh-CN')}\n${'═'.repeat(40)}\n\n${content}\n\n${'═'.repeat(40)}\n免責聲明：天機堂風水分析基於地形數據與傳統堪輿理論的 AI 綜合判讀，僅供參考。\n天機堂 × Compass`;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const suburb = viewingCached?.suburb || meta?.suburb || 'report';
+    a.download = `天機堂_${suburb}_${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [masterHuContent, meta, viewingCached]);
+
+  // 查看历史报告
+  const viewCachedReport = (report: CachedReport) => {
+    setViewingCached(report);
+    setShowResults(true);
+    setShowHistory(false);
+  };
+
   // 示例地址
   const examples = [
     '10 Doreen St, Sunnybank QLD',
@@ -110,6 +281,14 @@ export default function FengShuiPage() {
     '8 Doris Ct, Robertson QLD',
     '15 Pine Rd, Calamvale QLD',
   ];
+
+  // 当前展示的内容（可能来自缓存或实时分析）
+  const displayContent = viewingCached?.masterHuContent || masterHuContent;
+  const displayElevation = viewingCached?.elevation || elevation;
+  const displayPlaces = viewingCached?.places || places;
+  const displayCrime = viewingCached?.crime || crime;
+  const displayAddress = viewingCached?.address || meta?.address;
+  const displaySuburb = viewingCached?.suburb || meta?.suburb;
 
   return (
     <div className="min-h-screen bg-neutral-950">
@@ -224,7 +403,7 @@ export default function FengShuiPage() {
               </div>
             </form>
 
-            {/* 示例地址 */}
+            {/* 示例地址 + 历史按钮 */}
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {examples.map((addr) => (
                 <button
@@ -235,21 +414,83 @@ export default function FengShuiPage() {
                   {addr.split(',')[0]}
                 </button>
               ))}
+              {history.length > 0 && (
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="text-amber-500/60 hover:text-amber-400 text-xs px-3 py-1.5 rounded-full border border-amber-700/30 hover:border-amber-500/40 transition-colors flex items-center gap-1"
+                >
+                  <span>📋</span> 历史记录 ({history.length})
+                </button>
+              )}
             </div>
+
+            {/* 输入验证提示 */}
+            {error && !showResults && (
+              <div className="mt-4 p-3 bg-red-950/50 border border-red-800/40 rounded-lg text-red-400 text-sm text-left">
+                {error}
+              </div>
+            )}
           </div>
         </div>
       </section>
+
+      {/* 历史记录面板 */}
+      {showHistory && history.length > 0 && !showResults && (
+        <section className="pb-8 bg-neutral-950">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-neutral-900/80 rounded-xl border border-amber-800/20 p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-amber-200 text-sm flex items-center gap-2">
+                  <span>📋</span> 近期堪輿记录
+                </h3>
+                <button
+                  onClick={() => setShowHistory(false)}
+                  className="text-amber-700/50 hover:text-amber-500 text-xs"
+                >
+                  收起
+                </button>
+              </div>
+              <div className="space-y-2">
+                {history.map((r, i) => (
+                  <button
+                    key={i}
+                    onClick={() => viewCachedReport(r)}
+                    className="w-full text-left p-3 rounded-lg bg-neutral-800/50 hover:bg-neutral-800 border border-transparent hover:border-amber-800/20 transition-all"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <RatingBadge rating={r.rating} />
+                          <span className="text-amber-100 text-sm truncate">{r.address}</span>
+                        </div>
+                        <div className="text-amber-700/40 text-xs mt-1">
+                          {new Date(r.timestamp).toLocaleString('zh-CN')}
+                          {r.hasFloorPlan && <span className="ml-2">📐 含平面图</span>}
+                        </div>
+                      </div>
+                      <span className="text-amber-700/40 text-xs ml-2">查看 →</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 分析结果 */}
       {showResults && (
         <section className="pb-16 bg-neutral-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* 顶部栏 */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-bold text-amber-100">堪輿報告</h2>
-                {meta && (
-                  <span className="text-sm text-amber-600/60">{meta.suburb}区 · {meta.address}</span>
+                {(displaySuburb || displayAddress) && (
+                  <span className="text-sm text-amber-600/60">{displaySuburb}区 · {displayAddress}</span>
+                )}
+                {viewingCached && (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-amber-900/30 text-amber-500/70">缓存</span>
                 )}
                 {isAnalyzing && (
                   <span className="flex items-center gap-1.5 text-amber-500 text-sm">
@@ -261,18 +502,50 @@ export default function FengShuiPage() {
                   </span>
                 )}
               </div>
-              <button
-                onClick={resetAnalysis}
-                className="text-amber-700/50 hover:text-amber-500 text-sm px-3 py-1 rounded hover:bg-amber-900/20 transition"
-              >
-                关闭
-              </button>
+              <div className="flex items-center gap-2">
+                {displayContent && !isAnalyzing && (
+                  <>
+                    <button
+                      onClick={handleShare}
+                      className="text-amber-600/50 hover:text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-amber-800/20 hover:border-amber-600/40 transition-all flex items-center gap-1"
+                    >
+                      <span>📋</span> 复制分享
+                    </button>
+                    <button
+                      onClick={handleDownload}
+                      className="text-amber-600/50 hover:text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-amber-800/20 hover:border-amber-600/40 transition-all flex items-center gap-1"
+                    >
+                      <span>📥</span> 下载报告
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={resetAnalysis}
+                  className="text-amber-700/50 hover:text-amber-500 text-sm px-3 py-1 rounded hover:bg-amber-900/20 transition"
+                >
+                  关闭
+                </button>
+              </div>
             </div>
+
+            {/* 分享成功提示 */}
+            {shareToast && (
+              <div className="mb-4 p-3 bg-green-950/40 border border-green-700/30 rounded-lg text-green-400 text-sm text-center">
+                已复制报告到剪贴板，可直接粘贴分享
+              </div>
+            )}
 
             {/* 错误 */}
             {error && (
               <div className="mb-6 p-4 bg-red-950/50 border border-red-800/50 rounded-lg text-red-400 text-sm">
-                分析出错: {error}
+                <div className="font-medium mb-1">分析出错</div>
+                <div>{error}</div>
+                {error.includes('地址') && (
+                  <div className="mt-2 text-red-500/60 text-xs">
+                    提示：请输入完整的澳洲地址，包括街道号码、街道名、郊区名和州名。
+                    例如: &quot;10 Main St, Sunnybank QLD&quot;
+                  </div>
+                )}
               </div>
             )}
 
@@ -291,9 +564,9 @@ export default function FengShuiPage() {
                     </div>
                   </div>
 
-                  {masterHuContent ? (
+                  {displayContent ? (
                     <div className="max-h-[700px] overflow-y-auto pr-2">
-                      <FengshuiMarkdown content={masterHuContent} />
+                      <FengshuiMarkdown content={displayContent} />
                       {isAnalyzing && (
                         <span className="inline-block w-2 h-4 bg-amber-500 animate-pulse ml-1" />
                       )}
@@ -307,10 +580,12 @@ export default function FengShuiPage() {
                     </div>
                   ) : null}
 
-                  {!isAnalyzing && masterHuContent && (
+                  {!isAnalyzing && displayContent && (
                     <div className="mt-4 pt-3 border-t border-amber-900/20 text-center">
                       <span className="text-xs text-amber-800/40">
-                        天機堂 × Compass | {new Date().toLocaleString('zh-CN')}
+                        天機堂 × Compass | {viewingCached
+                          ? new Date(viewingCached.timestamp).toLocaleString('zh-CN')
+                          : new Date().toLocaleString('zh-CN')}
                       </span>
                     </div>
                   )}
@@ -319,12 +594,12 @@ export default function FengShuiPage() {
 
               {/* 侧边栏 */}
               <div className="lg:w-80 space-y-4">
-                {elevation && !elevation.error && <ElevationCard data={elevation} />}
-                {places && !places.error && <PlacesSummaryCard data={places} />}
-                {crime && !crime.error && <CrimeCard data={crime} />}
+                {displayElevation && !displayElevation.error && <ElevationCard data={displayElevation} />}
+                {displayPlaces && !displayPlaces.error && <PlacesSummaryCard data={displayPlaces} />}
+                {displayCrime && !displayCrime.error && <CrimeCard data={displayCrime} />}
 
                 {/* 数据加载中 placeholders */}
-                {isAnalyzing && !elevation && (
+                {isAnalyzing && !elevation && !viewingCached && (
                   <div className="bg-neutral-900/60 rounded-xl border border-amber-800/10 p-5 animate-pulse">
                     <div className="h-4 bg-amber-900/20 rounded w-1/2 mb-3" />
                     <div className="h-3 bg-amber-900/15 rounded w-full mb-2" />
@@ -338,7 +613,7 @@ export default function FengShuiPage() {
       )}
 
       {/* 底部说明 */}
-      {!showResults && (
+      {!showResults && !showHistory && (
         <section className="py-16 bg-neutral-950">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -369,6 +644,23 @@ export default function FengShuiPage() {
 }
 
 // ====== 子组件 ======
+
+/** 评级徽标 */
+function RatingBadge({ rating }: { rating: string }) {
+  const colors: Record<string, string> = {
+    A: 'bg-green-600 text-white',
+    B: 'bg-blue-600 text-white',
+    C: 'bg-amber-600 text-white',
+    D: 'bg-orange-600 text-white',
+    E: 'bg-red-600 text-white',
+    '?': 'bg-neutral-600 text-white',
+  };
+  return (
+    <span className={`inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold ${colors[rating] || colors['?']}`}>
+      {rating}
+    </span>
+  );
+}
 
 /** 风水主题 Markdown 渲染 */
 function FengshuiMarkdown({ content }: { content: string }) {
@@ -543,7 +835,7 @@ function PlacesSummaryCard({ data }: { data: PlacesData }) {
   );
 }
 
-/** 治安卡 */
+/** 治安卡 - 全中文 */
 function CrimeCard({ data }: { data: CrimeData }) {
   const entries = Object.entries(data.categories || {}).slice(0, 6);
   if (entries.length === 0) return null;
@@ -557,8 +849,8 @@ function CrimeCard({ data }: { data: CrimeData }) {
       </h4>
 
       <div className="text-center mb-3">
-        <span className="text-amber-100/60 text-xs">近12月 · {data.suburb}区</span>
-        <div className="text-xl font-bold text-amber-300 mt-1">{data.total_incidents}</div>
+        <span className="text-amber-100/60 text-xs">近12个月 · {data.suburb}区</span>
+        <div className="text-xl font-bold text-amber-300 mt-1">{data.total_incidents.toLocaleString()}</div>
         <span className="text-amber-700/50 text-xs">案件总数</span>
       </div>
 
@@ -566,8 +858,10 @@ function CrimeCard({ data }: { data: CrimeData }) {
         {entries.map(([cat, count]) => (
           <div key={cat}>
             <div className="flex justify-between text-xs mb-0.5">
-              <span className="text-amber-500/60 truncate flex-1">{cat}</span>
-              <span className="text-amber-400/70 ml-2">{count}</span>
+              <span className="text-amber-500/60 truncate flex-1">
+                {CRIME_CATEGORY_ZH[cat] || cat}
+              </span>
+              <span className="text-amber-400/70 ml-2">{count.toLocaleString()}</span>
             </div>
             <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden">
               <div

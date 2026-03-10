@@ -194,7 +194,10 @@ export default function SmartInput() {
   };
 
   // 功能卡片
-  const featureCards = [
+  const featureCards: Array<{
+    icon: string; title: string; desc: string; href: string;
+    gradient: string; border: string; hoverBg: string; hot?: boolean;
+  }> = [
     {
       icon: '🏫', title: '校区找房', desc: '按学区质量寻找投资机会',
       href: '/school-search',
@@ -215,6 +218,14 @@ export default function SmartInput() {
       gradient: 'from-purple-500/20 to-purple-600/10',
       border: 'border-purple-400/30',
       hoverBg: 'hover:bg-purple-500/20',
+    },
+    {
+      icon: '☰', title: '天機堂', desc: '風水堪輿 · 地形煞氣 · 胡師傅',
+      href: '/feng-shui',
+      gradient: 'from-amber-500/20 to-red-700/10',
+      border: 'border-amber-400/30',
+      hoverBg: 'hover:bg-amber-500/20',
+      hot: true,
     },
   ];
 
@@ -364,13 +375,18 @@ export default function SmartInput() {
           </div>
 
           {/* 功能卡片 */}
-          <div className="grid grid-cols-3 gap-3 md:gap-8 mt-10 md:mt-16 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-10 md:mt-16 max-w-4xl mx-auto">
             {featureCards.map((card) => (
               <Link
                 key={card.title}
                 href={card.href}
-                className={`bg-gradient-to-br ${card.gradient} backdrop-blur-md rounded-xl p-4 md:p-6 text-center ${card.hoverBg} transition-all border ${card.border} group hover:scale-105`}
+                className={`relative bg-gradient-to-br ${card.gradient} backdrop-blur-md rounded-xl p-4 md:p-6 text-center ${card.hoverBg} transition-all border ${card.border} group hover:scale-105`}
               >
+                {card.hot && (
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
+                    HOT
+                  </span>
+                )}
                 <div className="text-2xl md:text-4xl mb-2 md:mb-4 group-hover:scale-110 transition-transform">
                   {card.icon}
                 </div>
