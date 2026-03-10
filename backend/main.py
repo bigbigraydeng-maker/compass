@@ -2115,9 +2115,9 @@ def _fetch_rss_news() -> list:
         except Exception as e:
             print(f"[WARN] RSS fetch failed for {src['name']}: {e}")
 
-    # Sort by date descending, keep top 10
+    # Sort by date descending, keep top 20
     items.sort(key=lambda x: x.get("date", ""), reverse=True)
-    items = items[:10]
+    items = items[:20]
 
     _news_cache["items"] = items
     _news_cache["ts"] = now
@@ -2162,13 +2162,14 @@ def _generate_amanda_commentary(news_items: list) -> str:
         f"今天是 {today}，以下是今日布里斯班房产相关新闻标题：\n\n"
         f"{news_digest}\n\n"
         "请你作为 Olivia 写一篇今日市场综合解读（300-500字），要求：\n"
-        "1. 先用一句话概括今天的市场信号（加粗）\n"
+        "1. 先用一句话概括今天的市场信号\n"
         "2. 挑出 2-3 条最重要的新闻，用你的专业视角解读它们对布里斯班房产市场意味着什么\n"
         "3. 分析这些新闻对华人投资者的具体影响（买房时机、区域选择、资产配置等）\n"
         "4. 最后给出 Olivia 的今日建议（1-2 句话）\n"
         "5. 用自然的聊天口吻，但要有专业深度，不要泛泛而谈\n"
         "6. 开头直接切入正题，不要问候语\n"
-        "7. 适当使用换行分段，让阅读更舒适"
+        "7. 适当使用换行分段，让阅读更舒适\n"
+        "8. 不要使用任何 markdown 格式符号（如 ** 或 * 或 # 或 - ），直接用纯文本表达，用换行和空行来分段"
     )
 
     try:
@@ -2189,6 +2190,8 @@ def _generate_amanda_commentary(news_items: list) -> str:
         )
 
         commentary = response.choices[0].message.content.strip()
+        # 清洗 markdown 符号（双保险）
+        commentary = commentary.replace('**', '').replace('*', '')
 
         # 更新缓存
         _commentary_cache["text"] = commentary
@@ -2227,6 +2230,129 @@ def _trigger_amanda_background(news_items: list):
 
     t = threading.Thread(target=_run, daemon=True)
     t.start()
+
+
+# ---- 新闻全文抓取 + 中文翻译 ----
+import hashlib as _hashlib
+
+_article_cache: dict = {}  # key: url md5 → { original, translated, ts }
+_ARTICLE_TTL = 86400  # 24 小时缓存
+
+
+def _fetch_article_content(url: str) -> str:
+    """抓取新闻原文正文。Google News RSS 链接会 302 到真实文章。"""
+    try:
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (compatible; CompassBot/1.0)"
+        })
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            raw = resp.read()
+            # 尝试检测编码
+            charset = resp.headers.get_content_charset() or "utf-8"
+            html_text = raw.decode(charset, errors="replace")
+
+        # 简单提取 <p> 标签内容
+        paragraphs = _re.findall(r"<p[^>]*>(.*?)</p>", html_text, _re.DOTALL | _re.IGNORECASE)
+        if not paragraphs:
+            return ""
+
+        # 清洗 HTML 标签
+        clean_paras = []
+        for p in paragraphs:
+            text = _re.sub(r"<[^>]+>", "", p).strip()
+            text = _html.unescape(text)
+            if len(text) > 30:  # 过滤太短的片段
+                clean_paras.append(text)
+
+        return "\n\n".join(clean_paras[:30])  # 最多 30 段
+    except Exception as e:
+        print(f"[WARN] Article fetch failed for {url}: {e}")
+        return ""
+
+
+def _translate_article(text: str) -> str:
+    """调用 Kimi K2.5 将英文文章翻译为中文。"""
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+    if not moonshot_key or not text:
+        return ""
+
+    # 截断过长文本（节省 token）
+    if len(text) > 5000:
+        text = text[:5000] + "\n\n[... 原文过长，已截断 ...]"
+
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=moonshot_key, base_url="https://api.moonshot.cn/v1")
+
+        response = client.chat.completions.create(
+            model="kimi-k2.5",
+            messages=[
+                {"role": "system", "content": (
+                    "你是一位专业的英中翻译。请将以下英文房产新闻翻译成中文。"
+                    "要求：保持专业但通俗易懂，适合华人投资者阅读。"
+                    "保留原文的段落结构。不要添加任何额外评论。"
+                    "不要使用 markdown 格式符号（如 ** 或 *）。"
+                )},
+                {"role": "user", "content": f"请翻译以下新闻文章：\n\n{text}"}
+            ],
+            max_tokens=4096,
+            temperature=0.3,
+        )
+        translated = response.choices[0].message.content.strip()
+        translated = translated.replace('**', '').replace('*', '')
+        return translated
+    except Exception as e:
+        print(f"[WARN] Article translation failed: {e}")
+        return ""
+
+
+@app.get("/api/news/detail")
+def get_news_detail(url: str):
+    """获取新闻全文 + 中文翻译"""
+    if not url:
+        return {"error": "url parameter required"}
+
+    # 缓存 key
+    url_hash = _hashlib.md5(url.encode()).hexdigest()
+    now = _time.time()
+
+    # 检查缓存
+    if url_hash in _article_cache:
+        cached = _article_cache[url_hash]
+        if (now - cached["ts"]) < _ARTICLE_TTL:
+            return {
+                "original_text": cached["original"],
+                "translated_text": cached["translated"],
+                "url": url,
+                "cached": True,
+            }
+
+    # 抓取原文
+    original = _fetch_article_content(url)
+    if not original:
+        return {
+            "original_text": "",
+            "translated_text": "",
+            "url": url,
+            "error": "无法获取文章内容，可能是网站限制访问",
+        }
+
+    # 翻译
+    translated = _translate_article(original)
+
+    # 写入缓存
+    _article_cache[url_hash] = {
+        "original": original,
+        "translated": translated,
+        "ts": now,
+    }
+
+    return {
+        "original_text": original,
+        "translated_text": translated,
+        "url": url,
+        "cached": False,
+    }
 
 
 @app.get("/api/news")

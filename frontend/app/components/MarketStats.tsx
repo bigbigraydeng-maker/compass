@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { fetcher } from '../lib/api';
 import { PersonaAvatar } from './persona';
 
@@ -210,9 +211,17 @@ export default function MarketStats({ homeData: parentHomeData }: MarketStatsPro
                     </div>
                   ))}
                 </div>
-                <p className="text-center text-xs text-gray-400 mt-4">
-                  以上新闻由 Google News 自动聚合 · Olivia 基于新闻内容生成综合解读
-                </p>
+                <div className="flex flex-col items-center gap-3 mt-5">
+                  <Link
+                    href="/news"
+                    className="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    查看全部新闻与翻译 →
+                  </Link>
+                  <p className="text-xs text-gray-400">
+                    以上新闻由 Google News 自动聚合 · Olivia 基于新闻内容生成综合解读
+                  </p>
+                </div>
               </div>
             )}
           </div>
