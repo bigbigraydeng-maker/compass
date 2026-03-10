@@ -2389,7 +2389,7 @@ def _ai_expand_summary(title: str, summary: str) -> str:
 
 @app.get("/api/news/detail")
 def get_news_detail(url: str, title: str = "", summary: str = ""):
-    """获取新闻全文 + 中文翻译。如果原文抓取失败，用 AI 基于标题摘要生成解读。"""
+    """Olivia AI 解读（主要内容）+ 尝试抓取原文（可选增强）。"""
     if not url:
         return {"error": "url parameter required"}
 
@@ -2408,33 +2408,42 @@ def get_news_detail(url: str, title: str = "", summary: str = ""):
                 "cached": True,
             }
 
-    # 抓取原文
-    original = _fetch_article_content(url)
+    original = ""
+    translated = ""
 
-    if original:
-        # 成功抓取 → 翻译
-        translated = _translate_article(original)
-    else:
-        # 抓取失败 → 用 AI 基于标题/摘要生成解读
+    # 步骤 1：尝试抓取原文（限时 10 秒，不阻塞主流程）
+    try:
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(_fetch_article_content, url)
+            try:
+                original = future.result(timeout=10)
+            except concurrent.futures.TimeoutError:
+                print(f"[INFO] Article fetch timed out for: {url}")
+                original = ""
+    except Exception:
         original = ""
-        if title or summary:
-            translated = _ai_expand_summary(title, summary)
-        else:
-            translated = ""
 
+    # 步骤 2：生成中文内容
+    if original:
+        # 成功抓取 → 翻译原文
+        translated = _translate_article(original)
+
+    if not translated and (title or summary):
+        # 没有翻译内容 → Olivia AI 基于标题+摘要生成深度解读（主要路径）
+        translated = _ai_expand_summary(title, summary)
+
+    # 步骤 3：即使都失败，也返回有价值的内容
     if not original and not translated:
-        return {
-            "original_text": "",
-            "translated_text": "",
-            "url": url,
-            "error": "无法获取文章内容，可能是网站限制访问",
-        }
+        # 最终兜底：用简单的中文摘要
+        if title:
+            translated = f"新闻概要：{title}\n\n{summary}" if summary else f"新闻概要：{title}"
 
-    # 写入缓存
+    # 写入缓存（即使是空的也缓存，避免重复请求失败的 URL）
     _article_cache[url_hash] = {
         "original": original,
         "translated": translated,
-        "ts": now,
+        "ts": now if (original or translated) else now - _ARTICLE_TTL + 300,  # 失败的只缓存5分钟
     }
 
     return {

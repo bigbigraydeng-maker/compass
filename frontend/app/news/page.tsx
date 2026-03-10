@@ -214,42 +214,33 @@ export default function NewsPage() {
                       {isLoading ? (
                         <div className="py-8">
                           <div className="flex flex-col items-center gap-3">
-                            <svg className="animate-spin h-6 w-6 text-purple-500" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            <p className="text-sm text-gray-500">正在获取原文并翻译中...</p>
-                            <p className="text-xs text-gray-400">首次加载可能需要 10-20 秒</p>
+                            <div className="flex items-center gap-2">
+                              <PersonaAvatar persona="olivia" size="sm" />
+                              <svg className="animate-spin h-5 w-5 text-purple-500" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                              </svg>
+                            </div>
+                            <p className="text-sm text-purple-600 font-medium">Olivia 正在为您解读这条新闻...</p>
+                            <p className="text-xs text-gray-400">首次加载约需 10-15 秒</p>
                           </div>
                         </div>
-                      ) : article?.error && !article.original_text ? (
-                        <div className="py-6 text-center">
-                          <p className="text-sm text-gray-500 mb-3">{article.error}</p>
-                          <a
-                            href={news.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 font-medium"
-                          >
-                            直接访问原文 ↗
-                          </a>
-                        </div>
-                      ) : article ? (
+                      ) : article?.translated_text ? (
                         <div className="pt-4 space-y-4">
-                          {/* 中文翻译 / Olivia 解读 */}
-                          {article.translated_text && (
-                            <div>
-                              <h4 className="text-sm font-semibold text-purple-700 mb-2 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" />
+                          {/* Olivia 中文解读（主要内容） */}
+                          <div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <PersonaAvatar persona="olivia" size="sm" />
+                              <h4 className="text-sm font-semibold text-purple-700">
                                 {article.original_text ? '中文翻译' : 'Olivia 解读'}
                               </h4>
-                              <div className="bg-purple-50/50 rounded-lg p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                                {article.translated_text}
-                              </div>
                             </div>
-                          )}
+                            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-line border border-purple-100">
+                              {article.translated_text}
+                            </div>
+                          </div>
 
-                          {/* 英文原文 */}
+                          {/* 英文原文（可折叠，仅在抓取成功时显示） */}
                           {article.original_text && (
                             <details className="group">
                               <summary className="text-sm font-semibold text-gray-500 mb-2 flex items-center gap-1.5 cursor-pointer hover:text-gray-700">
@@ -264,16 +255,31 @@ export default function NewsPage() {
                           )}
 
                           {/* 原文链接 */}
-                          <div className="pt-2 border-t border-gray-100">
+                          <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
                             <a
                               href={news.link}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 font-medium"
                             >
-                              查看原文 ↗
+                              查看英文原文 ↗
                             </a>
+                            {!article.original_text && (
+                              <span className="text-xs text-gray-400">原文来源限制访问，已由 Olivia 生成解读</span>
+                            )}
                           </div>
+                        </div>
+                      ) : article?.error ? (
+                        <div className="py-6 text-center">
+                          <p className="text-sm text-gray-500 mb-3">{article.error}</p>
+                          <a
+                            href={news.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 font-medium"
+                          >
+                            直接访问原文 ↗
+                          </a>
                         </div>
                       ) : null}
                     </div>
