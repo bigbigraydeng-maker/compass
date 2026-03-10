@@ -33,7 +33,7 @@ let googleMapsError = false;
 
 function loadGoogleMapsScript(apiKey: string): Promise<void> {
   // Already loaded
-  if (googleMapsLoaded && window.google?.maps) {
+  if (googleMapsLoaded && window.google?.maps?.Map) {
     return Promise.resolve();
   }
 
@@ -43,7 +43,7 @@ function loadGoogleMapsScript(apiKey: string): Promise<void> {
   }
 
   // Already in DOM (e.g. from a previous navigation)
-  if (window.google?.maps) {
+  if (window.google?.maps?.Map) {
     googleMapsLoaded = true;
     return Promise.resolve();
   }
@@ -54,7 +54,7 @@ function loadGoogleMapsScript(apiKey: string): Promise<void> {
     if (existing) {
       // Wait for it to load
       const checkLoaded = () => {
-        if (window.google?.maps) {
+        if (window.google?.maps?.Map) {
           googleMapsLoaded = true;
           resolve();
         } else {
@@ -66,14 +66,14 @@ function loadGoogleMapsScript(apiKey: string): Promise<void> {
     }
 
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly&loading=async`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
     script.async = true;
     script.defer = true;
 
     script.onload = () => {
-      // Google Maps script loaded but API might not be ready yet
+      // Wait until google.maps.Map constructor is actually available
       const waitForApi = () => {
-        if (window.google?.maps) {
+        if (window.google?.maps?.Map) {
           googleMapsLoaded = true;
           resolve();
         } else {
