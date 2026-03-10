@@ -2240,33 +2240,85 @@ _ARTICLE_TTL = 86400  # 24 小时缓存
 
 
 def _fetch_article_content(url: str) -> str:
-    """抓取新闻原文正文。Google News RSS 链接会 302 到真实文章。"""
+    """抓取新闻原文正文。支持 Google News 重定向 + 多种网站结构。"""
+    _BROWSER_UA = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    )
     try:
+        # Google News 链接需要跟随重定向获取真实 URL
         req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; CompassBot/1.0)"
+            "User-Agent": _BROWSER_UA,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-AU,en;q=0.9",
         })
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=20) as resp:
             raw = resp.read()
-            # 尝试检测编码
             charset = resp.headers.get_content_charset() or "utf-8"
             html_text = raw.decode(charset, errors="replace")
+            final_url = resp.url  # 重定向后的真实 URL
+            print(f"[INFO] Article fetched from: {final_url} ({len(html_text)} chars)")
 
-        # 简单提取 <p> 标签内容
-        paragraphs = _re.findall(r"<p[^>]*>(.*?)</p>", html_text, _re.DOTALL | _re.IGNORECASE)
-        if not paragraphs:
-            return ""
-
-        # 清洗 HTML 标签
+        # ---- 多策略提取正文 ----
         clean_paras = []
-        for p in paragraphs:
-            text = _re.sub(r"<[^>]+>", "", p).strip()
-            text = _html.unescape(text)
-            if len(text) > 30:  # 过滤太短的片段
-                clean_paras.append(text)
 
-        return "\n\n".join(clean_paras[:30])  # 最多 30 段
+        # 策略1：提取 <article> 标签内的 <p>
+        article_match = _re.search(
+            r"<article[^>]*>(.*?)</article>", html_text, _re.DOTALL | _re.IGNORECASE
+        )
+        if article_match:
+            article_html = article_match.group(1)
+            paras = _re.findall(r"<p[^>]*>(.*?)</p>", article_html, _re.DOTALL | _re.IGNORECASE)
+            for p in paras:
+                text = _re.sub(r"<[^>]+>", "", p).strip()
+                text = _html.unescape(text)
+                if len(text) > 20:
+                    clean_paras.append(text)
+
+        # 策略2：如果 article 提取不足，尝试全页 <p>
+        if len(clean_paras) < 3:
+            all_paras = _re.findall(r"<p[^>]*>(.*?)</p>", html_text, _re.DOTALL | _re.IGNORECASE)
+            seen = set(clean_paras)
+            for p in all_paras:
+                text = _re.sub(r"<[^>]+>", "", p).strip()
+                text = _html.unescape(text)
+                if len(text) > 20 and text not in seen:
+                    # 过滤导航/广告/cookie 文本
+                    lower = text.lower()
+                    if any(skip in lower for skip in [
+                        "cookie", "subscribe", "sign up", "log in", "copyright",
+                        "privacy policy", "terms of", "advertisement", "all rights",
+                        "javascript", "browser"
+                    ]):
+                        continue
+                    clean_paras.append(text)
+                    seen.add(text)
+
+        # 策略3：如果还是不够，尝试 <div> 内的长文本块
+        if len(clean_paras) < 3:
+            div_texts = _re.findall(
+                r'<div[^>]*class="[^"]*(?:content|body|text|story|article)[^"]*"[^>]*>(.*?)</div>',
+                html_text, _re.DOTALL | _re.IGNORECASE
+            )
+            seen = set(clean_paras)
+            for div_html in div_texts:
+                texts = _re.findall(r"<p[^>]*>(.*?)</p>", div_html, _re.DOTALL | _re.IGNORECASE)
+                for p in texts:
+                    text = _re.sub(r"<[^>]+>", "", p).strip()
+                    text = _html.unescape(text)
+                    if len(text) > 20 and text not in seen:
+                        clean_paras.append(text)
+                        seen.add(text)
+
+        result = "\n\n".join(clean_paras[:30])
+        print(f"[INFO] Extracted {len(clean_paras)} paragraphs ({len(result)} chars)")
+        return result
+
     except Exception as e:
         print(f"[WARN] Article fetch failed for {url}: {e}")
+        import traceback
+        traceback.print_exc()
         return ""
 
 
@@ -2306,9 +2358,38 @@ def _translate_article(text: str) -> str:
         return ""
 
 
+def _ai_expand_summary(title: str, summary: str) -> str:
+    """当无法抓取原文时，用 AI 基于标题和摘要生成中文解读。"""
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+    if not moonshot_key:
+        return ""
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=moonshot_key, base_url="https://api.moonshot.cn/v1")
+        response = client.chat.completions.create(
+            model="kimi-k2.5",
+            messages=[
+                {"role": "system", "content": (
+                    "你是 Olivia，Compass 平台的市场经济学家。"
+                    "根据新闻标题和摘要，用中文为华人投资者撰写一段详细解读（200-400字）。"
+                    "分析这条新闻对布里斯班房产市场的影响。"
+                    "不要使用任何 markdown 格式符号。用纯文本。"
+                )},
+                {"role": "user", "content": f"新闻标题：{title}\n\n摘要：{summary}\n\n请撰写详细的中文解读。"}
+            ],
+            max_tokens=2048,
+            temperature=0.7,
+        )
+        result = response.choices[0].message.content.strip()
+        return result.replace('**', '').replace('*', '')
+    except Exception as e:
+        print(f"[WARN] AI expand summary failed: {e}")
+        return ""
+
+
 @app.get("/api/news/detail")
-def get_news_detail(url: str):
-    """获取新闻全文 + 中文翻译"""
+def get_news_detail(url: str, title: str = "", summary: str = ""):
+    """获取新闻全文 + 中文翻译。如果原文抓取失败，用 AI 基于标题摘要生成解读。"""
     if not url:
         return {"error": "url parameter required"}
 
@@ -2329,16 +2410,25 @@ def get_news_detail(url: str):
 
     # 抓取原文
     original = _fetch_article_content(url)
-    if not original:
+
+    if original:
+        # 成功抓取 → 翻译
+        translated = _translate_article(original)
+    else:
+        # 抓取失败 → 用 AI 基于标题/摘要生成解读
+        original = ""
+        if title or summary:
+            translated = _ai_expand_summary(title, summary)
+        else:
+            translated = ""
+
+    if not original and not translated:
         return {
             "original_text": "",
             "translated_text": "",
             "url": url,
             "error": "无法获取文章内容，可能是网站限制访问",
         }
-
-    # 翻译
-    translated = _translate_article(original)
 
     # 写入缓存
     _article_cache[url_hash] = {

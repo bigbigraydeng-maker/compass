@@ -59,7 +59,7 @@ export default function NewsPage() {
     loadNews();
   }, []);
 
-  const handleExpand = async (idx: number, link: string) => {
+  const handleExpand = async (idx: number, news: NewsItem) => {
     if (expandedIdx === idx) {
       setExpandedIdx(null);
       return;
@@ -67,21 +67,26 @@ export default function NewsPage() {
     setExpandedIdx(idx);
 
     // 已缓存则跳过
-    if (articleCache[link]) return;
+    if (articleCache[news.link]) return;
 
-    // 请求全文+翻译
+    // 请求全文+翻译（传入标题和摘要作为抓取失败时的 AI 解读素材）
     setArticleLoading(idx);
     try {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
-      const res = await fetch(`${API_BASE}/api/news/detail?url=${encodeURIComponent(link)}`, {
-        signal: AbortSignal.timeout(30000),
+      const params = new URLSearchParams({
+        url: news.link,
+        title: news.title,
+        summary: news.summary || '',
+      });
+      const res = await fetch(`${API_BASE}/api/news/detail?${params}`, {
+        signal: AbortSignal.timeout(60000),
       });
       const data = await res.json();
-      setArticleCache(prev => ({ ...prev, [link]: data }));
+      setArticleCache(prev => ({ ...prev, [news.link]: data }));
     } catch (e) {
       setArticleCache(prev => ({
         ...prev,
-        [link]: { original_text: '', translated_text: '', error: '获取文章失败，请稍后再试' },
+        [news.link]: { original_text: '', translated_text: '', error: '获取文章失败，请稍后再试' },
       }));
     } finally {
       setArticleLoading(null);
@@ -167,7 +172,7 @@ export default function NewsPage() {
           <div className="space-y-3">
             {newsItems.map((news, idx) => {
               const isExpanded = expandedIdx === idx;
-              const article = articleCache[news.link];
+              const article = articleCache[news.link] as ArticleDetail | undefined;
               const isLoading = articleLoading === idx;
 
               return (
@@ -179,7 +184,7 @@ export default function NewsPage() {
                 >
                   {/* 标题栏（可点击） */}
                   <button
-                    onClick={() => handleExpand(idx, news.link)}
+                    onClick={() => handleExpand(idx, news)}
                     className="w-full text-left p-4 md:p-5 flex items-start gap-3"
                   >
                     <span className={`mt-0.5 text-xs transition-transform ${isExpanded ? 'rotate-90' : ''}`}>
@@ -231,12 +236,12 @@ export default function NewsPage() {
                         </div>
                       ) : article ? (
                         <div className="pt-4 space-y-4">
-                          {/* 中文翻译 */}
+                          {/* 中文翻译 / Olivia 解读 */}
                           {article.translated_text && (
                             <div>
                               <h4 className="text-sm font-semibold text-purple-700 mb-2 flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" />
-                                中文翻译
+                                {article.original_text ? '中文翻译' : 'Olivia 解读'}
                               </h4>
                               <div className="bg-purple-50/50 rounded-lg p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-line">
                                 {article.translated_text}
