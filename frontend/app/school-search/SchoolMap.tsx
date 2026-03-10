@@ -319,10 +319,11 @@ export default function SchoolMap({
     }
   }, [mapReady, selectedSchool, suburbBoundaries, dataSuburbs]);
 
-  // No API key
+  // Overlay content for non-ready states
+  let overlay = null;
   if (!apiKey) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500" style={{ minHeight: 400 }}>
+    overlay = (
+      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-500 z-10">
         <div className="text-center p-6">
           <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -331,12 +332,9 @@ export default function SchoolMap({
         </div>
       </div>
     );
-  }
-
-  // Loading error with retry
-  if (loadError) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500" style={{ minHeight: 400 }}>
+  } else if (loadError) {
+    overlay = (
+      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-500 z-10">
         <div className="text-center p-6">
           <svg className="w-10 h-10 mx-auto mb-3 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -356,12 +354,9 @@ export default function SchoolMap({
         </div>
       </div>
     );
-  }
-
-  // Loading state
-  if (!mapReady) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100" style={{ minHeight: 400 }}>
+  } else if (!mapReady) {
+    overlay = (
+      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-3"></div>
           <p className="text-xs text-gray-500">加载地图中...</p>
@@ -371,6 +366,9 @@ export default function SchoolMap({
   }
 
   return (
-    <div ref={mapRef} className="w-full bg-gray-100" style={{ height: '100%', minHeight: 400 }} />
+    <div className="relative w-full" style={{ height: '100%', minHeight: 400 }}>
+      {overlay}
+      <div ref={mapRef} className="w-full h-full bg-gray-100" />
+    </div>
   );
 }
