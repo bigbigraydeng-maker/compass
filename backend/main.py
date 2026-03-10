@@ -176,6 +176,11 @@ try:
     """)
     execute_query("CREATE INDEX IF NOT EXISTS idx_fengshui_rating ON fengshui_records(rating)")
     execute_query("CREATE INDEX IF NOT EXISTS idx_fengshui_created ON fengshui_records(created_at DESC)")
+    # 添加 full_content 列（兼容已有表）
+    try:
+        execute_query("ALTER TABLE fengshui_records ADD COLUMN IF NOT EXISTS full_content TEXT")
+    except Exception:
+        pass
     print("[OK] Fengshui records table ready")
 except Exception as e:
     print(f"[WARN] Fengshui records table creation: {e}")
@@ -3124,13 +3129,14 @@ async def fengshui_analyze(
 
                     execute_query("""
                         INSERT INTO fengshui_records
-                            (address, suburb, rating, summary, center_elevation, has_backing,
+                            (address, suburb, rating, summary, full_content, center_elevation, has_backing,
                              backing_direction, has_water, negative_count, positive_count,
                              total_crime, has_floor_plan, address_hash)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (address_hash) DO UPDATE SET
                             rating = EXCLUDED.rating,
                             summary = EXCLUDED.summary,
+                            full_content = EXCLUDED.full_content,
                             has_floor_plan = EXCLUDED.has_floor_plan,
                             created_at = NOW()
                     """, (
@@ -3138,6 +3144,7 @@ async def fengshui_analyze(
                         suburb,
                         rating,
                         summary_text,
+                        full_content,
                         elevation.get('center_elevation') if not elevation.get('error') else None,
                         elevation.get('has_backing', False) if not elevation.get('error') else False,
                         elevation.get('backing_direction', '') if not elevation.get('error') else '',
@@ -3169,6 +3176,29 @@ async def fengshui_analyze(
     )
 
 
+def _mask_address(address: str, suburb: str) -> str:
+    """隱藏具體門牌號，只保留街道首字母 + 郊區"""
+    import re as _re_m
+    # "10 Doreen St, Geebung QLD 4034, Australia" → "D***n St, Geebung"
+    # Remove suburb/state/postcode/country suffix for cleaner display
+    parts = address.split(',')
+    street_part = parts[0].strip() if parts else address
+    # Try to extract street name (skip number)
+    m = _re_m.match(r'^[\d/\-A-Za-z]*\s+(.+)$', street_part)
+    if m:
+        street_name = m.group(1).strip()
+        # Mask: keep first char, last char, mask middle
+        words = street_name.split()
+        masked_words = []
+        for w in words:
+            if len(w) <= 2:
+                masked_words.append(w)
+            else:
+                masked_words.append(w[0] + '*' * (len(w) - 2) + w[-1])
+        return ' '.join(masked_words) + f', {suburb}'
+    return f'{suburb}區'
+
+
 @app.get("/api/fengshui/records")
 async def fengshui_records(
     request: Request,
@@ -3178,6 +3208,7 @@ async def fengshui_records(
     """
     天機堂 · 風水記錄公開排行
     返回近期分析記錄，按評級排序（A > B > C > D > E）
+    地址已脫敏處理，保護用戶隱私
     """
     try:
         where_clause = ""
@@ -3190,9 +3221,9 @@ async def fengshui_records(
         params.append(safe_limit)
 
         rows = execute_query(f"""
-            SELECT id, address, suburb, rating, summary, center_elevation,
-                   has_backing, backing_direction, has_water, negative_count,
-                   positive_count, total_crime, has_floor_plan, created_at
+            SELECT id, address, suburb, rating, summary, full_content,
+                   center_elevation, has_backing, backing_direction, has_water,
+                   negative_count, positive_count, total_crime, has_floor_plan, created_at
             FROM fengshui_records
             {where_clause}
             ORDER BY
@@ -3206,12 +3237,14 @@ async def fengshui_records(
 
         records = []
         for r in (rows or []):
+            suburb = r.get("suburb", "")
             records.append({
                 "id": r["id"],
-                "address": r["address"],
-                "suburb": r["suburb"],
+                "masked_address": _mask_address(r["address"], suburb),
+                "suburb": suburb,
                 "rating": r["rating"],
                 "summary": r.get("summary", ""),
+                "full_content": r.get("full_content", ""),
                 "center_elevation": r.get("center_elevation"),
                 "has_backing": r.get("has_backing", False),
                 "backing_direction": r.get("backing_direction", ""),

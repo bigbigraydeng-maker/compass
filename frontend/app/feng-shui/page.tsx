@@ -34,10 +34,11 @@ const MAX_CACHE = 5;
 
 interface FengshuiRecord {
   id: number;
-  address: string;
+  masked_address: string;
   suburb: string;
   rating: string;
   summary: string;
+  full_content: string;
   center_elevation: number | null;
   has_backing: boolean;
   backing_direction: string;
@@ -115,7 +116,9 @@ export default function FengShuiPage() {
   // 公開風水記錄
   const [publicRecords, setPublicRecords] = useState<FengshuiRecord[]>([]);
   const [recordStats, setRecordStats] = useState<Record<string, number>>({});
+  const [recordsTotal, setRecordsTotal] = useState(0);
   const [recordFilter, setRecordFilter] = useState('');
+  const [expandedRecords, setExpandedRecords] = useState<Set<number>>(new Set());
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -132,6 +135,7 @@ export default function FengShuiPage() {
       if (data?.records) {
         setPublicRecords(data.records);
         setRecordStats(data.stats || {});
+        setRecordsTotal(data.total || 0);
       }
     } catch { /* ignore */ }
   };
@@ -683,7 +687,7 @@ export default function FengShuiPage() {
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-amber-100 mb-2">📜 近期堪輿排行</h2>
               <p className="text-amber-700/60 text-sm mb-4">
-                天機堂已為 {Object.values(recordStats).reduce((a, b) => a + b, 0)} 處物業完成風水堪輿
+                天機堂累計完成 <span className="text-amber-400 font-semibold">{recordsTotal}</span> 次風水堪輿分析
               </p>
               {/* 評級統計 pills */}
               <div className="flex justify-center gap-2 flex-wrap">
@@ -725,6 +729,7 @@ export default function FengShuiPage() {
             {/* 記錄列表 */}
             <div className="space-y-3">
               {publicRecords.map((rec) => {
+                const isExpanded = expandedRecords.has(rec.id);
                 const ratingColors: Record<string, string> = {
                   A: 'from-green-600 to-green-800',
                   B: 'from-blue-600 to-blue-800',
@@ -742,38 +747,71 @@ export default function FengShuiPage() {
                 return (
                   <div
                     key={rec.id}
-                    className={`bg-neutral-900/80 rounded-xl border p-4 md:p-5 transition-all ${borderColors[rec.rating] || 'border-amber-800/20'}`}
+                    className={`bg-neutral-900/80 rounded-xl border transition-all ${borderColors[rec.rating] || 'border-amber-800/20'}`}
                   >
-                    <div className="flex items-start gap-3 md:gap-4">
-                      {/* 評級徽標 */}
-                      <div className={`flex-shrink-0 w-11 h-11 rounded-lg bg-gradient-to-br ${ratingColors[rec.rating] || 'from-neutral-600 to-neutral-800'} flex items-center justify-center`}>
-                        <span className="text-white text-lg font-bold">{rec.rating}</span>
-                      </div>
-                      {/* 內容 */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="text-amber-100 font-medium text-sm md:text-base truncate">{rec.address}</h3>
-                          {rec.has_floor_plan && <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/30 text-amber-500/70">📐 含平面圖</span>}
+                    {/* 摘要行 — 點擊展開 */}
+                    <button
+                      className="w-full text-left p-4 md:p-5"
+                      onClick={() => {
+                        setExpandedRecords(prev => {
+                          const next = new Set(prev);
+                          if (next.has(rec.id)) next.delete(rec.id);
+                          else next.add(rec.id);
+                          return next;
+                        });
+                      }}
+                    >
+                      <div className="flex items-start gap-3 md:gap-4">
+                        {/* 評級徽標 */}
+                        <div className={`flex-shrink-0 w-11 h-11 rounded-lg bg-gradient-to-br ${ratingColors[rec.rating] || 'from-neutral-600 to-neutral-800'} flex items-center justify-center`}>
+                          <span className="text-white text-lg font-bold">{rec.rating}</span>
                         </div>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-amber-700/50 flex-wrap">
-                          <span>{rec.suburb}區</span>
-                          {rec.center_elevation && <span>海拔 {rec.center_elevation}m</span>}
-                          {rec.has_backing && <span className="text-green-500/60">✓ 有靠山（{rec.backing_direction}）</span>}
-                          {rec.has_water && <span className="text-blue-400/60">💧 近水</span>}
-                          {rec.positive_count > 0 && <span className="text-green-500/50">吉地×{rec.positive_count}</span>}
-                          {rec.negative_count > 0 && <span className="text-red-400/50">煞氣×{rec.negative_count}</span>}
+                        {/* 內容 */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="text-amber-100 font-medium text-sm md:text-base">
+                              {rec.masked_address}
+                            </h3>
+                            {rec.has_floor_plan && <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/30 text-amber-500/70">📐 含平面圖</span>}
+                          </div>
+                          <div className="flex items-center gap-3 mt-1 text-xs text-amber-700/50 flex-wrap">
+                            {rec.center_elevation && <span>海拔 {rec.center_elevation}m</span>}
+                            {rec.has_backing && <span className="text-green-500/60">✓ 靠山（{rec.backing_direction}）</span>}
+                            {rec.has_water && <span className="text-blue-400/60">💧 近水</span>}
+                            {rec.positive_count > 0 && <span className="text-green-500/50">吉地×{rec.positive_count}</span>}
+                            {rec.negative_count > 0 && <span className="text-red-400/50">煞氣×{rec.negative_count}</span>}
+                          </div>
                         </div>
-                        {rec.summary && (
-                          <p className="text-amber-100/50 text-xs mt-2 line-clamp-2">{rec.summary}</p>
-                        )}
+                        {/* 展開提示 + 時間 */}
+                        <div className="flex-shrink-0 text-right">
+                          <span className="text-amber-600/40 text-xs">{isExpanded ? '收起 ▲' : '展開報告 ▼'}</span>
+                          <div className="text-amber-800/40 text-[10px] mt-1 hidden md:block">
+                            {rec.created_at ? new Date(rec.created_at).toLocaleDateString('zh-TW') : ''}
+                          </div>
+                        </div>
                       </div>
-                      {/* 時間 */}
-                      <div className="flex-shrink-0 text-right hidden md:block">
-                        <span className="text-amber-800/40 text-[10px]">
-                          {rec.created_at ? new Date(rec.created_at).toLocaleDateString('zh-TW') : ''}
-                        </span>
+                    </button>
+
+                    {/* 展開：完整報告 */}
+                    {isExpanded && (
+                      <div className="px-4 md:px-5 pb-5 pt-0">
+                        <div className="border-t border-amber-800/20 pt-4">
+                          {rec.full_content ? (
+                            <div className="bg-neutral-950/50 rounded-lg p-4 md:p-5 max-h-[500px] overflow-y-auto">
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-600 to-red-800 flex items-center justify-center text-white text-xs font-bold">胡</div>
+                                <span className="text-amber-200 text-sm font-medium">胡師傅 · 堪輿分析</span>
+                              </div>
+                              <FengshuiMarkdown content={rec.full_content} />
+                            </div>
+                          ) : rec.summary ? (
+                            <p className="text-amber-100/60 text-sm leading-relaxed">{rec.summary}</p>
+                          ) : (
+                            <p className="text-amber-700/40 text-sm">暫無詳細報告</p>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               })}
