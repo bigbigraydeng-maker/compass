@@ -18,7 +18,60 @@ from dotenv import load_dotenv
 # 加载 .env 文件
 load_dotenv()
 
-print("Compass API v1.4.0 - Multimodal Analysis + Comparable Sales")
+print("Compass API v1.5.0 - Dual AI Engine (OpenAI + Moonshot)")
+
+# ====== Centralized AI Client Factory ======
+from openai import OpenAI as _OpenAI_SDK
+
+def _get_ai_client():
+    """
+    Returns (client, model, temperature) tuple.
+    Priority: OpenAI gpt-4o-mini (fast) > Moonshot (fallback).
+    """
+    openai_key = os.getenv("OPENAI_API_KEY", "")
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+
+    if openai_key:
+        return (
+            _OpenAI_SDK(api_key=openai_key),
+            "gpt-4o-mini",
+            0.7,
+        )
+    elif moonshot_key:
+        return (
+            _OpenAI_SDK(api_key=moonshot_key, base_url="https://api.moonshot.cn/v1"),
+            "moonshot-v1-32k",
+            0.7,
+        )
+    else:
+        raise RuntimeError("No AI API key configured. Set OPENAI_API_KEY or MOONSHOT_API_KEY.")
+
+def _get_ai_client_vision():
+    """
+    Returns (client, model, temperature) for vision-capable tasks.
+    Priority: OpenAI gpt-4o-mini (fast + vision) > Kimi K2.5 (vision) > Moonshot (no vision).
+    """
+    openai_key = os.getenv("OPENAI_API_KEY", "")
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+
+    if openai_key:
+        return (
+            _OpenAI_SDK(api_key=openai_key),
+            "gpt-4o-mini",
+            0.7,
+        )
+    elif moonshot_key:
+        return (
+            _OpenAI_SDK(api_key=moonshot_key, base_url="https://api.moonshot.cn/v1"),
+            "kimi-k2.5",
+            1,  # kimi-k2.5 requires temperature=1
+        )
+    else:
+        raise RuntimeError("No AI API key configured.")
+
+# Log which AI provider is active
+_ai_provider = "OpenAI" if os.getenv("OPENAI_API_KEY") else "Moonshot" if os.getenv("MOONSHOT_API_KEY") else "NONE"
+print(f"[AI] Primary provider: {_ai_provider}")
 
 # 集中化区域配置
 from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG, get_zoning_scores, get_police_division_map
@@ -1845,27 +1898,19 @@ def analyze_property(request: Request, address: str = Body(...), url: str = Body
         if extra:
             prompt += extra
 
-        # 3. 调用 Moonshot Kimi 2.5 API
-        moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-        if not moonshot_key:
-            raise HTTPException(status_code=500, detail="MOONSHOT_API_KEY not configured")
-
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=moonshot_key,
-            base_url="https://api.moonshot.cn/v1"
-        )
+        # 3. 调用 AI API
+        client, _model, _temp = _get_ai_client()
 
         system_prompt = _get_mode_system_prompt(mode)
 
         response = client.chat.completions.create(
-            model="kimi-k2.5",
+            model=_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=4096,
-            temperature=1.0,
+            temperature=_temp,
         )
 
         analysis = response.choices[0].message.content
@@ -1927,10 +1972,6 @@ def analyze_property_stream(request: Request, address: str = Body(...), url: str
     if extra:
         prompt += extra
 
-    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-    if not moonshot_key:
-        raise HTTPException(status_code=500, detail="MOONSHOT_API_KEY not configured")
-
     system_prompt = _get_mode_system_prompt(mode)
 
     # 构建数据维度信息（先发送给前端）
@@ -1953,20 +1994,16 @@ def analyze_property_stream(request: Request, address: str = Body(...), url: str
             meta = _json.dumps({"type": "meta", "suburb": suburb, "mode": mode, "data_dimensions": dimensions})
             yield f"data: {meta}\n\n"
 
-            from openai import OpenAI
-            client = OpenAI(
-                api_key=moonshot_key,
-                base_url="https://api.moonshot.cn/v1"
-            )
+            client, _model, _temp = _get_ai_client()
 
             stream = client.chat.completions.create(
-                model="kimi-k2.5",
+                model=_model,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
                 ],
                 max_tokens=4096,
-                temperature=1.0,
+                temperature=_temp,
                 stream=True,
             )
 
@@ -2355,10 +2392,6 @@ async def analyze_multimodal(
     if not text_input and not images:
         raise HTTPException(status_code=400, detail="请提供文本输入或图片")
 
-    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-    if not moonshot_key:
-        raise HTTPException(status_code=500, detail="AI 服务未配置")
-
     # 处理图片
     image_b64_list = []
     if images:
@@ -2468,11 +2501,7 @@ async def analyze_multimodal(
                 print(f"Comparable sales error: {e}")
 
             # 6. 构建 prompt + 流式 AI 分析
-            from openai import OpenAI
-            client = OpenAI(
-                api_key=moonshot_key,
-                base_url="https://api.moonshot.cn/v1"
-            )
+            client, _model, _temp = _get_ai_client_vision() if image_b64_list else _get_ai_client()
 
             system_prompt = _get_mode_system_prompt(mode)
 
@@ -2506,10 +2535,10 @@ async def analyze_multimodal(
 
             # 流式输出
             stream = client.chat.completions.create(
-                model="kimi-k2.5",
+                model=_model,
                 messages=messages,
                 max_tokens=4096,
-                temperature=1.0,
+                temperature=_temp,
                 stream=True,
             )
 
@@ -2574,6 +2603,447 @@ async def analyze_multimodal(
             traceback.print_exc()
             error_data = _json.dumps({"type": "error", "message": str(e)})
             yield f"data: {error_data}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        }
+    )
+
+
+# ========== 天機堂 · 风水堪輿分析 ==========
+import math as _math
+import urllib.request as _urllib_req
+import urllib.parse as _urllib_parse
+
+_GMAPS_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
+
+# Simple in-memory cache for feng shui results (address → {data, ts})
+_fengshui_cache: dict = {}
+_FENGSHUI_CACHE_TTL = 3600  # 1 hour
+
+_DIRECTION_NAMES = ["北", "东北", "东", "东南", "南", "西南", "西", "西北"]
+_DIRECTION_OFFSETS = [
+    (0, 1), (1, 1), (1, 0), (1, -1),
+    (0, -1), (-1, -1), (-1, 0), (-1, 1),
+]
+
+
+def _geocode_address(address: str) -> dict:
+    """Google Geocoding API: address -> {lat, lng, formatted_address, suburb}"""
+    if not _GMAPS_KEY:
+        return {"error": "GOOGLE_MAPS_API_KEY not configured"}
+    try:
+        params = _urllib_parse.urlencode({
+            "address": f"{address}, Brisbane, QLD, Australia",
+            "key": _GMAPS_KEY,
+            "region": "au",
+        })
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?{params}"
+        req = _urllib_req.Request(url)
+        with _urllib_req.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        if data.get("status") != "OK" or not data.get("results"):
+            return {"error": f"Geocoding failed: {data.get('status', 'NO_RESULTS')}"}
+        result = data["results"][0]
+        loc = result["geometry"]["location"]
+        # extract suburb from address_components
+        suburb = ""
+        for comp in result.get("address_components", []):
+            if "locality" in comp.get("types", []):
+                suburb = comp["long_name"]
+                break
+        return {
+            "lat": loc["lat"],
+            "lng": loc["lng"],
+            "formatted_address": result.get("formatted_address", address),
+            "suburb": suburb,
+        }
+    except Exception as e:
+        return {"error": f"Geocoding error: {str(e)}"}
+
+
+def _get_elevation_grid(lat: float, lng: float, radius_m: int = 200) -> dict:
+    """Google Elevation API: 9-point grid around center for terrain analysis."""
+    if not _GMAPS_KEY:
+        return {"error": "API key not configured"}
+    try:
+        # 1 degree lat ~ 111320m
+        dlat = radius_m / 111320.0
+        dlng = radius_m / (111320.0 * _math.cos(_math.radians(lat)))
+
+        points = [(lat, lng)]  # center
+        for dx, dy in _DIRECTION_OFFSETS:
+            points.append((lat + dy * dlat, lng + dx * dlng))
+
+        locations_str = "|".join(f"{p[0]},{p[1]}" for p in points)
+        params = _urllib_parse.urlencode({
+            "locations": locations_str,
+            "key": _GMAPS_KEY,
+        })
+        url = f"https://maps.googleapis.com/maps/api/elevation/json?{params}"
+        req = _urllib_req.Request(url)
+        with _urllib_req.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+
+        if data.get("status") != "OK":
+            return {"error": f"Elevation API: {data.get('status')}"}
+
+        results = data.get("results", [])
+        if len(results) < 9:
+            return {"error": "Insufficient elevation data"}
+
+        center_elev = results[0]["elevation"]
+        elevations = {}
+        relative = {}
+        max_diff = 0
+        backing_dir = ""
+
+        for i, name in enumerate(_DIRECTION_NAMES):
+            elev = results[i + 1]["elevation"]
+            elevations[name] = round(elev, 1)
+            diff = round(elev - center_elev, 1)
+            relative[name] = diff
+            if diff > max_diff:
+                max_diff = diff
+                backing_dir = name
+
+        return {
+            "center_elevation": round(center_elev, 1),
+            "elevations": elevations,
+            "relative_to_center": relative,
+            "backing_direction": backing_dir if max_diff > 2 else "",
+            "has_backing": max_diff > 2,
+            "max_height_diff": round(max_diff, 1),
+            "terrain_flat": max_diff < 1.5,
+        }
+    except Exception as e:
+        return {"error": f"Elevation error: {str(e)}"}
+
+
+def _get_fengshui_places(lat: float, lng: float) -> dict:
+    """Google Places Nearby Search: feng shui relevant facilities. Parallelized."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    if not _GMAPS_KEY:
+        return {"error": "API key not configured"}
+
+    def _search_nearby(keyword_or_type: str, radius: int, is_type: bool = True) -> list:
+        try:
+            params = {
+                "location": f"{lat},{lng}",
+                "radius": str(radius),
+                "key": _GMAPS_KEY,
+            }
+            if is_type:
+                params["type"] = keyword_or_type
+            else:
+                params["keyword"] = keyword_or_type
+            qs = _urllib_parse.urlencode(params)
+            url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?{qs}"
+            req = _urllib_req.Request(url)
+            with _urllib_req.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            places = []
+            for p in data.get("results", [])[:5]:
+                ploc = p.get("geometry", {}).get("location", {})
+                dist = _haversine(lat, lng, ploc.get("lat", lat), ploc.get("lng", lng))
+                places.append({
+                    "name": p.get("name", ""),
+                    "distance_m": round(dist),
+                    "vicinity": p.get("vicinity", ""),
+                })
+            return places
+        except Exception:
+            return []
+
+    # All search tasks: (key, type_or_kw, radius, is_type, result_group)
+    tasks = [
+        ("cemetery",         "cemetery",         500,  True,  "negative"),
+        ("funeral_home",     "funeral_home",     500,  True,  "negative"),
+        ("hospital",         "hospital",         500,  True,  "negative"),
+        ("park",             "park",             1000, True,  "positive"),
+        ("school",           "school",           1000, True,  "positive"),
+        ("place_of_worship", "place_of_worship", 1000, True,  "positive"),
+        ("water",            "lake river creek", 1500, False, "water_features"),
+    ]
+
+    result = {"negative": [], "positive": [], "water_features": []}
+
+    # Run all searches in parallel (7 threads instead of 10 serial calls)
+    with ThreadPoolExecutor(max_workers=7) as pool:
+        futures = {}
+        for cat, kw, radius, is_type, group in tasks:
+            f = pool.submit(_search_nearby, kw, radius, is_type)
+            futures[f] = (cat, group)
+
+        for f in as_completed(futures):
+            cat, group = futures[f]
+            try:
+                found = f.result()
+                for item in found:
+                    item["category"] = cat
+                    result[group].append(item)
+            except Exception:
+                pass
+
+    return result
+
+
+def _haversine(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+    """Calculate distance in meters between two points."""
+    R = 6371000
+    phi1, phi2 = _math.radians(lat1), _math.radians(lat2)
+    dphi = _math.radians(lat2 - lat1)
+    dlam = _math.radians(lng2 - lng1)
+    a = _math.sin(dphi / 2) ** 2 + _math.cos(phi1) * _math.cos(phi2) * _math.sin(dlam / 2) ** 2
+    return R * 2 * _math.atan2(_math.sqrt(a), _math.sqrt(1 - a))
+
+
+def _get_fengshui_crime(suburb_name: str) -> dict:
+    """Query crime stats for feng shui safety assessment."""
+    try:
+        if not execute_query:
+            return {"error": "Database not available"}
+
+        rows = execute_query("""
+            SELECT category, SUM(count) as total
+            FROM crime_stats
+            WHERE LOWER(suburb) = LOWER(%s)
+              AND month_year >= TO_CHAR(NOW() - INTERVAL '12 months', 'YYYY-MM')
+            GROUP BY category
+            ORDER BY total DESC
+            LIMIT 10
+        """, (suburb_name,))
+
+        categories = {}
+        total = 0
+        for row in rows:
+            cat = row.get("category", "unknown")
+            cnt = int(row.get("total", 0))
+            categories[cat] = cnt
+            total += cnt
+
+        return {
+            "suburb": suburb_name,
+            "total_incidents": total,
+            "categories": categories,
+        }
+    except Exception as e:
+        return {"error": f"Crime data error: {str(e)}"}
+
+
+def _get_fengshui_system_prompt() -> str:
+    return """你是胡師傅，天機堂堪輿師，居布里斯班，精研巒頭形勢二十年。
+
+南半球修正：布里斯班南緯27°，北面朝陽=傳統「南」陽氣，南面背陰=傳統「北」陰氣。坐南朝北=吉。分析中須說明此修正。
+
+風格：通俗解讀風水，基於數據，不臆測，中文回覆。
+
+如附有平面圖，額外分析門向、廚廁位、主臥方位。
+
+輸出格式（每節2-3句，全文600字內）：
+## 總體評級（A-E）
+## 巒頭形勢（地形靠山·南半球修正）
+## 水法與環境（水體+吉地+煞氣）
+## 道路與治安
+## 胡師傅總評與化解"""
+
+
+def _build_fengshui_prompt(address: str, elevation: dict, places: dict, crime: dict) -> str:
+    lines = [f"地址: {address}"]
+
+    # Elevation — compact one-liner per direction
+    if not elevation.get("error"):
+        dirs = " | ".join(
+            f"{d}:{elevation['relative_to_center'].get(d, 0):+.1f}m"
+            for d in _DIRECTION_NAMES
+        )
+        lines.append(f"地形(海拔{elevation['center_elevation']}m): {dirs}")
+        if elevation.get("has_backing"):
+            lines.append(f"靠山: {elevation['backing_direction']}方 高差{elevation['max_height_diff']}m")
+        else:
+            lines.append("靠山: 無")
+    else:
+        lines.append("地形: 無數據")
+
+    # Places — compact, max 3 per category
+    if not places.get("error"):
+        neg = places.get("negative", [])
+        pos = places.get("positive", [])
+        water = places.get("water_features", [])
+        if neg:
+            items = ", ".join(f"{p['name']}({p['distance_m']}m)" for p in neg[:3])
+            lines.append(f"煞氣({len(neg)}): {items}")
+        else:
+            lines.append("煞氣: 500m內無")
+        if pos:
+            items = ", ".join(f"{p['name']}({p['distance_m']}m)" for p in pos[:4])
+            lines.append(f"吉地({len(pos)}): {items}")
+        if water:
+            # Deduplicate by name
+            seen = set()
+            unique_water = []
+            for w in water:
+                if w["name"] not in seen:
+                    seen.add(w["name"])
+                    unique_water.append(w)
+            items = ", ".join(f"{p['name']}({p['distance_m']}m)" for p in unique_water[:3])
+            lines.append(f"水體({len(unique_water)}): {items}")
+        else:
+            lines.append("水體: 1500m內無")
+
+    # Crime — one liner
+    if not crime.get("error") and crime.get("total_incidents"):
+        top3 = ", ".join(f"{k}:{v}" for k, v in list(crime["categories"].items())[:3])
+        lines.append(f"治安({crime['suburb']}): 年{crime['total_incidents']}件 | {top3}")
+    elif not crime.get("error"):
+        lines.append(f"治安({crime.get('suburb','')}): 無記錄")
+
+    # Road hint
+    al = address.lower()
+    if any(x in al for x in [" ct", " court", " close", " cl", " place", " pl"]):
+        lines.append("道路: 死路(Cul-de-sac)")
+    elif any(x in al for x in [" cres", " crescent"]):
+        lines.append("道路: 弧形路(Crescent)")
+    elif any(x in al for x in [" st", " street", " rd", " road", " ave", " avenue"]):
+        lines.append("道路: 直路")
+
+    return "\n".join(lines)
+
+
+@app.post("/api/fengshui/analyze")
+@limiter.limit("10/minute")
+async def fengshui_analyze(
+    request: Request,
+    address: str = Form(...),
+    floor_plan: Optional[UploadFile] = File(None),
+):
+    """
+    天機堂 · 风水堪輿分析 SSE 端点
+    输入地址 + 可选平面图，返回 SSE 多事件流（地形/设施/治安/胡師傅分析）
+    """
+    import json as _json
+    import base64 as _b64
+
+    if not address or not address.strip():
+        raise HTTPException(status_code=400, detail="请提供地址")
+
+    # Pre-read floor plan image if provided
+    floor_plan_b64 = None
+    if floor_plan and floor_plan.filename:
+        ct = floor_plan.content_type or "image/jpeg"
+        if ct in ("image/jpeg", "image/png", "image/webp"):
+            raw = await floor_plan.read()
+            if len(raw) <= 5 * 1024 * 1024:
+                floor_plan_b64 = f"data:{ct};base64,{_b64.b64encode(raw).decode('utf-8')}"
+
+    def event_generator():
+        from concurrent.futures import ThreadPoolExecutor
+        import time as _t
+        try:
+            addr_key = address.strip().lower()
+
+            # 1. Geocode (check cache first)
+            cached = _fengshui_cache.get(addr_key)
+            if cached and (_t.time() - cached["ts"]) < _FENGSHUI_CACHE_TTL:
+                geo = cached["geo"]
+                elevation = cached["elevation"]
+                places = cached["places"]
+                crime = cached["crime"]
+                print(f"[FengShui] Cache hit: {addr_key}")
+            else:
+                geo = _geocode_address(address.strip())
+                if geo.get("error"):
+                    yield f"data: {_json.dumps({'type': 'error', 'message': geo['error']}, ensure_ascii=False)}\n\n"
+                    return
+                elevation, places, crime = None, None, None
+
+            lat, lng = geo["lat"], geo["lng"]
+            suburb = geo.get("suburb", "")
+
+            meta_payload = {
+                'type': 'meta',
+                'address': geo['formatted_address'],
+                'suburb': suburb,
+                'lat': lat,
+                'lng': lng,
+                'has_floor_plan': floor_plan_b64 is not None,
+            }
+            yield f"data: {_json.dumps(meta_payload, ensure_ascii=False)}\n\n"
+
+            # 2. Collect feng shui data — all 3 in parallel
+            if elevation is None:
+                t0 = _t.time()
+                with ThreadPoolExecutor(max_workers=3) as pool:
+                    f_elev = pool.submit(_get_elevation_grid, lat, lng)
+                    f_places = pool.submit(_get_fengshui_places, lat, lng)
+                    f_crime = pool.submit(_get_fengshui_crime, suburb) if suburb else None
+
+                    elevation = f_elev.result()
+                    places = f_places.result()
+                    crime = f_crime.result() if f_crime else {"error": "No suburb detected"}
+
+                # Cache results
+                _fengshui_cache[addr_key] = {
+                    "geo": geo, "elevation": elevation,
+                    "places": places, "crime": crime,
+                    "ts": _t.time(),
+                }
+                print(f"[FengShui] Data collected in {_t.time()-t0:.1f}s (parallel)")
+
+            yield f"data: {_json.dumps({'type': 'fengshui_data', 'category': 'elevation', 'data': elevation}, ensure_ascii=False)}\n\n"
+            yield f"data: {_json.dumps({'type': 'fengshui_data', 'category': 'places', 'data': places}, ensure_ascii=False)}\n\n"
+            yield f"data: {_json.dumps({'type': 'fengshui_data', 'category': 'crime', 'data': crime}, ensure_ascii=False)}\n\n"
+
+            # 3. Build prompt & stream from Kimi
+            system_prompt = _get_fengshui_system_prompt()
+            user_prompt = _build_fengshui_prompt(
+                geo["formatted_address"], elevation, places, crime
+            )
+
+            if floor_plan_b64:
+                user_prompt += "\n\n# 室內平面圖\n用戶已提供室內平面圖（見附圖），請額外分析大門朝向、廚廁位置、主臥方位、動線格局等室內風水要素。"
+
+            client, _fs_model, _fs_temp = _get_ai_client_vision() if floor_plan_b64 else _get_ai_client()
+            print(f"[FengShui] Using model: {_fs_model}, temp: {_fs_temp}")
+
+            # Build messages - include floor plan image if provided
+            messages = [
+                {"role": "system", "content": system_prompt},
+            ]
+            if floor_plan_b64:
+                messages.append({
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": user_prompt},
+                        {"type": "image_url", "image_url": {"url": floor_plan_b64}},
+                    ],
+                })
+            else:
+                messages.append({"role": "user", "content": user_prompt})
+
+            stream = client.chat.completions.create(
+                model=_fs_model,
+                messages=messages,
+                temperature=_fs_temp,
+                max_tokens=2500,
+                stream=True,
+            )
+
+            for chunk in stream:
+                delta = chunk.choices[0].delta if chunk.choices else None
+                if delta and delta.content:
+                    yield f"data: {_json.dumps({'type': 'master_hu_content', 'text': delta.content}, ensure_ascii=False)}\n\n"
+
+            yield f"data: {_json.dumps({'type': 'done'})}\n\n"
+
+        except Exception as e:
+            print(f"[FengShui ERROR] {e}")
+            yield f"data: {_json.dumps({'type': 'error', 'message': str(e)}, ensure_ascii=False)}\n\n"
 
     return StreamingResponse(
         event_generator(),
@@ -2716,10 +3186,6 @@ def _generate_amanda_commentary(news_items: list) -> str:
     if not news_items:
         return ""
 
-    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-    if not moonshot_key:
-        return ""
-
     # 构建新闻摘要给 AI
     news_digest = "\n".join(
         f"- [{item['source']}] {item['title']}"
@@ -2751,20 +3217,16 @@ def _generate_amanda_commentary(news_items: list) -> str:
     )
 
     try:
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=moonshot_key,
-            base_url="https://api.moonshot.cn/v1"
-        )
+        client, _model, _temp = _get_ai_client()
 
         response = client.chat.completions.create(
-            model="kimi-k2.5",
+            model=_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
             max_tokens=4096,
-            temperature=1.0,
+            temperature=_temp,
         )
 
         commentary = response.choices[0].message.content.strip()
@@ -2901,9 +3363,8 @@ def _fetch_article_content(url: str) -> str:
 
 
 def _translate_article(text: str) -> str:
-    """调用 Kimi K2.5 将英文文章翻译为中文。"""
-    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-    if not moonshot_key or not text:
+    """调用 AI 将英文文章翻译为中文。"""
+    if not text:
         return ""
 
     # 截断过长文本（节省 token）
@@ -2911,11 +3372,10 @@ def _translate_article(text: str) -> str:
         text = text[:5000] + "\n\n[... 原文过长，已截断 ...]"
 
     try:
-        from openai import OpenAI
-        client = OpenAI(api_key=moonshot_key, base_url="https://api.moonshot.cn/v1")
+        client, _model, _temp = _get_ai_client()
 
         response = client.chat.completions.create(
-            model="kimi-k2.5",
+            model=_model,
             messages=[
                 {"role": "system", "content": (
                     "你是一位专业的英中翻译。请将以下英文房产新闻完整翻译成中文。"
@@ -2939,14 +3399,10 @@ def _translate_article(text: str) -> str:
 
 def _ai_expand_summary(title: str, summary: str) -> str:
     """当无法抓取原文时，用 AI 基于标题和摘要生成中文解读。"""
-    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-    if not moonshot_key:
-        return ""
     try:
-        from openai import OpenAI
-        client = OpenAI(api_key=moonshot_key, base_url="https://api.moonshot.cn/v1")
+        client, _model, _temp = _get_ai_client()
         response = client.chat.completions.create(
-            model="kimi-k2.5",
+            model=_model,
             messages=[
                 {"role": "system", "content": (
                     "你是 Olivia，Compass 平台的市场经济学家。"
@@ -2958,7 +3414,7 @@ def _ai_expand_summary(title: str, summary: str) -> str:
                 {"role": "user", "content": f"以下是一条英文房产新闻，请用中文撰写详细解读：\n\n标题：{title}\n\n摘要：{summary}\n\n请用中文撰写 Olivia 的专业解读。"}
             ],
             max_tokens=2048,
-            temperature=0.7,
+            temperature=_temp,
         )
         result = response.choices[0].message.content.strip()
         return result.replace('**', '').replace('*', '')
@@ -3325,15 +3781,7 @@ def chat_with_advisor(
     - history: 对话历史 [{"role": "user"|"assistant", "content": "..."}]
     """
     try:
-        moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
-        if not moonshot_key:
-            raise HTTPException(status_code=500, detail="MOONSHOT_API_KEY not configured")
-
-        from openai import OpenAI
-        client = OpenAI(
-            api_key=moonshot_key,
-            base_url="https://api.moonshot.cn/v1"
-        )
+        client, _model, _temp = _get_ai_client()
 
         amanda_chat_base = (
             "你是 Amanda，Compass 平台的首席房产分析师，也是用户的专属 AI 顾问。"
@@ -3370,10 +3818,10 @@ def chat_with_advisor(
         messages.append({"role": "user", "content": message})
 
         response = client.chat.completions.create(
-            model="kimi-k2.5",
+            model=_model,
             messages=messages,
             max_tokens=1024,
-            temperature=1.0,
+            temperature=_temp,
         )
 
         reply = response.choices[0].message.content

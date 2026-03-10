@@ -22,6 +22,7 @@ export default function Header() {
     { href: '/school-search', label: '校区找房' },
     { href: '/first-home', label: '首次置业' },
     { href: '/overseas-buyer', label: '海外购房' },
+    { href: '/feng-shui', label: '天機堂' },
     { href: '/suburbs', label: '郊区' },
     { href: '/listings', label: '在售房源' },
     { href: '/sales', label: '成交记录' },
