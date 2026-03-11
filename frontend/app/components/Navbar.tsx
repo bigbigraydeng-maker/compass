@@ -40,6 +40,7 @@ export default function Navbar({ activePage = 'home' }: NavbarProps) {
               <Link href="/sales" className={activePage === 'sales' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>成交记录</Link>
               <Link href="/listings" className={activePage === 'listings' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>在售房源</Link>
               <Link href="/news" className={activePage === 'news' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>新闻</Link>
+              <Link href="/devintel" className={activePage === 'devintel' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>DevIntel</Link>
               <div className="relative">
                 <button 
                   className="text-gray-600 hover:text-blue-600 transition flex items-center gap-1"
@@ -72,6 +73,7 @@ export default function Navbar({ activePage = 'home' }: NavbarProps) {
           <Link href="/sales" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>成交列表</Link>
           <Link href="/listings" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>在售房源</Link>
           <Link href="/news" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>新闻</Link>
+          <Link href="/devintel" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>DevIntel</Link>
           {suburbList.map(suburb => (
             <Link key={suburb} href={`/suburb/${suburb}`} className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>{suburb}</Link>
           ))}

@@ -3918,13 +3918,17 @@ try:
     # 每天 6:00 PM AEST 生成晚报
     _scheduler.add_job(lambda: _scheduled_commentary("evening"), CronTrigger(hour=18, minute=0), id="evening_commentary", replace_existing=True)
 
-    # DevIntel: 每日 3:00AM 抓取开发情报 (Phase 2 - placeholder)
-    # from devintel.scheduler_jobs import scheduled_devintel_crawl
-    # _scheduler.add_job(scheduled_devintel_crawl, CronTrigger(hour=3, minute=0),
-    #                    id="daily_devintel", replace_existing=True)
+    # DevIntel: 每日 3:00AM AEST 抓取开发情报
+    try:
+        from devintel.scheduler_jobs import scheduled_devintel_crawl
+        _scheduler.add_job(scheduled_devintel_crawl, CronTrigger(hour=3, minute=0),
+                           id="daily_devintel", replace_existing=True)
+        print("[OK] DevIntel daily crawl job registered (3:00 AM)")
+    except Exception as e:
+        print(f"[WARN] DevIntel scheduler job failed: {e}")
 
     _scheduler.start()
-    print("[OK] APScheduler started: hourly news + 8AM/6PM Olivia commentary")
+    print("[OK] APScheduler started: hourly news + 8AM/6PM Olivia + 3AM DevIntel")
 except Exception as e:
     print(f"[WARN] APScheduler init failed: {e}. News will still work on-demand.")
 
