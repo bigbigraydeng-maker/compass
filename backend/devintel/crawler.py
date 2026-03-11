@@ -542,6 +542,102 @@ def crawl_all_sources(priority_filter: Optional[str] = None) -> Dict:
     return total
 
 
+def process_upload(
+    content: bytes,
+    content_type: str,
+    url: str,
+    source_name: str = "manual_upload",
+    suburb_override: Optional[str] = None,
+    doc_type_override: Optional[str] = None,
+    project_name: Optional[str] = None,
+) -> Dict:
+    """
+    Process uploaded content (PDF or HTML) through the parse → chunk → embed pipeline.
+
+    Args:
+        content: Raw bytes of the document
+        content_type: MIME type (e.g. "application/pdf", "text/html")
+        url: URL or upload:// identifier
+        source_name: Source identifier
+        suburb_override: Override auto-detected suburb
+        doc_type_override: Override auto-detected doc_type
+        project_name: Optional project name for metadata
+
+    Returns:
+        Dict with document_id, title, chunks_created
+    """
+    result = {"document_id": None, "title": None, "chunks_created": 0}
+
+    is_pdf = "pdf" in content_type.lower() or url.lower().endswith(".pdf")
+
+    if is_pdf:
+        try:
+            parsed = parse_pdf(content, max_pages=MAX_PDF_PAGES)
+        except Exception as e:
+            print(f"[Upload] PDF parse failed: {e}")
+            return result
+
+        text = parsed.get("text", "")
+        title = parsed.get("title") or url.split("/")[-1].replace(".pdf", "").replace("-", " ").title()
+        source_type = "pdf"
+        metadata = parsed.get("metadata", {})
+        suburbs = parsed.get("suburbs", [])
+        doc_type_auto = parsed.get("doc_type") or "government_pdf"
+        file_size = len(content)
+        metadata["pdf_pages"] = parsed.get("page_count", 0)
+        metadata["pdf_size_kb"] = round(file_size / 1024, 1)
+    else:
+        html = content.decode("utf-8", errors="replace")
+        parsed = parse_html(html, {"source_name": source_name})
+        text = parsed.get("text", "")
+        title = parsed.get("title") or url
+        source_type = "html"
+        metadata = parsed.get("metadata", {})
+        suburbs = parsed.get("suburbs", [])
+        doc_type_auto = parsed.get("doc_type") or "web_page"
+        file_size = len(content)
+
+    if not text or len(text.strip()) < 50:
+        print(f"[Upload] Too little content ({len(text)} chars)")
+        return result
+
+    # Apply overrides
+    suburb = suburb_override or (suburbs[0] if suburbs else None)
+    doc_type = doc_type_override or doc_type_auto
+    if project_name:
+        metadata["project_name"] = project_name
+
+    result["title"] = title
+
+    doc_id = _store_document(
+        url=url, title=title, source_name=source_name,
+        source_type=source_type, text=text, doc_type=doc_type,
+        suburb=suburb, suburbs=suburbs, metadata=metadata,
+        file_size=file_size,
+    )
+
+    if doc_id is None:
+        print(f"[Upload] Document unchanged (already exists)")
+        # Fetch existing doc_id
+        existing = execute_query(
+            "SELECT id FROM devintel_documents WHERE url_hash = %s",
+            (hashlib.md5(url.encode()).hexdigest(),)
+        )
+        if existing:
+            result["document_id"] = existing[0]["id"]
+        return result
+
+    result["document_id"] = doc_id
+
+    n_chunks = _embed_and_store_chunks(
+        doc_id, text, source_name, doc_type, suburb, metadata
+    )
+    result["chunks_created"] = n_chunks
+    print(f"[Upload] {title}: {len(text)} chars, {n_chunks} chunks")
+
+    return result
+
+
 def crawl_specific_urls(urls: List[str], source_name: str = "manual") -> Dict:
     """
     Crawl specific URLs on demand (for manual crawl trigger).

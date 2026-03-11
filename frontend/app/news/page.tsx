@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import { PersonaAvatar } from '../components/persona';
 import { fetcher } from '../lib/api';
+import DevIntelDashboard, { type TrendsData } from './DevIntelDashboard';
 
 // ---- 类型定义 ----
 interface NewsItem {
@@ -102,7 +103,11 @@ async function handleShare() {
 
 export default function NewsPage() {
   // Tab 状态
-  const [activeTab, setActiveTab] = useState<'commentary' | 'articles'>('commentary');
+  const [activeTab, setActiveTab] = useState<'commentary' | 'articles' | 'devintel'>('commentary');
+
+  // DevIntel 趋势数据
+  const [trendsData, setTrendsData] = useState<TrendsData | null>(null);
+  const [trendsLoading, setTrendsLoading] = useState(false);
 
   // Olivia 解读 Tab 状态
   const [commentaries, setCommentaries] = useState<Commentary[]>([]);
@@ -145,6 +150,17 @@ export default function NewsPage() {
       setCommentaryLoading(false);
     }
   };
+
+  // 加载 DevIntel 趋势
+  useEffect(() => {
+    if (activeTab === 'devintel' && !trendsData) {
+      setTrendsLoading(true);
+      fetcher('/api/devintel/trends')
+        .then((data: TrendsData) => setTrendsData(data))
+        .catch((e: Error) => console.error('Failed to load trends:', e))
+        .finally(() => setTrendsLoading(false));
+    }
+  }, [activeTab, trendsData]);
 
   // 加载新闻
   useEffect(() => {
@@ -295,6 +311,14 @@ export default function NewsPage() {
             onClick={() => setActiveTab('articles')}
           >
             📰 新闻原文
+          </button>
+          <button
+            className={`flex-1 px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'devintel' ? 'bg-white shadow text-purple-600' : 'text-gray-600 hover:text-gray-900'
+            }`}
+            onClick={() => setActiveTab('devintel')}
+          >
+            🏗️ 开发情报
           </button>
         </div>
 
@@ -579,6 +603,11 @@ export default function NewsPage() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ===== 开发情报 Tab ===== */}
+        {activeTab === 'devintel' && (
+          <DevIntelDashboard data={trendsData} loading={trendsLoading} />
         )}
 
         {/* Compass 品牌 + 二维码 分享卡片 */}

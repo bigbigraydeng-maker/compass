@@ -10,7 +10,7 @@ import json
 import threading
 from typing import Optional, List
 
-from fastapi import APIRouter, Query, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Query, HTTPException, BackgroundTasks, File, UploadFile, Form
 from pydantic import BaseModel
 
 import sys
@@ -407,3 +407,193 @@ async def devintel_stats():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ====== Trends Dashboard Endpoint ======
+
+@devintel_router.get("/trends")
+async def devintel_trends(
+    months: int = Query(6, ge=1, le=24, description="Number of months for trend data"),
+):
+    """
+    Comprehensive trends data for the development intelligence dashboard.
+    Returns 4 sections: projects, monthly_trends, recent_documents, active_suburbs.
+    """
+    try:
+        # A. Infrastructure Project Tracker
+        projects_raw = execute_query("""
+            SELECT
+                metadata->>'project_name' AS project_name,
+                metadata->>'authority' AS authority,
+                metadata->>'stage' AS stage,
+                metadata->'affected_suburbs' AS affected_suburbs_json,
+                MAX(created_at) AS last_update,
+                COUNT(*) AS document_count
+            FROM devintel_documents
+            WHERE metadata->>'project_name' IS NOT NULL
+              AND metadata->>'project_name' != ''
+            GROUP BY
+                metadata->>'project_name',
+                metadata->>'authority',
+                metadata->>'stage',
+                metadata->'affected_suburbs'
+            ORDER BY COUNT(*) DESC
+            LIMIT 20
+        """)
+
+        projects = []
+        seen_projects = set()
+        for p in (projects_raw or []):
+            pname = p.get("project_name", "")
+            if pname in seen_projects:
+                continue
+            seen_projects.add(pname)
+            # Parse affected_suburbs from JSON
+            affected = []
+            asj = p.get("affected_suburbs_json")
+            if asj:
+                if isinstance(asj, str):
+                    try:
+                        affected = json.loads(asj)
+                    except Exception:
+                        affected = []
+                elif isinstance(asj, list):
+                    affected = asj
+            projects.append({
+                "project_name": pname,
+                "authority": p.get("authority"),
+                "stage": p.get("stage"),
+                "affected_suburbs": affected if isinstance(affected, list) else [],
+                "last_update": str(p["last_update"]) if p.get("last_update") else None,
+                "document_count": p.get("document_count", 0),
+            })
+
+        # B. Monthly Approval Trends
+        monthly_raw = execute_query("""
+            SELECT
+                TO_CHAR(DATE_TRUNC('month', created_at), 'YYYY-MM') AS month,
+                COALESCE(doc_type, 'other') AS doc_type,
+                COUNT(*) AS count
+            FROM devintel_documents
+            WHERE created_at >= NOW() - INTERVAL '%s months'
+              AND doc_type IS NOT NULL
+            GROUP BY DATE_TRUNC('month', created_at), doc_type
+            ORDER BY month, doc_type
+        """ % months)
+
+        monthly_trends = [
+            {"month": r["month"], "doc_type": r["doc_type"], "count": r["count"]}
+            for r in (monthly_raw or [])
+        ]
+
+        # C. Recent Planning Documents
+        recent_raw = execute_query("""
+            SELECT id, title, source_name, doc_type, suburb, created_at, url
+            FROM devintel_documents
+            WHERE parse_status = 'parsed' AND title IS NOT NULL
+            ORDER BY created_at DESC
+            LIMIT 10
+        """)
+
+        recent_documents = [
+            {
+                "id": r["id"],
+                "title": r["title"] or "Untitled",
+                "source_name": r["source_name"],
+                "doc_type": r.get("doc_type"),
+                "suburb": r.get("suburb"),
+                "created_at": str(r["created_at"]) if r.get("created_at") else None,
+                "url": r.get("url", ""),
+            }
+            for r in (recent_raw or [])
+        ]
+
+        # D. Active Suburbs (Hot Zones)
+        suburbs_raw = execute_query("""
+            SELECT suburb, COUNT(*) AS document_count
+            FROM devintel_documents
+            WHERE suburb IS NOT NULL AND suburb != ''
+            GROUP BY suburb
+            ORDER BY COUNT(*) DESC
+            LIMIT 15
+        """)
+
+        active_suburbs = [
+            {"suburb": r["suburb"], "document_count": r["document_count"]}
+            for r in (suburbs_raw or [])
+        ]
+
+        return {
+            "projects": projects,
+            "monthly_trends": monthly_trends,
+            "recent_documents": recent_documents,
+            "active_suburbs": active_suburbs,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ====== Manual Upload Endpoint ======
+
+@devintel_router.post("/upload")
+async def devintel_upload(
+    file: Optional[UploadFile] = File(None),
+    url: Optional[str] = Form(None),
+    suburb: Optional[str] = Form(None),
+    doc_type: Optional[str] = Form(None),
+    project_name: Optional[str] = Form(None),
+):
+    """
+    Upload a document (PDF file or URL) to the DevIntel knowledge base.
+    At least one of 'file' or 'url' must be provided.
+    """
+    if not file and not url:
+        raise HTTPException(status_code=400, detail="Provide either a PDF file or a URL")
+
+    try:
+        from devintel.crawler import process_upload, fetch_page
+
+        if file and file.filename:
+            # PDF file upload
+            content = await file.read()
+            if len(content) > 20 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="File too large (max 20MB)")
+
+            content_type = file.content_type or "application/pdf"
+            doc_url = url or f"upload://{file.filename}"
+
+            result = process_upload(
+                content=content,
+                content_type=content_type,
+                url=doc_url,
+                source_name="manual_upload",
+                suburb_override=suburb,
+                doc_type_override=doc_type,
+                project_name=project_name,
+            )
+        elif url:
+            # URL crawl
+            raw, content_type, final_url = fetch_page(url)
+            result = process_upload(
+                content=raw,
+                content_type=content_type,
+                url=final_url,
+                source_name="manual_upload",
+                suburb_override=suburb,
+                doc_type_override=doc_type,
+                project_name=project_name,
+            )
+        else:
+            raise HTTPException(status_code=400, detail="No valid input provided")
+
+        return {
+            "status": "success" if result.get("document_id") else "error",
+            "document_id": result.get("document_id"),
+            "title": result.get("title"),
+            "chunks_created": result.get("chunks_created", 0),
+            "message": f"Document processed: {result.get('title', 'Unknown')}",
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
