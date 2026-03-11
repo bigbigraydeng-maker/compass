@@ -634,7 +634,7 @@ export default function NewsPage() {
             {/* QR Code 占位 — 使用 Google Charts QR API 生成 */}
             <div className="flex-shrink-0 bg-white rounded-xl p-3">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent('https://compass-eight.vercel.app/news')}`}
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent('https://aucompass.com.au/news')}`}
                 alt="扫码访问 Compass"
                 width={120}
                 height={120}
