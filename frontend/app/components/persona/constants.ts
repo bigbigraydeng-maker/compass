@@ -53,7 +53,7 @@ export const PERSONAS: Record<string, PersonaConfig> = {
     bgColor: 'bg-purple-50',
     buttonBg: 'bg-purple-600',
     buttonHover: 'hover:bg-purple-700',
-    avatar: '/images/personas/olivia.png',
+    avatar: '/images/personas/olivia.jpg',
     fallbackInitial: 'O',
     bio: '从宏观经济视角解读布里斯班房产市场。每日追踪利率政策、移民趋势、基建规划、供需数据等关键指标，结合实地市场观察，为你提供独到的市场趋势分析和时机判断建议。',
     expertise: ['市场趋势', '每日新闻解读', '利率分析', '宏观经济'],
