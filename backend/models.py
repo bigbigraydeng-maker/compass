@@ -42,6 +42,7 @@ class SuburbStats(BaseModel):
     suburb: str
     median_price: int
     total_sales: int
+    trend: List[int] = []
 
 
 class HomeData(BaseModel):

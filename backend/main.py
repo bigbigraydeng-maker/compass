@@ -285,12 +285,26 @@ def get_home_data():
                     median_price = int(row[0] or 0)
                     total_sales = int(row[1] or 0)
                 
+                # 获取月度趋势（最近6个月）
+                trend_query = """
+                    SELECT TO_CHAR(s.sale_date, 'YYYY-MM') as month,
+                           PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price
+                    FROM sales s
+                    WHERE UPPER(s.suburb) = UPPER(%s)
+                      AND s.sale_date >= NOW() - INTERVAL '6 months'
+                    GROUP BY TO_CHAR(s.sale_date, 'YYYY-MM')
+                    ORDER BY month
+                """
+                trend_rows = execute_query(trend_query, (suburb,))
+                trend = [int(r.get('median_price', 0) or 0) for r in (trend_rows or [])]
+
                 suburb_stats.append(SuburbStats(
                     suburb=suburb,
                     median_price=median_price,
-                    total_sales=total_sales
+                    total_sales=total_sales,
+                    trend=trend
                 ))
-        
+
         return HomeData(
             latest_sales=[Sale(**sale) for sale in latest_sales],
             suburb_stats=suburb_stats
@@ -1969,11 +1983,38 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
         print(f"[DevIntel] RAG context error: {e}")
         devintel_section = ""
 
+    # --- 数据充分度判断 ---
+    data_confidence = "high"
+    confidence_notes = []
+    if total_12m < 20:
+        data_confidence = "low"
+        confidence_notes.append(f"近12月仅{total_12m}套成交，样本量较小")
+    elif total_12m < 50:
+        data_confidence = "medium"
+        confidence_notes.append(f"近12月{total_12m}套成交，数据量中等")
+
+    if not trends or len(trends) < 3:
+        data_confidence = "low"
+        confidence_notes.append("月度趋势数据不足3个月")
+
+    confidence_warning = ""
+    if data_confidence == "low":
+        confidence_warning = """
+⚠️ **数据提示**：该区域当前数据样本较少（""" + "；".join(confidence_notes) + """）。
+请务必在分析中明确告知用户"数据有限，以下分析仅供参考"。
+对于数据不足的维度，用"暂无足够数据判断"代替猜测。
+不要给出精确的价格预测或强烈的买卖建议。"""
+    elif data_confidence == "medium":
+        confidence_warning = """
+📊 **数据提示**：该区域数据量中等（""" + "；".join(confidence_notes) + """）。
+分析时请注意标注"基于有限样本"，避免过于绝对的结论。"""
+
     prompt = f"""你是一位专注布里斯班房产市场的资深投资分析师，精通华人投资者需求。
 
 投资者正在考虑: **{address}** ({suburb}区)
+{confidence_warning}
 
-以下是{suburb}区的【真实数据】，请**严格基于数据**进行分析，不要编造任何数据或假设：
+以下是{suburb}区的【真实数据】，请**严格基于数据**进行分析：
 
 {price_section}
 
@@ -1997,31 +2038,30 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
 
 ---
 
-请基于以上**全部真实数据**，输出投资分析报告。严格要求：
+请基于以上数据，输出投资分析报告。
 
-## 1. 投资评级 (X/10)
-给出评级并用2-3句话解释。必须引用具体数据支撑评分。
+## 1. 区域概况
+用3-4句话客观描述该区域的定位和特点。引用中位价、成交量等关键数据。
 
-## 2. 核心优势 (3-4条)
-每条必须引用具体数字。例如"中位价$XX万，近12月成交XX套"。
+## 2. 数据亮点
+列出2-3个数据支撑的观察（不要用"优势"这种主观词）。
+每条必须引用具体数字，例如"中位价$XX万，近12月成交XX套"。
 
-## 3. 风险警示 (2-3条)
-必须引用具体数据。例如"近12月发生XX起盗窃案"。
+## 3. 需要关注
+列出2-3个需要注意的方面。引用具体数据。
+如果某维度数据不足，直接说明"该方面暂无足够数据"。
 
-## 4. 投资建议
-- 推荐房型：基于按房型价格数据，明确推荐house/unit/townhouse
-- 合理预算区间：基于中位价和最近成交
-- 持有策略：短期/长期，给出具体理由
-- 议价建议：基于库存去化周期和市场活跃度
-
-## 5. 对比参考
-与覆盖的其他6个区(Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton)做简要对比。
+## 4. 参考建议
+- 该区域适合什么类型的买家（自住/投资/首次置业）
+- 各房型价格参考区间（基于实际成交数据）
+- 如果数据充分，给出持有策略参考；否则说明需要更多数据
 
 **输出要求：**
-- 全中文回复
-- 每个数据引用必须来自上面提供的数据，禁止编造
-- 控制在1000字以内
-- 语言风格：专业、直接、实用
+- 全中文回复，800字以内
+- 语气客观、务实，像朋友聊天但不夸张
+- 绝对禁止编造数据 — 没有的数据就说"暂无数据"
+- 不要做价格涨跌预测（数据不支持预测）
+- 避免"强烈推荐"、"绝佳机会"等营销用语
 """
     return prompt
 
@@ -2029,12 +2069,12 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
 def _get_mode_system_prompt(mode: str) -> str:
     """根据分析模式返回不同的系统提示 — 统一 Amanda 人格"""
     amanda_base = (
-        "你是 Amanda，Compass 平台的首席房产分析师。"
-        "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
-        "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚问题。"
-        "你会用数据说话，结合实战经验给出有深度的见解。"
-        "你特别关注布里斯班南区华人聚集区（Sunnybank、Calamvale、Eight Mile Plains、Rochedale、Mansfield）"
-        "以及北区优质区（Ascot、Hamilton）的市场变化。"
+        "你是 Amanda，Compass 平台的房产分析师。"
+        "你在布里斯班从事房产顾问工作多年，熟悉华人投资者需求。"
+        "你的风格是：务实、诚恳，像朋友聊天一样用大白话讲清楚。"
+        "核心原则：只说有数据支撑的话。没有数据就坦诚说'这方面我们暂时没有足够数据'。"
+        "绝不夸大、绝不编造、绝不做价格预测。"
+        "你宁可少说两句，也不能误导用户。"
         "始终使用中文回复。"
     )
     mode_extras = {
@@ -3425,41 +3465,45 @@ def _get_fengshui_system_prompt() -> str:
 | 55-64 | D（偏弱） |
 | <55 | E（需化解） |
 
-## 风格要求
-- 通俗解读风水，让普通人看得懂
-- 严格基于提供的数据判断，不编造
-- 每个判断必须引用具体数据（海拔差、距离、方位）
-- 始终使用简体中文回复
+## 风格要求（极其重要！）
+
+你不是在填表格，你是在跟朋友聊天讲风水。每次分析都应该像第一次说一样新鲜。
+
+### 绝对禁止：
+- 不要每次都用完全一样的小标题结构
+- 不要在完整报告中提到具体的门牌号或街道地址（用"这块地"、"此处"、"这套房"代替）
+- 不要列清单式输出（"优点1、优点2、优点3"）
+- 不要用"综上所述"、"总的来说"这类套话
+
+### 要做到：
+- 从最突出的特征说起 — 如果路冲很严重就先说路冲，如果靠山极佳就先说靠山
+- 像讲故事一样，把各个维度串起来，而不是逐条罗列
+- 适当用比喻和生活化表达（"这条路直直冲过来，就像箭射大门"）
+- 每次分析的开头方式要不同：有时从地势入手，有时从路形入手，有时从整体感觉入手
+- 如果数据有矛盾（比如地势好但路冲严重），要突出这种张力
+- 用数据但不要像念报告（把"海拔52.3m"融入句子中，而不是单独列出来）
+- 始终使用简体中文
 
 如附有平面图，额外分析门向、厨厕位、主卧方位。
 
-## 输出格式（全文800字内）
+## 输出结构（全文600-800字，灵活安排）
 
-### 风水评级：X（A-E）
-列出四个子维度分数：
-- 气场稳定度：XX/100
-- 财气聚集度：XX/100
-- 居住舒适度：XX/100
-- 道路安全度：XX/100
+**第一行必须是**：风水评级 X 级（A-E），然后用一句话总结核心印象。
 
-### 峦头形势
-地势高低、靠山、明堂判断（2-3句，引用海拔数据）
+**四个参考维度**（融入正文中，不要单独列表）：
+- 气场稳定度 XX/100、财气聚集度 XX/100、居住舒适度 XX/100、道路安全度 XX/100
 
-### 朝向分析
-南半球修正说明 + 朝向评价（2句）
+**正文**：自由组织，但必须覆盖地势、朝向、道路、环境四个方面。
+从最值得一说的特征开始，自然过渡到其他方面。
 
-### 道路形势
-路冲/反弓/玉带/死路判断（2-3句，引用道路类型）
-
-### 水法与环境
-水体、公园、煞气设施判断（2-3句，引用距离）
-
-### 胡师傅总评
-综合建议 + 如有不利因素给出具体化解方案（3-4句）"""
+**最后**：给出胡师傅的个人看法 — 不要用"综上所述"开头，用更自然的方式收尾。
+如有不利因素，给出1-2个具体实用的建议（不要列一长串化解方案）。"""
 
 
 def _build_fengshui_prompt(address: str, elevation: dict, places: dict, crime: dict) -> str:
-    lines = [f"地址: {address}"]
+    # Extract suburb from address for context, but don't pass full address to output
+    suburb_part = address.split(",")[-1].strip() if "," in address else address
+    lines = [f"位置: {suburb_part}区"]
 
     # Elevation — compact one-liner per direction
     if not elevation.get("error"):
@@ -4826,9 +4870,11 @@ def chat_with_advisor(
         client, _model, _temp = _get_ai_client()
 
         amanda_chat_base = (
-            "你是 Amanda，Compass 平台的首席房产分析师，也是用户的专属 AI 顾问。"
-            "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
-            "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚问题。"
+            "你是 Amanda，Compass 平台的房产分析师，也是用户的 AI 顾问。"
+            "你熟悉布里斯班房产市场和华人投资者需求。"
+            "你的风格是：务实、诚恳，像朋友聊天。"
+            "核心原则：不确定的事情就坦诚说'这个我不太确定'。"
+            "不要编造数据，不要做价格预测，不要用'强烈推荐'等营销用语。"
             "请用中文回答，每次回答控制在200字以内。\n\n"
         )
         context_extras = {
