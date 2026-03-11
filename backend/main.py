@@ -76,6 +76,15 @@ print(f"[AI] Primary provider: {_ai_provider}")
 # 集中化区域配置
 from suburbs_config import ALL_SUBURB_NAMES, CORE_SUBURB_NAMES, SUBURBS as SUBURB_CONFIG, get_zoning_scores, get_police_division_map
 
+# DevIntel - Brisbane Development Intelligence RAG
+try:
+    from devintel import devintel_router, init_devintel_tables
+    _DEVINTEL_AVAILABLE = True
+    print("[OK] DevIntel module loaded")
+except ImportError as e:
+    _DEVINTEL_AVAILABLE = False
+    print(f"[WARN] DevIntel not available: {e}")
+
 # ====== Rate Limiter ======
 limiter = Limiter(key_func=get_remote_address)
 
@@ -185,6 +194,13 @@ try:
 except Exception as e:
     print(f"[WARN] Fengshui records table creation: {e}")
 
+# ====== DevIntel 表创建 ======
+if _DEVINTEL_AVAILABLE:
+    try:
+        init_devintel_tables()
+    except Exception as e:
+        print(f"[WARN] DevIntel tables init: {e}")
+
 # 创建 FastAPI 应用
 app = FastAPI(
     title="Compass MVP API",
@@ -208,6 +224,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ====== DevIntel Router ======
+if _DEVINTEL_AVAILABLE:
+    app.include_router(devintel_router)
+    print("[OK] DevIntel API routes registered at /api/devintel/*")
 
 
 @app.get("/")
@@ -1817,6 +1838,15 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
     zoning_lines = [f"- {z.get('name', '')}: {z.get('pct', 0)}%" for z in zones]
     zoning_section = "## 9. 土地规划\n" + ("\n".join(zoning_lines) if zoning_lines else "- 无数据")
 
+    # === 10. Development Intelligence (RAG) ===
+    devintel_section = ""
+    try:
+        from devintel.rag import get_devintel_context
+        devintel_section = get_devintel_context(suburb)
+    except Exception as e:
+        print(f"[DevIntel] RAG context error: {e}")
+        devintel_section = ""
+
     prompt = f"""你是一位专注布里斯班房产市场的资深投资分析师，精通华人投资者需求。
 
 投资者正在考虑: **{address}** ({suburb}区)
@@ -1840,6 +1870,8 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
 {score_section}
 
 {zoning_section}
+
+{devintel_section}
 
 ---
 
@@ -3885,6 +3917,11 @@ try:
     _scheduler.add_job(lambda: _scheduled_commentary("morning"), CronTrigger(hour=8, minute=0), id="morning_commentary", replace_existing=True)
     # 每天 6:00 PM AEST 生成晚报
     _scheduler.add_job(lambda: _scheduled_commentary("evening"), CronTrigger(hour=18, minute=0), id="evening_commentary", replace_existing=True)
+
+    # DevIntel: 每日 3:00AM 抓取开发情报 (Phase 2 - placeholder)
+    # from devintel.scheduler_jobs import scheduled_devintel_crawl
+    # _scheduler.add_job(scheduled_devintel_crawl, CronTrigger(hour=3, minute=0),
+    #                    id="daily_devintel", replace_existing=True)
 
     _scheduler.start()
     print("[OK] APScheduler started: hourly news + 8AM/6PM Olivia commentary")

@@ -9,3 +9,6 @@ slowapi
 python-multipart
 apscheduler
 pytz
+# DevIntel RAG dependencies
+tiktoken
+PyMuPDF
