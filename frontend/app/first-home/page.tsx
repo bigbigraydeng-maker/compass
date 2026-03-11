@@ -25,7 +25,7 @@ export default function FirstHomePage() {
     {
       step: 3,
       title: '找房看房',
-      desc: '使用 Compass 搜索适合的郊区和房源',
+      desc: '使用 Compass 搜索适合的 Suburb 和房源',
       icon: '🔍',
       detail: '建议至少看20套以上再做决定',
     },

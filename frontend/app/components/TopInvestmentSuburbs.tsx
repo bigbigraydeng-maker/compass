@@ -103,7 +103,7 @@ export default function TopInvestmentSuburbs({ rankings, suburbStats }: TopInves
     return (
       <section className="py-10 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">投资优选郊区</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">投资优选 Suburbs</h2>
           <p className="text-sm md:text-lg text-gray-600 mb-6">基于 Compass 多维评分</p>
           <div className="text-center py-8 text-gray-400">排名数据加载中...</div>
         </div>
@@ -118,7 +118,7 @@ export default function TopInvestmentSuburbs({ rankings, suburbStats }: TopInves
         <div className="flex justify-between items-center mb-6 md:mb-12">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-4">
-              投资优选郊区
+              投资优选 Suburbs
             </h2>
             <p className="text-sm md:text-lg text-gray-600">
               基于 Compass 多维评分

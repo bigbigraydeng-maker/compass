@@ -597,3 +597,41 @@ async def devintel_upload(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
+
+# ====== Phase 4: Headlines for Homepage ======
+
+@devintel_router.get("/headlines")
+def get_devintel_headlines(limit: int = Query(5, ge=1, le=20)):
+    """Return recent DevIntel headlines + summary stats for homepage card."""
+    headlines = execute_query(
+        """
+        SELECT id, title, suburb, doc_type, source_name, url,
+               TO_CHAR(created_at, 'YYYY-MM-DD') as created_at
+        FROM devintel_documents
+        WHERE parse_status = 'parsed' AND title IS NOT NULL AND title != ''
+        ORDER BY created_at DESC
+        LIMIT %s
+        """,
+        (limit,)
+    ) or []
+
+    stats = execute_query(
+        """
+        SELECT
+            COUNT(*) as total_documents,
+            COUNT(DISTINCT metadata->>'project_name')
+                FILTER (WHERE metadata->>'project_name' IS NOT NULL AND metadata->>'project_name' != '') as total_projects,
+            MAX(TO_CHAR(created_at, 'YYYY-MM-DD')) as last_updated
+        FROM devintel_documents
+        WHERE parse_status = 'parsed'
+        """
+    )
+    row = stats[0] if stats else {}
+
+    return {
+        "headlines": headlines,
+        "total_documents": row.get("total_documents", 0),
+        "total_projects": row.get("total_projects", 0),
+        "last_updated": row.get("last_updated", ""),
+    }

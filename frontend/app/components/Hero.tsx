@@ -121,7 +121,7 @@ export default function Hero() {
             <div className="flex flex-col md:flex-row gap-3 md:gap-4">
               <input
                 type="text"
-                placeholder="输入郊区名称，如 Sunnybank、Hamilton"
+                placeholder="输入 Suburb 名称，如 Sunnybank、Hamilton"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-lg focus:outline-none text-gray-800 text-base md:text-lg shadow-lg"
@@ -159,14 +159,14 @@ export default function Hero() {
           </div>
 
           {/* 桌面端支持提示 */}
-          <p className="hidden md:block text-gray-300 text-sm mb-10">支持 17 个郊区：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton, Runcorn, Wishart 等</p>
+          <p className="hidden md:block text-gray-300 text-sm mb-10">支持 17 个 Suburbs：Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton, Runcorn, Wishart 等</p>
 
           {/* AI 分析入口 */}
           <form onSubmit={handleAiAnalysis} className="max-w-3xl mx-auto">
             <div className="flex flex-col md:flex-row gap-3 md:gap-4">
               <input
                 type="text"
-                placeholder="输入地址或郊区名，Amanda 为你分析"
+                placeholder="输入地址或 Suburb 名，Amanda 为你分析"
                 value={aiInput}
                 onChange={(e) => setAiInput(e.target.value)}
                 className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-lg focus:outline-none text-gray-800 text-base md:text-lg shadow-lg"

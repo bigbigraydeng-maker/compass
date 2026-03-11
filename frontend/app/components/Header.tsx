@@ -23,7 +23,7 @@ export default function Header() {
     { href: '/first-home', label: '首次置业' },
     { href: '/overseas-buyer', label: '海外购房' },
     { href: '/feng-shui', label: '天機堂' },
-    { href: '/suburbs', label: '郊区' },
+    { href: '/suburbs', label: 'Suburbs' },
     { href: '/rankings', label: '排名' },
   ];
 
@@ -56,7 +56,7 @@ export default function Header() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="搜索郊区"
+                placeholder="搜索 Suburb"
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
               <button type="submit" className="absolute left-3 top-2.5 text-gray-400 hover:text-blue-500">
@@ -105,7 +105,7 @@ export default function Header() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="搜索郊区"
+                  placeholder="搜索 Suburb"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
                 <button type="submit" className="absolute left-3 top-2.5 text-gray-400 hover:text-blue-500">

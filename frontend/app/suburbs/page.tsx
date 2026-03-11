@@ -67,7 +67,7 @@ export default function SuburbsPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">布里斯班郊区总览</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">布里斯班 Suburbs 总览</h1>
           <p className="text-lg text-gray-600">探索布里斯班热门华人投资区域，点击查看详细数据分析</p>
         </div>
 

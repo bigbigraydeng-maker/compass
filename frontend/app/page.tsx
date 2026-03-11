@@ -10,6 +10,7 @@ import { fetcher } from './lib/api';
 // 懒加载首屏以下组件 — 减少初始 JS 加载量
 const MarketStats = lazy(() => import('./components/MarketStats'));
 const Community = lazy(() => import('./components/Community'));
+const DevIntelCard = lazy(() => import('./components/DevIntelCard'));
 
 const LazyFallback = () => (
   <div className="py-16 text-center text-gray-300">
@@ -61,6 +62,10 @@ export default function Home() {
       <SmartInput />
       <TodayDeals />
       <TopInvestmentSuburbs rankings={rankings} suburbStats={suburbStats} />
+
+      <Suspense fallback={<LazyFallback />}>
+        <DevIntelCard />
+      </Suspense>
 
       <Suspense fallback={<LazyFallback />}>
         <MarketStats homeData={homeData} />

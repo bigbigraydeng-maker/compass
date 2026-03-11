@@ -109,7 +109,7 @@ export default function SalesPage() {
         <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
           <div className="flex flex-wrap items-center gap-4 mb-4">
             <div className="flex items-center space-x-2">
-              <label className="text-gray-700 font-medium">郊区：</label>
+              <label className="text-gray-700 font-medium">Suburb：</label>
               <select
                 value={suburb}
                 onChange={(e) => {
@@ -246,7 +246,7 @@ export default function SalesPage() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">地址</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">郊区</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Suburb</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">类型</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卧室</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">卫浴</th>

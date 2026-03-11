@@ -69,8 +69,8 @@ export const PERSONAS: Record<string, PersonaConfig> = {
     buttonHover: 'hover:bg-emerald-700',
     avatar: '/images/personas/ethan.png',
     fallbackInitial: 'E',
-    bio: '运用多维数据建模和算法为每个郊区生成投资评分。整合房价走势、租赁回报、学区质量、治安水平、交通便利度等 8 大维度数据，构建 Compass Score 综合评分体系，用数据驱动投资决策。',
-    expertise: ['数据建模', '郊区评分', '多维分析', '可视化'],
+    bio: '运用多维数据建模和算法为每个 Suburb 生成投资评分。整合房价走势、租赁回报、学区质量、治安水平、交通便利度等 8 大维度数据，构建 Compass Score 综合评分体系，用数据驱动投资决策。',
+    expertise: ['数据建模', 'Suburb 评分', '多维分析', '可视化'],
   },
 };
 

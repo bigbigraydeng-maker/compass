@@ -26,7 +26,7 @@ const AREA_LABELS: Record<string, { label: string; href: string }[]> = {
     { label: '宏观经济分析', href: '/' },
   ],
   ethan: [
-    { label: '郊区排名', href: '/rankings' },
+    { label: 'Suburbs 排名', href: '/rankings' },
     { label: 'Compass Score', href: '/' },
     { label: '多维数据分析', href: '/' },
   ],

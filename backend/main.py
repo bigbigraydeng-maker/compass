@@ -847,15 +847,23 @@ def get_suburb_score(suburb_name: str):
     
     # 5. 华人友好度 (15分)
     chinese_score = config["chinese_friendly"].get(suburb_name, 8)
-    
-    total = growth_score + school_score + land_score + activity_score + chinese_score
-    
-    # 等级
-    if total >= 85: grade = "S"
-    elif total >= 75: grade = "A"
-    elif total >= 65: grade = "B"
+
+    # 6. 开发情报活跃度 (10分 bonus)
+    devintel_score = 0
+    try:
+        from devintel.rag import get_devintel_activity_score
+        devintel_score = get_devintel_activity_score(suburb_name)
+    except Exception:
+        pass
+
+    total = growth_score + school_score + land_score + activity_score + chinese_score + devintel_score
+
+    # 等级 (上限 110, 阈值同比上调)
+    if total >= 93: grade = "S"
+    elif total >= 82: grade = "A"
+    elif total >= 71: grade = "B"
     else: grade = "C"
-    
+
     return {
         "suburb": suburb_name,
         "total_score": total,
@@ -865,27 +873,28 @@ def get_suburb_score(suburb_name: str):
             "school": {"score": school_score, "max": 25, "label": "学区质量"},
             "land": {"score": land_score, "max": 20, "label": "土地价值潜力"},
             "activity": {"score": activity_score, "max": 15, "label": "市场活跃度"},
-            "chinese": {"score": chinese_score, "max": 15, "label": "华人友好度"}
+            "chinese": {"score": chinese_score, "max": 15, "label": "华人友好度"},
+            "devintel": {"score": devintel_score, "max": 10, "label": "开发情报"}
         },
-        "data_sources": ["QLD Sales Records", "NAPLAN ACARA", "ABS Census 2021"],
+        "data_sources": ["QLD Sales Records", "NAPLAN ACARA", "ABS Census 2021", "DevIntel RAG"],
         "updated_at": "2026-03"
     }
 
 
 @app.get("/api/deals")
-def get_deals():
+def get_deals(days: int = 90):
     """
-    获取捡漏雷达数据（优化版：单次SQL完成，数据库端过滤）
+    获取捡漏雷达数据（增强版：时间过滤 + 多维评分）
 
-    原：3次全表扫描 + Python端循环筛选
-    优化后：1次窗口函数查询，数据库直接返回捡漏结果
+    - days: 只看最近 N 天的成交（默认 90 天）
+    - 使用窗口函数计算中位价
+    - 增加 deal_score 多维评分（折扣 + 土地面积 + 区域增长）
     """
     try:
         from database import get_db_connection, get_db_cursor
 
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
-                # 一次查询完成：窗口函数计算中位价 → 直接筛选低估10%以上
                 cur.execute("""
                     WITH median_prices AS (
                         SELECT
@@ -925,24 +934,137 @@ def get_deals():
                         AND LOWER(s.property_type) = LOWER(fm.property_type)
                     WHERE COALESCE(mp.median_price, fm.median_price) > 0
                       AND s.sale_price < COALESCE(mp.median_price, fm.median_price) * 0.9
+                      AND s.sale_date >= NOW() - INTERVAL '%s days'
                     ORDER BY discount_percent DESC
-                    LIMIT 10
-                """)
+                    LIMIT 15
+                """, (days,))
                 deals = [dict(row) for row in cur.fetchall()]
 
-                # 转换 Decimal 类型
+                # Enhance with deal_score
                 for deal in deals:
                     for k in ['sold_price', 'median_price', 'discount_percent', 'land_size']:
                         if deal.get(k) is not None:
                             deal[k] = float(deal[k])
 
+                    # Multi-dimensional deal score (0-100)
+                    discount = deal.get('discount_percent', 0) or 0
+                    land = deal.get('land_size', 0) or 0
+
+                    # Undervalue score (0-40): based on discount %
+                    undervalue = min(40, max(0, discount * 2.5))
+
+                    # Land bonus (0-20): large blocks get bonus
+                    land_bonus = 0
+                    if land >= 800: land_bonus = 20
+                    elif land >= 600: land_bonus = 15
+                    elif land >= 400: land_bonus = 10
+                    elif land >= 200: land_bonus = 5
+
+                    # Freshness bonus (0-20): more recent = higher
+                    freshness = 10  # default
+                    if deal.get('sold_date'):
+                        try:
+                            sold = datetime.strptime(str(deal['sold_date'])[:10], '%Y-%m-%d')
+                            age_days = (datetime.now() - sold).days
+                            if age_days <= 7: freshness = 20
+                            elif age_days <= 14: freshness = 18
+                            elif age_days <= 30: freshness = 15
+                            elif age_days <= 60: freshness = 10
+                            else: freshness = 5
+                        except Exception:
+                            pass
+
+                    # Base score (0-20): property type weight
+                    type_bonus = {'house': 20, 'townhouse': 15, 'unit': 10}.get(
+                        (deal.get('property_type') or '').lower(), 10
+                    )
+
+                    deal_score = min(100, round(undervalue + land_bonus + freshness + type_bonus))
+                    deal['deal_score'] = deal_score
+
+                    # Category
+                    if discount > 15 and deal_score > 70:
+                        deal['category'] = '捡漏房源'
+                    elif deal_score > 65:
+                        deal['category'] = '投资机会'
+                    elif land_bonus >= 15:
+                        deal['category'] = '土地开发机会'
+                    else:
+                        deal['category'] = '低估房源'
+
+                # Re-sort by deal_score
+                deals.sort(key=lambda d: d.get('deal_score', 0), reverse=True)
+
         return {
-            "deals": deals,
+            "deals": deals[:10],
             "total": len(deals)
         }
     except Exception as e:
         print(f"[ERROR] 获取捡漏数据失败: {e}")
         raise HTTPException(status_code=500, detail="获取捡漏数据失败，请稍后重试")
+
+
+@app.get("/api/admin/data-completeness")
+def get_data_completeness():
+    """Check data completeness for all 17 configured suburbs."""
+    try:
+        from database import get_db_connection, get_db_cursor
+        from suburbs_config import SUBURBS as _SC
+
+        suburb_names = list(_SC.keys())
+        results = []
+
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                for name in suburb_names:
+                    # Properties count
+                    cur.execute("SELECT COUNT(*) as cnt FROM properties WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    props = (cur.fetchone() or {}).get('cnt', 0)
+
+                    # Sales count
+                    cur.execute("SELECT COUNT(*) as cnt FROM sales WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    sales = (cur.fetchone() or {}).get('cnt', 0)
+
+                    # suburb_stats exists
+                    cur.execute("SELECT 1 FROM suburb_stats WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    has_stats = cur.fetchone() is not None
+
+                    # DevIntel docs
+                    devintel_docs = 0
+                    try:
+                        cur.execute("SELECT COUNT(DISTINCT document_id) as cnt FROM devintel_chunks WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                        devintel_docs = (cur.fetchone() or {}).get('cnt', 0)
+                    except Exception:
+                        pass
+
+                    # POI check (from /api/suburb/{name}/all cached data or direct)
+                    cur.execute("SELECT COUNT(*) as cnt FROM listings WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    listings = (cur.fetchone() or {}).get('cnt', 0)
+
+                    # Completeness score (0-100)
+                    score = 0
+                    if props > 0: score += 20
+                    if sales > 10: score += 25
+                    elif sales > 0: score += 10
+                    if has_stats: score += 15
+                    if devintel_docs > 0: score += 20
+                    if listings > 0: score += 20
+
+                    results.append({
+                        "suburb": name,
+                        "properties_count": props,
+                        "sales_count": sales,
+                        "has_stats": has_stats,
+                        "devintel_docs": devintel_docs,
+                        "listings_count": listings,
+                        "completeness_pct": score,
+                    })
+
+        results.sort(key=lambda x: x['completeness_pct'], reverse=True)
+        return {"suburbs": results, "total": len(results)}
+    except Exception as e:
+        print(f"[ERROR] Data completeness check failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/api/rankings")
@@ -3862,6 +3984,14 @@ def _generate_olivia_commentary(news_items: list) -> str:
         for item in news_items[:10]
     )
 
+    # Fetch DevIntel digest for Olivia
+    devintel_digest = ""
+    try:
+        from devintel.rag import get_devintel_summary
+        devintel_digest = get_devintel_summary(limit=5)
+    except Exception as e:
+        print(f"[Olivia] DevIntel summary fetch failed: {e}")
+
     system_prompt = (
         "你是 Olivia，Compass 平台的市场经济学家。"
         "你从宏观经济视角解读布里斯班房产市场，擅长分析利率政策、移民趋势、基建规划和供需数据。"
@@ -3872,9 +4002,14 @@ def _generate_olivia_commentary(news_items: list) -> str:
         "始终使用中文回复。"
     )
 
+    devintel_section = ""
+    if devintel_digest:
+        devintel_section = f"\n\n以下是近期开发情报动态（来自 DevIntel 政府数据）：\n{devintel_digest}\n"
+
     user_prompt = (
         f"今天是 {today}，以下是今日布里斯班房产相关新闻标题（来自 Google News、Domain、REA、后花园澳洲等源）：\n\n"
         f"{news_digest}\n\n"
+        f"{devintel_section}"
         "请你作为 Olivia 写一篇今日市场综合解读（300-500字），要求：\n"
         "1. 先用一句话概括今天的市场信号\n"
         "2. 挑出 2-3 条最重要的新闻，用你的专业视角解读它们对布里斯班房产市场意味着什么\n"
@@ -3883,7 +4018,8 @@ def _generate_olivia_commentary(news_items: list) -> str:
         "5. 用自然的聊天口吻，但要有专业深度，不要泛泛而谈\n"
         "6. 开头直接切入正题，不要问候语\n"
         "7. 适当使用换行分段，让阅读更舒适\n"
-        "8. 不要使用任何 markdown 格式符号（如 ** 或 * 或 # 或 - ），直接用纯文本表达，用换行和空行来分段"
+        "8. 不要使用任何 markdown 格式符号（如 ** 或 * 或 # 或 - ），直接用纯文本表达，用换行和空行来分段\n"
+        "9. 如果开发情报中有重要基建或规划动态，结合新闻一起分析其对房市的影响"
     )
 
     try:
