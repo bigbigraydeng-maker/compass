@@ -134,8 +134,8 @@ export default function DevIntelDashboard({ data, loading }: DashboardProps) {
   const { projects, monthly_trends, recent_documents, active_suburbs } = data;
 
   // Compute monthly chart data
-  const monthSet = [...new Set(monthly_trends.map(t => t.month))].sort();
-  const docTypes = [...new Set(monthly_trends.map(t => t.doc_type))];
+  const monthSet = Array.from(new Set(monthly_trends.map(t => t.month))).sort();
+  const docTypes = Array.from(new Set(monthly_trends.map(t => t.doc_type)));
   const monthTotals: Record<string, number> = {};
   for (const m of monthSet) {
     monthTotals[m] = monthly_trends.filter(t => t.month === m).reduce((s, t) => s + t.count, 0);
