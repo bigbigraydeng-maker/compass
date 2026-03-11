@@ -459,6 +459,19 @@ async def devintel_trends(
                         affected = []
                 elif isinstance(asj, list):
                     affected = asj
+            # 查询缓存的 AI 分析
+            cached_analysis = ""
+            try:
+                a_row = execute_query(
+                    """SELECT analysis FROM devintel_project_analysis
+                       WHERE project_name = %s AND created_at > NOW() - INTERVAL '7 days'""",
+                    (pname,)
+                )
+                if a_row:
+                    cached_analysis = a_row[0].get("analysis", "")
+            except Exception:
+                pass
+
             projects.append({
                 "project_name": pname,
                 "authority": p.get("authority"),
@@ -466,6 +479,7 @@ async def devintel_trends(
                 "affected_suburbs": affected if isinstance(affected, list) else [],
                 "last_update": str(p["last_update"]) if p.get("last_update") else None,
                 "document_count": p.get("document_count", 0),
+                "analysis": cached_analysis,
             })
 
         # B. Monthly Approval Trends
@@ -634,4 +648,195 @@ def get_devintel_headlines(limit: int = Query(5, ge=1, le=20)):
         "total_documents": row.get("total_documents", 0),
         "total_projects": row.get("total_projects", 0),
         "last_updated": row.get("last_updated", ""),
+    }
+
+
+# ====== Project Analysis Endpoint ======
+
+def _get_ai_client():
+    """获取 AI 客户端（复用主模块逻辑）。"""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from main import _get_ai_client as main_get_ai_client
+        return main_get_ai_client()
+    except Exception:
+        import openai
+        client = openai.OpenAI()
+        return client, "gpt-4o-mini", 0.7
+
+
+@devintel_router.get("/project-analysis")
+def get_project_analysis(project_name: str = Query(..., description="Project name to analyze")):
+    """Generate AI analysis for an infrastructure project."""
+    if not project_name:
+        raise HTTPException(status_code=400, detail="project_name required")
+
+    # 检查缓存（7天有效）
+    try:
+        execute_query("""
+            CREATE TABLE IF NOT EXISTS devintel_project_analysis (
+                project_name TEXT PRIMARY KEY,
+                analysis TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        """)
+        cached = execute_query(
+            """SELECT analysis FROM devintel_project_analysis
+               WHERE project_name = %s AND created_at > NOW() - INTERVAL '7 days'""",
+            (project_name,)
+        )
+        if cached:
+            return {"project_name": project_name, "analysis": cached[0]["analysis"], "cached": True}
+    except Exception:
+        pass
+
+    # RAG 检索相关文档
+    chunks = retrieve_chunks(query=project_name, top_k=5, log_source="project_analysis")
+    context = "\n".join([
+        f"[{c.get('source_name', '')}] {c.get('chunk_text', '')[:300]}"
+        for c in chunks
+    ]) if chunks else "暂无相关文档数据"
+
+    # AI 生成分析
+    try:
+        client, model, temp = _get_ai_client()
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": (
+                    "你是 Olivia，Compass 平台的市场经济学家。"
+                    "根据开发情报文档，为基建项目生成简洁的中文分析（2-3句话）。"
+                    "重点分析该项目对周边房产投资的影响、时间线和投资建议。"
+                    "不要使用 markdown 格式。用纯文本。"
+                )},
+                {"role": "user", "content": f"项目名称：{project_name}\n\n相关文档摘要：\n{context}\n\n请生成投资分析。"}
+            ],
+            max_tokens=512,
+            temperature=temp,
+        )
+        analysis = response.choices[0].message.content.strip().replace('**', '').replace('*', '')
+    except Exception as e:
+        analysis = f"分析生成失败：{e}"
+
+    # 缓存结果
+    try:
+        execute_query(
+            """INSERT INTO devintel_project_analysis (project_name, analysis)
+               VALUES (%s, %s)
+               ON CONFLICT (project_name) DO UPDATE SET analysis = EXCLUDED.analysis, created_at = NOW()""",
+            (project_name, analysis)
+        )
+    except Exception:
+        pass
+
+    return {"project_name": project_name, "analysis": analysis, "cached": False}
+
+
+# ====== Suburb DevIntel Detail Endpoint ======
+
+@devintel_router.get("/suburb/{suburb}")
+def get_suburb_devintel(suburb: str):
+    """Return comprehensive DevIntel data for a specific suburb."""
+    if not suburb:
+        raise HTTPException(status_code=400, detail="suburb required")
+
+    # 该区的文档
+    documents = execute_query(
+        """SELECT id, title, source_name, doc_type, url,
+                  TO_CHAR(created_at, 'YYYY-MM-DD') as created_at
+           FROM devintel_documents
+           WHERE suburb = %s AND parse_status = 'parsed' AND title IS NOT NULL
+           ORDER BY created_at DESC
+           LIMIT 20""",
+        (suburb,)
+    ) or []
+
+    # 文档类型分布
+    type_dist = execute_query(
+        """SELECT COALESCE(doc_type, 'other') as doc_type, COUNT(*) as count
+           FROM devintel_documents
+           WHERE suburb = %s AND parse_status = 'parsed'
+           GROUP BY doc_type ORDER BY count DESC""",
+        (suburb,)
+    ) or []
+
+    # 相关项目
+    projects = execute_query(
+        """SELECT DISTINCT metadata->>'project_name' as project_name,
+                  metadata->>'stage' as stage,
+                  metadata->>'authority' as authority,
+                  COUNT(*) as doc_count
+           FROM devintel_documents
+           WHERE suburb = %s AND metadata->>'project_name' IS NOT NULL AND metadata->>'project_name' != ''
+           GROUP BY metadata->>'project_name', metadata->>'stage', metadata->>'authority'
+           ORDER BY COUNT(*) DESC""",
+        (suburb,)
+    ) or []
+
+    # AI 分析（缓存7天）
+    analysis = ""
+    try:
+        execute_query("""
+            CREATE TABLE IF NOT EXISTS devintel_suburb_analysis (
+                suburb TEXT PRIMARY KEY,
+                analysis TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        """)
+        cached = execute_query(
+            """SELECT analysis FROM devintel_suburb_analysis
+               WHERE suburb = %s AND created_at > NOW() - INTERVAL '7 days'""",
+            (suburb,)
+        )
+        if cached:
+            analysis = cached[0]["analysis"]
+    except Exception:
+        pass
+
+    if not analysis:
+        # RAG + AI 生成
+        chunks = retrieve_chunks(query=f"{suburb} development trends", suburb=suburb, top_k=5, log_source="suburb_analysis")
+        context = "\n".join([
+            f"[{c.get('source_name', '')}] {c.get('chunk_text', '')[:300]}"
+            for c in chunks
+        ]) if chunks else "暂无该区域详细文档"
+
+        try:
+            client, model, temp = _get_ai_client()
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": (
+                        "你是 Olivia，Compass 平台的市场经济学家。"
+                        "根据开发情报文档，为指定区域生成开发趋势分析（3-5句话）。"
+                        "分析内容包括：当前开发活跃度、主要项目进展、对房价和投资的潜在影响、投资建议。"
+                        "不要使用 markdown 格式。用纯文本。"
+                    )},
+                    {"role": "user", "content": f"区域：{suburb}\n\n相关文档：\n{context}\n\n请生成该区域的开发趋势分析。"}
+                ],
+                max_tokens=768,
+                temperature=temp,
+            )
+            analysis = response.choices[0].message.content.strip().replace('**', '').replace('*', '')
+        except Exception as e:
+            analysis = f"分析生成中，请稍后再试"
+
+        # 缓存
+        try:
+            execute_query(
+                """INSERT INTO devintel_suburb_analysis (suburb, analysis)
+                   VALUES (%s, %s)
+                   ON CONFLICT (suburb) DO UPDATE SET analysis = EXCLUDED.analysis, created_at = NOW()""",
+                (suburb, analysis)
+            )
+        except Exception:
+            pass
+
+    return {
+        "suburb": suburb,
+        "analysis": analysis,
+        "documents": documents,
+        "doc_type_distribution": type_dist,
+        "projects": projects,
+        "total_documents": len(documents),
     }

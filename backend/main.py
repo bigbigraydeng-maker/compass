@@ -158,6 +158,24 @@ try:
         )
     """)
     execute_query("CREATE INDEX IF NOT EXISTS idx_news_commentaries_date ON news_commentaries(pub_date DESC)")
+
+    # 新闻文章详情缓存表（含 star_rating）
+    execute_query("""
+        CREATE TABLE IF NOT EXISTS news_article_details (
+            url_hash VARCHAR(32) PRIMARY KEY,
+            url TEXT,
+            original_text TEXT,
+            translated_text TEXT,
+            star_rating INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    # 迁移：为旧表添加 star_rating 列
+    try:
+        execute_query("ALTER TABLE news_article_details ADD COLUMN IF NOT EXISTS star_rating INTEGER DEFAULT 0")
+    except Exception:
+        pass
+
     print("[OK] News tables ready")
 except Exception as e:
     print(f"[WARN] News tables creation: {e}")
@@ -3958,10 +3976,12 @@ def _fetch_rss_news() -> list:
 
                 pub_date = item_el.findtext("pubDate", "")
                 date_str = ""
+                pub_time = ""
                 if pub_date:
                     try:
                         dt = datetime.strptime(pub_date[:25].strip(), "%a, %d %b %Y %H:%M:%S")
                         date_str = dt.strftime("%Y-%m-%d")
+                        pub_time = dt.strftime("%H:%M")
                     except Exception:
                         date_str = pub_date[:10]
 
@@ -3971,6 +3991,7 @@ def _fetch_rss_news() -> list:
                     "title": headline,
                     "source": source,
                     "date": date_str,
+                    "pub_time": pub_time,
                     "summary": summary if summary else headline,
                     "tag": tag,
                     "tagColor": tagColor,
@@ -4321,68 +4342,164 @@ def _fetch_article_content(url: str) -> str:
         return ""
 
 
-def _translate_article(text: str) -> str:
-    """调用 AI 将英文文章翻译为中文。"""
+def _get_devintel_context_for_article(title: str) -> str:
+    """获取与新闻相关的 DevIntel 上下文。"""
+    try:
+        from devintel.retriever import retrieve_chunks
+        chunks = retrieve_chunks(query=title, top_k=3, log_source="news_summary")
+        if chunks:
+            context_parts = []
+            for c in chunks:
+                ctx = c.get("chunk_text", "")[:200]
+                src = c.get("source_name", "")
+                if ctx:
+                    context_parts.append(f"[{src}] {ctx}")
+            return "\n".join(context_parts)
+    except Exception as e:
+        print(f"[WARN] DevIntel context fetch failed: {e}")
+    return ""
+
+
+def _summarize_article(text: str, title: str = "") -> dict:
+    """调用 AI 生成新闻摘要 + 星级推荐（替代原全文翻译）。"""
     if not text:
-        return ""
+        return {"summary": "", "star_rating": 0}
     if len(text) > 5000:
         text = text[:5000] + "\n\n[... 原文过长，已截断 ...]"
 
+    # 获取 DevIntel 上下文
+    devintel_ctx = _get_devintel_context_for_article(title) if title else ""
+
     try:
         client, _model, _temp = _get_ai_client()
+        system_prompt = (
+            "你是 Olivia，Compass 平台的市场经济学家。\n"
+            "你的任务是对英文房产新闻生成简洁的中文摘要和阅读推荐星级。\n\n"
+            "要求：\n"
+            "1. 摘要控制在100个中文字以内\n"
+            "2. 结合原文内容和开发情报上下文，提炼核心信息\n"
+            "3. 加入你作为市场经济学家的专业观点\n"
+            "4. 给出1-5星的阅读推荐（5星=强烈推荐，1星=一般了解）\n"
+            "   - 5星：重大政策变动、利率调整、重要基建进展\n"
+            "   - 4星：区域市场数据、拍卖结果分析\n"
+            "   - 3星：行业趋势、一般市场评论\n"
+            "   - 2星：个别项目更新、软性新闻\n"
+            "   - 1星：广告性质、重复信息\n"
+            "5. 不要使用 markdown 格式符号\n"
+            "6. 必须用中文回复\n\n"
+            "输出格式（严格JSON）：\n"
+            '{"summary": "你的中文摘要（100字以内）", "star_rating": 3}'
+        )
+
+        user_content = f"新闻原文：\n{text}"
+        if devintel_ctx:
+            user_content += f"\n\n相关开发情报：\n{devintel_ctx}"
+
         response = client.chat.completions.create(
             model=_model,
             messages=[
-                {"role": "system", "content": (
-                    "你是一位专业的英中翻译。请将以下英文房产新闻完整翻译成中文。"
-                    "要求：保持专业但通俗易懂，适合华人投资者阅读。"
-                    "保留原文的段落结构。不要添加任何额外评论。"
-                    "必须全部使用中文输出，不要保留任何英文。"
-                    "不要使用 markdown 格式符号（如 ** 或 *）。用纯文本。"
-                )},
-                {"role": "user", "content": f"请将以下英文新闻文章翻译成中文：\n\n{text}"}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content}
             ],
-            max_tokens=4096,
+            max_tokens=512,
             temperature=0.3,
         )
-        translated = response.choices[0].message.content.strip()
-        return translated.replace('**', '').replace('*', '')
+        result_text = response.choices[0].message.content.strip()
+        result_text = result_text.replace('**', '').replace('*', '')
+
+        # 解析 JSON 响应
+        import json as _json_mod
+        try:
+            # 尝试直接解析
+            parsed = _json_mod.loads(result_text)
+            return {
+                "summary": str(parsed.get("summary", ""))[:150],
+                "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+            }
+        except (_json_mod.JSONDecodeError, ValueError):
+            # 尝试从文本中提取 JSON
+            import re as _re_mod
+            json_match = _re_mod.search(r'\{[^}]+\}', result_text)
+            if json_match:
+                try:
+                    parsed = _json_mod.loads(json_match.group())
+                    return {
+                        "summary": str(parsed.get("summary", ""))[:150],
+                        "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+                    }
+                except Exception:
+                    pass
+            # fallback: 把整段文本当摘要
+            return {"summary": result_text[:100], "star_rating": 3}
     except Exception as e:
-        print(f"[WARN] Article translation failed: {e}")
-        return ""
+        print(f"[WARN] Article summarization failed: {e}")
+        return {"summary": "", "star_rating": 0}
 
 
-def _ai_expand_summary(title: str, summary: str) -> str:
-    """当无法抓取原文时，用 AI 基于标题和摘要生成中文解读。"""
+def _ai_expand_summary(title: str, summary: str) -> dict:
+    """当无法抓取原文时，用 AI 基于标题和摘要生成摘要+星级。"""
     try:
+        devintel_ctx = _get_devintel_context_for_article(title)
         client, _model, _temp = _get_ai_client()
+
+        system_prompt = (
+            "你是 Olivia，Compass 平台的市场经济学家。\n"
+            "根据新闻标题和摘要，生成简洁的中文速评和阅读推荐星级。\n\n"
+            "要求：\n"
+            "1. 速评控制在100个中文字以内，包含你的专业观点\n"
+            "2. 给出1-5星阅读推荐\n"
+            "3. 不要使用 markdown 格式符号\n"
+            "4. 必须用中文回复\n\n"
+            "输出格式（严格JSON）：\n"
+            '{"summary": "你的中文速评（100字以内）", "star_rating": 3}'
+        )
+
+        user_content = f"标题：{title}\n摘要：{summary}"
+        if devintel_ctx:
+            user_content += f"\n\n相关开发情报：\n{devintel_ctx}"
+
         response = client.chat.completions.create(
             model=_model,
             messages=[
-                {"role": "system", "content": (
-                    "你是 Olivia，Compass 平台的市场经济学家。"
-                    "你的任务是根据新闻标题和摘要，撰写一段中文详细解读（200-400字）。"
-                    "分析这条新闻对布里斯班房产市场和华人投资者的影响。"
-                    "你必须始终使用中文回复，即使新闻原文是英文。"
-                    "不要使用任何 markdown 格式符号（如 ** 或 *）。用纯文本，用换行分段。"
-                )},
-                {"role": "user", "content": f"以下是一条房产新闻，请用中文撰写详细解读：\n\n标题：{title}\n\n摘要：{summary}\n\n请用中文撰写 Olivia 的专业解读。"}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content}
             ],
-            max_tokens=2048,
+            max_tokens=512,
             temperature=_temp,
         )
-        result = response.choices[0].message.content.strip()
-        return result.replace('**', '').replace('*', '')
+        result_text = response.choices[0].message.content.strip()
+        result_text = result_text.replace('**', '').replace('*', '')
+
+        import json as _json_mod
+        try:
+            parsed = _json_mod.loads(result_text)
+            return {
+                "summary": str(parsed.get("summary", ""))[:150],
+                "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+            }
+        except (_json_mod.JSONDecodeError, ValueError):
+            import re as _re_mod
+            json_match = _re_mod.search(r'\{[^}]+\}', result_text)
+            if json_match:
+                try:
+                    parsed = _json_mod.loads(json_match.group())
+                    return {
+                        "summary": str(parsed.get("summary", ""))[:150],
+                        "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+                    }
+                except Exception:
+                    pass
+            return {"summary": result_text[:100], "star_rating": 3}
     except Exception as e:
         print(f"[WARN] AI expand summary failed: {e}")
-        return ""
+        return {"summary": "", "star_rating": 0}
 
 
 # ---- API 端点 ----
 
 @app.get("/api/news/detail")
 def get_news_detail(url: str, title: str = "", summary: str = ""):
-    """Olivia AI 解读 + 尝试抓取原文。"""
+    """Olivia AI 速评 + 星级推荐 + 尝试抓取原文。"""
     if not url:
         return {"error": "url parameter required"}
 
@@ -4392,23 +4509,28 @@ def get_news_detail(url: str, title: str = "", summary: str = ""):
     if execute_query:
         try:
             cached = execute_query(
-                "SELECT original_text, translated_text FROM news_article_details WHERE url_hash = %s",
+                "SELECT original_text, translated_text, star_rating FROM news_article_details WHERE url_hash = %s",
                 (url_hash,)
             )
             if cached:
-                return {
-                    "original_text": cached[0].get("original_text", ""),
-                    "translated_text": cached[0].get("translated_text", ""),
-                    "url": url,
-                    "cached": True,
-                }
+                row = cached[0]
+                star = row.get("star_rating")
+                # 旧缓存无星级 → 跳过缓存，重新生成
+                if star is not None and star > 0:
+                    return {
+                        "original_text": row.get("original_text", ""),
+                        "translated_text": row.get("translated_text", ""),
+                        "star_rating": star,
+                        "url": url,
+                        "cached": True,
+                    }
         except Exception:
-            pass  # Table may not exist yet, fall through to in-memory
+            pass  # Table may not exist yet, fall through
 
     original = ""
-    translated = ""
+    summary_result = {"summary": "", "star_rating": 0}
 
-    # 步骤 1：尝试抓取原文（限时 5 秒，缩短等待）
+    # 步骤 1：尝试抓取原文（限时 5 秒）
     try:
         import concurrent.futures
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -4420,20 +4542,39 @@ def get_news_detail(url: str, title: str = "", summary: str = ""):
     except Exception:
         original = ""
 
-    # 步骤 2：翻译
+    # 步骤 2：生成摘要 + 星级
     if original:
-        translated = _translate_article(original)
+        summary_result = _summarize_article(original, title)
 
-    if not translated and (title or summary):
-        translated = _ai_expand_summary(title, summary)
+    if not summary_result.get("summary") and (title or summary):
+        summary_result = _ai_expand_summary(title, summary)
+
+    translated = summary_result.get("summary", "")
+    star_rating = summary_result.get("star_rating", 3)
 
     if not original and not translated:
         if title:
             translated = f"新闻概要：{title}\n\n{summary}" if summary else f"新闻概要：{title}"
+            star_rating = 2
+
+    # 尝试更新缓存（加入 star_rating）
+    if execute_query and translated:
+        try:
+            execute_query(
+                """INSERT INTO news_article_details (url_hash, url, original_text, translated_text, star_rating)
+                   VALUES (%s, %s, %s, %s, %s)
+                   ON CONFLICT (url_hash) DO UPDATE SET
+                     translated_text = EXCLUDED.translated_text,
+                     star_rating = EXCLUDED.star_rating""",
+                (url_hash, url, original, translated, star_rating)
+            )
+        except Exception:
+            pass
 
     return {
         "original_text": original,
         "translated_text": translated,
+        "star_rating": star_rating,
         "url": url,
         "cached": False,
     }
@@ -4567,7 +4708,7 @@ def get_news_by_date(days: int = 7, category: Optional[str] = None):
 
     try:
         params: list = [days]
-        query = """SELECT id, title, source, summary, link, category, category_color, pub_date
+        query = """SELECT id, title, source, summary, link, category, category_color, pub_date, created_at
                    FROM news_articles
                    WHERE pub_date >= CURRENT_DATE - INTERVAL '%s days'"""
         if category:
@@ -4582,6 +4723,14 @@ def get_news_by_date(days: int = 7, category: Optional[str] = None):
             d = str(r.get("pub_date", "未知"))
             if d not in grouped:
                 grouped[d] = []
+            # 从 created_at 提取发布时间
+            pub_time = ""
+            created = r.get("created_at")
+            if created:
+                try:
+                    pub_time = created.strftime("%H:%M") if hasattr(created, 'strftime') else str(created)[11:16]
+                except Exception:
+                    pub_time = ""
             grouped[d].append({
                 "id": r.get("id"),
                 "title": r.get("title", ""),
@@ -4591,6 +4740,7 @@ def get_news_by_date(days: int = 7, category: Optional[str] = None):
                 "tag": r.get("category", "市场动态"),
                 "tagColor": r.get("category_color", "bg-blue-100 text-blue-700"),
                 "date": d,
+                "pub_time": pub_time,
             })
 
         return {"dates": [{"date": k, "articles": v} for k, v in grouped.items()]}
