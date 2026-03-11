@@ -3,6 +3,7 @@ DevIntel Scheduler Jobs - Automated crawl of data sources.
 
 Daily crawl of P1 data sources at 3:00AM AEST.
 Weekly crawl of P2 sources, monthly crawl of P3 sources.
+Includes 30-day TTL cleanup for query logs and stale data.
 """
 
 import traceback
@@ -17,6 +18,7 @@ def scheduled_devintel_crawl():
     - P1 sources: crawled daily
     - P2 sources: crawled on Mondays (weekly)
     - P3 sources: crawled on 1st of month (monthly)
+    - TTL cleanup: runs daily, removes old logs and stale data
     """
     now = datetime.now()
     day_of_week = now.weekday()  # 0=Monday
@@ -47,6 +49,9 @@ def scheduled_devintel_crawl():
             print(f"[DevIntel] P3 done: {p3_result.get('total_new', 0)} new, "
                   f"{p3_result.get('total_chunks', 0)} chunks")
 
+        # Daily TTL cleanup
+        _ttl_cleanup()
+
         print(f"[DevIntel] Scheduled crawl completed at {datetime.now().strftime('%H:%M:%S')}")
 
     except Exception as e:
@@ -63,3 +68,35 @@ def scheduled_devintel_crawl():
             """, ("scheduler", "scheduled", "failed", str(e)))
         except Exception:
             pass
+
+
+def _ttl_cleanup():
+    """
+    Clean up stale data with TTL policies:
+    - Query logs: delete records older than 30 days
+    - Crawl logs: delete records older than 90 days
+    - Conversations: delete records older than 30 days
+    """
+    try:
+        from database import execute_query
+
+        # Query logs: 30-day TTL
+        result = execute_query(
+            "DELETE FROM devintel_query_logs WHERE created_at < NOW() - INTERVAL '30 days'"
+        )
+        print("[DevIntel] TTL: cleaned query logs (30-day)")
+
+        # Crawl logs: 90-day TTL
+        result = execute_query(
+            "DELETE FROM devintel_crawl_logs WHERE started_at < NOW() - INTERVAL '90 days'"
+        )
+        print("[DevIntel] TTL: cleaned crawl logs (90-day)")
+
+        # Conversations: 30-day TTL
+        result = execute_query(
+            "DELETE FROM devintel_conversations WHERE created_at < NOW() - INTERVAL '30 days'"
+        )
+        print("[DevIntel] TTL: cleaned conversations (30-day)")
+
+    except Exception as e:
+        print(f"[DevIntel] TTL cleanup warning: {e}")

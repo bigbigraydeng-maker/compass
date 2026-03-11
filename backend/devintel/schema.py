@@ -148,6 +148,41 @@ def init_devintel_tables():
         except Exception as e:
             print(f"[DevIntel] Index warning: {e}")
 
+    # IVFFlat vector index for fast approximate nearest-neighbor search
+    # Only create when pgvector is available and we have enough data (>100 chunks)
+    if pgvector_available:
+        try:
+            # Check if IVFFlat index already exists
+            existing = execute_query(
+                "SELECT indexname FROM pg_indexes WHERE tablename = %s AND indexname = %s",
+                ("devintel_chunks", "idx_dc_embedding_ivfflat")
+            )
+            if not existing:
+                # Check chunk count — IVFFlat needs sufficient data
+                count_result = execute_query("SELECT COUNT(*) as cnt FROM devintel_chunks")
+                chunk_count = count_result[0]["cnt"] if count_result else 0
+                if chunk_count >= 100:
+                    # IVFFlat needs extra memory for index build
+                    lists = max(10, min(100, int(chunk_count ** 0.5)))
+                    execute_query("SET maintenance_work_mem = '128MB'")
+                    execute_query(f"""
+                        CREATE INDEX idx_dc_embedding_ivfflat
+                        ON devintel_chunks USING ivfflat (embedding vector_cosine_ops)
+                        WITH (lists = {lists})
+                    """)
+                    execute_query("RESET maintenance_work_mem")
+                    print(f"[DevIntel] IVFFlat index created (lists={lists}, chunks={chunk_count})")
+                else:
+                    print(f"[DevIntel] Skipping IVFFlat index — only {chunk_count} chunks (need >= 100)")
+            else:
+                print("[DevIntel] IVFFlat index already exists")
+        except Exception as e:
+            print(f"[DevIntel] IVFFlat index warning: {e}")
+            try:
+                execute_query("RESET maintenance_work_mem")
+            except Exception:
+                pass
+
     # 4. Crawl Logs
     execute_query("""
         CREATE TABLE IF NOT EXISTS devintel_crawl_logs (

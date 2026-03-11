@@ -15,6 +15,7 @@ MAX_CHUNKS_PER_DOC = 2    # v2: same-document dedup limit
 # ====== Data Sources (will be synced to devintel_sources table) ======
 
 DEVINTEL_SOURCES = [
+    # ===== P1: High-value, daily/weekly crawl =====
     {
         "source_name": "bcc_da_tracker",
         "source_type": "html",
@@ -47,6 +48,8 @@ DEVINTEL_SOURCES = [
         "priority": "P1",
         "description": "QLD Government Gazette - Statutory Notices",
     },
+
+    # ===== P2: Major infrastructure, weekly/monthly =====
     {
         "source_name": "qld_infrastructure",
         "source_type": "html",
@@ -72,6 +75,32 @@ DEVINTEL_SOURCES = [
         "description": "BCC Council Meeting Minutes",
     },
     {
+        "source_name": "cross_river_rail",
+        "source_type": "html",
+        "base_url": "https://crossriverrail.qld.gov.au",
+        "crawl_frequency": "monthly",
+        "priority": "P2",
+        "description": "Cross River Rail Project - Stations, timeline, impact",
+    },
+    {
+        "source_name": "brisbane_metro",
+        "source_type": "html",
+        "base_url": "https://www.brisbane.qld.gov.au/traffic-and-transport/public-transport/brisbane-metro",
+        "crawl_frequency": "monthly",
+        "priority": "P2",
+        "description": "Brisbane Metro Bus Rapid Transit Project",
+    },
+    {
+        "source_name": "qld_planning_portal",
+        "source_type": "html",
+        "base_url": "https://planning.dsdmip.qld.gov.au",
+        "crawl_frequency": "weekly",
+        "priority": "P2",
+        "description": "QLD Planning Portal - Development Assessments",
+    },
+
+    # ===== P3: Secondary sources, monthly =====
+    {
         "source_name": "epbc_referrals",
         "source_type": "html",
         "base_url": "https://epbcnotices.environment.gov.au",
@@ -94,6 +123,22 @@ DEVINTEL_SOURCES = [
         "crawl_frequency": "monthly",
         "priority": "P3",
         "description": "Economic Development QLD - Priority Development Areas",
+    },
+    {
+        "source_name": "bcc_planning_news",
+        "source_type": "html",
+        "base_url": "https://www.brisbane.qld.gov.au/planning-and-building",
+        "crawl_frequency": "monthly",
+        "priority": "P3",
+        "description": "BCC Planning and Building - News, policy updates",
+    },
+    {
+        "source_name": "qld_transport_projects",
+        "source_type": "html",
+        "base_url": "https://www.tmr.qld.gov.au/projects/southeast-queensland",
+        "crawl_frequency": "monthly",
+        "priority": "P3",
+        "description": "TMR SEQ Transport Projects - Road and transit upgrades",
     },
 ]
 
