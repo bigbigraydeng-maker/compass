@@ -371,7 +371,7 @@ export default function SmartInput() {
                         }`}
                       >
                         <span className="mr-0.5">{m.icon}</span>
-                        <span className="hidden md:inline">{m.label}</span>
+                        <span>{m.label}</span>
                       </button>
                     ))}
                   </div>
@@ -391,21 +391,9 @@ export default function SmartInput() {
               </div>
             </div>
 
-            {/* 快捷区域 */}
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {quickSuburbs.map((s) => (
-                <button
-                  key={s.name}
-                  onClick={() => quickAnalyze(s.name)}
-                  className="bg-white/10 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 hover:bg-white/25 transition-colors"
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-
-            <p className="text-center text-gray-400 text-xs mt-2">
-              Ctrl+Enter 快速提交 · 支持 17 个布里斯班郊区
+            {/* 快捷提示 */}
+            <p className="text-center text-gray-400 text-xs mt-4">
+              粘贴 Domain/REA 链接 · 输入地址 · 上传图片 · 自由提问
             </p>
           </div>
 

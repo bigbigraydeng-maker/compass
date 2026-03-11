@@ -3865,8 +3865,24 @@ def _scheduled_commentary(period: str):
 _olivia_lock = threading.Lock()
 _olivia_generating = False
 
+def _get_current_period() -> str:
+    """根据当前 AEST 时间判断应生成的时段标签。"""
+    try:
+        import pytz
+        aest = pytz.timezone("Australia/Brisbane")
+        now_aest = datetime.now(aest)
+    except Exception:
+        now_aest = datetime.now()
+    hour = now_aest.hour
+    if hour < 12:
+        return "morning"
+    elif hour < 21:
+        return "evening"
+    return "on_demand"
+
+
 def _trigger_olivia_background(news_items: list):
-    """在后台线程中生成 Olivia 点评。"""
+    """在后台线程中生成 Olivia 点评（智能判断时段）。"""
     global _olivia_generating
     with _olivia_lock:
         if _olivia_generating:
@@ -3877,23 +3893,44 @@ def _trigger_olivia_background(news_items: list):
         global _olivia_generating
         try:
             today = datetime.now().strftime("%Y-%m-%d")
+            period = _get_current_period()
+
+            # 如果该时段已有点评，跳过
+            if execute_query:
+                existing = execute_query(
+                    "SELECT id FROM news_commentaries WHERE pub_date = %s AND period = %s",
+                    (today, period)
+                )
+                if existing:
+                    # 读取已有的作为缓存
+                    row = execute_query(
+                        "SELECT content, period FROM news_commentaries WHERE pub_date = %s ORDER BY created_at DESC LIMIT 1",
+                        (today,)
+                    )
+                    if row:
+                        _commentary_cache["text"] = row[0]["content"]
+                        _commentary_cache["date"] = today
+                        _commentary_cache["period"] = row[0]["period"]
+                        _commentary_cache["ts"] = _time.time()
+                    return
+
             commentary = _generate_olivia_commentary(news_items)
             if commentary:
                 _commentary_cache["text"] = commentary
                 _commentary_cache["date"] = today
-                _commentary_cache["period"] = "on_demand"
+                _commentary_cache["period"] = period
                 _commentary_cache["ts"] = _time.time()
-                # 也存 DB
                 if execute_query:
                     try:
                         execute_query(
                             """INSERT INTO news_commentaries (pub_date, period, content)
-                               VALUES (%s, 'on_demand', %s)
+                               VALUES (%s, %s, %s)
                                ON CONFLICT (pub_date, period) DO UPDATE SET content = EXCLUDED.content""",
-                            (today, commentary)
+                            (today, period, commentary)
                         )
-                    except Exception:
-                        pass
+                        print(f"[Olivia] {period} commentary generated and saved")
+                    except Exception as e:
+                        print(f"[WARN] Failed to save commentary: {e}")
         finally:
             with _olivia_lock:
                 _olivia_generating = False
@@ -4147,13 +4184,21 @@ def get_news():
         commentary = _commentary_cache["text"]
         commentary_period = _commentary_cache.get("period", "")
 
-    # 2. 再查 DB
+    # 2. 再查 DB — 优先查当前时段，否则取最新
+    current_period = _get_current_period()
     if not commentary and execute_query:
         try:
+            # 先查当前时段
             db_commentary = execute_query(
-                "SELECT content, period FROM news_commentaries WHERE pub_date = %s ORDER BY created_at DESC LIMIT 1",
-                (today,)
+                "SELECT content, period FROM news_commentaries WHERE pub_date = %s AND period = %s LIMIT 1",
+                (today, current_period)
             )
+            # 没有则取最新的
+            if not db_commentary:
+                db_commentary = execute_query(
+                    "SELECT content, period FROM news_commentaries WHERE pub_date = %s ORDER BY created_at DESC LIMIT 1",
+                    (today,)
+                )
             if db_commentary:
                 commentary = db_commentary[0]["content"]
                 commentary_period = db_commentary[0]["period"]
@@ -4164,8 +4209,23 @@ def get_news():
         except Exception:
             pass
 
-    # 3. 无点评则后台生成
+    # 3. 无点评则后台生成；有旧时段点评但缺当前时段也触发生成
+    need_generate = False
     if not commentary and items:
+        need_generate = True
+    elif commentary and commentary_period != current_period and items:
+        # 已有旧时段点评（如 morning），但当前时段（如 evening）还没有 → 触发生成
+        if execute_query:
+            try:
+                existing = execute_query(
+                    "SELECT id FROM news_commentaries WHERE pub_date = %s AND period = %s",
+                    (today, current_period)
+                )
+                if not existing:
+                    need_generate = True
+            except Exception:
+                pass
+    if need_generate:
         _trigger_olivia_background(items)
 
     return {

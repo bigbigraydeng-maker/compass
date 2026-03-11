@@ -37,8 +37,6 @@ export default function Navbar({ activePage = 'home' }: NavbarProps) {
             {/* 桌面端：导航链接 */}
             <div className="hidden md:flex space-x-6">
               <Link href="/" className={activePage === 'home' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>首页</Link>
-              <Link href="/sales" className={activePage === 'sales' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>成交记录</Link>
-              <Link href="/listings" className={activePage === 'listings' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>在售房源</Link>
               <Link href="/news" className={activePage === 'news' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>新闻</Link>
               <Link href="/devintel" className={activePage === 'devintel' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600 transition'}>DevIntel</Link>
               <div className="relative">
@@ -70,8 +68,6 @@ export default function Navbar({ activePage = 'home' }: NavbarProps) {
         <div className="md:hidden fixed inset-0 bg-white z-50 flex flex-col p-6 gap-4">
           <button onClick={() => setMenuOpen(false)} className="self-end text-2xl">✕</button>
           <Link href="/" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>首页</Link>
-          <Link href="/sales" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>成交列表</Link>
-          <Link href="/listings" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>在售房源</Link>
           <Link href="/news" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>新闻</Link>
           <Link href="/devintel" className="text-lg py-2 border-b" onClick={() => setMenuOpen(false)}>DevIntel</Link>
           {suburbList.map(suburb => (
