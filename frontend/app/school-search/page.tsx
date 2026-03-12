@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import SchoolMap from './SchoolMap';
 import SchoolDetailPanel from './SchoolDetailPanel';
 import SchoolCard from './SchoolCard';
+import SchoolComparePanel from './SchoolComparePanel';
 import { ALL_SUBURBS } from '../lib/suburbs';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://compass-r58x.onrender.com';
@@ -41,6 +42,10 @@ export default function SchoolSearchPage() {
   const [catchmentLoading, setCatchmentLoading] = useState(false);
   const [suburbGeoJSON, setSuburbGeoJSON] = useState<any>(null);
   const [mapCollapsed, setMapCollapsed] = useState(false);
+
+  // Comparison state
+  const [compareSchools, setCompareSchools] = useState<School[]>([]);
+  const [showCompare, setShowCompare] = useState(false);
 
   // Filters
   const [filterSuburb, setFilterSuburb] = useState('');
@@ -93,6 +98,30 @@ export default function SchoolSearchPage() {
   const handleCloseDetail = useCallback(() => {
     setSelectedSchool(null);
     setCatchmentData(null);
+  }, []);
+
+  // Comparison handlers
+  const handleCompareToggle = useCallback((school: School) => {
+    setCompareSchools(prev => {
+      const exists = prev.some(s => s.name === school.name);
+      if (exists) {
+        const next = prev.filter(s => s.name !== school.name);
+        if (next.length < 2) setShowCompare(false);
+        return next;
+      }
+      if (prev.length >= 3) return prev; // max 3
+      const next = [...prev, school];
+      if (next.length >= 2) setShowCompare(true);
+      return next;
+    });
+  }, []);
+
+  const handleCompareRemove = useCallback((name: string) => {
+    setCompareSchools(prev => {
+      const next = prev.filter(s => s.name !== name);
+      if (next.length < 2) setShowCompare(false);
+      return next;
+    });
   }, []);
 
   // Filtered schools
@@ -148,16 +177,66 @@ export default function SchoolSearchPage() {
     </div>
   );
 
-  // Shared map component (rendered once, placed via CSS)
-  const mapComponent = (
-    <SchoolMap
-      schools={filteredSchools}
-      selectedSchool={selectedSchool}
-      onSchoolSelect={handleSchoolSelect}
-      suburbBoundaries={suburbGeoJSON}
-      dataSuburbs={CORE_SUBURBS}
-      apiKey={MAPS_KEY}
-    />
+  // School list with compare support
+  const SchoolList = ({ className }: { className?: string }) => (
+    <div className={className}>
+      {/* Compare status bar */}
+      {compareSchools.length > 0 && (
+        <div className="mb-3 p-2 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between">
+          <span className="text-xs text-emerald-700">
+            已选 {compareSchools.length}/3 所学校对比
+          </span>
+          <div className="flex gap-2">
+            {compareSchools.length >= 2 && (
+              <button
+                onClick={() => setShowCompare(true)}
+                className="text-xs px-3 py-1 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors"
+              >
+                查看对比
+              </button>
+            )}
+            <button
+              onClick={() => { setCompareSchools([]); setShowCompare(false); }}
+              className="text-xs text-emerald-600 hover:text-emerald-800"
+            >
+              清空
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Compare panel */}
+      {showCompare && compareSchools.length >= 2 && (
+        <div className="mb-4">
+          <SchoolComparePanel
+            schools={compareSchools}
+            onRemove={handleCompareRemove}
+            onClose={() => setShowCompare(false)}
+          />
+        </div>
+      )}
+
+      {/* School cards */}
+      <div className="space-y-2">
+        {filteredSchools.map((school, i) => (
+          <SchoolCard
+            key={`${school.name}-${i}`}
+            school={school}
+            isSelected={false}
+            isComparing={compareSchools.some(s => s.name === school.name)}
+            onCompareToggle={handleCompareToggle}
+            onClick={() => handleSchoolSelect(school)}
+          />
+        ))}
+      </div>
+
+      {filteredSchools.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">暂无匹配的学校</p>
+          <p className="text-gray-400 text-xs mt-1">请调整筛选条件</p>
+        </div>
+      )}
+    </div>
   );
 
   // Map legend overlay
@@ -199,7 +278,14 @@ export default function SchoolSearchPage() {
       <div className="hidden lg:flex" style={{ height: 'calc(100vh - 64px)' }}>
         {/* Left: Map */}
         <div className="w-[55%] xl:w-[60%] relative" style={{ height: '100%' }}>
-          {mapComponent}
+          <SchoolMap
+            schools={filteredSchools}
+            selectedSchool={selectedSchool}
+            onSchoolSelect={handleSchoolSelect}
+            suburbBoundaries={suburbGeoJSON}
+            dataSuburbs={CORE_SUBURBS}
+            apiKey={MAPS_KEY}
+          />
           {mapLegend}
         </div>
 
@@ -218,30 +304,12 @@ export default function SchoolSearchPage() {
               <div className="mb-4">
                 <h1 className="text-xl font-bold text-gray-900 mb-1">校区找房</h1>
                 <p className="text-xs text-gray-500">
-                  点击地图上的学校标注，查看学区投资数据
+                  点击学校查看详情，或选择多所学校进行对比
                 </p>
               </div>
 
               <FilterBar />
-
-              {/* School List */}
-              <div className="space-y-2">
-                {filteredSchools.map((school, i) => (
-                  <SchoolCard
-                    key={`${school.name}-${i}`}
-                    school={school}
-                    isSelected={false}
-                    onClick={() => handleSchoolSelect(school)}
-                  />
-                ))}
-              </div>
-
-              {filteredSchools.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">暂无匹配的学校</p>
-                  <p className="text-gray-400 text-xs mt-1">请调整筛选条件</p>
-                </div>
-              )}
+              <SchoolList />
             </div>
           )}
         </div>
@@ -255,8 +323,6 @@ export default function SchoolSearchPage() {
             mapCollapsed ? 'h-32' : 'h-56'
           }`}
         >
-          {/* On mobile, we reuse the same map via CSS visibility.
-              The map component is only rendered once in whichever layout is active. */}
           <SchoolMap
             schools={filteredSchools}
             selectedSchool={selectedSchool}
@@ -293,17 +359,7 @@ export default function SchoolSearchPage() {
               </div>
 
               <FilterBar />
-
-              <div className="space-y-2">
-                {filteredSchools.map((school, i) => (
-                  <SchoolCard
-                    key={`${school.name}-${i}`}
-                    school={school}
-                    isSelected={false}
-                    onClick={() => handleSchoolSelect(school)}
-                  />
-                ))}
-              </div>
+              <SchoolList />
             </div>
           )}
         </div>

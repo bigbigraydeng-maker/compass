@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { PersonaButton, PersonaMarkdown } from '../components/persona';
+import { buildDomainSearchUrl } from '../lib/postcodes';
 
 // 动态导入 Recharts，仅在图表可见时加载
 const SchoolPriceChart = dynamic(
@@ -160,6 +161,60 @@ const propertyTypeLabels: Record<string, string> = {
   apartment: '公寓',
   vacant_land: '空地',
 };
+
+/** Mini budget calculator for catchment area */
+function CatchmentBudget({ medianPrice }: { medianPrice: number }) {
+  const deposits = [5, 10, 20];
+  const rate = 6.5;
+  const term = 30;
+
+  const calc = (depositPct: number) => {
+    const deposit = medianPrice * (depositPct / 100);
+    const loan = medianPrice - deposit;
+    const mr = rate / 100 / 12;
+    const tm = term * 12;
+    const monthly = mr > 0
+      ? loan * (mr * Math.pow(1 + mr, tm)) / (Math.pow(1 + mr, tm) - 1)
+      : loan / tm;
+    return {
+      deposit: Math.round(deposit),
+      loan: Math.round(loan),
+      monthly: Math.round(monthly),
+      weekly: Math.round(monthly * 12 / 52),
+    };
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border p-5">
+      <h3 className="text-sm font-semibold text-gray-900 mb-1">
+        学区购房预算
+      </h3>
+      <p className="text-xs text-gray-400 mb-3">
+        基于学区中位价 {formatPrice(medianPrice)}，利率 {rate}%，{term}年贷款
+      </p>
+      <div className="grid grid-cols-3 gap-2">
+        {deposits.map((pct) => {
+          const r = calc(pct);
+          return (
+            <div key={pct} className={`rounded-lg p-3 text-center border ${pct === 20 ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-gray-50'}`}>
+              <p className="text-[10px] text-gray-500 mb-1">{pct}% 首付</p>
+              <p className="text-xs font-bold text-gray-900">{formatPriceShort(r.deposit)}</p>
+              <div className="border-t border-gray-200 my-1.5" />
+              <p className="text-[10px] text-gray-500">月供</p>
+              <p className="text-sm font-bold text-blue-600">{formatPriceShort(r.monthly)}</p>
+              <p className="text-[10px] text-gray-400">周供 {formatPriceShort(r.weekly)}</p>
+            </div>
+          );
+        })}
+      </div>
+      {medianPrice <= 750000 && (
+        <p className="text-[10px] text-green-600 mt-2 text-center">
+          * 首次购房者可能符合 $30,000 FHOG 补贴
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function SchoolDetailPanel({
   school,
@@ -444,7 +499,12 @@ export default function SchoolDetailPanel({
         </div>
       )}
 
-      {/* 6. AI Analysis */}
+      {/* 6. Catchment Budget Mini-Calculator */}
+      {agg && agg.median_price > 0 && (
+        <CatchmentBudget medianPrice={agg.median_price} />
+      )}
+
+      {/* 7. AI Analysis */}
       <div className="bg-white rounded-xl shadow-sm border p-5">
         <h3 className="text-sm font-semibold text-gray-900 mb-3">
           Amanda 学区投资分析
@@ -473,6 +533,32 @@ export default function SchoolDetailPanel({
             <PersonaMarkdown content={aiReport} variant="compact" />
           </div>
         )}
+      </div>
+
+      {/* 8. Domain Listing Links */}
+      <div className="bg-white rounded-xl shadow-sm border p-5">
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">
+          查看学区在售房源
+        </h3>
+        <div className="space-y-2">
+          {school.catchment_suburbs.map((suburb) => (
+            <a
+              key={suburb}
+              href={buildDomainSearchUrl(suburb)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all group"
+            >
+              <div>
+                <span className="text-sm font-medium text-gray-900 group-hover:text-blue-700">{suburb}</span>
+                <span className="block text-[10px] text-gray-400">Domain.com.au 在售房源</span>
+              </div>
+              <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

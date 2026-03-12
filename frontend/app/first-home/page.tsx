@@ -1,11 +1,24 @@
 'use client';
 
+import { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatInterface from '../components/ChatInterface';
+import EligibilityChecker from '../components/EligibilityChecker';
 import BudgetCalculator from '../components/BudgetCalculator';
+import StampDutyCalculator from '../components/StampDutyCalculator';
+import MortgageComparison from '../components/MortgageComparison';
+
+const TOOL_TABS = [
+  { key: 'eligibility', label: '资格速查', icon: '🔍' },
+  { key: 'budget', label: '预算计算', icon: '🧮' },
+  { key: 'stamp', label: '印花税', icon: '📋' },
+  { key: 'mortgage', label: '月供对比', icon: '📊' },
+] as const;
 
 export default function FirstHomePage() {
+  const [activeTab, setActiveTab] = useState<string>('eligibility');
+
   // 购房步骤
   const steps = [
     {
@@ -78,24 +91,24 @@ export default function FirstHomePage() {
       <Header />
 
       {/* Hero 横幅 */}
-      <section className="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-12 md:py-20">
+      <section className="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-10 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">🏠 首次置业指南</h1>
-          <p className="text-sm md:text-xl text-blue-100 max-w-2xl mx-auto">
+          <h1 className="text-2xl md:text-4xl font-bold mb-2 md:mb-3">首次置业指南</h1>
+          <p className="text-sm md:text-lg text-blue-100 max-w-2xl mx-auto">
             助您迈入布里斯班房产市场 · 最高可获 $30,000 政府补贴
           </p>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         {/* Section 1: 购房步骤 */}
-        <section className="mb-10 md:mb-16">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
-            📋 首次购房 5 步流程
+        <section className="mb-8 md:mb-12">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-900 mb-5 md:mb-8 text-center">
+            首次购房 5 步流程
           </h2>
 
           {/* 手机端：竖向时间线 */}
-          <div className="md:hidden space-y-4">
+          <div className="md:hidden space-y-3">
             {steps.map((s, i) => (
               <div key={s.step} className="flex gap-3">
                 <div className="flex flex-col items-center">
@@ -110,7 +123,7 @@ export default function FirstHomePage() {
                     <h3 className="font-semibold text-sm text-gray-900">{s.title}</h3>
                   </div>
                   <p className="text-xs text-gray-600">{s.desc}</p>
-                  <p className="text-[10px] text-gray-400 mt-1">💡 {s.detail}</p>
+                  <p className="text-[10px] text-gray-400 mt-1">{s.detail}</p>
                 </div>
               </div>
             ))}
@@ -118,7 +131,6 @@ export default function FirstHomePage() {
 
           {/* 桌面端：横向时间线 */}
           <div className="hidden md:flex items-start justify-between relative">
-            {/* 连接线 */}
             <div className="absolute top-8 left-[10%] right-[10%] h-0.5 bg-blue-200" />
             {steps.map((s) => (
               <div key={s.step} className="flex flex-col items-center text-center w-1/5 relative z-10">
@@ -127,31 +139,31 @@ export default function FirstHomePage() {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-1">{s.title}</h3>
                 <p className="text-sm text-gray-600 mb-1">{s.desc}</p>
-                <p className="text-xs text-gray-400">💡 {s.detail}</p>
+                <p className="text-xs text-gray-400">{s.detail}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* Section 2: 政府补贴卡片 */}
-        <section className="mb-10 md:mb-16">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
-            🎁 政府补贴与优惠
+        <section className="mb-8 md:mb-12">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-900 mb-5 md:mb-8 text-center">
+            政府补贴与优惠
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
             {grants.map((g) => (
               <div key={g.title} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                <div className={`bg-gradient-to-r ${g.color} p-4 md:p-6 text-white`}>
-                  <div className="text-2xl md:text-3xl mb-2">{g.icon}</div>
-                  <h3 className="font-bold text-sm md:text-lg">{g.title}</h3>
-                  <p className="text-2xl md:text-3xl font-bold mt-1">{g.amount}</p>
-                  <p className="text-white/80 text-xs md:text-sm mt-1">{g.desc}</p>
+                <div className={`bg-gradient-to-r ${g.color} p-4 md:p-5 text-white`}>
+                  <div className="text-2xl mb-1">{g.icon}</div>
+                  <h3 className="font-bold text-sm md:text-base">{g.title}</h3>
+                  <p className="text-xl md:text-2xl font-bold mt-1">{g.amount}</p>
+                  <p className="text-white/80 text-xs mt-1">{g.desc}</p>
                 </div>
-                <div className="p-4 md:p-5">
-                  <p className="text-xs md:text-sm font-medium text-gray-700 mb-2">申请条件：</p>
-                  <ul className="space-y-1.5">
+                <div className="p-3 md:p-4">
+                  <p className="text-xs font-medium text-gray-700 mb-2">申请条件：</p>
+                  <ul className="space-y-1">
                     {g.conditions.map((c, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs md:text-sm text-gray-600">
+                      <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
                         <span className="text-green-500 mt-0.5">✓</span>
                         {c}
                       </li>
@@ -163,32 +175,60 @@ export default function FirstHomePage() {
           </div>
         </section>
 
-        {/* Section 3 & 4: 预算计算器 + AI 顾问 */}
-        <section className="mb-10 md:mb-16">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
-            🛠️ 实用工具
+        {/* Section 3: 工具区 — Tab 切换 */}
+        <section className="mb-8 md:mb-12">
+          <h2 className="text-lg md:text-2xl font-bold text-gray-900 mb-5 md:mb-8 text-center">
+            实用工具
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            <BudgetCalculator />
+
+          {/* Tab 切换 */}
+          <div className="flex gap-1 md:gap-2 mb-5 md:mb-6 bg-gray-100 p-1 rounded-xl overflow-x-auto">
+            {TOOL_TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex-1 min-w-0 px-2 md:px-4 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === tab.key
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <span className="mr-1">{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tool content + AI Chat side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+            {/* Left: Active tool */}
+            <div>
+              {activeTab === 'eligibility' && <EligibilityChecker />}
+              {activeTab === 'budget' && <BudgetCalculator />}
+              {activeTab === 'stamp' && <StampDutyCalculator />}
+              {activeTab === 'mortgage' && <MortgageComparison />}
+            </div>
+
+            {/* Right: AI Chat */}
             <ChatInterface context="first_home" />
           </div>
         </section>
 
-        {/* Section 5: 微信咨询 CTA */}
-        <section className="mb-10 md:mb-16">
-          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 md:p-10 text-white text-center">
-            <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">💬 需要更多帮助？</h2>
-            <p className="text-sm md:text-lg text-green-100 mb-4 md:mb-6 max-w-xl mx-auto">
+        {/* Section 4: 微信咨询 CTA */}
+        <section className="mb-8 md:mb-12">
+          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-5 md:p-8 text-white text-center">
+            <h2 className="text-lg md:text-2xl font-bold mb-2 md:mb-3">需要更多帮助？</h2>
+            <p className="text-sm md:text-base text-green-100 mb-4 md:mb-5 max-w-xl mx-auto">
               添加我们的微信顾问，获取一对一的首次置业咨询服务
             </p>
-            <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/30">
-              <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-gray-400 text-xs md:text-sm text-center">微信二维码<br/>占位</span>
+            <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-xl px-5 py-3 border border-white/30">
+              <div className="w-14 h-14 md:w-20 md:h-20 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-gray-400 text-[10px] md:text-xs text-center">微信二维码<br/>占位</span>
               </div>
               <div className="text-left">
-                <p className="font-semibold text-sm md:text-base">Compass 置业顾问</p>
-                <p className="text-green-100 text-xs md:text-sm">微信号: compass_brisbane</p>
-                <p className="text-green-200 text-[10px] md:text-xs mt-1">工作日 9:00-18:00 在线</p>
+                <p className="font-semibold text-sm">Compass 置业顾问</p>
+                <p className="text-green-100 text-xs">微信号: compass_brisbane</p>
+                <p className="text-green-200 text-[10px] mt-0.5">工作日 9:00-18:00 在线</p>
               </div>
             </div>
           </div>
