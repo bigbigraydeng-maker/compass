@@ -3815,7 +3815,8 @@ async def fengshui_analyze(
             try:
                 import re as _re_fs
                 import hashlib as _hl
-                rating_match = _re_fs.search(r'總體評級[^A-E]*([A-E])', full_content)
+                # 兼容多种格式：风水评级 A 级 / 總體評級 A / 评级：A / 風水評級A級
+                rating_match = _re_fs.search(r'(?:风水评级|風水評級|總體評級|总体评级|评级|評級)[^A-E]*([A-E])', full_content)
                 rating = rating_match.group(1) if rating_match else '?'
                 if rating != '?':
                     # 提取摘要（取第一段非標題文字，最多150字）
