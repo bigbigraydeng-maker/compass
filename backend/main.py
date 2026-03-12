@@ -3,7 +3,7 @@ Compass MVP FastAPI 主应用
 v1.2.0 - 多维度 AI 决策引擎 (Moonshot Kimi 2.5) + 安全加固
 """
 from fastapi import FastAPI, HTTPException, Body, Request, Form, File, UploadFile
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from typing import List, Optional
