@@ -117,7 +117,7 @@ export default function SchoolSearchPage() {
         onChange={(e) => setFilterSuburb(e.target.value)}
         className="px-3 py-1.5 rounded-lg border border-gray-300 text-xs text-gray-700 bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
       >
-        <option value="">全部郊区</option>
+        <option value="">全部 Suburbs</option>
         {suburbs.map(s => (
           <option key={s} value={s}>{s}</option>
         ))}

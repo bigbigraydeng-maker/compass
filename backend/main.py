@@ -158,6 +158,24 @@ try:
         )
     """)
     execute_query("CREATE INDEX IF NOT EXISTS idx_news_commentaries_date ON news_commentaries(pub_date DESC)")
+
+    # 新闻文章详情缓存表（含 star_rating）
+    execute_query("""
+        CREATE TABLE IF NOT EXISTS news_article_details (
+            url_hash VARCHAR(32) PRIMARY KEY,
+            url TEXT,
+            original_text TEXT,
+            translated_text TEXT,
+            star_rating INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    # 迁移：为旧表添加 star_rating 列
+    try:
+        execute_query("ALTER TABLE news_article_details ADD COLUMN IF NOT EXISTS star_rating INTEGER DEFAULT 0")
+    except Exception:
+        pass
+
     print("[OK] News tables ready")
 except Exception as e:
     print(f"[WARN] News tables creation: {e}")
@@ -285,12 +303,26 @@ def get_home_data():
                     median_price = int(row[0] or 0)
                     total_sales = int(row[1] or 0)
                 
+                # 获取月度趋势（最近6个月）
+                trend_query = """
+                    SELECT TO_CHAR(s.sale_date, 'YYYY-MM') as month,
+                           PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY s.sale_price) as median_price
+                    FROM sales s
+                    WHERE UPPER(s.suburb) = UPPER(%s)
+                      AND s.sale_date >= NOW() - INTERVAL '6 months'
+                    GROUP BY TO_CHAR(s.sale_date, 'YYYY-MM')
+                    ORDER BY month
+                """
+                trend_rows = execute_query(trend_query, (suburb,))
+                trend = [int(r.get('median_price', 0) or 0) for r in (trend_rows or [])]
+
                 suburb_stats.append(SuburbStats(
                     suburb=suburb,
                     median_price=median_price,
-                    total_sales=total_sales
+                    total_sales=total_sales,
+                    trend=trend
                 ))
-        
+
         return HomeData(
             latest_sales=[Sale(**sale) for sale in latest_sales],
             suburb_stats=suburb_stats
@@ -847,15 +879,23 @@ def get_suburb_score(suburb_name: str):
     
     # 5. 华人友好度 (15分)
     chinese_score = config["chinese_friendly"].get(suburb_name, 8)
-    
-    total = growth_score + school_score + land_score + activity_score + chinese_score
-    
-    # 等级
-    if total >= 85: grade = "S"
-    elif total >= 75: grade = "A"
-    elif total >= 65: grade = "B"
+
+    # 6. 开发情报活跃度 (10分 bonus)
+    devintel_score = 0
+    try:
+        from devintel.rag import get_devintel_activity_score
+        devintel_score = get_devintel_activity_score(suburb_name)
+    except Exception:
+        pass
+
+    total = growth_score + school_score + land_score + activity_score + chinese_score + devintel_score
+
+    # 等级 (上限 110, 阈值同比上调)
+    if total >= 93: grade = "S"
+    elif total >= 82: grade = "A"
+    elif total >= 71: grade = "B"
     else: grade = "C"
-    
+
     return {
         "suburb": suburb_name,
         "total_score": total,
@@ -865,27 +905,28 @@ def get_suburb_score(suburb_name: str):
             "school": {"score": school_score, "max": 25, "label": "学区质量"},
             "land": {"score": land_score, "max": 20, "label": "土地价值潜力"},
             "activity": {"score": activity_score, "max": 15, "label": "市场活跃度"},
-            "chinese": {"score": chinese_score, "max": 15, "label": "华人友好度"}
+            "chinese": {"score": chinese_score, "max": 15, "label": "华人友好度"},
+            "devintel": {"score": devintel_score, "max": 10, "label": "开发情报"}
         },
-        "data_sources": ["QLD Sales Records", "NAPLAN ACARA", "ABS Census 2021"],
+        "data_sources": ["QLD Sales Records", "NAPLAN ACARA", "ABS Census 2021", "DevIntel RAG"],
         "updated_at": "2026-03"
     }
 
 
 @app.get("/api/deals")
-def get_deals():
+def get_deals(days: int = 90):
     """
-    获取捡漏雷达数据（优化版：单次SQL完成，数据库端过滤）
+    获取捡漏雷达数据（增强版：时间过滤 + 多维评分）
 
-    原：3次全表扫描 + Python端循环筛选
-    优化后：1次窗口函数查询，数据库直接返回捡漏结果
+    - days: 只看最近 N 天的成交（默认 90 天）
+    - 使用窗口函数计算中位价
+    - 增加 deal_score 多维评分（折扣 + 土地面积 + 区域增长）
     """
     try:
         from database import get_db_connection, get_db_cursor
 
         with get_db_connection() as conn:
             with get_db_cursor(conn) as cur:
-                # 一次查询完成：窗口函数计算中位价 → 直接筛选低估10%以上
                 cur.execute("""
                     WITH median_prices AS (
                         SELECT
@@ -925,24 +966,137 @@ def get_deals():
                         AND LOWER(s.property_type) = LOWER(fm.property_type)
                     WHERE COALESCE(mp.median_price, fm.median_price) > 0
                       AND s.sale_price < COALESCE(mp.median_price, fm.median_price) * 0.9
+                      AND s.sale_date >= NOW() - INTERVAL '%s days'
                     ORDER BY discount_percent DESC
-                    LIMIT 10
-                """)
+                    LIMIT 15
+                """, (days,))
                 deals = [dict(row) for row in cur.fetchall()]
 
-                # 转换 Decimal 类型
+                # Enhance with deal_score
                 for deal in deals:
                     for k in ['sold_price', 'median_price', 'discount_percent', 'land_size']:
                         if deal.get(k) is not None:
                             deal[k] = float(deal[k])
 
+                    # Multi-dimensional deal score (0-100)
+                    discount = deal.get('discount_percent', 0) or 0
+                    land = deal.get('land_size', 0) or 0
+
+                    # Undervalue score (0-40): based on discount %
+                    undervalue = min(40, max(0, discount * 2.5))
+
+                    # Land bonus (0-20): large blocks get bonus
+                    land_bonus = 0
+                    if land >= 800: land_bonus = 20
+                    elif land >= 600: land_bonus = 15
+                    elif land >= 400: land_bonus = 10
+                    elif land >= 200: land_bonus = 5
+
+                    # Freshness bonus (0-20): more recent = higher
+                    freshness = 10  # default
+                    if deal.get('sold_date'):
+                        try:
+                            sold = datetime.strptime(str(deal['sold_date'])[:10], '%Y-%m-%d')
+                            age_days = (datetime.now() - sold).days
+                            if age_days <= 7: freshness = 20
+                            elif age_days <= 14: freshness = 18
+                            elif age_days <= 30: freshness = 15
+                            elif age_days <= 60: freshness = 10
+                            else: freshness = 5
+                        except Exception:
+                            pass
+
+                    # Base score (0-20): property type weight
+                    type_bonus = {'house': 20, 'townhouse': 15, 'unit': 10}.get(
+                        (deal.get('property_type') or '').lower(), 10
+                    )
+
+                    deal_score = min(100, round(undervalue + land_bonus + freshness + type_bonus))
+                    deal['deal_score'] = deal_score
+
+                    # Category
+                    if discount > 15 and deal_score > 70:
+                        deal['category'] = '捡漏房源'
+                    elif deal_score > 65:
+                        deal['category'] = '投资机会'
+                    elif land_bonus >= 15:
+                        deal['category'] = '土地开发机会'
+                    else:
+                        deal['category'] = '低估房源'
+
+                # Re-sort by deal_score
+                deals.sort(key=lambda d: d.get('deal_score', 0), reverse=True)
+
         return {
-            "deals": deals,
+            "deals": deals[:10],
             "total": len(deals)
         }
     except Exception as e:
         print(f"[ERROR] 获取捡漏数据失败: {e}")
         raise HTTPException(status_code=500, detail="获取捡漏数据失败，请稍后重试")
+
+
+@app.get("/api/admin/data-completeness")
+def get_data_completeness():
+    """Check data completeness for all 17 configured suburbs."""
+    try:
+        from database import get_db_connection, get_db_cursor
+        from suburbs_config import SUBURBS as _SC
+
+        suburb_names = list(_SC.keys())
+        results = []
+
+        with get_db_connection() as conn:
+            with get_db_cursor(conn) as cur:
+                for name in suburb_names:
+                    # Properties count
+                    cur.execute("SELECT COUNT(*) as cnt FROM properties WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    props = (cur.fetchone() or {}).get('cnt', 0)
+
+                    # Sales count
+                    cur.execute("SELECT COUNT(*) as cnt FROM sales WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    sales = (cur.fetchone() or {}).get('cnt', 0)
+
+                    # suburb_stats exists
+                    cur.execute("SELECT 1 FROM suburb_stats WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    has_stats = cur.fetchone() is not None
+
+                    # DevIntel docs
+                    devintel_docs = 0
+                    try:
+                        cur.execute("SELECT COUNT(DISTINCT document_id) as cnt FROM devintel_chunks WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                        devintel_docs = (cur.fetchone() or {}).get('cnt', 0)
+                    except Exception:
+                        pass
+
+                    # POI check (from /api/suburb/{name}/all cached data or direct)
+                    cur.execute("SELECT COUNT(*) as cnt FROM listings WHERE UPPER(suburb) = UPPER(%s)", (name,))
+                    listings = (cur.fetchone() or {}).get('cnt', 0)
+
+                    # Completeness score (0-100)
+                    score = 0
+                    if props > 0: score += 20
+                    if sales > 10: score += 25
+                    elif sales > 0: score += 10
+                    if has_stats: score += 15
+                    if devintel_docs > 0: score += 20
+                    if listings > 0: score += 20
+
+                    results.append({
+                        "suburb": name,
+                        "properties_count": props,
+                        "sales_count": sales,
+                        "has_stats": has_stats,
+                        "devintel_docs": devintel_docs,
+                        "listings_count": listings,
+                        "completeness_pct": score,
+                    })
+
+        results.sort(key=lambda x: x['completeness_pct'], reverse=True)
+        return {"suburbs": results, "total": len(results)}
+    except Exception as e:
+        print(f"[ERROR] Data completeness check failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/api/rankings")
@@ -1847,11 +2001,38 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
         print(f"[DevIntel] RAG context error: {e}")
         devintel_section = ""
 
+    # --- 数据充分度判断 ---
+    data_confidence = "high"
+    confidence_notes = []
+    if total_12m < 20:
+        data_confidence = "low"
+        confidence_notes.append(f"近12月仅{total_12m}套成交，样本量较小")
+    elif total_12m < 50:
+        data_confidence = "medium"
+        confidence_notes.append(f"近12月{total_12m}套成交，数据量中等")
+
+    if not trends or len(trends) < 3:
+        data_confidence = "low"
+        confidence_notes.append("月度趋势数据不足3个月")
+
+    confidence_warning = ""
+    if data_confidence == "low":
+        confidence_warning = """
+⚠️ **数据提示**：该区域当前数据样本较少（""" + "；".join(confidence_notes) + """）。
+请务必在分析中明确告知用户"数据有限，以下分析仅供参考"。
+对于数据不足的维度，用"暂无足够数据判断"代替猜测。
+不要给出精确的价格预测或强烈的买卖建议。"""
+    elif data_confidence == "medium":
+        confidence_warning = """
+📊 **数据提示**：该区域数据量中等（""" + "；".join(confidence_notes) + """）。
+分析时请注意标注"基于有限样本"，避免过于绝对的结论。"""
+
     prompt = f"""你是一位专注布里斯班房产市场的资深投资分析师，精通华人投资者需求。
 
 投资者正在考虑: **{address}** ({suburb}区)
+{confidence_warning}
 
-以下是{suburb}区的【真实数据】，请**严格基于数据**进行分析，不要编造任何数据或假设：
+以下是{suburb}区的【真实数据】，请**严格基于数据**进行分析：
 
 {price_section}
 
@@ -1875,31 +2056,30 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
 
 ---
 
-请基于以上**全部真实数据**，输出投资分析报告。严格要求：
+请基于以上数据，输出投资分析报告。
 
-## 1. 投资评级 (X/10)
-给出评级并用2-3句话解释。必须引用具体数据支撑评分。
+## 1. 区域概况
+用3-4句话客观描述该区域的定位和特点。引用中位价、成交量等关键数据。
 
-## 2. 核心优势 (3-4条)
-每条必须引用具体数字。例如"中位价$XX万，近12月成交XX套"。
+## 2. 数据亮点
+列出2-3个数据支撑的观察（不要用"优势"这种主观词）。
+每条必须引用具体数字，例如"中位价$XX万，近12月成交XX套"。
 
-## 3. 风险警示 (2-3条)
-必须引用具体数据。例如"近12月发生XX起盗窃案"。
+## 3. 需要关注
+列出2-3个需要注意的方面。引用具体数据。
+如果某维度数据不足，直接说明"该方面暂无足够数据"。
 
-## 4. 投资建议
-- 推荐房型：基于按房型价格数据，明确推荐house/unit/townhouse
-- 合理预算区间：基于中位价和最近成交
-- 持有策略：短期/长期，给出具体理由
-- 议价建议：基于库存去化周期和市场活跃度
-
-## 5. 对比参考
-与覆盖的其他6个区(Sunnybank, Eight Mile Plains, Calamvale, Rochedale, Mansfield, Ascot, Hamilton)做简要对比。
+## 4. 参考建议
+- 该区域适合什么类型的买家（自住/投资/首次置业）
+- 各房型价格参考区间（基于实际成交数据）
+- 如果数据充分，给出持有策略参考；否则说明需要更多数据
 
 **输出要求：**
-- 全中文回复
-- 每个数据引用必须来自上面提供的数据，禁止编造
-- 控制在1000字以内
-- 语言风格：专业、直接、实用
+- 全中文回复，800字以内
+- 语气客观、务实，像朋友聊天但不夸张
+- 绝对禁止编造数据 — 没有的数据就说"暂无数据"
+- 不要做价格涨跌预测（数据不支持预测）
+- 避免"强烈推荐"、"绝佳机会"等营销用语
 """
     return prompt
 
@@ -1907,12 +2087,12 @@ def _build_ai_prompt(address: str, suburb: str, profile: dict) -> str:
 def _get_mode_system_prompt(mode: str) -> str:
     """根据分析模式返回不同的系统提示 — 统一 Amanda 人格"""
     amanda_base = (
-        "你是 Amanda，Compass 平台的首席房产分析师。"
-        "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
-        "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚问题。"
-        "你会用数据说话，结合实战经验给出有深度的见解。"
-        "你特别关注布里斯班南区华人聚集区（Sunnybank、Calamvale、Eight Mile Plains、Rochedale、Mansfield）"
-        "以及北区优质区（Ascot、Hamilton）的市场变化。"
+        "你是 Amanda，Compass 平台的房产分析师。"
+        "你在布里斯班从事房产顾问工作多年，熟悉华人投资者需求。"
+        "你的风格是：务实、诚恳，像朋友聊天一样用大白话讲清楚。"
+        "核心原则：只说有数据支撑的话。没有数据就坦诚说'这方面我们暂时没有足够数据'。"
+        "绝不夸大、绝不编造、绝不做价格预测。"
+        "你宁可少说两句，也不能误导用户。"
         "始终使用中文回复。"
     )
     mode_extras = {
@@ -3303,41 +3483,45 @@ def _get_fengshui_system_prompt() -> str:
 | 55-64 | D（偏弱） |
 | <55 | E（需化解） |
 
-## 风格要求
-- 通俗解读风水，让普通人看得懂
-- 严格基于提供的数据判断，不编造
-- 每个判断必须引用具体数据（海拔差、距离、方位）
-- 始终使用简体中文回复
+## 风格要求（极其重要！）
+
+你不是在填表格，你是在跟朋友聊天讲风水。每次分析都应该像第一次说一样新鲜。
+
+### 绝对禁止：
+- 不要每次都用完全一样的小标题结构
+- 不要在完整报告中提到具体的门牌号或街道地址（用"这块地"、"此处"、"这套房"代替）
+- 不要列清单式输出（"优点1、优点2、优点3"）
+- 不要用"综上所述"、"总的来说"这类套话
+
+### 要做到：
+- 从最突出的特征说起 — 如果路冲很严重就先说路冲，如果靠山极佳就先说靠山
+- 像讲故事一样，把各个维度串起来，而不是逐条罗列
+- 适当用比喻和生活化表达（"这条路直直冲过来，就像箭射大门"）
+- 每次分析的开头方式要不同：有时从地势入手，有时从路形入手，有时从整体感觉入手
+- 如果数据有矛盾（比如地势好但路冲严重），要突出这种张力
+- 用数据但不要像念报告（把"海拔52.3m"融入句子中，而不是单独列出来）
+- 始终使用简体中文
 
 如附有平面图，额外分析门向、厨厕位、主卧方位。
 
-## 输出格式（全文800字内）
+## 输出结构（全文600-800字，灵活安排）
 
-### 风水评级：X（A-E）
-列出四个子维度分数：
-- 气场稳定度：XX/100
-- 财气聚集度：XX/100
-- 居住舒适度：XX/100
-- 道路安全度：XX/100
+**第一行必须是**：风水评级 X 级（A-E），然后用一句话总结核心印象。
 
-### 峦头形势
-地势高低、靠山、明堂判断（2-3句，引用海拔数据）
+**四个参考维度**（融入正文中，不要单独列表）：
+- 气场稳定度 XX/100、财气聚集度 XX/100、居住舒适度 XX/100、道路安全度 XX/100
 
-### 朝向分析
-南半球修正说明 + 朝向评价（2句）
+**正文**：自由组织，但必须覆盖地势、朝向、道路、环境四个方面。
+从最值得一说的特征开始，自然过渡到其他方面。
 
-### 道路形势
-路冲/反弓/玉带/死路判断（2-3句，引用道路类型）
-
-### 水法与环境
-水体、公园、煞气设施判断（2-3句，引用距离）
-
-### 胡师傅总评
-综合建议 + 如有不利因素给出具体化解方案（3-4句）"""
+**最后**：给出胡师傅的个人看法 — 不要用"综上所述"开头，用更自然的方式收尾。
+如有不利因素，给出1-2个具体实用的建议（不要列一长串化解方案）。"""
 
 
 def _build_fengshui_prompt(address: str, elevation: dict, places: dict, crime: dict) -> str:
-    lines = [f"地址: {address}"]
+    # Extract suburb from address for context, but don't pass full address to output
+    suburb_part = address.split(",")[-1].strip() if "," in address else address
+    lines = [f"位置: {suburb_part}区"]
 
     # Elevation — compact one-liner per direction
     if not elevation.get("error"):
@@ -3792,10 +3976,12 @@ def _fetch_rss_news() -> list:
 
                 pub_date = item_el.findtext("pubDate", "")
                 date_str = ""
+                pub_time = ""
                 if pub_date:
                     try:
                         dt = datetime.strptime(pub_date[:25].strip(), "%a, %d %b %Y %H:%M:%S")
                         date_str = dt.strftime("%Y-%m-%d")
+                        pub_time = dt.strftime("%H:%M")
                     except Exception:
                         date_str = pub_date[:10]
 
@@ -3805,6 +3991,7 @@ def _fetch_rss_news() -> list:
                     "title": headline,
                     "source": source,
                     "date": date_str,
+                    "pub_time": pub_time,
                     "summary": summary if summary else headline,
                     "tag": tag,
                     "tagColor": tagColor,
@@ -3862,6 +4049,14 @@ def _generate_olivia_commentary(news_items: list) -> str:
         for item in news_items[:10]
     )
 
+    # Fetch DevIntel digest for Olivia
+    devintel_digest = ""
+    try:
+        from devintel.rag import get_devintel_summary
+        devintel_digest = get_devintel_summary(limit=5)
+    except Exception as e:
+        print(f"[Olivia] DevIntel summary fetch failed: {e}")
+
     system_prompt = (
         "你是 Olivia，Compass 平台的市场经济学家。"
         "你从宏观经济视角解读布里斯班房产市场，擅长分析利率政策、移民趋势、基建规划和供需数据。"
@@ -3872,9 +4067,14 @@ def _generate_olivia_commentary(news_items: list) -> str:
         "始终使用中文回复。"
     )
 
+    devintel_section = ""
+    if devintel_digest:
+        devintel_section = f"\n\n以下是近期开发情报动态（来自 DevIntel 政府数据）：\n{devintel_digest}\n"
+
     user_prompt = (
         f"今天是 {today}，以下是今日布里斯班房产相关新闻标题（来自 Google News、Domain、REA、后花园澳洲等源）：\n\n"
         f"{news_digest}\n\n"
+        f"{devintel_section}"
         "请你作为 Olivia 写一篇今日市场综合解读（300-500字），要求：\n"
         "1. 先用一句话概括今天的市场信号\n"
         "2. 挑出 2-3 条最重要的新闻，用你的专业视角解读它们对布里斯班房产市场意味着什么\n"
@@ -3883,7 +4083,8 @@ def _generate_olivia_commentary(news_items: list) -> str:
         "5. 用自然的聊天口吻，但要有专业深度，不要泛泛而谈\n"
         "6. 开头直接切入正题，不要问候语\n"
         "7. 适当使用换行分段，让阅读更舒适\n"
-        "8. 不要使用任何 markdown 格式符号（如 ** 或 * 或 # 或 - ），直接用纯文本表达，用换行和空行来分段"
+        "8. 不要使用任何 markdown 格式符号（如 ** 或 * 或 # 或 - ），直接用纯文本表达，用换行和空行来分段\n"
+        "9. 如果开发情报中有重要基建或规划动态，结合新闻一起分析其对房市的影响"
     )
 
     try:
@@ -4141,68 +4342,164 @@ def _fetch_article_content(url: str) -> str:
         return ""
 
 
-def _translate_article(text: str) -> str:
-    """调用 AI 将英文文章翻译为中文。"""
+def _get_devintel_context_for_article(title: str) -> str:
+    """获取与新闻相关的 DevIntel 上下文。"""
+    try:
+        from devintel.retriever import retrieve_chunks
+        chunks = retrieve_chunks(query=title, top_k=3, log_source="news_summary")
+        if chunks:
+            context_parts = []
+            for c in chunks:
+                ctx = c.get("chunk_text", "")[:200]
+                src = c.get("source_name", "")
+                if ctx:
+                    context_parts.append(f"[{src}] {ctx}")
+            return "\n".join(context_parts)
+    except Exception as e:
+        print(f"[WARN] DevIntel context fetch failed: {e}")
+    return ""
+
+
+def _summarize_article(text: str, title: str = "") -> dict:
+    """调用 AI 生成新闻摘要 + 星级推荐（替代原全文翻译）。"""
     if not text:
-        return ""
+        return {"summary": "", "star_rating": 0}
     if len(text) > 5000:
         text = text[:5000] + "\n\n[... 原文过长，已截断 ...]"
 
+    # 获取 DevIntel 上下文
+    devintel_ctx = _get_devintel_context_for_article(title) if title else ""
+
     try:
         client, _model, _temp = _get_ai_client()
+        system_prompt = (
+            "你是 Olivia，Compass 平台的市场经济学家。\n"
+            "你的任务是对英文房产新闻生成简洁的中文摘要和阅读推荐星级。\n\n"
+            "要求：\n"
+            "1. 摘要控制在100个中文字以内\n"
+            "2. 结合原文内容和开发情报上下文，提炼核心信息\n"
+            "3. 加入你作为市场经济学家的专业观点\n"
+            "4. 给出1-5星的阅读推荐（5星=强烈推荐，1星=一般了解）\n"
+            "   - 5星：重大政策变动、利率调整、重要基建进展\n"
+            "   - 4星：区域市场数据、拍卖结果分析\n"
+            "   - 3星：行业趋势、一般市场评论\n"
+            "   - 2星：个别项目更新、软性新闻\n"
+            "   - 1星：广告性质、重复信息\n"
+            "5. 不要使用 markdown 格式符号\n"
+            "6. 必须用中文回复\n\n"
+            "输出格式（严格JSON）：\n"
+            '{"summary": "你的中文摘要（100字以内）", "star_rating": 3}'
+        )
+
+        user_content = f"新闻原文：\n{text}"
+        if devintel_ctx:
+            user_content += f"\n\n相关开发情报：\n{devintel_ctx}"
+
         response = client.chat.completions.create(
             model=_model,
             messages=[
-                {"role": "system", "content": (
-                    "你是一位专业的英中翻译。请将以下英文房产新闻完整翻译成中文。"
-                    "要求：保持专业但通俗易懂，适合华人投资者阅读。"
-                    "保留原文的段落结构。不要添加任何额外评论。"
-                    "必须全部使用中文输出，不要保留任何英文。"
-                    "不要使用 markdown 格式符号（如 ** 或 *）。用纯文本。"
-                )},
-                {"role": "user", "content": f"请将以下英文新闻文章翻译成中文：\n\n{text}"}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content}
             ],
-            max_tokens=4096,
+            max_tokens=512,
             temperature=0.3,
         )
-        translated = response.choices[0].message.content.strip()
-        return translated.replace('**', '').replace('*', '')
+        result_text = response.choices[0].message.content.strip()
+        result_text = result_text.replace('**', '').replace('*', '')
+
+        # 解析 JSON 响应
+        import json as _json_mod
+        try:
+            # 尝试直接解析
+            parsed = _json_mod.loads(result_text)
+            return {
+                "summary": str(parsed.get("summary", ""))[:150],
+                "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+            }
+        except (_json_mod.JSONDecodeError, ValueError):
+            # 尝试从文本中提取 JSON
+            import re as _re_mod
+            json_match = _re_mod.search(r'\{[^}]+\}', result_text)
+            if json_match:
+                try:
+                    parsed = _json_mod.loads(json_match.group())
+                    return {
+                        "summary": str(parsed.get("summary", ""))[:150],
+                        "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+                    }
+                except Exception:
+                    pass
+            # fallback: 把整段文本当摘要
+            return {"summary": result_text[:100], "star_rating": 3}
     except Exception as e:
-        print(f"[WARN] Article translation failed: {e}")
-        return ""
+        print(f"[WARN] Article summarization failed: {e}")
+        return {"summary": "", "star_rating": 0}
 
 
-def _ai_expand_summary(title: str, summary: str) -> str:
-    """当无法抓取原文时，用 AI 基于标题和摘要生成中文解读。"""
+def _ai_expand_summary(title: str, summary: str) -> dict:
+    """当无法抓取原文时，用 AI 基于标题和摘要生成摘要+星级。"""
     try:
+        devintel_ctx = _get_devintel_context_for_article(title)
         client, _model, _temp = _get_ai_client()
+
+        system_prompt = (
+            "你是 Olivia，Compass 平台的市场经济学家。\n"
+            "根据新闻标题和摘要，生成简洁的中文速评和阅读推荐星级。\n\n"
+            "要求：\n"
+            "1. 速评控制在100个中文字以内，包含你的专业观点\n"
+            "2. 给出1-5星阅读推荐\n"
+            "3. 不要使用 markdown 格式符号\n"
+            "4. 必须用中文回复\n\n"
+            "输出格式（严格JSON）：\n"
+            '{"summary": "你的中文速评（100字以内）", "star_rating": 3}'
+        )
+
+        user_content = f"标题：{title}\n摘要：{summary}"
+        if devintel_ctx:
+            user_content += f"\n\n相关开发情报：\n{devintel_ctx}"
+
         response = client.chat.completions.create(
             model=_model,
             messages=[
-                {"role": "system", "content": (
-                    "你是 Olivia，Compass 平台的市场经济学家。"
-                    "你的任务是根据新闻标题和摘要，撰写一段中文详细解读（200-400字）。"
-                    "分析这条新闻对布里斯班房产市场和华人投资者的影响。"
-                    "你必须始终使用中文回复，即使新闻原文是英文。"
-                    "不要使用任何 markdown 格式符号（如 ** 或 *）。用纯文本，用换行分段。"
-                )},
-                {"role": "user", "content": f"以下是一条房产新闻，请用中文撰写详细解读：\n\n标题：{title}\n\n摘要：{summary}\n\n请用中文撰写 Olivia 的专业解读。"}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content}
             ],
-            max_tokens=2048,
+            max_tokens=512,
             temperature=_temp,
         )
-        result = response.choices[0].message.content.strip()
-        return result.replace('**', '').replace('*', '')
+        result_text = response.choices[0].message.content.strip()
+        result_text = result_text.replace('**', '').replace('*', '')
+
+        import json as _json_mod
+        try:
+            parsed = _json_mod.loads(result_text)
+            return {
+                "summary": str(parsed.get("summary", ""))[:150],
+                "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+            }
+        except (_json_mod.JSONDecodeError, ValueError):
+            import re as _re_mod
+            json_match = _re_mod.search(r'\{[^}]+\}', result_text)
+            if json_match:
+                try:
+                    parsed = _json_mod.loads(json_match.group())
+                    return {
+                        "summary": str(parsed.get("summary", ""))[:150],
+                        "star_rating": max(1, min(5, int(parsed.get("star_rating", 3)))),
+                    }
+                except Exception:
+                    pass
+            return {"summary": result_text[:100], "star_rating": 3}
     except Exception as e:
         print(f"[WARN] AI expand summary failed: {e}")
-        return ""
+        return {"summary": "", "star_rating": 0}
 
 
 # ---- API 端点 ----
 
 @app.get("/api/news/detail")
 def get_news_detail(url: str, title: str = "", summary: str = ""):
-    """Olivia AI 解读 + 尝试抓取原文。"""
+    """Olivia AI 速评 + 星级推荐 + 尝试抓取原文。"""
     if not url:
         return {"error": "url parameter required"}
 
@@ -4212,23 +4509,28 @@ def get_news_detail(url: str, title: str = "", summary: str = ""):
     if execute_query:
         try:
             cached = execute_query(
-                "SELECT original_text, translated_text FROM news_article_details WHERE url_hash = %s",
+                "SELECT original_text, translated_text, star_rating FROM news_article_details WHERE url_hash = %s",
                 (url_hash,)
             )
             if cached:
-                return {
-                    "original_text": cached[0].get("original_text", ""),
-                    "translated_text": cached[0].get("translated_text", ""),
-                    "url": url,
-                    "cached": True,
-                }
+                row = cached[0]
+                star = row.get("star_rating")
+                # 旧缓存无星级 → 跳过缓存，重新生成
+                if star is not None and star > 0:
+                    return {
+                        "original_text": row.get("original_text", ""),
+                        "translated_text": row.get("translated_text", ""),
+                        "star_rating": star,
+                        "url": url,
+                        "cached": True,
+                    }
         except Exception:
-            pass  # Table may not exist yet, fall through to in-memory
+            pass  # Table may not exist yet, fall through
 
     original = ""
-    translated = ""
+    summary_result = {"summary": "", "star_rating": 0}
 
-    # 步骤 1：尝试抓取原文（限时 5 秒，缩短等待）
+    # 步骤 1：尝试抓取原文（限时 5 秒）
     try:
         import concurrent.futures
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -4240,20 +4542,39 @@ def get_news_detail(url: str, title: str = "", summary: str = ""):
     except Exception:
         original = ""
 
-    # 步骤 2：翻译
+    # 步骤 2：生成摘要 + 星级
     if original:
-        translated = _translate_article(original)
+        summary_result = _summarize_article(original, title)
 
-    if not translated and (title or summary):
-        translated = _ai_expand_summary(title, summary)
+    if not summary_result.get("summary") and (title or summary):
+        summary_result = _ai_expand_summary(title, summary)
+
+    translated = summary_result.get("summary", "")
+    star_rating = summary_result.get("star_rating", 3)
 
     if not original and not translated:
         if title:
             translated = f"新闻概要：{title}\n\n{summary}" if summary else f"新闻概要：{title}"
+            star_rating = 2
+
+    # 尝试更新缓存（加入 star_rating）
+    if execute_query and translated:
+        try:
+            execute_query(
+                """INSERT INTO news_article_details (url_hash, url, original_text, translated_text, star_rating)
+                   VALUES (%s, %s, %s, %s, %s)
+                   ON CONFLICT (url_hash) DO UPDATE SET
+                     translated_text = EXCLUDED.translated_text,
+                     star_rating = EXCLUDED.star_rating""",
+                (url_hash, url, original, translated, star_rating)
+            )
+        except Exception:
+            pass
 
     return {
         "original_text": original,
         "translated_text": translated,
+        "star_rating": star_rating,
         "url": url,
         "cached": False,
     }
@@ -4387,7 +4708,7 @@ def get_news_by_date(days: int = 7, category: Optional[str] = None):
 
     try:
         params: list = [days]
-        query = """SELECT id, title, source, summary, link, category, category_color, pub_date
+        query = """SELECT id, title, source, summary, link, category, category_color, pub_date, created_at
                    FROM news_articles
                    WHERE pub_date >= CURRENT_DATE - INTERVAL '%s days'"""
         if category:
@@ -4402,6 +4723,14 @@ def get_news_by_date(days: int = 7, category: Optional[str] = None):
             d = str(r.get("pub_date", "未知"))
             if d not in grouped:
                 grouped[d] = []
+            # 从 created_at 提取发布时间
+            pub_time = ""
+            created = r.get("created_at")
+            if created:
+                try:
+                    pub_time = created.strftime("%H:%M") if hasattr(created, 'strftime') else str(created)[11:16]
+                except Exception:
+                    pub_time = ""
             grouped[d].append({
                 "id": r.get("id"),
                 "title": r.get("title", ""),
@@ -4411,6 +4740,7 @@ def get_news_by_date(days: int = 7, category: Optional[str] = None):
                 "tag": r.get("category", "市场动态"),
                 "tagColor": r.get("category_color", "bg-blue-100 text-blue-700"),
                 "date": d,
+                "pub_time": pub_time,
             })
 
         return {"dates": [{"date": k, "articles": v} for k, v in grouped.items()]}
@@ -4690,9 +5020,11 @@ def chat_with_advisor(
         client, _model, _temp = _get_ai_client()
 
         amanda_chat_base = (
-            "你是 Amanda，Compass 平台的首席房产分析师，也是用户的专属 AI 顾问。"
-            "你在布里斯班从事房产投资顾问工作超过 10 年，专注服务华人投资者。"
-            "你的风格是：专业但亲切，像朋友聊天一样用大白话讲清楚问题。"
+            "你是 Amanda，Compass 平台的房产分析师，也是用户的 AI 顾问。"
+            "你熟悉布里斯班房产市场和华人投资者需求。"
+            "你的风格是：务实、诚恳，像朋友聊天。"
+            "核心原则：不确定的事情就坦诚说'这个我不太确定'。"
+            "不要编造数据，不要做价格预测，不要用'强烈推荐'等营销用语。"
             "请用中文回答，每次回答控制在200字以内。\n\n"
         )
         context_extras = {

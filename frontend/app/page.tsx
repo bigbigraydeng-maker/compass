@@ -3,12 +3,10 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import SmartInput from './components/SmartInput';
 import QuickEntryCards from './components/QuickEntryCards';
-import TodayDeals from './components/TodayDeals';
 import TopInvestmentSuburbs from './components/TopInvestmentSuburbs';
 import Footer from './components/Footer';
 import { fetcher } from './lib/api';
 
-// 懒加载首屏以下组件 — 减少初始 JS 加载量
 const MarketStats = lazy(() => import('./components/MarketStats'));
 const Community = lazy(() => import('./components/Community'));
 
@@ -19,8 +17,6 @@ const LazyFallback = () => (
 );
 
 export default function Home() {
-
-  const [rankings, setRankings] = useState<any[]>([]);
   const [suburbStats, setSuburbStats] = useState<any[]>([]);
   const [homeData, setHomeData] = useState<any>(null);
 
@@ -29,17 +25,8 @@ export default function Home() {
 
     const loadData = async () => {
       try {
-        const [hData, rankingsData] = await Promise.all([
-          fetcher('/api/home').catch(() => null),
-          fetcher('/api/rankings').catch(() => null),
-        ]);
-
+        const hData = await fetcher('/api/home').catch(() => null);
         if (cancelled) return;
-
-        if (rankingsData?.rankings) {
-          setRankings(rankingsData.rankings);
-        }
-
         if (hData) {
           setHomeData(hData);
           if (hData.suburb_stats) {
@@ -52,7 +39,6 @@ export default function Home() {
     };
 
     loadData();
-
     return () => { cancelled = true; };
   }, []);
 
@@ -61,8 +47,7 @@ export default function Home() {
       <Header />
       <SmartInput />
       <QuickEntryCards />
-      <TodayDeals />
-      <TopInvestmentSuburbs rankings={rankings} suburbStats={suburbStats} />
+      <TopInvestmentSuburbs suburbStats={suburbStats} />
 
       <Suspense fallback={<LazyFallback />}>
         <MarketStats homeData={homeData} />

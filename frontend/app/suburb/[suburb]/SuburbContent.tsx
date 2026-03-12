@@ -155,6 +155,7 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [aiAddress, setAiAddress] = useState('');
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
   const [showLivabilityDetail, setShowLivabilityDetail] = useState(false);
+  const [devintelDocs, setDevintelDocs] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -251,6 +252,12 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
           if (allData.rental) setRentalData({ suburb: suburbName, ...allData.rental });
           if (allData.flood) setFloodData({ suburb: suburbName, ...allData.flood });
           if (allData.development) setDevelopmentData({ suburb: suburbName, ...allData.development });
+
+          // DevIntel docs for this suburb
+          safeFetch(`${apiUrl}/api/devintel/search?suburb=${encodedName}&top_k=5`)
+            .then((diRes: any) => {
+              if (diRes?.results) setDevintelDocs(diRes.results);
+            });
         } else {
           setData({ suburb: suburbName, median_price: 0, total_sales: 0, recent_sales: [] });
         }
@@ -985,6 +992,35 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
                 </ul>
               </div>
             )}
+          </div>
+        )}
+
+        {/* DevIntel Section */}
+        {devintelDocs.length > 0 && (
+          <div className="mt-10 bg-gradient-to-br from-purple-50 via-white to-pink-50 rounded-2xl p-5 md:p-8 border border-purple-100">
+            <div className="flex items-center gap-3 mb-4">
+              <PersonaAvatar persona="olivia" size="sm" />
+              <h2 className="text-lg md:text-xl font-bold text-gray-900">开发情报</h2>
+            </div>
+            <div className="space-y-3">
+              {devintelDocs.map((doc: any, i: number) => (
+                <div key={i} className="bg-white rounded-lg p-3 border border-gray-100">
+                  <h3 className="text-sm font-medium text-gray-900 line-clamp-2">{doc.title || doc.chunk_text?.slice(0, 80)}</h3>
+                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                    {doc.doc_type && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">{doc.doc_type}</span>
+                    )}
+                    <span className="text-[10px] text-gray-400">{doc.source_name} · {doc.doc_date || ''}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/news?tab=devintel"
+              className="inline-block mt-4 text-purple-600 hover:text-purple-700 text-sm font-medium"
+            >
+              查看全部开发情报 →
+            </Link>
           </div>
         )}
 

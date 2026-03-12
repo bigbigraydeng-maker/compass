@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PersonaButton } from './persona';
 import { CORE_SUBURBS } from '../lib/suburbs';
@@ -17,14 +16,6 @@ import {
   type MetaData,
 } from '../lib/streamAnalysis';
 import AnalysisResults from './AnalysisResults';
-
-// 分析模式
-const MODES = [
-  { key: 'general', label: '投资分析', icon: '🏠' },
-  { key: 'school', label: '学区', icon: '🏫' },
-  { key: 'first_home', label: '首置', icon: '🏡' },
-  { key: 'overseas', label: '海外', icon: '🌏' },
-] as const;
 
 export default function SmartInput() {
   const router = useRouter();
@@ -221,42 +212,6 @@ export default function SmartInput() {
     }
   };
 
-  // 功能卡片
-  const featureCards: Array<{
-    icon: string; title: string; desc: string; href: string;
-    gradient: string; border: string; hoverBg: string; hot?: boolean;
-  }> = [
-    {
-      icon: '🏫', title: '校区找房', desc: '按学区质量寻找投资机会',
-      href: '/school-search',
-      gradient: 'from-emerald-500/20 to-emerald-600/10',
-      border: 'border-emerald-400/30',
-      hoverBg: 'hover:bg-emerald-500/20',
-    },
-    {
-      icon: '🏠', title: '首次置业', desc: '首置补贴 · 预算计算 · AI顾问',
-      href: '/first-home',
-      gradient: 'from-blue-500/20 to-blue-600/10',
-      border: 'border-blue-400/30',
-      hoverBg: 'hover:bg-blue-500/20',
-    },
-    {
-      icon: '🌏', title: '海外人士购房', desc: 'FIRB指南 · 税费 · AI顾问',
-      href: '/overseas-buyer',
-      gradient: 'from-purple-500/20 to-purple-600/10',
-      border: 'border-purple-400/30',
-      hoverBg: 'hover:bg-purple-500/20',
-    },
-    {
-      icon: '☰', title: '天機堂', desc: '風水堪輿 · 地形煞氣 · 胡師傅',
-      href: '/feng-shui',
-      gradient: 'from-amber-500/20 to-red-700/10',
-      border: 'border-amber-400/30',
-      hoverBg: 'hover:bg-amber-500/20',
-      hot: true,
-    },
-  ];
-
   const typeInfo = INPUT_TYPE_LABELS[inputType];
 
   return (
@@ -281,7 +236,7 @@ export default function SmartInput() {
               AI驱动的房产投资机会发现平台
             </h2>
             <p className="text-sm md:text-lg text-gray-200 max-w-2xl mx-auto drop-shadow">
-              粘贴 Domain/REA 链接 · 输入地址 · 上传图片 · 自由提问
+              粘贴 Domain/REA 链接 · 输入地址 · 上传平面图
             </p>
           </div>
 
@@ -295,7 +250,7 @@ export default function SmartInput() {
                   value={textInput}
                   onChange={(e) => { setTextInput(e.target.value); adjustHeight(); }}
                   onKeyDown={handleKeyDown}
-                  placeholder="粘贴 Domain/REA 链接、输入地址、或直接提问..."
+                  placeholder="粘贴 Domain/REA 链接、输入地址或上传平面图..."
                   rows={2}
                   className="w-full bg-transparent text-white placeholder-gray-400 text-base md:text-lg resize-none focus:outline-none"
                   style={{ minHeight: '52px' }}
@@ -358,24 +313,6 @@ export default function SmartInput() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {/* 模式选择 */}
-                  <div className="flex gap-1">
-                    {MODES.map((m) => (
-                      <button
-                        key={m.key}
-                        onClick={() => setMode(m.key)}
-                        className={`text-xs px-2 py-1 rounded-full transition-colors ${
-                          mode === m.key
-                            ? 'bg-blue-500/40 text-white border border-blue-400/50'
-                            : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                        }`}
-                      >
-                        <span className="mr-0.5">{m.icon}</span>
-                        <span>{m.label}</span>
-                      </button>
-                    ))}
-                  </div>
-
                   {/* 提交按钮 */}
                   <PersonaButton
                     persona="amanda"
@@ -393,30 +330,8 @@ export default function SmartInput() {
 
             {/* 快捷提示 */}
             <p className="text-center text-gray-400 text-xs mt-4">
-              粘贴 Domain/REA 链接 · 输入地址 · 上传图片 · 自由提问
+              支持 Domain / REA 链接、街道地址、平面图分析
             </p>
-          </div>
-
-          {/* 功能卡片 */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-10 md:mt-16 max-w-4xl mx-auto">
-            {featureCards.map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className={`relative bg-gradient-to-br ${card.gradient} backdrop-blur-md rounded-xl p-4 md:p-6 text-center ${card.hoverBg} transition-all border ${card.border} group hover:scale-105`}
-              >
-                {card.hot && (
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
-                    HOT
-                  </span>
-                )}
-                <div className="text-2xl md:text-4xl mb-2 md:mb-4 group-hover:scale-110 transition-transform">
-                  {card.icon}
-                </div>
-                <h3 className="text-sm md:text-xl font-semibold mb-1 md:mb-2">{card.title}</h3>
-                <p className="text-gray-300 text-[10px] md:text-sm hidden md:block">{card.desc}</p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>

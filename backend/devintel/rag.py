@@ -3,11 +3,90 @@ DevIntel RAG Orchestrator - Retrieval -> Format as prompt section.
 
 This module is called by main.py's _build_ai_prompt() to inject
 Section 10: Development Intelligence into the AI analysis prompt.
+
+Also provides:
+- get_devintel_summary(): recent headlines for Olivia's commentary
+- get_devintel_activity_score(): suburb-level doc count for Ethan's scoring
 """
 
 from typing import Optional
 
 from .retriever import retrieve_chunks
+
+
+def get_devintel_summary(limit: int = 5) -> str:
+    """
+    Get recent DevIntel document headlines for Olivia's market commentary.
+    Returns a formatted digest string of recent development intelligence.
+    """
+    try:
+        from database import execute_query
+        rows = execute_query(
+            """
+            SELECT title, source_name, suburb, doc_type,
+                   TO_CHAR(created_at, 'YYYY-MM-DD') as doc_date
+            FROM devintel_documents
+            WHERE parse_status = 'parsed' AND title IS NOT NULL AND title != ''
+            ORDER BY created_at DESC
+            LIMIT %s
+            """,
+            (limit,)
+        )
+        if not rows:
+            return ""
+
+        lines = []
+        for row in rows:
+            source = row.get("source_name", "")
+            title = row.get("title", "")
+            suburb = row.get("suburb", "")
+            doc_date = row.get("doc_date", "")
+            parts = [f"[{source}]", title]
+            if suburb:
+                parts.append(f"({suburb})")
+            if doc_date:
+                parts.append(f"- {doc_date}")
+            lines.append("- " + " ".join(parts))
+
+        return "\n".join(lines)
+    except Exception as e:
+        print(f"[DevIntel] get_devintel_summary failed: {e}")
+        return ""
+
+
+def get_devintel_activity_score(suburb: str) -> int:
+    """
+    Calculate a 0-10 development activity score for a suburb based on
+    the number of DevIntel documents/chunks mentioning it.
+    Used by Ethan's get_suburb_score() as a 6th scoring dimension.
+    """
+    try:
+        from database import execute_query
+        rows = execute_query(
+            """
+            SELECT COUNT(DISTINCT document_id) as doc_count
+            FROM devintel_chunks
+            WHERE UPPER(suburb) = UPPER(%s)
+            """,
+            (suburb,)
+        )
+        if not rows:
+            return 0
+
+        doc_count = rows[0].get("doc_count", 0) or 0
+        if doc_count == 0:
+            return 0
+        elif doc_count <= 3:
+            return 3
+        elif doc_count <= 8:
+            return 5
+        elif doc_count <= 15:
+            return 7
+        else:
+            return 10
+    except Exception as e:
+        print(f"[DevIntel] get_devintel_activity_score failed: {e}")
+        return 0
 
 
 def get_devintel_context(suburb: Optional[str] = None, query: Optional[str] = None) -> str:

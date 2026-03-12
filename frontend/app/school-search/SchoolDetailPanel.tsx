@@ -303,7 +303,7 @@ export default function SchoolDetailPanel({
           </div>
           {catchmentData?.suburbs_without_data && catchmentData.suburbs_without_data.length > 0 && (
             <p className="text-[10px] text-gray-400 mt-1.5">
-              ● 标记的郊区有详细市场数据
+              ● 标记的 Suburb 有详细市场数据
             </p>
           )}
         </div>

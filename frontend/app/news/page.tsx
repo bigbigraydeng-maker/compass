@@ -12,6 +12,7 @@ interface NewsItem {
   title: string;
   source: string;
   date: string;
+  pub_time?: string;
   summary: string;
   tag: string;
   tagColor: string;
@@ -34,6 +35,7 @@ interface DateGroup {
 interface ArticleDetail {
   original_text: string;
   translated_text: string;
+  star_rating?: number;
   error?: string;
 }
 
@@ -121,6 +123,9 @@ export default function NewsPage() {
   const [articlesLoading, setArticlesLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
+  // Olivia 解读展开状态 — 只展开一条
+  const [expandedCommentaryId, setExpandedCommentaryId] = useState<number | null>(null);
+
   // 文章展开状态 — 支持多个同时展开
   const [expandedLinks, setExpandedLinks] = useState<Set<string>>(new Set());
   const [articleCache, setArticleCache] = useState<Record<string, ArticleDetail>>({});
@@ -138,6 +143,10 @@ export default function NewsPage() {
       if (data?.commentaries) {
         if (page === 1) {
           setCommentaries(data.commentaries);
+          // 默认展开最新一条
+          if (data.commentaries.length > 0) {
+            setExpandedCommentaryId(data.commentaries[0].id);
+          }
         } else {
           setCommentaries(prev => [...prev, ...data.commentaries]);
         }
@@ -359,25 +368,40 @@ export default function NewsPage() {
                   <div className="space-y-3">
                     {groupedCommentaries[date].map(c => {
                       const periodInfo = PERIOD_LABELS[c.period] || { icon: '📰', label: c.period };
+                      const isExpanded = expandedCommentaryId === c.id;
                       return (
                         <div
                           key={c.id}
-                          className="bg-gradient-to-br from-purple-50 via-white to-pink-50 rounded-xl border border-purple-100 p-5 md:p-6"
+                          className={`rounded-xl border transition-all cursor-pointer ${
+                            isExpanded
+                              ? 'bg-gradient-to-br from-purple-50 via-white to-pink-50 border-purple-100'
+                              : 'bg-white border-gray-200 hover:border-purple-200'
+                          }`}
+                          onClick={() => setExpandedCommentaryId(isExpanded ? null : c.id)}
                         >
-                          <div className="flex items-start gap-3 md:gap-4">
+                          <div className={`flex items-start gap-3 md:gap-4 ${isExpanded ? 'p-5 md:p-6' : 'p-4'}`}>
                             <div className="flex-shrink-0">
-                              <PersonaAvatar persona="olivia" size="md" />
+                              <PersonaAvatar persona="olivia" size={isExpanded ? 'md' : 'sm'} />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <span className="font-bold text-gray-900">Olivia</span>
                                 <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
                                   {periodInfo.icon} {periodInfo.label}
                                 </span>
+                                {!isExpanded && (
+                                  <span className="text-xs text-gray-400 ml-auto">点击展开 ▼</span>
+                                )}
                               </div>
-                              <div className="text-gray-700 text-sm md:text-[15px] leading-relaxed whitespace-pre-line">
-                                {c.content}
-                              </div>
+                              {isExpanded ? (
+                                <div className="text-gray-700 text-sm md:text-[15px] leading-relaxed whitespace-pre-line mt-2">
+                                  {c.content}
+                                </div>
+                              ) : (
+                                <p className="text-gray-500 text-sm mt-1 line-clamp-1">
+                                  {c.content.slice(0, 60)}...
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -488,6 +512,11 @@ export default function NewsPage() {
                                   <span className="text-[10px] md:text-xs text-gray-400">
                                     {news.source}
                                   </span>
+                                  {news.pub_time && (
+                                    <span className="text-[10px] md:text-xs text-gray-400">
+                                      {news.pub_time}
+                                    </span>
+                                  )}
                                   {isLoading && (
                                     <svg className="animate-spin h-3.5 w-3.5 text-purple-500" viewBox="0 0 24 24">
                                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -523,15 +552,23 @@ export default function NewsPage() {
                                   </div>
                                 ) : article?.translated_text ? (
                                   <div className="pt-4 space-y-4">
-                                    {/* 中文翻译/解读 */}
+                                    {/* Olivia 速评 + 星级 */}
                                     <div>
                                       <div className="flex items-center gap-2 mb-2">
                                         <PersonaAvatar persona="olivia" size="sm" />
-                                        <h4 className="text-sm font-semibold text-purple-700">
-                                          {article.original_text ? '中文翻译' : 'Olivia 解读'}
-                                        </h4>
+                                        <h4 className="text-sm font-semibold text-purple-700">Olivia 速评</h4>
+                                        {article.star_rating && article.star_rating > 0 && (
+                                          <div className="flex items-center gap-0.5 ml-auto">
+                                            <span className="text-[10px] text-gray-400 mr-1">推荐</span>
+                                            {[1, 2, 3, 4, 5].map(i => (
+                                              <span key={i} className={`text-sm ${i <= (article.star_rating || 0) ? 'text-amber-400' : 'text-gray-200'}`}>
+                                                ★
+                                              </span>
+                                            ))}
+                                          </div>
+                                        )}
                                       </div>
-                                      <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-line border border-purple-100">
+                                      <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 text-[15px] text-gray-800 leading-relaxed whitespace-pre-line border border-purple-100 font-medium">
                                         {article.translated_text}
                                       </div>
                                     </div>

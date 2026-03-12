@@ -100,7 +100,7 @@ export default function OverseasBuyerPage() {
     },
   ];
 
-  // 推荐郊区
+  // 推荐 Suburbs
   const recommendedSuburbs = [
     { name: 'Rochedale', reason: '大量新开发项目，适合海外投资', type: '新房+空地' },
     { name: 'Eight Mile Plains', reason: '华人社区成熟，交通便利', type: '新公寓' },
@@ -196,10 +196,10 @@ export default function OverseasBuyerPage() {
           </div>
         </section>
 
-        {/* Section 3: 推荐郊区 */}
+        {/* Section 3: 推荐 Suburbs */}
         <section className="mb-10 md:mb-16">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
-            🏘️ 推荐投资郊区
+            🏘️ 推荐投资 Suburbs
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {recommendedSuburbs.map((sub) => (

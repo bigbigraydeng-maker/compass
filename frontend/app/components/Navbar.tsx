@@ -12,7 +12,7 @@ export default function Navbar({ activePage = 'home' }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [suburbMenuOpen, setSuburbMenuOpen] = useState(false);
 
-  // 郊区列表
+  // Suburbs 列表
   const suburbList = [...ALL_SUBURBS];
 
   return (
@@ -45,7 +45,7 @@ export default function Navbar({ activePage = 'home' }: NavbarProps) {
                   onMouseEnter={() => setSuburbMenuOpen(true)}
                   onMouseLeave={() => setSuburbMenuOpen(false)}
                 >
-                  郊区
+                  Suburbs
                   <span className="text-xs">▼</span>
                 </button>
                 {suburbMenuOpen && (
