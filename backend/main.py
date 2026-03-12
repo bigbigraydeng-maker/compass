@@ -4215,7 +4215,11 @@ def _generate_olivia_commentary(news_items: list) -> str:
 def _scheduled_commentary(period: str):
     """Scheduled job: generate Olivia commentary and persist to DB."""
     print(f"[Scheduler] Generating Olivia {period} commentary...")
-    today = datetime.now().strftime("%Y-%m-%d")
+    try:
+        import pytz as _ptz
+        today = datetime.now(_ptz.timezone("Australia/Brisbane")).strftime("%Y-%m-%d")
+    except Exception:
+        today = datetime.now().strftime("%Y-%m-%d")
 
     # 检查 DB 中是否已有今日该时段点评
     if execute_query:
@@ -4289,7 +4293,11 @@ def _trigger_olivia_background(news_items: list):
     def _run():
         global _olivia_generating
         try:
-            today = datetime.now().strftime("%Y-%m-%d")
+            try:
+                import pytz as _ptz
+                today = datetime.now(_ptz.timezone("Australia/Brisbane")).strftime("%Y-%m-%d")
+            except Exception:
+                today = datetime.now().strftime("%Y-%m-%d")
             period = _get_current_period()
 
             # 如果该时段已有点评，跳过
@@ -4692,7 +4700,12 @@ def get_news():
     t = threading.Thread(target=_persist_news_to_db, args=(items,), daemon=True)
     t.start()
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    # 统一使用 AEST 日期（Render 服务器是 UTC）
+    try:
+        import pytz as _ptz
+        today = datetime.now(_ptz.timezone("Australia/Brisbane")).strftime("%Y-%m-%d")
+    except Exception:
+        today = datetime.now().strftime("%Y-%m-%d")
 
     # 1. 先查内存缓存
     commentary = ""
