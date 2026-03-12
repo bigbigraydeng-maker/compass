@@ -111,6 +111,33 @@ class ListingsResponse(BaseModel):
     page_size: int
 
 
+class DomainListing(BaseModel):
+    """Domain API 在售房源模型"""
+    id: int = 0
+    address: str = ""
+    suburb: str = ""
+    property_type: Optional[str] = None
+    bedrooms: Optional[int] = 0
+    bathrooms: Optional[int] = 0
+    car_spaces: Optional[int] = 0
+    land_size: Optional[float] = 0
+    price_text: Optional[str] = None
+    price_from: Optional[float] = 0
+    price_to: Optional[float] = 0
+    image_url: Optional[str] = None
+    domain_url: Optional[str] = None
+    agent_name: Optional[str] = None
+    agency_name: Optional[str] = None
+    headline: Optional[str] = None
+
+
+class DomainListingsResponse(BaseModel):
+    """Domain API 房源列表响应"""
+    listings: List[DomainListing]
+    total: int
+    source: str = "domain_api"  # "domain_api" 或 "database"
+
+
 class Zone(BaseModel):
     """分区信息模型"""
     zone_code: str
