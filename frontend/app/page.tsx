@@ -2,6 +2,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import SmartInput from './components/SmartInput';
+import QuickEntryCards from './components/QuickEntryCards';
 import TodayDeals from './components/TodayDeals';
 import TopInvestmentSuburbs from './components/TopInvestmentSuburbs';
 import Footer from './components/Footer';
@@ -59,6 +60,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <SmartInput />
+      <QuickEntryCards />
       <TodayDeals />
       <TopInvestmentSuburbs rankings={rankings} suburbStats={suburbStats} />
 
