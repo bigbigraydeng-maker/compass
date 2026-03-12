@@ -1,186 +1,144 @@
-# Compass - Brisbane Chinese Property Intelligence Platform
+# Compass - 布里斯班华人房产智能平台
 
-布里斯班华人房产数据平台 MVP 版本
+> aucompass.com.au | 数据驱动的房产投资决策工具
 
-## 📋 项目概述
+## 平台功能
 
-Compass 是一个面向华人投资者的布里斯班房地产数据平台，提供真实的房产成交数据和分析功能。
+### 核心模块
+- **AI 房产分析** — Amanda 多维度投资分析（价格走势、学区、治安、交通、开发潜力）
+- **Suburb 详情** — 17 个布里斯班核心区域全景数据（Compass Score、租赁回报、华人宜居指数）
+- **校区找房** — QLD 学校搜索 + 学区范围 + 在售房源联动
+- **首次置业** — 首置资格速查、预算计算、印花税/月供工具
+- **天机堂** — 胡师傅 AI 风水分析（地势、朝向、环境、道路）
+- **DevIntel** — 开发情报：DA 审批、规划变更、市场新闻
+- **海外购房** — 海外买家流程指南
 
-### 🎯 MVP 功能
+### 数据维度（Suburb 详情页）
+| 维度 | 数据源 |
+|------|--------|
+| 中位价 + 成交走势 | Supabase sales 表 |
+| Compass Score（6维评分） | 综合算法 |
+| 租赁回报（House/Unit） | CoreLogic |
+| 华人宜居指数 | POI + 治安 + 交通 |
+| 学区覆盖 | QLD 学校数据 |
+| 土地分区 | Brisbane City Plan 2014 |
+| 在售土地 + 在售房源 | DB listings + Domain API |
+| 洪水风险 | BCC Flood Data |
+| 开发情报 | DevIntel 爬虫 |
 
-- ✅ 真实成交数据（155 条记录）
-- ✅ 3 个重点郊区：Sunnybank、Eight Mile Plains、Calamvale
-- ✅ RESTful API 接口
-- ✅ 数据统计和分析
-- ✅ 云端部署
-
-## 🏗️ 技术栈
+## 技术架构
 
 ### 后端
-- **FastAPI** - Python Web 框架
-- **PostgreSQL** - 数据库（Supabase）
-- **pg8000** - PostgreSQL 驱动
-- **Pydantic** - 数据验证
+- **FastAPI** — Python Web 框架（同步 + ThreadPoolExecutor 并行查询）
+- **PostgreSQL** — Supabase 托管，psycopg2 连接池（10 连接）
+- **OpenAI / Moonshot** — 双 AI 引擎（GPT-4o-mini 主力，Kimi 2.5 备用）
+- **Domain API** — 房源数据（OAuth2 + 30 分钟缓存）
+- **Google Maps API** — 地理编码 + POI + 海拔
 
-### 数据抓取
-- **Playwright** - 网页抓取
-- **Python** - 数据处理
+### 前端
+- **Next.js 16** — App Router + TypeScript
+- **Tailwind CSS** — 响应式 UI
+- **Recharts** — 数据可视化图表
+- **React Lazy/Suspense** — 首屏性能优化
 
 ### 部署
-- **Render** - 后端托管
-- **Supabase** - 数据库托管
-- **GitHub** - 代码仓库
+- **Render** — 前后端托管
+- **Supabase** — PostgreSQL 数据库
+- **GitHub** — 代码仓库 + CI/CD
 
-## 📊 数据统计
-
-- **总记录数**: 155 条
-- **覆盖郊区**: 3 个
-- **价格范围**: $638,888 - $2,880,800
-- **平均价格**: $1,365,325
-
-### 各郊区数据分布
-
-| 郊区 | 记录数 | 中位价 |
-|------|--------|--------|
-| Sunnybank | 50 | ~$1,365,000 |
-| Eight Mile Plains | 53 | ~$1,500,000 |
-| Calamvale | 52 | ~$1,270,000 |
-
-## 🚀 快速开始
-
-### 本地开发
-
-1. **克隆仓库**
-```bash
-git clone https://github.com/YOUR_USERNAME/compass.git
-cd compass
-```
-
-2. **安装依赖**
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-3. **配置环境变量**
-```bash
-cp .env.example .env
-# 编辑 .env 文件，填入数据库连接信息
-```
-
-4. **启动服务器**
-```bash
-uvicorn main:app --reload
-```
-
-5. **访问 API 文档**
-```
-http://localhost:8000/docs
-```
-
-### 部署到 Render
-
-详细部署步骤请查看 [DEPLOYMENT.md](./DEPLOYMENT.md)
-
-## 📡 API 端点
-
-### 1. 根路径
-```
-GET /
-```
-返回 API 基本信息
-
-### 2. 首页数据
-```
-GET /api/home
-```
-返回最新成交记录和郊区统计
-
-### 3. 成交列表
-```
-GET /api/sales?suburb=Sunnybank&page=1&page_size=20
-```
-返回分页的成交记录
-
-### 4. 郊区详情
-```
-GET /api/suburb/{suburb_name}
-```
-返回指定郊区的统计和成交记录
-
-## 📁 项目结构
+## 项目结构
 
 ```
 Compass/
-├── backend/                 # FastAPI 后端
-│   ├── main.py             # 主应用
-│   ├── config.py           # 配置
-│   ├── database.py         # 数据库连接
-│   ├── models.py           # 数据模型
-│   └── requirements.txt    # 依赖
-├── database/               # 数据库相关
-│   ├── schema_mvp.sql      # 数据库 schema
-│   └── import_all.sql      # 数据导入脚本
-├── scraper/                # 数据抓取
-│   ├── scrape_sales.py     # 抓取脚本
-│   └── clean_data.py       # 数据清洗
-├── data/                   # 数据文件
-│   └── raw_sales.csv       # 原始数据
-├── render.yaml             # Render 配置
-├── .gitignore             # Git 忽略文件
-├── README.md              # 项目说明
-└── DEPLOYMENT.md          # 部署指南
+├── backend/
+│   ├── main.py                 # FastAPI 主应用（47+ 端点）
+│   ├── database.py             # 连接池 + 查询封装
+│   ├── models.py               # Pydantic 数据模型
+│   ├── domain_api.py           # Domain.com.au API 客户端
+│   ├── suburbs_config.py       # 17 区域配置（坐标/邮编/slug）
+│   ├── devintel/               # 开发情报模块（RAG + 爬虫）
+│   ├── data/                   # JSON 数据文件
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/
+│   ├── app/
+│   │   ├── page.tsx            # 首页
+│   │   ├── components/         # 共享组件
+│   │   ├── suburb/[suburb]/    # Suburb 详情页
+│   │   ├── school-search/      # 校区找房
+│   │   ├── first-home/         # 首次置业
+│   │   ├── feng-shui/          # 天机堂
+│   │   ├── devintel/           # DevIntel
+│   │   ├── overseas-buyer/     # 海外购房
+│   │   └── lib/                # 工具函数
+│   ├── next.config.ts
+│   ├── tailwind.config.ts
+│   └── package.json
+├── render.yaml                 # Render 部署配置
+└── README.md
 ```
 
-## 🔧 开发指南
+## 快速开始
 
-### 添加新的 API 端点
-
-1. 在 `backend/models.py` 中定义数据模型
-2. 在 `backend/main.py` 中添加路由函数
-3. 使用 `execute_query()` 执行数据库查询
-
-### 数据抓取
+### 1. 克隆 & 安装
 
 ```bash
-cd scraper
-python scrape_sales.py
+git clone https://github.com/bigbigraydeng-maker/compass.git
+cd compass
+
+# 后端
+cd backend
+pip install -r requirements.txt
+
+# 前端
+cd ../frontend
+npm install
 ```
 
-### 数据导入
+### 2. 配置环境变量
 
 ```bash
-# 使用 SQL 导入
-cd database
-# 在 Supabase SQL Editor 中执行 import_all.sql
+cp backend/.env.example backend/.env
+# 编辑 .env 填入：
 ```
 
-## 📝 环境变量
+| 变量 | 说明 | 必需 |
+|------|------|------|
+| `DATABASE_URL` | Supabase PostgreSQL 连接串 | ✅ |
+| `OPENAI_API_KEY` | OpenAI API Key（AI 分析） | ✅ |
+| `GOOGLE_MAPS_API_KEY` | Google Maps（风水/POI） | ✅ |
+| `MOONSHOT_API_KEY` | Moonshot Kimi（备用 AI） | ❌ |
+| `DOMAIN_API_CLIENT_ID` | Domain.com.au API | ❌ |
+| `DOMAIN_API_CLIENT_SECRET` | Domain.com.au API | ❌ |
 
-| 变量名 | 说明 | 必需 |
-|--------|------|------|
-| `DATABASE_URL` | 数据库连接字符串 | ✅ |
-| `APP_NAME` | 应用名称 | ❌ |
-| `APP_VERSION` | 应用版本 | ❌ |
-| `CORS_ORIGINS` | CORS 配置 | ❌ |
+### 3. 启动开发服务器
 
-## 🤝 贡献
+```bash
+# 后端 (http://localhost:8000/docs)
+cd backend && uvicorn main:app --reload
 
-欢迎提交 Issue 和 Pull Request！
+# 前端 (http://localhost:3000)
+cd frontend && npm run dev
+```
 
-## 📄 许可证
+## 主要 API 端点
 
-MIT License
+| 端点 | 说明 |
+|------|------|
+| `GET /api/home` | 首页数据 |
+| `GET /api/suburb/{name}/all` | Suburb 全量数据（并行聚合） |
+| `GET /api/domain/listings?suburb=X` | Domain 在售房源 |
+| `POST /api/analyze/stream` | AI 投资分析（流式） |
+| `POST /api/fengshui/analyze` | 风水分析（流式） |
+| `GET /api/schools` | QLD 学校列表 |
+| `GET /api/rankings` | Suburb 排名 |
+| `GET /api/news` | 房产新闻 |
+| `GET /api/devintel/*` | 开发情报系列 |
 
-## 📞 联系方式
+## 覆盖区域（17 个 Suburb）
 
-如有问题，请创建 GitHub Issue
+Sunnybank · Eight Mile Plains · Calamvale · Rochedale · Mansfield · Ascot · Hamilton · Runcorn · Wishart · Upper Mount Gravatt · Macgregor · Robertson · Stretton · Kuraby · Coopers Plains · Algester · Parkinson
 
 ---
 
-**注意**: 这是一个 MVP 版本，后续会添加更多功能：
-- 前端界面（Next.js）
-- 用户认证
-- 高级分析功能
-- 数据可视化
-- 微信分享功能
+MIT License | Built with Claude Code
