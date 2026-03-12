@@ -100,7 +100,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         return response
 
-from models import HomeData, SuburbStats, SalesResponse, Sale, SuburbDetail, SuburbTrends, MonthlyTrend, Listing, ListingsResponse, Zone, ZoningResponse
+from models import HomeData, SuburbStats, SalesResponse, Sale, SuburbDetail, SuburbTrends, MonthlyTrend, Listing, ListingsResponse, Zone, ZoningResponse, DomainListing, DomainListingsResponse
 
 # 检查是否有真实数据库连接
 DATABASE_URL = os.getenv("DATABASE_URL", "")
@@ -726,6 +726,96 @@ def get_listings(
     except Exception as e:
         print(f"[ERROR] 获取在售房源列表失败: {e}")
         raise HTTPException(status_code=500, detail="获取在售房源列表失败，请稍后重试")
+
+
+@app.get("/api/domain/listings")
+def get_domain_listings(
+    suburb: str,
+    property_type: Optional[str] = None,
+    page_size: int = 20,
+):
+    """
+    从 Domain API 获取在售房源（带缓存和 DB 降级）
+
+    参数：
+    - suburb: 区域名称（必需）
+    - property_type: 房产类型过滤（可选）
+    - page_size: 每页数量（默认20）
+    """
+    from domain_api import search_residential_listings
+
+    config = SUBURB_CONFIG.get(suburb)
+    if not config:
+        raise HTTPException(status_code=404, detail=f"未知区域: {suburb}")
+
+    postcode = config["postcode"]
+
+    try:
+        listings = search_residential_listings(
+            suburb=suburb,
+            postcode=postcode,
+            page_size=page_size,
+        )
+
+        if listings:
+            if property_type:
+                listings = [l for l in listings if (l.get("property_type", "") or "").lower() == property_type.lower()]
+            return {
+                "listings": listings,
+                "total": len(listings),
+                "source": "domain_api",
+            }
+    except Exception as e:
+        print(f"[WARN] Domain API failed for {suburb}: {e}")
+
+    # Fallback: 从数据库获取
+    try:
+        db_listings = execute_query(
+            """SELECT id, address, suburb, property_type, bedrooms, bathrooms,
+                      car_spaces, land_size, price_text, price, link
+               FROM listings
+               WHERE UPPER(suburb) = UPPER(%s)
+               ORDER BY id DESC LIMIT %s""",
+            (suburb, page_size),
+        )
+        # 转换为 Domain listing 格式
+        normalized = []
+        for row in (db_listings or []):
+            normalized.append({
+                "id": row.get("id", 0),
+                "address": row.get("address", ""),
+                "suburb": row.get("suburb", ""),
+                "property_type": row.get("property_type", ""),
+                "bedrooms": row.get("bedrooms", 0),
+                "bathrooms": row.get("bathrooms", 0),
+                "car_spaces": row.get("car_spaces", 0),
+                "land_size": row.get("land_size", 0),
+                "price_text": row.get("price_text", ""),
+                "price_from": row.get("price", 0),
+                "price_to": 0,
+                "image_url": "",
+                "domain_url": row.get("link", ""),
+                "agent_name": row.get("agent_name", ""),
+                "agency_name": "",
+                "headline": "",
+            })
+        if property_type:
+            normalized = [l for l in normalized if (l.get("property_type", "") or "").lower() == property_type.lower()]
+        return {
+            "listings": normalized,
+            "total": len(normalized),
+            "source": "database",
+        }
+    except Exception as e:
+        print(f"[ERROR] DB fallback also failed for {suburb}: {e}")
+        return {"listings": [], "total": 0, "source": "none"}
+
+
+@app.get("/api/domain/status")
+def get_domain_api_status():
+    """检查 Domain API 连通性"""
+    from domain_api import check_api_status
+    return check_api_status()
 
 
 @app.get("/api/suburb/{suburb_name}/zoning", response_model=ZoningResponse)
@@ -1811,10 +1901,22 @@ def get_suburb_all(suburb_name: str):
         except Exception:
             return []
 
+    def q_domain_listings():
+        config = SUBURB_CONFIG.get(suburb_name)
+        if not config:
+            return []
+        try:
+            from domain_api import search_residential_listings
+            return search_residential_listings(suburb=suburb_name, postcode=config["postcode"], page_size=10)
+        except Exception as e:
+            print(f"[WARN] Domain API failed for {suburb_name}: {e}")
+            return []
+
     # --- 并行执行全部查询 ---
     tasks = {"detail": q_detail, "recent_sales_list": q_sales, "monthly_trends": q_trends,
              "poi": q_poi, "crime": q_crime, "transport": q_transport,
-             "land_listings": q_land, "score_raw": q_score, "zoning": q_zoning, "schools_full": q_schools}
+             "land_listings": q_land, "score_raw": q_score, "zoning": q_zoning, "schools_full": q_schools,
+             "domain_listings": q_domain_listings}
 
     results = {}
     with ThreadPoolExecutor(max_workers=10) as pool:
@@ -1837,6 +1939,7 @@ def get_suburb_all(suburb_name: str):
     profile["crime"] = results.get("crime") or {}
     profile["transport"] = results.get("transport") or {}
     profile["land_listings"] = results.get("land_listings") or []
+    profile["domain_listings"] = results.get("domain_listings") or []
     profile["zoning"] = results.get("zoning") or {}
     profile["schools_full"] = results.get("schools_full") or []
     sc = results.get("score_raw") or {}

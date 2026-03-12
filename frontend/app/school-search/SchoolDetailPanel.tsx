@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { PersonaButton, PersonaMarkdown } from '../components/persona';
 import { buildDomainSearchUrl } from '../lib/postcodes';
@@ -224,6 +224,36 @@ export default function SchoolDetailPanel({
 }: SchoolDetailPanelProps) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiReport, setAiReport] = useState<string | null>(null);
+  const [suburbListings, setSuburbListings] = useState<Record<string, any[]>>({});
+  const [listingsLoading, setListingsLoading] = useState(false);
+  const [expandedSuburb, setExpandedSuburb] = useState<string | null>(null);
+
+  // 获取每个学区 suburb 的在售房源
+  useEffect(() => {
+    if (!school.catchment_suburbs?.length) return;
+    setListingsLoading(true);
+    setSuburbListings({});
+
+    Promise.all(
+      school.catchment_suburbs.map(async (suburb) => {
+        try {
+          const res = await fetch(`${API_BASE}/api/domain/listings?suburb=${encodeURIComponent(suburb)}&page_size=5`);
+          if (!res.ok) return [suburb, []] as const;
+          const data = await res.json();
+          return [suburb, data.listings || []] as const;
+        } catch {
+          return [suburb, []] as const;
+        }
+      })
+    ).then((results) => {
+      const map: Record<string, any[]> = {};
+      for (const [suburb, listings] of results) {
+        map[suburb] = listings;
+      }
+      setSuburbListings(map);
+      setListingsLoading(false);
+    });
+  }, [school.name]);
 
   const handleAiAnalysis = async () => {
     setAiLoading(true);
@@ -535,30 +565,89 @@ export default function SchoolDetailPanel({
         )}
       </div>
 
-      {/* 8. Domain Listing Links */}
+      {/* 8. Domain Listing Links — 升级为内嵌房源 */}
       <div className="bg-white rounded-xl shadow-sm border p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">
-          查看学区在售房源
-        </h3>
-        <div className="space-y-2">
-          {school.catchment_suburbs.map((suburb) => (
-            <a
-              key={suburb}
-              href={buildDomainSearchUrl(suburb)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all group"
-            >
-              <div>
-                <span className="text-sm font-medium text-gray-900 group-hover:text-blue-700">{suburb}</span>
-                <span className="block text-[10px] text-gray-400">Domain.com.au 在售房源</span>
-              </div>
-              <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
-          ))}
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-gray-900">
+            学区在售房源
+          </h3>
+          {listingsLoading && (
+            <div className="w-4 h-4 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+          )}
         </div>
+        <div className="space-y-2">
+          {school.catchment_suburbs.map((suburb) => {
+            const listings = suburbListings[suburb] || [];
+            const isExpanded = expandedSuburb === suburb;
+            const totalCount = listings.length;
+
+            return (
+              <div key={suburb} className="rounded-lg border border-gray-200 overflow-hidden">
+                {/* Suburb header */}
+                <div
+                  className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                  onClick={() => setExpandedSuburb(isExpanded ? null : suburb)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-900">{suburb}</span>
+                    {totalCount > 0 && (
+                      <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full font-medium">
+                        {totalCount} 套在售
+                      </span>
+                    )}
+                    {!listingsLoading && totalCount === 0 && (
+                      <span className="text-[10px] text-gray-400">暂无数据</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={buildDomainSearchUrl(suburb)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[10px] text-gray-400 hover:text-blue-600 transition-colors"
+                    >
+                      Domain →
+                    </a>
+                    {totalCount > 0 && (
+                      <svg className={`w-3 h-3 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                {/* Expanded listing cards */}
+                {isExpanded && totalCount > 0 && (
+                  <div className="border-t border-gray-100 px-3 py-2 space-y-2 bg-gray-50/50">
+                    {listings.slice(0, 5).map((l: any, idx: number) => (
+                      <div key={l.id || idx} className="flex gap-2 items-start">
+                        {l.image_url && (
+                          <img src={l.image_url} alt="" className="w-16 h-12 object-cover rounded flex-shrink-0" loading="lazy" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-gray-900 truncate">{l.headline || l.address}</p>
+                          <p className="text-[10px] text-gray-400">
+                            {l.bedrooms > 0 && `${l.bedrooms}卧 `}
+                            {l.bathrooms > 0 && `${l.bathrooms}卫 `}
+                            {l.car_spaces > 0 && `${l.car_spaces}车位`}
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-xs font-bold text-blue-600">{l.price_text || '面议'}</p>
+                          {l.domain_url && (
+                            <a href={l.domain_url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-gray-400 hover:text-blue-500">详情</a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-[10px] text-gray-300 text-center mt-3">数据来源: Domain.com.au</p>
       </div>
     </div>
   );

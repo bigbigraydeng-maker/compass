@@ -156,6 +156,8 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
   const [showLivabilityDetail, setShowLivabilityDetail] = useState(false);
   const [devintelDocs, setDevintelDocs] = useState<any[]>([]);
+  const [domainListings, setDomainListings] = useState<any[]>([]);
+  const [showAllListings, setShowAllListings] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -208,6 +210,9 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
 
           // Land listings
           setLandListings(allData.land_listings || []);
+
+          // Domain active listings
+          setDomainListings(allData.domain_listings || []);
 
           // Compass Score
           if (allData.compass_score) {
@@ -818,6 +823,67 @@ export default function SuburbContent({ suburbName }: { suburbName: string }) {
             {landListings.length > 5 && (
               <p className="text-center text-sm text-gray-400 mt-3">还有 {landListings.length - 5} 块土地</p>
             )}
+          </div>
+        )}
+
+        {/* ===== 9b. Domain Active Listings ===== */}
+        {domainListings.length > 0 && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+            <h3 className="text-lg font-semibold mb-4">🏠 在售房源 ({domainListings.length} 套)</h3>
+            <div className="space-y-3">
+              {domainListings.slice(0, showAllListings ? undefined : 5).map((listing: any, i: number) => (
+                <div key={listing.id || i} className="flex gap-3 border-b border-gray-100 pb-3 last:border-b-0">
+                  {listing.image_url && (
+                    <img
+                      src={listing.image_url}
+                      alt=""
+                      className="w-24 h-18 object-cover rounded-lg flex-shrink-0"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-gray-900 truncate">{listing.headline || listing.address}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">{listing.address}</p>
+                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
+                      {listing.property_type && (
+                        <span>{listing.property_type === 'house' ? '别墅' : listing.property_type === 'unit' ? '公寓' : listing.property_type === 'townhouse' ? '联排' : listing.property_type === 'apartmentUnitFlat' ? '公寓' : listing.property_type}</span>
+                      )}
+                      {listing.bedrooms > 0 && <span>{listing.bedrooms}卧</span>}
+                      {listing.bathrooms > 0 && <span>{listing.bathrooms}卫</span>}
+                      {listing.car_spaces > 0 && <span>{listing.car_spaces}车位</span>}
+                      {listing.land_size > 0 && <span>{listing.land_size}㎡</span>}
+                    </div>
+                    {listing.agent_name && (
+                      <p className="text-[10px] text-gray-300 mt-0.5">{listing.agent_name}{listing.agency_name ? ` · ${listing.agency_name}` : ''}</p>
+                    )}
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="font-bold text-blue-600 text-sm whitespace-nowrap">
+                      {listing.price_text || '价格面议'}
+                    </p>
+                    {listing.domain_url && (
+                      <a
+                        href={listing.domain_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-gray-400 hover:text-blue-500 transition-colors"
+                      >
+                        查看详情 →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {domainListings.length > 5 && (
+              <button
+                onClick={() => setShowAllListings(!showAllListings)}
+                className="w-full text-center text-sm text-blue-500 mt-3 py-2 hover:text-blue-700 transition-colors"
+              >
+                {showAllListings ? '收起' : `查看全部 ${domainListings.length} 套房源`}
+              </button>
+            )}
+            <p className="text-[10px] text-gray-300 text-center mt-2">数据来源: Domain.com.au</p>
           </div>
         )}
 
