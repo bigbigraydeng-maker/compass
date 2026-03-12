@@ -2,6 +2,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import SmartInput from './components/SmartInput';
+import QuickEntryCards from './components/QuickEntryCards';
 import TopInvestmentSuburbs from './components/TopInvestmentSuburbs';
 import Footer from './components/Footer';
 import { fetcher } from './lib/api';
@@ -45,6 +46,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <SmartInput />
+      <QuickEntryCards />
       <TopInvestmentSuburbs suburbStats={suburbStats} />
 
       <Suspense fallback={<LazyFallback />}>
