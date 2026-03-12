@@ -27,7 +27,6 @@ export const SUBURB_POSTCODES: Record<string, string> = {
   'Holland Park West': '4121',
   'Mount Gravatt': '4122',
   'Mount Gravatt East': '4122',
-  'Wishart': '4122',
   'Mackenzie': '4156',
   'Rochedale South': '4123',
   'Springwood': '4127',
