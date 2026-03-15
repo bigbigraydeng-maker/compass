@@ -10,12 +10,23 @@ const TEAM_ORDER: PersonaKey[] = ['amanda', 'leo', 'olivia', 'ethan'];
 
 const COFOUNDERS = [
   {
-    name: 'Ray Deng',
-    nameZh: '大瑞',
+    name: 'Richard Hu',
     title: 'Co-Founder',
+    location: 'Brisbane / Auckland',
+    photo: '/images/personas/richardhu.jpg',
+    bio: 'Investor and entrepreneur with over 14 years of professional experience across New Zealand and Australia, with deep expertise in residential property markets and commercial sales. Active in U.S. equities, quantitative trading systems, and early-stage ventures. Expanded focus into technology-driven business models and AI applications, applying a disciplined, probability-based approach to decision-making.',
+    expertise: ['Investor', 'AI Applications', 'Equity Strategy', 'Property'],
+    gradient: 'from-amber-500 to-orange-600',
+    bgColor: 'bg-amber-50',
+    textColor: 'text-amber-700',
+  },
+  {
+    name: 'Ray Deng（大瑞）',
+    title: 'Co-Founder',
+    location: 'Auckland',
     photo: '/images/personas/raydeng.jpg',
-    bio: '常驻奥克兰的跨境创业者与AI策略师，是Compass AI、MoveHub和WorkVisas.work的创始人。致力于构建连接中国、新西兰和澳大利亚的创新解决方案，在AI系统架构、机器学习和金融科技基础设施方面具有深度技术能力。',
-    expertise: ['AI策略', '金融科技', '跨境运营', 'NLP与ML'],
+    bio: 'Cross-border entrepreneur and AI strategist, founder of Compass AI, MoveHub and WorkVisas.work. Builds bridges between Chinese, Australian and New Zealand markets, identifying opportunities for trade, investment, and collaboration. From machine learning models to natural language processing, creates intelligent systems that enhance decision-making and automate complex workflows.',
+    expertise: ['AI Strategy', 'Cross-Border Ops', 'Fintech', 'NLP & ML'],
     gradient: 'from-teal-500 to-cyan-600',
     bgColor: 'bg-teal-50',
     textColor: 'text-teal-700',
@@ -74,8 +85,8 @@ export default function AboutPage() {
                 className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
               >
                 {/* Card Header with gradient */}
-                <div className={`bg-gradient-to-r ${founder.gradient} p-6 flex items-center gap-5`}>
-                  <div className="w-20 h-20 rounded-full ring-4 ring-white/30 overflow-hidden flex-shrink-0">
+                <div className={`bg-gradient-to-r ${founder.gradient} p-4 sm:p-6 flex items-center gap-4 sm:gap-5`}>
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full ring-4 ring-white/30 overflow-hidden flex-shrink-0">
                     <Image
                       src={founder.photo}
                       alt={founder.name}
@@ -84,15 +95,15 @@ export default function AboutPage() {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="text-white">
-                    <h2 className="text-2xl font-bold">{founder.name}</h2>
-                    <p className="text-white/90 font-medium">{founder.nameZh}</p>
-                    <p className="text-white/70 text-sm">{founder.title}</p>
+                  <div className="text-white min-w-0">
+                    <h2 className="text-xl sm:text-2xl font-bold truncate">{founder.name}</h2>
+                    <p className="text-white/90 font-medium text-sm sm:text-base">{founder.title}</p>
+                    <p className="text-white/70 text-xs sm:text-sm">{founder.location}</p>
                   </div>
                 </div>
 
                 {/* Card Body */}
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <p className="text-gray-600 text-sm leading-relaxed mb-5">
                     {founder.bio}
                   </p>
