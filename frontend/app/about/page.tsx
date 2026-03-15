@@ -1,11 +1,26 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PersonaAvatar } from '../components/persona';
 import { PERSONAS, type PersonaKey } from '../components/persona/constants';
 
 const TEAM_ORDER: PersonaKey[] = ['amanda', 'leo', 'olivia', 'ethan'];
+
+const COFOUNDERS = [
+  {
+    name: 'Ray Deng',
+    nameZh: '大瑞',
+    title: 'Co-Founder',
+    photo: '/images/personas/raydeng.jpg',
+    bio: '常驻奥克兰的跨境创业者与AI策略师，是Compass AI、MoveHub和WorkVisas.work的创始人。致力于构建连接中国、新西兰和澳大利亚的创新解决方案，在AI系统架构、机器学习和金融科技基础设施方面具有深度技术能力。',
+    expertise: ['AI策略', '金融科技', '跨境运营', 'NLP与ML'],
+    gradient: 'from-teal-500 to-cyan-600',
+    bgColor: 'bg-teal-50',
+    textColor: 'text-teal-700',
+  },
+];
 
 const AREA_LABELS: Record<string, { label: string; href: string }[]> = {
   amanda: [
@@ -41,16 +56,75 @@ export default function AboutPage() {
       <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
-            Compass AI Team
+            About Compass AI
           </h1>
           <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
-            4 位 AI 数字人专家，各司其职，全方位守护您的布里斯班房产投资之旅
+            由资深创始人团队打造，AI数字专家全方位守护您的布里斯班房产投资之旅
           </p>
         </div>
       </div>
 
-      {/* Team Cards */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 pb-16">
+        {/* Co-Founders Section */}
+        <section className="mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {COFOUNDERS.map((founder) => (
+              <div
+                key={founder.name}
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                {/* Card Header with gradient */}
+                <div className={`bg-gradient-to-r ${founder.gradient} p-6 flex items-center gap-5`}>
+                  <div className="w-20 h-20 rounded-full ring-4 ring-white/30 overflow-hidden flex-shrink-0">
+                    <Image
+                      src={founder.photo}
+                      alt={founder.name}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="text-white">
+                    <h2 className="text-2xl font-bold">{founder.name}</h2>
+                    <p className="text-white/90 font-medium">{founder.nameZh}</p>
+                    <p className="text-white/70 text-sm">{founder.title}</p>
+                  </div>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-6">
+                  <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                    {founder.bio}
+                  </p>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+                      Expertise
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {founder.expertise.map((tag) => (
+                        <span
+                          key={tag}
+                          className={`${founder.bgColor} ${founder.textColor} text-xs font-medium px-3 py-1 rounded-full`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* AI Team Section */}
+        <section>
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-8">
+            AI 数字员工团队
+          </h2>
+          <p className="text-gray-500 text-center mb-8 -mt-4 text-sm">
+            4 位 AI 数字人专家，各司其职
+          </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {TEAM_ORDER.map((key) => {
             const persona = PERSONAS[key];
@@ -116,6 +190,7 @@ export default function AboutPage() {
             );
           })}
         </div>
+        </section>
 
         {/* Footer */}
         <div className="text-center mt-12 space-y-3">
